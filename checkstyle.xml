@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="US-ASCII"?>
+<!DOCTYPE module PUBLIC
+    "-//Puppy Crawl//DTD Check Configuration 1.2//EN"
+    "http://www.puppycrawl.com/dtds/configuration_1_2.dtd">
+<module name="Checker">
+
+  <!--<module name="SuppressionFilter">-->
+    <!--<property name="file" value="${basedir}/suppressions.xml"/>-->
+  <!--</module>-->
+
+  <!-- <module name="NewlineAtEndOfFile"/> doesn't work... -->
+  <module name="Translation"/>
+  <module name="FileLength"/>
+  <module name="FileTabCharacter"/>
+
+  <module name="RegexpSingleline">
+    <property name="format" value="\s+$"/>
+    <property name="minimum" value="0"/>
+    <property name="maximum" value="0"/>
+    <property name="message" value="Line has trailing spaces."/>
+  </module>
+
+  <module name="Header">
+    <property name="headerFile" value="${basedir}/COPYING"/>
+    <property name="charset" value="US-ASCII"/>
+  </module>
+
+  <module name="TreeWalker">
+
+    <module name="JavadocMethod"/>
+    <module name="JavadocType"/>
+    <module name="JavadocVariable"/>
+    <module name="JavadocStyle"/>
+
+    <!-- Checks for Naming Conventions.                  -->
+    <!-- See http://checkstyle.sf.net/config_naming.html -->
+    <module name="ConstantName">
+      <property name="format" value="^(?:[A-Z][A-Z0-9]*(?:_[A-Z0-9]+)*)|(?:_log)$"/>
+    </module>
+    <module name="LocalFinalVariableName"/>
+    <module name="LocalVariableName"/>
+    <module name="MemberName">
+      <property name="applyToPrivate" value="false"/>
+      <property name="applyToProtected" value="false"/>
+      <property name="applyToPackage" value="false"/>
+    </module>
+    <module name="MemberName">
+      <property name="applyToPublic" value="false"/>
+      <property name="format" value="^_[a-zA-Z][a-zA-Z0-9]*$"/>
+    </module>
+    <module name="MethodName"/>
+    <module name="PackageName"/>
+    <module name="ParameterName"/>
+    <module name="StaticVariableName">
+      <property name="applyToPrivate" value="false"/>
+      <property name="applyToProtected" value="false"/>
+      <property name="applyToPackage" value="false"/>
+    </module>
+    <module name="StaticVariableName">
+      <property name="applyToPublic" value="false"/>
+      <property name="format" value="^_[a-zA-Z][a-zA-Z0-9]*$"/>
+    </module>
+    <module name="TypeName"/>
+
+
+    <!-- Checks for imports                              -->
+    <!-- See http://checkstyle.sf.net/config_import.html -->
+    <module name="AvoidStarImport"/>
+    <module name="IllegalImport"/> <!-- defaults to sun.* packages -->
+    <module name="RedundantImport"/>
+    <module name="UnusedImports"/>
+    <module name="ImportOrder">
+      <property name="groups" value="java,javax"/>
+      <property name="option" value="bottom"/>
+    </module>
+
+
+    <!-- Checks for Size Violations.                    -->
+    <!-- See http://checkstyle.sf.net/config_sizes.html -->
+    <module name="LineLength">
+      <property name="max" value="120"/>
+    </module>
+    <module name="MethodLength"/>
+    <module name="ParameterNumber"/>
+
+
+    <!-- Checks for whitespace                               -->
+    <!-- See http://checkstyle.sf.net/config_whitespace.html -->
+    <module name="EmptyForIteratorPad"/>
+    <module name="GenericWhitespace"/>
+    <module name="MethodParamPad"/>
+    <!-- <module name="NoWhitespaceAfter"/> -->
+    <!-- <module name="NoWhitespaceBefore"/> -->
+    <module name="OperatorWrap">
+      <property name="option" value="eol"/>
+    </module>
+    <module name="ParenPad"/>
+    <module name="TypecastParenPad"/>
+    <!-- <module name="WhitespaceAfter"/> -->
+    <!-- <module name="WhitespaceAround"/> -->
+
+    <!-- Modifier Checks                                    -->
+    <!-- See http://checkstyle.sf.net/config_modifiers.html -->
+    <module name="ModifierOrder"/>
+    <module name="RedundantModifier"/>
+
+
+    <!-- Checks for blocks. You know, those {}'s         -->
+    <!-- See http://checkstyle.sf.net/config_blocks.html -->
+    <module name="AvoidNestedBlocks"/>
+    <module name="EmptyBlock">
+      <property name="option" value="text"/>
+    </module>
+    <module name="LeftCurly">
+      <property name="option" value="nlow"/>
+    </module>
+    <module name="NeedBraces"/>
+    <module name="RightCurly"/>
+
+
+    <!-- Checks for common coding problems               -->
+    <!-- See http://checkstyle.sf.net/config_coding.html -->
+    <!-- <module name="AvoidInlineConditionals"/> -->
+    <module name="CovariantEquals"/>
+    <module name="DoubleCheckedLocking"/>
+    <module name="EmptyStatement"/>
+    <module name="EqualsAvoidNull"/>
+    <module name="EqualsHashCode"/>
+    <module name="HiddenField"/>
+    <module name="IllegalInstantiation">
+      <property name="classes" value="java.lang.Boolean"/>
+    </module>
+    <module name="InnerAssignment"/>
+    <!-- <module name="MagicNumber"/> -->
+    <module name="MissingSwitchDefault"/>
+    <module name="RedundantThrows">
+      <property name="allowUnchecked" value="true"/>
+    </module>
+    <module name="SimplifyBooleanExpression"/>
+    <module name="SimplifyBooleanReturn"/>
+    <module name="NoFinalizer"/>
+    <module name="SuperClone"/>
+    <module name="IllegalCatch"/>
+    <module name="IllegalThrows"/>
+    <module name="PackageDeclaration"/>
+    <module name="IllegalType">
+      <property name="illegalClassNames"
+                value="java.util.GregorianCalendar,
+                       java.util.Hashtable,
+                       java.util.HashSet,
+                       java.util.HashMap,
+                       java.util.ArrayList,
+                       java.util.LinkedHashMap,
+                       java.util.LinkedHashSet,
+                       java.util.TreeSet,
+                       java.util.TreeMap,
+                       java.util.Vector"/>
+
+      <!-- java.util.LinkedList is allowed, since the Deque interface
+           exposing useful methods like "removeLast" isn't available
+           until 1.6 -->
+    </module>
+    <module name="ExplicitInitialization"/>
+    <module name="FallThrough"/>
+
+    <!-- Checks for class design                         -->
+    <!-- See http://checkstyle.sf.net/config_design.html -->
+    <!-- <module name="DesignForExtension"/> -->
+    <module name="FinalClass"/>
+    <module name="HideUtilityClassConstructor"/>
+    <module name="InterfaceIsType"/>
+    <!-- <module name="VisibilityModifier"/> -->
+
+    <!-- Miscellaneous other checks.                   -->
+    <!-- See http://checkstyle.sf.net/config_misc.html -->
+    <module name="ArrayTypeStyle"/>
+    <!-- module name="FinalParameters"/ -->
+    <module name="Regexp">
+      <!-- Do not allow System.out calls, use loggers instead -->
+      <property name="format" value="System\s*\.\s*(out|err)"/>
+      <property name="illegalPattern" value="true"/>
+      <property name="ignoreComments" value="true"/>
+      <property name="message" value="System.out or System.err (use Logger instead)"/>
+    </module>
+    <module name="Regexp">
+      <!-- Do not allow printStackTrace, use loggers or rethrow -->
+      <property name="format" value="\.\s*printStackTrace\s*\(\s*\)"/>
+      <property name="illegalPattern" value="true"/>
+      <property name="ignoreComments" value="true"/>
+      <property name="message" value="printStackTrace() (use Logger or rethrow)"/>
+    </module>
+
+    <!-- TODO: add this back: <module name="TodoComment"/> -->
+    <module name="UpperEll"/>
+    <module name="Indentation">
+      <property name="caseIndent" value="0"/>
+    </module>
+
+  </module>
+
+</module>
+
