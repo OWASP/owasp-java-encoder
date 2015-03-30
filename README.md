@@ -12,7 +12,7 @@ JSP tags and functions are available in the encoder-jsp, also avaiable in [Centr
 
 The jars are also available in Maven:
 
-'''xml
+```xml
 <dependency>
         <groupId>org.owasp.encoder</groupId>
         <artifactId>encoder</artifactId>
