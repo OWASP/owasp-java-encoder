@@ -641,7 +641,7 @@ public final class Encode {
      * @param out where to write encoded output
      * @param input the input string to encode
      * @throws IOException if thrown by writer
-     * 
+     *
      * @deprecated  There is never a need to encode a complete URI with this form of encoding.
      */
     @Deprecated public static void forUri(Writer out, String input)
