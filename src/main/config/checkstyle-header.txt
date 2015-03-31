@@ -1,0 +1,35 @@
+^// Copyright \(c\) 201[2-9] (Jeff Ichnowski|Jim Manico|Jeremy Long)\s*$
+^// All rights reserved\.\s*$
+^//
+^// Redistribution and use in source and binary forms, with or without\s*$
+^// modification, are permitted provided that the following conditions\s*$
+^// are met:\s*$
+^//\s*$
+^//     \* Redistributions of source code must retain the above\s*$
+^//       copyright notice, this list of conditions and the following\s*$
+^//       disclaimer\.\s*$
+^//
+^//     \* Redistributions in binary form must reproduce the above\s*$
+^//       copyright notice, this list of conditions and the following\s*$
+^//       disclaimer in the documentation and/or other materials\s*$
+^//       provided with the distribution.\s*$
+^//
+^//     \* Neither the name of the OWASP nor the names of its\s*$
+^//       contributors may be used to endorse or promote products\s*$
+^//       derived from this software without specific prior written\s*$
+^//       permission\.\s*$
+^//
+^// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS\s*$
+^// "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT\s*$
+^// LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS\s*$
+^// FOR A PARTICULAR PURPOSE ARE DISCLAIMED\. IN NO EVENT SHALL THE\s*$
+^// COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,\s*$
+^// INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES\s*$
+^// \(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR\s*$
+^// SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION\)\s*$
+^// HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,\s*$
+^// STRICT LIABILITY, OR TORT \(INCLUDING NEGLIGENCE OR OTHERWISE\)\s*$
+^// ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED\s*$
+^// OF THE POSSIBILITY OF SUCH DAMAGE\.\s*$
+^\s*$
+^package
