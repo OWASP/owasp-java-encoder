@@ -12,3 +12,4 @@ maven-eclipse.xml
 .externalToolBuilders
 # Netbeans configuration
 nb-configuration.xml
+/target/
