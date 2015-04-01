@@ -279,8 +279,7 @@ class URIEncoder extends Encoder {
     }
 
     @Override
-    protected CoderResult encodeArrays(
-            CharBuffer input, CharBuffer output, boolean endOfInput) {
+    protected CoderResult encodeArrays(CharBuffer input, CharBuffer output, boolean endOfInput) {
         final char[] in = input.array();
         final char[] out = output.array();
         int i = input.arrayOffset() + input.position();

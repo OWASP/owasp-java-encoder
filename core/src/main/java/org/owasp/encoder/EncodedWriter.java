@@ -118,8 +118,7 @@ public class EncodedWriter extends Writer {
      * @param contextName the encoding context name.
      * @throws UnsupportedContextException if the contextName is unrecognized or not supported.
      */
-    public EncodedWriter(Writer out, String contextName)
-            throws UnsupportedContextException {
+    public EncodedWriter(Writer out, String contextName) throws UnsupportedContextException {
         this(out, Encoders.forName(contextName));
     }
 
@@ -168,8 +167,7 @@ public class EncodedWriter extends Writer {
      * @param input the next input to encode, or null if at end of file.
      * @throws IOException from the underlying writer.
      */
-    private void flushLeftOver(CharBuffer input)
-            throws IOException {
+    private void flushLeftOver(CharBuffer input) throws IOException {
         if (!_hasLeftOver) {
             return;
         }
