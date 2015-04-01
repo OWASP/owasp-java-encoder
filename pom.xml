@@ -85,7 +85,13 @@
         <connection>scm:git:git@github.com:jmanico/owasp-java-encoder.git</connection>
         <url>https://github.com/jmanico/owasp-java-encoder</url>
     </scm>
-
+    <distributionManagement>
+        <site>
+            <id>gh-pages</id>
+            <name>gh-pages</name>
+            <url>http://jmanico.github.io/owasp-java-encoder</url>
+        </site>
+    </distributionManagement>
     <mailingLists>
         <mailingList>
             <name>Owasp-java-encoder-project</name>
@@ -112,18 +118,23 @@
         </developer>
         <developer>
             <name>Jim Manico</name>
+            <organization>OWASP</organization>
+            <organizationUrl>https://www.owasp.org/</organizationUrl>
             <roles>
                 <role>Architect</role>
                 <role>Developer</role>
             </roles>
         </developer>
-    </developers>
-    <contributors>
-        <contributor>
+        <developer>
             <name>Jeremy Long</name>
-            <email>jeremy.long@gmail.com</email>
-        </contributor>
-    </contributors>
+            <email>jeremy.long@owasp.org</email>
+            <organization>OWASP</organization>
+            <organizationUrl>https://www.owasp.org/</organizationUrl>
+            <roles>
+                <role>developer</role>
+            </roles>
+        </developer>
+    </developers>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -293,6 +304,20 @@
                     </execution>
                 </executions>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-site-plugin</artifactId>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.apache.maven.doxia</groupId>
+                        <artifactId>doxia-module-markdown</artifactId>
+                        <version>1.6</version>
+                    </dependency>
+                </dependencies>
+                <configuration>
+                    <skipDeploy>true</skipDeploy>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
     <reporting>
@@ -375,7 +400,6 @@
                 <configuration>
                     <configLocation>src/main/config/checkstyle.xml</configLocation>
                     <headerLocation>src/main/config/checkstyle-header.txt</headerLocation>
-                    <!--propertyExpansion>basedir=${basedir}/..</propertyExpansion-->
                 </configuration>
             </plugin>
             <plugin>
@@ -412,5 +436,4 @@
             </build>
         </profile>
     </profiles>
-
 </project>
