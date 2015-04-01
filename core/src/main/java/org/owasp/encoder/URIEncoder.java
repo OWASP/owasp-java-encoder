@@ -31,7 +31,6 @@
 // STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
 // ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
 // OF THE POSSIBILITY OF SUCH DAMAGE.
-
 package org.owasp.encoder;
 
 import java.nio.CharBuffer;
@@ -44,16 +43,21 @@ import java.nio.charset.CoderResult;
  */
 class URIEncoder extends Encoder {
 
-    /** Number of characters in the range '0' to '9'. */
+    /**
+     * Number of characters in the range '0' to '9'.
+     */
     static final int CHARS_0_TO_9 = 10;
-    /** Number of characters in the range 'a' to 'z'. */
+    /**
+     * Number of characters in the range 'a' to 'z'.
+     */
     static final int CHARS_A_TO_Z = 26;
-    /** Number of bits in a long. */
+    /**
+     * Number of bits in a long.
+     */
     static final int LONG_BITS = 64;
 
     /**
-     * Maximum number of characters quired to encode a single input
-     * character.
+     * Maximum number of characters quired to encode a single input character.
      */
     static final int MAX_ENCODED_CHAR_LENGTH = 9;
     /**
@@ -65,23 +69,19 @@ class URIEncoder extends Encoder {
      */
     static final int MAX_UTF8_2_BYTE = 0x7ff;
     /**
-     * When the encoded output requires 2 bytes, this is the high
-     * bits of the first byte.
+     * When the encoded output requires 2 bytes, this is the high bits of the first byte.
      */
     static final int UTF8_2_BYTE_FIRST_MSB = 0xc0;
     /**
-     * When the encoded output requires 3 bytes, this is the high
-     * bits of the first byte.
+     * When the encoded output requires 3 bytes, this is the high bits of the first byte.
      */
     static final int UTF8_3_BYTE_FIRST_MSB = 0xe0;
     /**
-     * When the encoded output requires 4 bytes, this is the high
-     * bits of the first byte.
+     * When the encoded output requires 4 bytes, this is the high bits of the first byte.
      */
     static final int UTF8_4_BYTE_FIRST_MSB = 0xf0;
     /**
-     * For all characters in a 2-4 byte encoded sequence after the first
-     * this is the high bits of the input bytes.
+     * For all characters in a 2-4 byte encoded sequence after the first this is the high bits of the input bytes.
      */
     static final int UTF8_BYTE_MSB = 0x80;
 
@@ -100,11 +100,9 @@ class URIEncoder extends Encoder {
     static final char INVALID_REPLACEMENT_CHARACTER = '-';
 
     /**
-     * RFC 3986 -- "The uppercase hexadecimal digits 'A' through 'F' are
-     * equivalent to the lowercase digits 'a' through 'f', respectively. If two
-     * URIs differ only in the case of hexadecimal digits used in percent-
-     * encoded octets, they are equivalent. For consistency, URI producers and
-     * normalizers should use uppercase hexadecimal digits for all percent-
+     * RFC 3986 -- "The uppercase hexadecimal digits 'A' through 'F' are equivalent to the lowercase digits 'a' through 'f',
+     * respectively. If two URIs differ only in the case of hexadecimal digits used in percent- encoded octets, they are
+     * equivalent. For consistency, URI producers and normalizers should use uppercase hexadecimal digits for all percent-
      * encodings."
      */
     static final char[] UHEX = "0123456789ABCDEF".toCharArray();
@@ -113,40 +111,35 @@ class URIEncoder extends Encoder {
     // 0x20:   ! " # $ % & ' ( ) * + , - . / 0 1 2 3 4 5 6 7 8 9 : ; < = > ?
     // 0x40: @ A B C D E F G H I J K L M N O P Q R S T U V W X Y Z [ \ ] ^ _
     // 0x60: ` a b c d e f g h i j k l m n o p q r s t u v w x y z { | } ~
-
-
     // ASCII table of RFC 3986 "Unreserved Characters"
     // 0x20:                           - .   0 1 2 3 4 5 6 7 8 9
     // 0x40:   A B C D E F G H I J K L M N O P Q R S T U V W X Y Z         _
     // 0x60:   a b c d e f g h i j k l m n o p q r s t u v w x y z       ~
-
     // Note: (1L << n) - 1 is bit arithmetic to get n 1 bits.
     // e.g. (1L << 10) = binary 10000000000
     //      binary 10000000000 = 1111111111
-
     /**
-     * RFC 3986 Unreserved Characters.  The first 64.
+     * RFC 3986 Unreserved Characters. The first 64.
      * <pre>
      *     unreserved  = ALPHA / DIGIT / "-" / "." / "_" / "~"
      * </pre>
      */
-    static final long UNRESERVED_MASK_LOW =
-        (((1L << CHARS_0_TO_9) - 1) << '0') | (1L << '-') | (1L << '.');
+    static final long UNRESERVED_MASK_LOW
+            = (((1L << CHARS_0_TO_9) - 1) << '0') | (1L << '-') | (1L << '.');
 
     /**
-     * RFC 3986 Unreserved Characters.  The second 64.
+     * RFC 3986 Unreserved Characters. The second 64.
      * <pre>
      *     unreserved  = ALPHA / DIGIT / "-" / "." / "_" / "~"
      * </pre>
      */
-    static final long UNRESERVED_MASK_HIGH =
-        (((1L << CHARS_A_TO_Z) - 1) << ('a' - LONG_BITS)) |
-        (((1L << CHARS_A_TO_Z) - 1) << ('A' - LONG_BITS)) |
-        (1L << ('_' - LONG_BITS)) | (1L << ('~' - LONG_BITS));
-
+    static final long UNRESERVED_MASK_HIGH
+            = (((1L << CHARS_A_TO_Z) - 1) << ('a' - LONG_BITS))
+            | (((1L << CHARS_A_TO_Z) - 1) << ('A' - LONG_BITS))
+            | (1L << ('_' - LONG_BITS)) | (1L << ('~' - LONG_BITS));
 
     /**
-     * RFC 3986 Reserved Characters.  The first 64.
+     * RFC 3986 Reserved Characters. The first 64.
      * <pre>
      *   reserved    = gen-delims / sub-delims
      *
@@ -156,44 +149,44 @@ class URIEncoder extends Encoder {
      *               / "*" / "+" / "," / ";" / "="
      * </pre>
      */
-    static final long RESERVED_MASK_LOW =
-        // gen-delims
-        (1L << ':') | (1L << '/') | (1L << '?') | (1L << '#') |
-        // sub-delims
-        (1L << '!') | (1L << '$') | (1L << '&') | (1L << '\'') |
-        (1L << '(') | (1L << ')') | (1L << '*') | (1L << '+') |
-        (1L << ',') | (1L << ';') | (1L << '=');
+    static final long RESERVED_MASK_LOW
+            = // gen-delims
+            (1L << ':') | (1L << '/') | (1L << '?') | (1L << '#')
+            | // sub-delims
+            (1L << '!') | (1L << '$') | (1L << '&') | (1L << '\'')
+            | (1L << '(') | (1L << ')') | (1L << '*') | (1L << '+')
+            | (1L << ',') | (1L << ';') | (1L << '=');
 
     /**
      * The second 64 RFC 3986 Reserved characters.
      */
-    static final long RESERVED_MASK_HIGH =
-        // gen-delims
-        (1L << ('[' - LONG_BITS)) | (1L << (']' - LONG_BITS)) | (1L << ('@' - LONG_BITS));
+    static final long RESERVED_MASK_HIGH
+            = // gen-delims
+            (1L << ('[' - LONG_BITS)) | (1L << (']' - LONG_BITS)) | (1L << ('@' - LONG_BITS));
 
     /**
-     * Encoding mode of operation for URI encodes.  The modes define
-     * which characters get encoded using %-encoding, and which do
+     * Encoding mode of operation for URI encodes. The modes define which characters get encoded using %-encoding, and which do
      * not.
      */
     public static enum Mode {
+
         /**
-         * In "component" mode, only the unreserved characters are
-         * left unescaped.  Everything else is escaped.
+         * In "component" mode, only the unreserved characters are left unescaped. Everything else is escaped.
          */
         COMPONENT(UNRESERVED_MASK_LOW, UNRESERVED_MASK_HIGH),
         /**
-         * In "full" mode, all unreserved and reserved characters
-         * are left unescaped.  Anything else is escaped.
+         * In "full" mode, all unreserved and reserved characters are left unescaped. Anything else is escaped.
          */
         FULL_URI(UNRESERVED_MASK_LOW | RESERVED_MASK_LOW,
-            UNRESERVED_MASK_HIGH | RESERVED_MASK_HIGH),
+                UNRESERVED_MASK_HIGH | RESERVED_MASK_HIGH),;
 
-        ;
-
-        /** The low bit-mask--copied into the _lowMask of the encoder. */
+        /**
+         * The low bit-mask--copied into the _lowMask of the encoder.
+         */
         final long _lowMask;
-        /** The high bit-mask--copied into the _highMask of the encoder. */
+        /**
+         * The high bit-mask--copied into the _highMask of the encoder.
+         */
         final long _highMask;
 
         /**
@@ -209,24 +202,29 @@ class URIEncoder extends Encoder {
 
         /**
          * Accessor for the low bit-mask.
+         *
          * @return _lowMask
          */
-        long lowMask() { return _lowMask; }
+        long lowMask() {
+            return _lowMask;
+        }
+
         /**
          * Accessor for the high bit-mask.
+         *
          * @return _highMask
          */
-        long highMask() { return _highMask; }
+        long highMask() {
+            return _highMask;
+        }
     }
 
     /**
-     * The bit-mask of characters that do not need to be escaped, for
-     * characters with code-points in the range 0 to 63.
+     * The bit-mask of characters that do not need to be escaped, for characters with code-points in the range 0 to 63.
      */
     private final long _lowMask;
     /**
-     * The bit-mask of characters that do not need to be escaped, for
-     * character with code-points in the range 64 to 127.
+     * The bit-mask of characters that do not need to be escaped, for character with code-points in the range 64 to 127.
      */
     private final long _highMask;
     /**
@@ -242,8 +240,7 @@ class URIEncoder extends Encoder {
     }
 
     /**
-     * Constructor for the URIEncoder the specifies the encoding mode
-     * the URIEncoder will use.
+     * Constructor for the URIEncoder the specifies the encoding mode the URIEncoder will use.
      *
      * @param mode the encoding mode for this encoder.
      */
@@ -266,13 +263,13 @@ class URIEncoder extends Encoder {
     @Override
     protected int firstEncodedOffset(String input, int off, int len) {
         final int n = off + len;
-        for (int i=off ; i<n ; ++i) {
+        for (int i = off; i < n; ++i) {
             char ch = input.charAt(i);
             if (ch <= Unicode.DEL) {
-                if (ch < LONG_BITS ? (_lowMask & (1L << ch)) != 0 : (_highMask & (1L << (ch - LONG_BITS))) != 0) {
-                    // valid
-                } else {
+                if (!(ch < LONG_BITS ? (_lowMask & (1L << ch)) != 0 : (_highMask & (1L << (ch - LONG_BITS))) != 0)) {
                     return i;
+//                } else {
+//                    // valid
                 }
             } else {
                 return i;
@@ -283,8 +280,7 @@ class URIEncoder extends Encoder {
 
     @Override
     protected CoderResult encodeArrays(
-        CharBuffer input, CharBuffer output, boolean endOfInput)
-    {
+            CharBuffer input, CharBuffer output, boolean endOfInput) {
         final char[] in = input.array();
         final char[] out = output.array();
         int i = input.arrayOffset() + input.position();
@@ -292,7 +288,7 @@ class URIEncoder extends Encoder {
         int j = output.arrayOffset() + output.position();
         final int m = output.arrayOffset() + output.limit();
 
-        for ( ; i<n ; ++i) {
+        for (; i < n; ++i) {
             char ch = in[i];
 
             if (ch <= Unicode.DEL) {
@@ -328,7 +324,7 @@ class URIEncoder extends Encoder {
                     return overflow(input, i, output, j);
                 }
                 // three UTF-8 bytes
-                int b1 = UTF8_3_BYTE_FIRST_MSB | (ch >>> 2*UTF8_SHIFT);
+                int b1 = UTF8_3_BYTE_FIRST_MSB | (ch >>> 2 * UTF8_SHIFT);
                 out[j++] = '%';
                 out[j++] = UHEX[b1 >>> HEX_SHIFT];
                 out[j++] = UHEX[b1 & HEX_MASK];
@@ -342,17 +338,17 @@ class URIEncoder extends Encoder {
                 out[j++] = UHEX[b3 & HEX_MASK];
             } else if (ch <= Character.MAX_HIGH_SURROGATE) {
                 // surrogate pair: 2 UTF-16 => 4 UTF-8 bytes
-                if (i+1 < n) {
-                    if (Character.isLowSurrogate(in[i+1])) {
+                if (i + 1 < n) {
+                    if (Character.isLowSurrogate(in[i + 1])) {
                         if (j + 4 * PERCENT_ENCODED_LENGTH > m) {
                             return overflow(input, i, output, j);
                         }
                         int cp = Character.toCodePoint(ch, in[++i]);
-                        int b1 = UTF8_4_BYTE_FIRST_MSB | (cp >>> 3*UTF8_SHIFT);
+                        int b1 = UTF8_4_BYTE_FIRST_MSB | (cp >>> 3 * UTF8_SHIFT);
                         out[j++] = '%';
                         out[j++] = UHEX[b1 >>> HEX_SHIFT];
                         out[j++] = UHEX[b1 & HEX_MASK];
-                        int b2 = UTF8_BYTE_MSB | ((cp >>> 2*UTF8_SHIFT) & UTF8_MASK);
+                        int b2 = UTF8_BYTE_MSB | ((cp >>> 2 * UTF8_SHIFT) & UTF8_MASK);
                         out[j++] = '%';
                         out[j++] = UHEX[b2 >>> HEX_SHIFT];
                         out[j++] = UHEX[b2 & HEX_MASK];
@@ -392,6 +388,6 @@ class URIEncoder extends Encoder {
 
     @Override
     public String toString() {
-        return "URIEncoder(mode="+_mode+")";
+        return "URIEncoder(mode=" + _mode + ")";
     }
 }

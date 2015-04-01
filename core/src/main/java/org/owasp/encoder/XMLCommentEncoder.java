@@ -31,26 +31,23 @@
 // STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
 // ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
 // OF THE POSSIBILITY OF SUCH DAMAGE.
-
 package org.owasp.encoder;
 
 import java.nio.CharBuffer;
 import java.nio.charset.CoderResult;
 
 /**
- * XMLCommentEncoder -- Encodes for the XML/HTML comment context.  The sequence
- * "--" is not allowed in comments, and must be removed/replaced.  We also must
- * be careful of trailing hyphens at end of input, as they could combine with
- * the external comment ending sequence "-->" to become "--->", which is also
- * invalid.  As with all XML-based context, invalid XML characters are not
+ * XMLCommentEncoder -- Encodes for the XML/HTML comment context. The sequence "--" is not allowed in comments, and must be
+ * removed/replaced. We also must be careful of trailing hyphens at end of input, as they could combine with the external comment
+ * ending sequence "-->" to become "--->", which is also invalid. As with all XML-based context, invalid XML characters are not
  * allowed.
  *
  * @author Jeff Ichnowski
  */
 class XMLCommentEncoder extends Encoder {
+
     /**
-     * This is the character used to replace a hyphen when a sequence
-     * of hypens is encountered.
+     * This is the character used to replace a hyphen when a sequence of hypens is encountered.
      */
     static final char HYPHEN_REPLACEMENT = '~';
 
@@ -63,14 +60,9 @@ class XMLCommentEncoder extends Encoder {
     // <!-- foo - - bar -->
     // <!-- foo \u2010\u2010 bar --> (Unicode Hyphen)
     // <!-- foo \u2013 bar --> (Unicode en-dash)
-
-
     // Note: HTML comments differ, in that they cannot start with: ">", "->".
     // On IE, "<!--[if ..." has special interpretation
-
-
     // [2] Char ::= #x9 | #xA | #xD | [#x20-#xD7FF] | [#xE000-#xFFFD] | [#x10000-#x10FFFF]
-
     @Override
     protected int maxEncodedLength(int n) {
         return n;
@@ -79,33 +71,33 @@ class XMLCommentEncoder extends Encoder {
     @Override
     protected int firstEncodedOffset(String input, int off, int len) {
         final int n = off + len;
-        for (int i=off ; i<n ; ++i) {
+        for (int i = off; i < n; ++i) {
             char ch = input.charAt(i);
             if (ch <= Unicode.MAX_ASCII) {
                 if (ch == '-') {
-                    if (i+1 < n) {
-                        if (input.charAt(i+1) == '-') {
+                    if (i + 1 < n) {
+                        if (input.charAt(i + 1) == '-') {
                             return i;
-                        } else {
-                            // valid
+//                        } else {
+//                            // valid
                         }
                     } else {
                         return i;
                     }
-                } else if (ch >= ' ' || ch == '\n' || ch == '\r' || ch == '\t') {
-                    // valid
-                } else {
+                } else if (ch < ' ' && ch != '\n' && ch != '\r' && ch != '\t') {
                     return i;
+//                } else {
+//                    // valid
                 }
             } else if (ch < Character.MIN_HIGH_SURROGATE) {
-                if (ch > Unicode.MAX_C1_CTRL_CHAR || ch == Unicode.NEL) {
-                    // valid
-                } else {
+                if (ch <= Unicode.MAX_C1_CTRL_CHAR && ch != Unicode.NEL) {
                     return i;
+//                } else {
+//                    // valid
                 }
             } else if (ch <= Character.MAX_HIGH_SURROGATE) {
                 if (i + 1 < n && Character.isLowSurrogate(input.charAt(i + 1))) {
-                    int cp = Character.toCodePoint(ch, input.charAt(i+1));
+                    int cp = Character.toCodePoint(ch, input.charAt(i + 1));
                     if (Unicode.isNonCharacter(cp)) {
                         // noncharacter
                         return i;
@@ -114,12 +106,11 @@ class XMLCommentEncoder extends Encoder {
                 } else {
                     return i;
                 }
-            } else if (ch <= Character.MAX_LOW_SURROGATE || ch > '\ufffd' ||
-                ('\ufdd0' <= ch && ch <= '\ufdef'))
-            {
+            } else if (ch <= Character.MAX_LOW_SURROGATE || ch > '\ufffd'
+                    || ('\ufdd0' <= ch && ch <= '\ufdef')) {
                 return i;
-            } else {
-                // valid
+//            } else {
+//                // valid
             }
         }
         return n;
@@ -127,8 +118,7 @@ class XMLCommentEncoder extends Encoder {
 
     @Override
     protected CoderResult encodeArrays(
-        CharBuffer input, CharBuffer output, boolean endOfInput)
-    {
+            CharBuffer input, CharBuffer output, boolean endOfInput) {
         final char[] in = input.array();
         final char[] out = output.array();
         int i = input.arrayOffset() + input.position();
@@ -136,13 +126,13 @@ class XMLCommentEncoder extends Encoder {
         int j = output.arrayOffset() + output.position();
         final int m = output.arrayOffset() + output.limit();
 
-        for ( ; i<n ; ++i) {
+        for (; i < n; ++i) {
             char ch = in[i];
             if (ch <= Unicode.MAX_ASCII) {
                 if (ch == '-') {
-                    if (i+1 < n) {
-                        if (in[i+1] == '-') {
-                            if (j+1 >= m) {
+                    if (i + 1 < n) {
+                        if (in[i + 1] == '-') {
+                            if (j + 1 >= m) {
                                 return overflow(input, i, output, j);
                             }
                             out[j++] = '-';
@@ -187,9 +177,9 @@ class XMLCommentEncoder extends Encoder {
                     out[j++] = XMLEncoder.INVALID_CHARACTER_REPLACEMENT;
                 }
             } else if (ch <= Character.MAX_HIGH_SURROGATE) {
-                if (i+1 < n) {
-                    if (Character.isLowSurrogate(in[i+1])) {
-                        int cp = Character.toCodePoint(ch, in[i+1]);
+                if (i + 1 < n) {
+                    if (Character.isLowSurrogate(in[i + 1])) {
+                        int cp = Character.toCodePoint(ch, in[i + 1]);
                         if (Unicode.isNonCharacter(cp)) {
                             // noncharacter
                             if (j >= m) {
@@ -198,7 +188,7 @@ class XMLCommentEncoder extends Encoder {
                             out[j++] = XMLEncoder.INVALID_CHARACTER_REPLACEMENT;
                             ++i;
                         } else {
-                            if (j+1 >= m) {
+                            if (j + 1 >= m) {
                                 return overflow(input, i, output, j);
                             }
                             out[j++] = ch;
@@ -220,13 +210,11 @@ class XMLCommentEncoder extends Encoder {
                 } else {
                     break;
                 }
-            } else if (
-                    // low surrogate without preceding high surrogate
-                    ch <= Character.MAX_LOW_SURROGATE ||
-                    // non characters
-                    ch > '\ufffd' ||
-                    ('\ufdd0' <= ch && ch <= '\ufdef'))
-            {
+            } else if ( // low surrogate without preceding high surrogate
+                    ch <= Character.MAX_LOW_SURROGATE
+                    || // non characters
+                    ch > '\ufffd'
+                    || ('\ufdd0' <= ch && ch <= '\ufdef')) {
                 if (j >= m) {
                     return overflow(input, i, output, j);
                 }

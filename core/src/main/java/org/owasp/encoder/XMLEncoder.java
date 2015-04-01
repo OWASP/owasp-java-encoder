@@ -31,20 +31,16 @@
 // STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
 // ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
 // OF THE POSSIBILITY OF SUCH DAMAGE.
-
 package org.owasp.encoder;
 
 import java.nio.CharBuffer;
 import java.nio.charset.CoderResult;
 
 /**
- * XMLEncoder -- encoder for XML attribute and content data.  It uses XML
- * entity entity ("&amp;...;") to encode valid but significant characters.
- * Characters that are invalid according to the XML specification are
- * replaced by a space character (U+0020).  This encoder supports several
- * modes of operation, allowing for varying contexts, such as: attribute
- * data between single-quotes, attribute data between double-quotes,
- * attribute data with indeterminate quotes, content, or a context safe for
+ * XMLEncoder -- encoder for XML attribute and content data. It uses XML entity entity ("&amp;...;") to encode valid but
+ * significant characters. Characters that are invalid according to the XML specification are replaced by a space character
+ * (U+0020). This encoder supports several modes of operation, allowing for varying contexts, such as: attribute data between
+ * single-quotes, attribute data between double-quotes, attribute data with indeterminate quotes, content, or a context safe for
  * all of the above.
  *
  * @author jeffi
@@ -52,7 +48,6 @@ import java.nio.charset.CoderResult;
 class XMLEncoder extends Encoder {
 
     // [2] Char ::= #x9 | #xA | #xD | [#x20-#xD7FF] | [#xE000-#xFFFD] | [#x10000-#x10FFFF]
-
     // Unicode Noncharacters (Unicode Standard 16.7)
     //  U+FFFE &  U+FFFF
     // U+1FFFE & U+1FFFF
@@ -60,19 +55,16 @@ class XMLEncoder extends Encoder {
     // ...
     // U+10FFFE & U+10FFFF
     // U+FDD0 .. U+FDEF
-
     // Control Characters
     // U+0000 .. U+001F <-- CR, LF, TAB are in this range and ok.
     // U+007f .. U+009F <-- U+85 = NEL (next line) = CR+LF in one = ok.
-
     // Note: the standard says it is a good practice to replace noncharacters
     // with U+FFFD "replacement character".
-
     /**
      * A bit-mask of valid characters with code-points in the range 0--63.
      */
-    private static final long BASE_VALID_MASK =
-        (1L << '\t') | (1L << '\r') | (1L << '\n');
+    private static final long BASE_VALID_MASK
+            = (1L << '\t') | (1L << '\r') | (1L << '\n');
 
     /**
      * Maximum number of encoded characters per input character.
@@ -103,45 +95,33 @@ class XMLEncoder extends Encoder {
      * An enum of supported "modes" of operation for the XMLEncoder.
      */
     static enum Mode {
+
         /**
-         * All significant characters are encoded (&amp; &lt; &gt; '
-         * ").  This mode is safe for use in either content or
-         * attributes.  See note on {@link #CONTENT} for explanation
-         * of why '>' is encoded.
+         * All significant characters are encoded (&amp; &lt; &gt; ' "). This mode is safe for use in either content or
+         * attributes. See note on {@link #CONTENT} for explanation of why '>' is encoded.
          */
         ALL("&<>\'\""),
-
         /**
-         * Characters are encoded for content (a.k.a. "CharData").
-         * This means &amp; &lt; and &gt;.  Note: &gt; only requires
-         * encoding if it follows "]]".  However for maximum
-         * compatibility and to avoid the overhead of looking for
-         * "]]", we just always encode '>' to '&amp;gt;'.
+         * Characters are encoded for content (a.k.a. "CharData"). This means &amp; &lt; and &gt;. Note: &gt; only requires
+         * encoding if it follows "]]". However for maximum compatibility and to avoid the overhead of looking for "]]", we just
+         * always encode '>' to '&amp;gt;'.
          */
         CONTENT("&<>"),
-
         /**
-         * Characters are encoded for attribute values--either single
-         * or double quoted.  This means the characters &amp; &lt '
-         * and " are encoded.  Note: &gt; is NOT encoded, and thus
-         * this mode is not suitable for content.
+         * Characters are encoded for attribute values--either single or double quoted. This means the characters &amp; &lt ' and
+         * " are encoded. Note: &gt; is NOT encoded, and thus this mode is not suitable for content.
          */
         ATTRIBUTE("&<\'\""),
-
         /**
-         * Characters are encoded for single-quoted attribute values.
-         * Thus, the same as {@link #ATTRIBUTE} except ' is not
+         * Characters are encoded for single-quoted attribute values. Thus, the same as {@link #ATTRIBUTE} except ' is not
          * encoded.
          */
         SINGLE_QUOTED_ATTRIBUTE("&<\'"),
-
         /**
-         * Characters are encoded for double-quoted attribute values.
-         * Thus, the same as {@link #ATTRIBUTE} except " is not
+         * Characters are encoded for double-quoted attribute values. Thus, the same as {@link #ATTRIBUTE} except " is not
          * encoded.
          */
-        DOUBLE_QUOTED_ATTRIBUTE("&<\""),
-        ;
+        DOUBLE_QUOTED_ATTRIBUTE("&<\""),;
 
         /**
          * The bit-mask of characters that do not need encoding in this mode.
@@ -151,12 +131,11 @@ class XMLEncoder extends Encoder {
         /**
          * Sole constructor.
          *
-         * @param encodedChars -- a string of characters must be encoded in
-         * this mode.  This string is converted to a bit-mask.
+         * @param encodedChars -- a string of characters must be encoded in this mode. This string is converted to a bit-mask.
          */
         Mode(String encodedChars) {
             long encodeMask = 0;
-            for (int i=0, n=encodedChars.length() ; i<n ; ++i) {
+            for (int i = 0, n = encodedChars.length(); i < n; ++i) {
                 encodeMask |= 1L << encodedChars.charAt(i);
             }
             _validMask = BASE_VALID_MASK | ((-1L << ' ') & ~(encodeMask));
@@ -167,13 +146,14 @@ class XMLEncoder extends Encoder {
          *
          * @return {@link #_validMask}
          */
-        long validMask() { return _validMask; }
+        long validMask() {
+            return _validMask;
+        }
     }
 
     /**
-     * Character to use as a replacement for invalid characters (Not to be
-     * confused with characters that require encoding).  Invalid characters
-     * have no encoding, and are not allowed in the context.
+     * Character to use as a replacement for invalid characters (Not to be confused with characters that require encoding).
+     * Invalid characters have no encoding, and are not allowed in the context.
      */
     static final char INVALID_CHARACTER_REPLACEMENT = ' ';
 
@@ -182,8 +162,7 @@ class XMLEncoder extends Encoder {
      */
     private final long _validMask;
     /**
-     * The mode of operation--only really stored to provide a relevant
-     * toString implementation.
+     * The mode of operation--only really stored to provide a relevant toString implementation.
      */
     private final Mode _mode;
 
@@ -214,24 +193,24 @@ class XMLEncoder extends Encoder {
     public int firstEncodedOffset(String input, int off, int len) {
         final int n = off + len;
 
-        for (int i = off ;i < n ; ++i) {
+        for (int i = off; i < n; ++i) {
             char ch = input.charAt(i);
             if (ch < Unicode.DEL) {
-                if (ch > '>' || (_validMask & (1L << ch)) != 0) {
-                    // valid
-                } else {
+                if (ch <= '>' && (_validMask & (1L << ch)) == 0) {
                     // either needs encoding or is invalid
                     return i;
+//                } else {
+//                    // valid
                 }
             } else if (ch < Character.MIN_HIGH_SURROGATE) {
-                if (ch > Unicode.MAX_C1_CTRL_CHAR || ch == Unicode.NEL) {
-                    // valid
-                } else {
+                if (ch <= Unicode.MAX_C1_CTRL_CHAR && ch != Unicode.NEL) {
                     return i;
+//                } else {
+//                    // valid
                 }
             } else if (ch <= Character.MAX_HIGH_SURROGATE) {
                 if (i + 1 < n && Character.isLowSurrogate(input.charAt(i + 1))) {
-                    int cp = Character.toCodePoint(ch, input.charAt(i+1));
+                    int cp = Character.toCodePoint(ch, input.charAt(i + 1));
                     if (Unicode.isNonCharacter(cp)) {
                         // noncharacter
                         return i;
@@ -240,12 +219,11 @@ class XMLEncoder extends Encoder {
                 } else {
                     return i;
                 }
-            } else if (ch <= Character.MAX_LOW_SURROGATE || ch > '\ufffd' ||
-                ('\ufdd0' <= ch && ch <= '\ufdef'))
-            {
+            } else if (ch <= Character.MAX_LOW_SURROGATE || ch > '\ufffd'
+                    || ('\ufdd0' <= ch && ch <= '\ufdef')) {
                 return i;
-            } else {
-                // valid
+//            } else {
+//                // valid
             }
         }
 
@@ -263,7 +241,7 @@ class XMLEncoder extends Encoder {
         int j = output.arrayOffset() + output.position();
         final int m = output.arrayOffset() + output.limit();
 
-        for ( ; i<n ; ++i) {
+        for (; i < n; ++i) {
             final char ch = in[i];
             if (ch < Unicode.DEL) {
                 if (ch > '>' || ((_validMask & (1L << ch)) != 0)) {
@@ -274,63 +252,63 @@ class XMLEncoder extends Encoder {
                     out[j++] = ch;
                 } else {
                     switch (ch) {
-                    case '&':
-                        if (j+AMP_LENGTH > m) {
-                            return overflow(input, i, output, j);
-                        }
-                        out[j++] = '&';
-                        out[j++] = 'a';
-                        out[j++] = 'm';
-                        out[j++] = 'p';
-                        out[j++] = ';';
-                        break;
-                    case '<':
-                        if (j+LT_LENGTH > m) {
-                            return overflow(input, i, output, j);
-                        }
-                        out[j++] = '&';
-                        out[j++] = 'l';
-                        out[j++] = 't';
-                        out[j++] = ';';
-                        break;
-                    case '>':
-                        if (j+GT_LENGTH > m) {
-                            return overflow(input, i, output, j);
-                        }
-                        out[j++] = '&';
-                        out[j++] = 'g';
-                        out[j++] = 't';
-                        out[j++] = ';';
-                        break;
-                    case '\'':
-                        // &apos; is valid in XML, but not in HTML, and numeric code is shorter
-                        if (j+APOS_LENGTH > m) {
-                            return overflow(input, i, output, j);
-                        }
-                        out[j++] = '&';
-                        out[j++] = '#';
-                        out[j++] = '3';
-                        out[j++] = '9';
-                        out[j++] = ';';
-                        break;
-                    case '\"':
-                        // &quot; is valid in XML and HTML, but numeric code is shorter
-                        if (j+QUOT_LENGTH > m) {
-                            return overflow(input, i, output, j);
-                        }
-                        out[j++] = '&';
-                        out[j++] = '#';
-                        out[j++] = '3';
-                        out[j++] = '4';
-                        out[j++] = ';';
-                        break;
-                    default:
-                        // invalid character
-                        if (j >= m) {
-                            return overflow(input, i, output, j);
-                        }
-                        out[j++] = INVALID_CHARACTER_REPLACEMENT;
-                        break;
+                        case '&':
+                            if (j + AMP_LENGTH > m) {
+                                return overflow(input, i, output, j);
+                            }
+                            out[j++] = '&';
+                            out[j++] = 'a';
+                            out[j++] = 'm';
+                            out[j++] = 'p';
+                            out[j++] = ';';
+                            break;
+                        case '<':
+                            if (j + LT_LENGTH > m) {
+                                return overflow(input, i, output, j);
+                            }
+                            out[j++] = '&';
+                            out[j++] = 'l';
+                            out[j++] = 't';
+                            out[j++] = ';';
+                            break;
+                        case '>':
+                            if (j + GT_LENGTH > m) {
+                                return overflow(input, i, output, j);
+                            }
+                            out[j++] = '&';
+                            out[j++] = 'g';
+                            out[j++] = 't';
+                            out[j++] = ';';
+                            break;
+                        case '\'':
+                            // &apos; is valid in XML, but not in HTML, and numeric code is shorter
+                            if (j + APOS_LENGTH > m) {
+                                return overflow(input, i, output, j);
+                            }
+                            out[j++] = '&';
+                            out[j++] = '#';
+                            out[j++] = '3';
+                            out[j++] = '9';
+                            out[j++] = ';';
+                            break;
+                        case '\"':
+                            // &quot; is valid in XML and HTML, but numeric code is shorter
+                            if (j + QUOT_LENGTH > m) {
+                                return overflow(input, i, output, j);
+                            }
+                            out[j++] = '&';
+                            out[j++] = '#';
+                            out[j++] = '3';
+                            out[j++] = '4';
+                            out[j++] = ';';
+                            break;
+                        default:
+                            // invalid character
+                            if (j >= m) {
+                                return overflow(input, i, output, j);
+                            }
+                            out[j++] = INVALID_CHARACTER_REPLACEMENT;
+                            break;
                     }
                 }
             } else if (ch < Character.MIN_HIGH_SURROGATE) {
@@ -344,9 +322,9 @@ class XMLEncoder extends Encoder {
                     out[j++] = INVALID_CHARACTER_REPLACEMENT;
                 }
             } else if (ch <= Character.MAX_HIGH_SURROGATE) {
-                if (i+1 < n) {
-                    if (Character.isLowSurrogate(in[i+1])) {
-                        int cp = Character.toCodePoint(ch, in[i+1]);
+                if (i + 1 < n) {
+                    if (Character.isLowSurrogate(in[i + 1])) {
+                        int cp = Character.toCodePoint(ch, in[i + 1]);
                         if (Unicode.isNonCharacter(cp)) {
                             // noncharacter
                             if (j >= m) {
@@ -355,7 +333,7 @@ class XMLEncoder extends Encoder {
                             out[j++] = INVALID_CHARACTER_REPLACEMENT;
                             ++i;
                         } else {
-                            if (j+1 >= m) {
+                            if (j + 1 >= m) {
                                 return overflow(input, i, output, j);
                             }
                             out[j++] = ch;
@@ -377,13 +355,11 @@ class XMLEncoder extends Encoder {
                 } else {
                     break;
                 }
-            } else if (
-                    // low surrogate without preceding high surrogate
-                    ch <= Character.MAX_LOW_SURROGATE ||
-                    // non characters
-                    ch > '\ufffd' ||
-                    ('\ufdd0' <= ch && ch <= '\ufdef'))
-            {
+            } else if ( // low surrogate without preceding high surrogate
+                    ch <= Character.MAX_LOW_SURROGATE
+                    || // non characters
+                    ch > '\ufffd'
+                    || ('\ufdd0' <= ch && ch <= '\ufdef')) {
                 if (j >= m) {
                     return overflow(input, i, output, j);
                 }
@@ -401,6 +377,6 @@ class XMLEncoder extends Encoder {
 
     @Override
     public String toString() {
-        return "XMLEncoder("+_mode+")";
+        return "XMLEncoder(" + _mode + ")";
     }
 }
