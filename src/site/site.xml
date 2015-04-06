@@ -46,7 +46,7 @@ OF THE POSSIBILITY OF SUCH DAMAGE.
             <sourceLineNumbersEnabled>true</sourceLineNumbersEnabled>
             <sideBarEnabled>true</sideBarEnabled>
             <gitHub>
-                <projectId>jmanico/owasp-java-encoder</projectId>
+                <projectId>owasp/owasp-java-encoder</projectId>
                 <ribbonOrientation>right</ribbonOrientation>
                 <ribbonColor>gray</ribbonColor>
             </gitHub>

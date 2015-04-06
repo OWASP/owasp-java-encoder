@@ -81,15 +81,15 @@
     </parent>
 
     <scm>
-        <developerConnection>scm:git:git@github.com:jmanico/owasp-java-encoder.git</developerConnection>
-        <connection>scm:git:git@github.com:jmanico/owasp-java-encoder.git</connection>
-        <url>https://github.com/jmanico/owasp-java-encoder</url>
+        <developerConnection>scm:git:git@github.com:owasp/owasp-java-encoder.git</developerConnection>
+        <connection>scm:git:git@github.com:owasp/owasp-java-encoder.git</connection>
+        <url>https://github.com/owasp/owasp-java-encoder</url>
     </scm>
     <distributionManagement>
         <site>
             <id>gh-pages</id>
             <name>gh-pages</name>
-            <url>http://jmanico.github.io/owasp-java-encoder</url>
+            <url>http://owasp.github.io/owasp-java-encoder</url>
         </site>
     </distributionManagement>
     <mailingLists>
@@ -104,7 +104,7 @@
 
     <issueManagement>
         <system>github</system>
-        <url>https://github.com/jmanico/owasp-java-encoder/issues</url>
+        <url>https://github.com/owasp/owasp-java-encoder/issues</url>
     </issueManagement>
 
     <developers>
