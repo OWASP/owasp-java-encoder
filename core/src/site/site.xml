@@ -43,10 +43,10 @@ OF THE POSSIBILITY OF SUCH DAMAGE.
         <breadcrumbs>
             <item name="OWASP Java Encoder Project" href="../index.html"/>
         </breadcrumbs>
-        <menu name="Getting Started">
+        <!--menu name="Getting Started">
             <item name="Installation" href="installation.html"/>
             <item name="Usage" href="usage.html"/>
-        </menu>
+        </menu-->
         <menu ref="reports" />
     </body>
 </project>

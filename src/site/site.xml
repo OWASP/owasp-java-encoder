@@ -81,7 +81,6 @@ OF THE POSSIBILITY OF SUCH DAMAGE.
         <breadcrumbs>
             <item name=" " href="#"/>
         </breadcrumbs>
-
         <menu ref="reports" />
         <menu name="Modules">
             <item name="Encoder" href="./encoder/index.html" />
