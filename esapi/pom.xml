@@ -43,7 +43,7 @@
     <parent>
         <groupId>org.owasp.encoder</groupId>
         <artifactId>encoder-parent</artifactId>
-        <version>1.2</version>
+        <version>1.2.1-SNAPSHOT</version>
     </parent>
 
     <artifactId>encoder-esapi</artifactId>
