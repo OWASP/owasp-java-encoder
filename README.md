@@ -8,7 +8,7 @@ Start using the OWASP Java Encoders
 -----------------------------------
 You can download a JAR from [Maven Central](https://search.maven.org/#search|ga|1|g%3A%22org.owasp.encoder%22%20a%3A%22encoder%22).
 
-JSP tags and functions are available in the encoder-jsp, also avaiable in [Central](http://search.maven.org/remotecontent?filepath=org/owasp/encoder/encoder-jsp/1.2/encoder-jsp-1.2.jar). This jar requires the core library.
+JSP tags and functions are available in the encoder-jsp, also available in [Central](http://search.maven.org/remotecontent?filepath=org/owasp/encoder/encoder-jsp/1.2/encoder-jsp-1.2.jar). This jar requires the core library.
 
 The jars are also available in Maven:
 
