@@ -1,0 +1,173 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head><meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+<title>EncodeTest xref</title>
+<link type="text/css" rel="stylesheet" href="../../../stylesheet.css" />
+</head>
+<body>
+<div id="overview"><a href="../../../../testapidocs/org/owasp/encoder/EncodeTest.html">View Javadoc</a></div><pre>
+<a class="jxr_linenumber" name="L1" href="#L1">1</a>   <em class="jxr_comment">// Copyright (c) 2012 Jeff Ichnowski</em>
+<a class="jxr_linenumber" name="L2" href="#L2">2</a>   <em class="jxr_comment">// All rights reserved.</em>
+<a class="jxr_linenumber" name="L3" href="#L3">3</a>   <em class="jxr_comment">//</em>
+<a class="jxr_linenumber" name="L4" href="#L4">4</a>   <em class="jxr_comment">// Redistribution and use in source and binary forms, with or without</em>
+<a class="jxr_linenumber" name="L5" href="#L5">5</a>   <em class="jxr_comment">// modification, are permitted provided that the following conditions</em>
+<a class="jxr_linenumber" name="L6" href="#L6">6</a>   <em class="jxr_comment">// are met:</em>
+<a class="jxr_linenumber" name="L7" href="#L7">7</a>   <em class="jxr_comment">//</em>
+<a class="jxr_linenumber" name="L8" href="#L8">8</a>   <em class="jxr_comment">//     * Redistributions of source code must retain the above</em>
+<a class="jxr_linenumber" name="L9" href="#L9">9</a>   <em class="jxr_comment">//       copyright notice, this list of conditions and the following</em>
+<a class="jxr_linenumber" name="L10" href="#L10">10</a>  <em class="jxr_comment">//       disclaimer.</em>
+<a class="jxr_linenumber" name="L11" href="#L11">11</a>  <em class="jxr_comment">//</em>
+<a class="jxr_linenumber" name="L12" href="#L12">12</a>  <em class="jxr_comment">//     * Redistributions in binary form must reproduce the above</em>
+<a class="jxr_linenumber" name="L13" href="#L13">13</a>  <em class="jxr_comment">//       copyright notice, this list of conditions and the following</em>
+<a class="jxr_linenumber" name="L14" href="#L14">14</a>  <em class="jxr_comment">//       disclaimer in the documentation and/or other materials</em>
+<a class="jxr_linenumber" name="L15" href="#L15">15</a>  <em class="jxr_comment">//       provided with the distribution.</em>
+<a class="jxr_linenumber" name="L16" href="#L16">16</a>  <em class="jxr_comment">//</em>
+<a class="jxr_linenumber" name="L17" href="#L17">17</a>  <em class="jxr_comment">//     * Neither the name of the OWASP nor the names of its</em>
+<a class="jxr_linenumber" name="L18" href="#L18">18</a>  <em class="jxr_comment">//       contributors may be used to endorse or promote products</em>
+<a class="jxr_linenumber" name="L19" href="#L19">19</a>  <em class="jxr_comment">//       derived from this software without specific prior written</em>
+<a class="jxr_linenumber" name="L20" href="#L20">20</a>  <em class="jxr_comment">//       permission.</em>
+<a class="jxr_linenumber" name="L21" href="#L21">21</a>  <em class="jxr_comment">//</em>
+<a class="jxr_linenumber" name="L22" href="#L22">22</a>  <em class="jxr_comment">// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS</em>
+<a class="jxr_linenumber" name="L23" href="#L23">23</a>  <em class="jxr_comment">// "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT</em>
+<a class="jxr_linenumber" name="L24" href="#L24">24</a>  <em class="jxr_comment">// LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS</em>
+<a class="jxr_linenumber" name="L25" href="#L25">25</a>  <em class="jxr_comment">// FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE</em>
+<a class="jxr_linenumber" name="L26" href="#L26">26</a>  <em class="jxr_comment">// COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,</em>
+<a class="jxr_linenumber" name="L27" href="#L27">27</a>  <em class="jxr_comment">// INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES</em>
+<a class="jxr_linenumber" name="L28" href="#L28">28</a>  <em class="jxr_comment">// (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR</em>
+<a class="jxr_linenumber" name="L29" href="#L29">29</a>  <em class="jxr_comment">// SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)</em>
+<a class="jxr_linenumber" name="L30" href="#L30">30</a>  <em class="jxr_comment">// HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,</em>
+<a class="jxr_linenumber" name="L31" href="#L31">31</a>  <em class="jxr_comment">// STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)</em>
+<a class="jxr_linenumber" name="L32" href="#L32">32</a>  <em class="jxr_comment">// ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED</em>
+<a class="jxr_linenumber" name="L33" href="#L33">33</a>  <em class="jxr_comment">// OF THE POSSIBILITY OF SUCH DAMAGE.</em>
+<a class="jxr_linenumber" name="L34" href="#L34">34</a>  
+<a class="jxr_linenumber" name="L35" href="#L35">35</a>  <strong class="jxr_keyword">package</strong> org.owasp.encoder;
+<a class="jxr_linenumber" name="L36" href="#L36">36</a>  
+<a class="jxr_linenumber" name="L37" href="#L37">37</a>  <strong class="jxr_keyword">import</strong> java.io.IOException;
+<a class="jxr_linenumber" name="L38" href="#L38">38</a>  <strong class="jxr_keyword">import</strong> java.io.StringWriter;
+<a class="jxr_linenumber" name="L39" href="#L39">39</a>  <strong class="jxr_keyword">import</strong> junit.framework.Test;
+<a class="jxr_linenumber" name="L40" href="#L40">40</a>  <strong class="jxr_keyword">import</strong> junit.framework.TestCase;
+<a class="jxr_linenumber" name="L41" href="#L41">41</a>  <strong class="jxr_keyword">import</strong> junit.framework.TestSuite;
+<a class="jxr_linenumber" name="L42" href="#L42">42</a>  
+<a class="jxr_linenumber" name="L43" href="#L43">43</a>  <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L44" href="#L44">44</a>  <em class="jxr_javadoccomment"> * EncodeTest -- exercises the core encode loops in {@link Encode.Buffer}.</em>
+<a class="jxr_linenumber" name="L45" href="#L45">45</a>  <em class="jxr_javadoccomment"> *</em>
+<a class="jxr_linenumber" name="L46" href="#L46">46</a>  <em class="jxr_javadoccomment"> * @author Jeff Ichnowski</em>
+<a class="jxr_linenumber" name="L47" href="#L47">47</a>  <em class="jxr_javadoccomment"> */</em>
+<a class="jxr_linenumber" name="L48" href="#L48">48</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">class</strong> <a href="../../../org/owasp/encoder/EncodeTest.html">EncodeTest</a> <strong class="jxr_keyword">extends</strong> TestCase {
+<a class="jxr_linenumber" name="L49" href="#L49">49</a>      <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> Test suite() {
+<a class="jxr_linenumber" name="L50" href="#L50">50</a>          <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">new</strong> TestSuite(EncodeTest.<strong class="jxr_keyword">class</strong>);
+<a class="jxr_linenumber" name="L51" href="#L51">51</a>      }
+<a class="jxr_linenumber" name="L52" href="#L52">52</a>  
+<a class="jxr_linenumber" name="L53" href="#L53">53</a>      <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> testEncodeToWriter() <strong class="jxr_keyword">throws</strong> IOException {
+<a class="jxr_linenumber" name="L54" href="#L54">54</a>          StringWriter out = <strong class="jxr_keyword">new</strong> StringWriter();
+<a class="jxr_linenumber" name="L55" href="#L55">55</a>          Encode.forXml(out, <span class="jxr_string">"&lt;script&gt;"</span>);
+<a class="jxr_linenumber" name="L56" href="#L56">56</a>          assertEquals(<span class="jxr_string">"&amp;lt;script&amp;gt;"</span>, out.toString());
+<a class="jxr_linenumber" name="L57" href="#L57">57</a>      }
+<a class="jxr_linenumber" name="L58" href="#L58">58</a>  
+<a class="jxr_linenumber" name="L59" href="#L59">59</a>      <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L60" href="#L60">60</a>  <em class="jxr_javadoccomment">     * This test validates the logic for dealing with large encodes that</em>
+<a class="jxr_linenumber" name="L61" href="#L61">61</a>  <em class="jxr_javadoccomment">     * require multiple flushes to the writer because they exceed the</em>
+<a class="jxr_linenumber" name="L62" href="#L62">62</a>  <em class="jxr_javadoccomment">     * internal buffer size of the encode loop.</em>
+<a class="jxr_linenumber" name="L63" href="#L63">63</a>  <em class="jxr_javadoccomment">     *</em>
+<a class="jxr_linenumber" name="L64" href="#L64">64</a>  <em class="jxr_javadoccomment">     * @throws IOException should not be thrown</em>
+<a class="jxr_linenumber" name="L65" href="#L65">65</a>  <em class="jxr_javadoccomment">     */</em>
+<a class="jxr_linenumber" name="L66" href="#L66">66</a>      <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> testBatchedEncodingToWriter() <strong class="jxr_keyword">throws</strong> IOException {
+<a class="jxr_linenumber" name="L67" href="#L67">67</a>          String input = <span class="jxr_string">"&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;"</span>
+<a class="jxr_linenumber" name="L68" href="#L68">68</a>              .replace(<span class="jxr_string">"&amp;"</span>, <span class="jxr_string">"&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;"</span>)  <em class="jxr_comment">// 400</em>
+<a class="jxr_linenumber" name="L69" href="#L69">69</a>              .replace(<span class="jxr_string">"&amp;"</span>, <span class="jxr_string">"&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;"</span>); <em class="jxr_comment">// 8000</em>
+<a class="jxr_linenumber" name="L70" href="#L70">70</a>          String expected = input.replace(<span class="jxr_string">"&amp;"</span>, <span class="jxr_string">"&amp;amp;"</span>);
+<a class="jxr_linenumber" name="L71" href="#L71">71</a>          <strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">int</strong>[] appendCount = <strong class="jxr_keyword">new</strong> <strong class="jxr_keyword">int</strong>[1];
+<a class="jxr_linenumber" name="L72" href="#L72">72</a>          StringWriter out = <strong class="jxr_keyword">new</strong> StringWriter() {
+<a class="jxr_linenumber" name="L73" href="#L73">73</a>              @Override
+<a class="jxr_linenumber" name="L74" href="#L74">74</a>              <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> write(<strong class="jxr_keyword">char</strong>[] cbuf, <strong class="jxr_keyword">int</strong> off, <strong class="jxr_keyword">int</strong> len) {
+<a class="jxr_linenumber" name="L75" href="#L75">75</a>                  <strong class="jxr_keyword">super</strong>.write(cbuf, off, len);
+<a class="jxr_linenumber" name="L76" href="#L76">76</a>                  appendCount[0]++;
+<a class="jxr_linenumber" name="L77" href="#L77">77</a>              }
+<a class="jxr_linenumber" name="L78" href="#L78">78</a>          };
+<a class="jxr_linenumber" name="L79" href="#L79">79</a>          Encode.forXml(out, input);
+<a class="jxr_linenumber" name="L80" href="#L80">80</a>  
+<a class="jxr_linenumber" name="L81" href="#L81">81</a>          <em class="jxr_comment">// this assert here is validating that we are encoding with output</em>
+<a class="jxr_linenumber" name="L82" href="#L82">82</a>          <em class="jxr_comment">// that is larger than the internal buffers of the encode loop.</em>
+<a class="jxr_linenumber" name="L83" href="#L83">83</a>          <em class="jxr_comment">// the only way this should fail is if the buffer in the encode loop</em>
+<a class="jxr_linenumber" name="L84" href="#L84">84</a>          <em class="jxr_comment">// is made larger without also updating this test.</em>
+<a class="jxr_linenumber" name="L85" href="#L85">85</a>          assertTrue(appendCount[0] &gt; 1);
+<a class="jxr_linenumber" name="L86" href="#L86">86</a>  
+<a class="jxr_linenumber" name="L87" href="#L87">87</a>          assertEquals(8000 * 5, out.getBuffer().length());
+<a class="jxr_linenumber" name="L88" href="#L88">88</a>          assertEquals(expected, out.toString());
+<a class="jxr_linenumber" name="L89" href="#L89">89</a>      }
+<a class="jxr_linenumber" name="L90" href="#L90">90</a>  
+<a class="jxr_linenumber" name="L91" href="#L91">91</a>      <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L92" href="#L92">92</a>  <em class="jxr_javadoccomment">     * This method tests that strings that do not require encoding are passed</em>
+<a class="jxr_linenumber" name="L93" href="#L93">93</a>  <em class="jxr_javadoccomment">     * directly to the writer as a string, without any additional buffer</em>
+<a class="jxr_linenumber" name="L94" href="#L94">94</a>  <em class="jxr_javadoccomment">     * copies.</em>
+<a class="jxr_linenumber" name="L95" href="#L95">95</a>  <em class="jxr_javadoccomment">     *</em>
+<a class="jxr_linenumber" name="L96" href="#L96">96</a>  <em class="jxr_javadoccomment">     * @throws IOException not thrown</em>
+<a class="jxr_linenumber" name="L97" href="#L97">97</a>  <em class="jxr_javadoccomment">     */</em>
+<a class="jxr_linenumber" name="L98" href="#L98">98</a>      <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> testUnencodedStringToWriter() <strong class="jxr_keyword">throws</strong> IOException {
+<a class="jxr_linenumber" name="L99" href="#L99">99</a>          <strong class="jxr_keyword">final</strong> String unencodedString = <span class="jxr_string">"safe"</span>;
+<a class="jxr_linenumber" name="L100" href="#L100">100</a>         <strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">boolean</strong>[] called = <strong class="jxr_keyword">new</strong> <strong class="jxr_keyword">boolean</strong>[1];
+<a class="jxr_linenumber" name="L101" href="#L101">101</a>         StringWriter out = <strong class="jxr_keyword">new</strong> StringWriter() {
+<a class="jxr_linenumber" name="L102" href="#L102">102</a>             @Override
+<a class="jxr_linenumber" name="L103" href="#L103">103</a>             <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> write(String str) {
+<a class="jxr_linenumber" name="L104" href="#L104">104</a>                 called[0] = <strong class="jxr_keyword">true</strong>;
+<a class="jxr_linenumber" name="L105" href="#L105">105</a>                 assertSame(unencodedString, str);
+<a class="jxr_linenumber" name="L106" href="#L106">106</a>                 <strong class="jxr_keyword">super</strong>.write(str);
+<a class="jxr_linenumber" name="L107" href="#L107">107</a>             }
+<a class="jxr_linenumber" name="L108" href="#L108">108</a>         };
+<a class="jxr_linenumber" name="L109" href="#L109">109</a>         Encode.forXml(out, unencodedString);
+<a class="jxr_linenumber" name="L110" href="#L110">110</a>         assertTrue(called[0]);
+<a class="jxr_linenumber" name="L111" href="#L111">111</a>         assertEquals(unencodedString, out.toString());
+<a class="jxr_linenumber" name="L112" href="#L112">112</a>     }
+<a class="jxr_linenumber" name="L113" href="#L113">113</a> 
+<a class="jxr_linenumber" name="L114" href="#L114">114</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> testEncodeNullToWriter() <strong class="jxr_keyword">throws</strong> IOException {
+<a class="jxr_linenumber" name="L115" href="#L115">115</a>         StringWriter out = <strong class="jxr_keyword">new</strong> StringWriter();
+<a class="jxr_linenumber" name="L116" href="#L116">116</a>         Encode.forXml(out, <strong class="jxr_keyword">null</strong>);
+<a class="jxr_linenumber" name="L117" href="#L117">117</a>         assertEquals(<span class="jxr_string">"null"</span>, out.toString());
+<a class="jxr_linenumber" name="L118" href="#L118">118</a>     }
+<a class="jxr_linenumber" name="L119" href="#L119">119</a> 
+<a class="jxr_linenumber" name="L120" href="#L120">120</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> testEncodeString() {
+<a class="jxr_linenumber" name="L121" href="#L121">121</a>         assertEquals(<span class="jxr_string">"&amp;lt;script&amp;gt;"</span>, Encode.forXml(<span class="jxr_string">"&lt;script&gt;"</span>));
+<a class="jxr_linenumber" name="L122" href="#L122">122</a>     }
+<a class="jxr_linenumber" name="L123" href="#L123">123</a> 
+<a class="jxr_linenumber" name="L124" href="#L124">124</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> testEncodeNullToString() {
+<a class="jxr_linenumber" name="L125" href="#L125">125</a>         assertEquals(<span class="jxr_string">"null"</span>, Encode.forXml(<strong class="jxr_keyword">null</strong>));
+<a class="jxr_linenumber" name="L126" href="#L126">126</a>     }
+<a class="jxr_linenumber" name="L127" href="#L127">127</a> 
+<a class="jxr_linenumber" name="L128" href="#L128">128</a>     <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L129" href="#L129">129</a> <em class="jxr_javadoccomment">     * Make sure return the argument when the string is not encoded.</em>
+<a class="jxr_linenumber" name="L130" href="#L130">130</a> <em class="jxr_javadoccomment">     */</em>
+<a class="jxr_linenumber" name="L131" href="#L131">131</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> testUnencodedString() {
+<a class="jxr_linenumber" name="L132" href="#L132">132</a>         String input = <span class="jxr_string">"safe"</span>;
+<a class="jxr_linenumber" name="L133" href="#L133">133</a>         assertSame(input, Encode.forXml(input));
+<a class="jxr_linenumber" name="L134" href="#L134">134</a>     }
+<a class="jxr_linenumber" name="L135" href="#L135">135</a> 
+<a class="jxr_linenumber" name="L136" href="#L136">136</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> testLargeEncodeToString() {
+<a class="jxr_linenumber" name="L137" href="#L137">137</a>         <strong class="jxr_keyword">final</strong> String input = <span class="jxr_string">"&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;"</span>
+<a class="jxr_linenumber" name="L138" href="#L138">138</a>             .replace(<span class="jxr_string">"&amp;"</span>, <span class="jxr_string">"&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;"</span>) <em class="jxr_comment">// 100</em>
+<a class="jxr_linenumber" name="L139" href="#L139">139</a>             .replace(<span class="jxr_string">"&amp;"</span>, <span class="jxr_string">"&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;"</span>); <em class="jxr_comment">// 1000</em>
+<a class="jxr_linenumber" name="L140" href="#L140">140</a> 
+<a class="jxr_linenumber" name="L141" href="#L141">141</a>         <em class="jxr_comment">// this should be smaller than the internal input buffer</em>
+<a class="jxr_linenumber" name="L142" href="#L142">142</a>         <em class="jxr_comment">// but cause overflow to the output buffer</em>
+<a class="jxr_linenumber" name="L143" href="#L143">143</a>         assertEquals(1000, input.length());
+<a class="jxr_linenumber" name="L144" href="#L144">144</a>         String output = Encode.forXml(input);
+<a class="jxr_linenumber" name="L145" href="#L145">145</a>         assertEquals(5000, output.length());
+<a class="jxr_linenumber" name="L146" href="#L146">146</a>         assertEquals(input.replace(<span class="jxr_string">"&amp;"</span>, <span class="jxr_string">"&amp;amp;"</span>), output);
+<a class="jxr_linenumber" name="L147" href="#L147">147</a>     }
+<a class="jxr_linenumber" name="L148" href="#L148">148</a> 
+<a class="jxr_linenumber" name="L149" href="#L149">149</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> testVeryLargeEncodeToString() {
+<a class="jxr_linenumber" name="L150" href="#L150">150</a>         <strong class="jxr_keyword">final</strong> String input = <span class="jxr_string">"&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;"</span>
+<a class="jxr_linenumber" name="L151" href="#L151">151</a>             .replace(<span class="jxr_string">"&amp;"</span>, <span class="jxr_string">"&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;"</span>) <em class="jxr_comment">// 400</em>
+<a class="jxr_linenumber" name="L152" href="#L152">152</a>             .replace(<span class="jxr_string">"&amp;"</span>, <span class="jxr_string">"&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;"</span>); <em class="jxr_comment">// 8000</em>
+<a class="jxr_linenumber" name="L153" href="#L153">153</a> 
+<a class="jxr_linenumber" name="L154" href="#L154">154</a>         <em class="jxr_comment">// this should be larger than the internal input buffer</em>
+<a class="jxr_linenumber" name="L155" href="#L155">155</a>         assertEquals(8000, input.length());
+<a class="jxr_linenumber" name="L156" href="#L156">156</a>         String output = Encode.forXml(input);
+<a class="jxr_linenumber" name="L157" href="#L157">157</a>         assertEquals(40000, output.length());
+<a class="jxr_linenumber" name="L158" href="#L158">158</a>         assertEquals(input.replace(<span class="jxr_string">"&amp;"</span>, <span class="jxr_string">"&amp;amp;"</span>), output);
+<a class="jxr_linenumber" name="L159" href="#L159">159</a>     }
+<a class="jxr_linenumber" name="L160" href="#L160">160</a> }
+</pre>
+<hr/>
+<div id="footer">Copyright &#169; 2011&#x2013;2015 <a href="https://www.owasp.org/">OWASP (Open Web-Application Security Project)</a>. All rights reserved.</div>
+</body>
+</html>
