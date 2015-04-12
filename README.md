@@ -6,9 +6,9 @@ For more information on how to use this project, please see https://www.owasp.or
 
 Start using the OWASP Java Encoders
 -----------------------------------
-You can download a JAR from [Maven Central](http://search.maven.org/#search|ga|1|g%3A%22org.owasp.encoder%22%20a%3A%22encoder%22).
+You can download a JAR from [Maven Central](https://search.maven.org/#search|ga|1|g%3A%22org.owasp.encoder%22%20a%3A%22encoder%22).
 
-JSP tags and functions are available in the encoder-jsp, also avaiable in [Central](http://search.maven.org/remotecontent?filepath=org/owasp/encoder/encoder-jsp/1.1.1/encoder-jsp-1.1.1.jar). This jar requires the core library.
+JSP tags and functions are available in the encoder-jsp, also avaiable in [Central](http://search.maven.org/remotecontent?filepath=org/owasp/encoder/encoder-jsp/1.2/encoder-jsp-1.2.jar). This jar requires the core library.
 
 The jars are also available in Maven:
 
@@ -16,19 +16,19 @@ The jars are also available in Maven:
 <dependency>
         <groupId>org.owasp.encoder</groupId>
         <artifactId>encoder</artifactId>
-        <version>1.1.1</version>
+        <version>1.2</version>
 </dependency>
 
 <dependency>
         <groupId>org.owasp.encoder</groupId>
         <artifactId>encoder-jsp</artifactId>
-        <version>1.1.1</version>
+        <version>1.2</version>
 </dependency>
 ```
 
 Quick Overview
 --------------
-The OWASP Java Encoder library is intended for quick contextual encoding with very little overhead, either in performance or usage. To get started, simply add the encoder-1.1.1.jar, import org.owasp.encoder.Encode and start using.
+The OWASP Java Encoder library is intended for quick contextual encoding with very little overhead, either in performance or usage. To get started, simply add the encoder-1.2.jar, import org.owasp.encoder.Encode and start using.
 
 Example usage:
 
@@ -43,6 +43,9 @@ Happy Encoding!
 
 News
 ----
+### 2015-04-12 - 1.2 Release on GitHub
+OWASP Java Encoder has been moved to GitHub. Version 1.2 was also released!
+
 ### 2014-03-31 - Documentation updated
 Please visit https://www.owasp.org/index.php/OWASP_Java_Encoder_Project#tab=Use_the_Java_Encoder_Project to see detailed documentation and examples on each API use!
 
