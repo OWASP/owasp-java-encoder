@@ -913,7 +913,7 @@ public final class Encode {
      * provide the surrounding quotation characters for the string.
      * Since this performs additional encoding so it can work in all
      * of the JavaScript contexts listed, it may be slightly less
-     * efficient then using one of the methods targetted to a specific
+     * efficient than using one of the methods targetted to a specific
      * JavaScript context ({@link #forJavaScriptAttribute(String)},
      * {@link #forJavaScriptBlock}, {@link #forJavaScriptSource}).
      * Unless you are interested in saving a few bytes of output or
