@@ -45,12 +45,12 @@ import junit.framework.TestCase;
 public class CDATAEncoderTest extends TestCase {
     public static Test suite() {
         return new EncoderTestSuiteBuilder(CDATAEncoderTest.class, new CDATAEncoder(), "-safe-", "-]]>-")
-            .encode("]]>]]<![CDATA[>", "]]>")
+            .encode("]]]]><![CDATA[>", "]]>")
             .encode("]", "]")
             .encode("]]", "]]")
-            .encode("]]>]]<![CDATA[>]", "]]>]")
-            .encode("]]>]]<![CDATA[>]>", "]]>]>")
-            .encode("]]>]]<![CDATA[>>", "]]>>")
+            .encode("]]]]><![CDATA[>]", "]]>]")
+            .encode("]]]]><![CDATA[>]>", "]]>]>")
+            .encode("]]]]><![CDATA[>>", "]]>>")
             .encode("]]]]]", "]]]]]")
             .encode("<\"&\'>", "<\"&\'>") // valid in CDATA, not in XML
 
