@@ -110,7 +110,7 @@ public abstract class Encoder {
      * true}).  This will happen when the encoder needs to see more
      * input before determining what to do--for example when encoding
      * for CDATA, if the input ends with {@code "foo]]"}, the encoder
-     * will need to see the next character to determine if it is a ">"
+     * will need to see the next character to determine if it is a "&gt;"
      * or not.</p>
      *
      * <p>Example usage:</p>

@@ -43,7 +43,7 @@ import java.nio.charset.CoderResult;
  * Encode -- fluent interface for contextual encoding.  Example usage in a JSP:
  *
  * <pre>
- *     &lt;input value="&lt;%=Encode.forHtml(value)%>" />
+ *     &lt;input value="&lt;%=Encode.forHtml(value)%&gt;" /&gt;
  * </pre>
  *
  * <p>There are two versions of each contextual encoding method.  The first
@@ -71,15 +71,15 @@ public final class Encode {
      * bytes or are writing a framework that utilizes this
      * package.</p>
      *
-     * <h5>Example JSP Usage</h5>
+     * <b>Example JSP Usage</b>
      * <pre>
-     *     &lt;div>&lt;%=Encode.forHtml(unsafeData)%>&lt;/div>
+     *     &lt;div&gt;&lt;%=Encode.forHtml(unsafeData)%&gt;&lt;/div&gt;
      *
-     *     &lt;input value="&lt;%=Encode.forHtml(unsafeData)%>" />
+     *     &lt;input value="&lt;%=Encode.forHtml(unsafeData)%&gt;" /&gt;
      * </pre>
      *
-     * <h5>Encoding Table</h5>
-     * <table border="0">
+     * <table border="0" summary="Shows the input and results of encoding">
+     *   <caption><b>Encoding&nbsp;Table</b></caption>
      *   <thead>
      *     <tr bgcolor="#ccf">
      *       <th align="left">Input</th>
@@ -110,7 +110,7 @@ public final class Encode {
      *   </tbody>
      * </table>
      *
-     * <h5>Additional Notes</h5>
+     * <b>Additional Notes</b>
      * <ul>
      *
      * <li>The encoding of the greater-than sign ({@code >}) is not
@@ -160,12 +160,12 @@ public final class Encode {
      * HTML attributes.  Use either forHtml or forHtmlAttribute for those
      * methods.</p>
      *
-     * <h5>Example JSP Usage</h5>
+     * <b>Example JSP Usage</b>
      * <pre>
-     *     &lt;div>&lt;%=Encode.forHtmlContent(unsafeData)%>&lt;/div>
+     *     &lt;div&gt;&lt;%=Encode.forHtmlContent(unsafeData)%&gt;&lt;/div&gt;
      * </pre>
-     * <h5>Encoding Table</h5>
-     * <table border="0">
+     * <table border="0" summary="Shows the input and results of encoding">
+     *   <caption><b>Encoding Table</b></caption>
      *   <thead>
      *     <tr bgcolor="#ccf">
      *       <th align="left">Input</th>
@@ -188,7 +188,7 @@ public final class Encode {
      *   </tbody>
      * </table>
      *
-     * <h5>Additional Notes</h5>
+     * <b>Additional Notes</b>
      * <ul>
      *
      * <li>Single-quote character ({@code '}) and double-quote
@@ -238,13 +238,13 @@ public final class Encode {
     /**
      * <p>This method encodes for HTML text attributes.</p>
      *
-     * <h5>Example JSP Usage</h5>
+     * <b>Example JSP Usage</b>
      * <pre>
-     *     &lt;div>&lt;%=Encode.forHtml(unsafeData)%>&lt;/div>
+     *     &lt;div&gt;&lt;%=Encode.forHtml(unsafeData)%&gt;&lt;/div&gt;
      * </pre>
      *
-     * <h5>Encoding Table</h5>
-     * <table border="0">
+     * <table border="0" summary="Shows the input and results of encoding">
+     *   <caption><b>Encoding Table</b></caption>
      *   <thead>
      *     <tr bgcolor="#ccf">
      *       <th align="left">Input</th>
@@ -271,7 +271,7 @@ public final class Encode {
      *   </tbody>
      * </table>
      *
-     * <h5>Additional Notes</h5>
+     * <b>Additional Notes</b>
      * <ul>
      *
      * <li>Both the single-quote character ({@code '}) and the
@@ -339,13 +339,13 @@ public final class Encode {
      * attempt has been made to optimize this encoding, though it is
      * still probably faster than other encoding libraries.</p>
      *
-     * <h5>Example JSP Usage</h5>
+     * <b>Example JSP Usage</b>
      * <pre>
-     *     &lt;input value=&lt;%=Encode.forHtmlUnquotedAttribute(input)%> >
+     *     &lt;input value=&lt;%=Encode.forHtmlUnquotedAttribute(input)%&gt; &gt;
      * </pre>
      *
-     * <h5>Encoding Table</h5>
-     * <table border="0">
+     * <table border="0" summary="Shows the input and results of encoding">
+     *   <caption><b>Encoding Table</b></caption>
      *   <thead>
      *     <tr bgcolor="#ccf">
      *       <th align="left">Input</th>
@@ -372,7 +372,7 @@ public final class Encode {
      *   </tbody>
      * </table>
      *
-     * <h5>Additional Notes</h5>
+     * <b>Additional Notes</b>
      * <ul>
      *
      * <li>The following characters are <i>not</i> encoded:
@@ -436,16 +436,16 @@ public final class Encode {
      * characters.  It is safe for use in both style blocks and attributes in
      * HTML.
      *
-     * <h5>Example JSP Usage</h5>
+     * <b>Example JSP Usage</b>
      * <pre>
-     *     &lt;div style="background: url('&lt;=Encode.forCssString(...)%>');">
+     *     &lt;div style="background: url('&lt;=Encode.forCssString(...)%&gt;');"&gt;
      *
-     *     &lt;style type="text/css">
-     *         background: url('&lt;%=Encode.forCssString(...)%>');
-     *     &lt;/style>
+     *     &lt;style type="text/css"&gt;
+     *         background: url('&lt;%=Encode.forCssString(...)%&gt;');
+     *     &lt;/style&gt;
      * </pre>
      *
-     * <h5>Encoding  Notes</h5>
+     * <b>Encoding  Notes</b>
      * <ul>
      *
      * <li>The following characters are encoded using hexidecimal
@@ -515,15 +515,15 @@ public final class Encode {
      * itself.  The caller should insure that the URL is safe for embedding
      * (e.g. input validation) by other means.
      *
-     * <h5>Example JSP Usage</h5>
+     * <b>Example JSP Usage</b>
      * <pre>
-     *     &lt;div style="background:url(&lt;=Encode.forCssUrl(...)%>);">
+     *     &lt;div style="background:url(&lt;=Encode.forCssUrl(...)%&gt;);"&gt;
      *
-     *     &lt;style type="text/css">
-     *         background: url(&lt;%=Encode.forCssUrl(...)%>);
-     *     &lt;/style>
+     *     &lt;style type="text/css"&gt;
+     *         background: url(&lt;%=Encode.forCssUrl(...)%&gt;);
+     *     &lt;/style&gt;
      * </pre>
-     * <h5>Encoding  Notes</h5>
+     * <b>Encoding  Notes</b>
      * <ul>
      *
      * <li>The following characters are encoded using hexidecimal
@@ -592,15 +592,15 @@ public final class Encode {
      * example a "javascript:" URL provided by a malicious user would be
      * "properly" escaped, and still execute.
      *
-     * <h5>Encoding Table</h5>
+     * <b>Encoding Table</b>
      * <p>The following characters are <i>not</i> encoded:</p>
      * <pre>
-     * U+20:   !   # $   & ' ( ) * + , - . / 0 1 2 3 4 5 6 7 8 9 : ;   =   ?
+     * U+20:   !   # $   &amp; ' ( ) * + , - . / 0 1 2 3 4 5 6 7 8 9 : ;   =   ?
      * U+40: @ A B C D E F G H I J K L M N O P Q R S T U V W X Y Z [   ]   _
      * U+60:   a b c d e f g h i j k l m n o p q r s t u v w x y z       ~
      * </pre>
      *
-     * <h5>Encoding Notes</h5>
+     * <b>Encoding Notes</b>
      * <ul>
      *
      *   <li>The single-quote character({@code '}) <b>is not encoded</b>.</li>
@@ -657,12 +657,12 @@ public final class Encode {
      * interpreted as part of another component.
      *
      * <pre>
-     *     &lt;a href="http://www.owasp.org/&lt;%=Encode.forUriComponent(...)%>?query#fragment">
+     *     &lt;a href="http://www.owasp.org/&lt;%=Encode.forUriComponent(...)%&gt;?query#fragment"&gt;
      *
-     *     &lt;a href="/search?value=&lt;%=Encode.forUriComponent(...)%>&order=1#top">
+     *     &lt;a href="/search?value=&lt;%=Encode.forUriComponent(...)%&gt;&amp;order=1#top"&gt;
      * </pre>
      *
-     * <h5>Encoding Table</h5>
+     * <b>Encoding Table</b>
      * <p>The following characters are <i>not</i> encoded:</p>
      * <pre>
      * U+20:                           - .   0 1 2 3 4 5 6 7 8 9
@@ -670,7 +670,7 @@ public final class Encode {
      * U+60:   a b c d e f g h i j k l m n o p q r s t u v w x y z       ~
      * </pre>
      *
-     * <h5>Encoding Notes</h5>
+     * <b>Encoding Notes</b>
      * <ul>
      *
      *   <li>Unlike {@link #forUri(String)} this method is safe to be
@@ -810,10 +810,10 @@ public final class Encode {
      * caller will need to come up with their own encode/decode system.</p>
      *
      * <pre>
-     *     out.println("&lt;?xml version='1.0'?>");
-     *     out.println("&lt;data>");
-     *     out.println("&;lt;!-- "+Encode.forXmlComment(comment)+" -->");
-     *     out.println("&lt;/data>");
+     *     out.println("&lt;?xml version='1.0'?&gt;");
+     *     out.println("&lt;data&gt;");
+     *     out.println("&lt;!-- "+Encode.forXmlComment(comment)+" --&gt;");
+     *     out.println("&lt;/data&gt;");
      * </pre>
      *
      * @param input the input to encode
@@ -846,7 +846,7 @@ public final class Encode {
      * provide the CDATA section boundaries.
      *
      * <pre>
-     *     &lt;xml-data>&lt;![CDATA[&lt;%=Encode.forCDATA(...)%>]]>&lt;/xml-data>
+     *     &lt;xml-data&gt;&lt;![CDATA[&lt;%=Encode.forCDATA(...)%&gt;]]&gt;&lt;/xml-data&gt;
      * </pre>
      *
      * @param input the input to encode
@@ -920,16 +920,16 @@ public final class Encode {
      * are writing a framework on top of this library, it is recommend
      * that you use this method over the others.</p>
      *
-     * <h5>Example JSP Usage:</h5>
+     * <b>Example JSP Usage:</b>
      * <pre>
-     *    &lt;button onclick="alert('&lt;%=Encode.forJavaScript(data)%>');">
-     *    &lt;script type="text/javascript">
-     *        var data = "&lt;%=Encode.forJavaScript(data)%>";
-     *    &lt;/script>
+     *    &lt;button onclick="alert('&lt;%=Encode.forJavaScript(data)%&gt;');"&gt;
+     *    &lt;script type="text/javascript"&gt;
+     *        var data = "&lt;%=Encode.forJavaScript(data)%&gt;";
+     *    &lt;/script&gt;
      * </pre>
      *
-     * <h5>Encoding Description</h5>
      * <table cellspacing="1" cellpadding="1" border="0">
+     *   <caption><b>Encoding Description</b></caption>
      *   <thead>
      *     <tr bgcolor="#ccf">
      *       <th align="left" colspan="2">Input Character</th>
@@ -972,7 +972,7 @@ public final class Encode {
      *       "\&amp;quot;".)</td>
      *     </tr>
      *     <tr>
-     *       <td>U+0026</td><td><code>&</code></td>
+     *       <td>U+0026</td><td><code>&amp;</code></td>
      *       <td><code>\x26</code></td>
      *       <td>Ampersand character</td>
      *     </tr>
@@ -988,7 +988,7 @@ public final class Encode {
      *       <td>U+002F</td><td><code>/</code></td>
      *       <td><code>\/</code></td>
      *       <td>This encoding is used to avoid an input sequence
-     *       "&lt;/" from prematurely terminating a &lt;/script>
+     *       "&lt;/" from prematurely terminating a &lt;/script&gt;
      *       block.</td>
      *     </tr>
      *     <tr>
@@ -1041,9 +1041,9 @@ public final class Encode {
      * recommend that you use {@link #forJavaScript(String)} over this
      * method.</strong></p>
      *
-     * <h5>Example JSP Usage:</h5>
+     * <b>Example JSP Usage:</b>
      * <pre>
-     *    &lt;button onclick="alert('&lt;%=Encode.forJavaScriptAttribute(data)%>');">
+     *    &lt;button onclick="alert('&lt;%=Encode.forJavaScriptAttribute(data)%&gt;');"&gt;
      * </pre>
      *
      * @param input the input string to encode
@@ -1084,11 +1084,11 @@ public final class Encode {
      * recommend that you use {@link #forJavaScript(String)} over this
      * method.</strong></p>
      *
-     * <h5>Example JSP Usage:</h5>
+     * <b>Example JSP Usage:</b>
      * <pre>
-     *    &lt;script type="text/javascript">
-     *        var data = "&lt;%=Encode.forJavaScriptBlock(data)%>";
-     *    &lt;/script>
+     *    &lt;script type="text/javascript"&gt;
+     *        var data = "&lt;%=Encode.forJavaScriptBlock(data)%&gt;";
+     *    &lt;/script&gt;
      * </pre>
      *
      * @param input the input string to encode
@@ -1129,19 +1129,19 @@ public final class Encode {
      * recommend that you use {@link #forJavaScript(String)} over this
      * method.</strong></p>
      *
-     * <h5>Example JSP Usage:</h5>
+     * <b>Example JSP Usage:</b>
      * This example is serving up JavaScript source directly:
      * <pre>
-     *    &lt;%@page contentType="text/javascript; charset=UTF-8"%>
-     *    var data = "&lt;%=Encode.forJavaScriptSource(data)%>";
+     *    &lt;%@page contentType="text/javascript; charset=UTF-8"%&gt;
+     *    var data = "&lt;%=Encode.forJavaScriptSource(data)%&gt;";
      * </pre>
      *
      * This example is serving up JSON data (users of this use-case
      * are encouraged to read up on "JSON Hijacking"):
      * <pre>
-     *    &lt;%@page contentType="application/json; charset=UTF-8"%>
-     *    &lt;% myapp.jsonHijackingPreventionMeasure(); %>
-     *    {"data":"&lt;%=Encode.forJavaScriptSource(data)%>"}
+     *    &lt;%@page contentType="application/json; charset=UTF-8"%&gt;
+     *    &lt;% myapp.jsonHijackingPreventionMeasure(); %&gt;
+     *    {"data":"&lt;%=Encode.forJavaScriptSource(data)%&gt;"}
      * </pre>
      *
      * @param input the input string to encode
