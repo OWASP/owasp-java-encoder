@@ -1,7 +1,7 @@
 OWASP Java Encoder Project
 ==========================
 
-[![License](https://img.shields.io/badge/License-BSD%203--Clause-blue.svg)](https://opensource.org/licenses/BSD-3-Clause)
+[![Build Status](https://travis-ci.org/OWASP/owasp-java-encoder.svg?branch=master)](https://travis-ci.org/OWASP/owasp-java-encoder) [![License](https://img.shields.io/badge/License-BSD%203--Clause-blue.svg)](https://opensource.org/licenses/BSD-3-Clause)
 
 Contextual Output Encoding is a computer programming technique necessary to stop Cross Site Scripting. This project is a Java 1.5+ simple-to-use drop-in high-performance encoder class with little baggage.
 
