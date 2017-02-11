@@ -67,7 +67,7 @@ public class ForCDATATagTest extends EncodingTagTest {
         System.out.println("doTag");
         ForCDATATag instance = new ForCDATATag();
         String value = "<div>]]></div>";
-        String expected = "<div>]]>]]<![CDATA[></div>";
+        String expected = "<div>]]]]><![CDATA[></div>";
         instance.setJspContext(_pageContext);
         instance.setValue(value);
         instance.doTag();
