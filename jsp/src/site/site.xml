@@ -37,7 +37,12 @@ OF THE POSSIBILITY OF SUCH DAMAGE.
 -->
 <project name="JSP">
     <bannerLeft>
-        <name>JSP</name>
+        <name>OWASP Java Encoder Project: JSP</name>
+		<title>OWASP Java Encoder Project: JSP</title>
+        <alt>OWASP Java Encoder Project: JSP</alt>
+        <src>../images/owasp.jpg</src>
+		<height>107</height>
+		<width>300</width>
     </bannerLeft>
     <body>
         <breadcrumbs>

@@ -39,7 +39,7 @@ OF THE POSSIBILITY OF SUCH DAMAGE.
     <skin>
         <groupId>org.apache.maven.skins</groupId>
         <artifactId>maven-fluido-skin</artifactId>
-        <version>1.3.1</version>
+        <version>1.6</version>
     </skin>
     <custom>
         <fluidoSkin>
@@ -55,9 +55,12 @@ OF THE POSSIBILITY OF SUCH DAMAGE.
     </custom>
     <bannerLeft>
         <name>OWASP Java Encoder Project</name>
+		<title>OWASP Java Encoder Project</title>
         <alt>OWASP Java Encoder Project</alt>
-        <!--src>./images/jep.svg</src-->
-    </bannerLeft>
+        <src>./images/owasp.jpg</src>
+		<height>107</height>
+		<width>300</width>
+	</bannerLeft>
 
     <publishDate position="right" />
     <version position="right" />
@@ -65,19 +68,11 @@ OF THE POSSIBILITY OF SUCH DAMAGE.
         <logo name="Maven" href="http://maven.apache.org/"
               title="built with maven"
               alt="built with maven"
-              img="http://jeremylong.github.io/DependencyCheck/images/logos/maven-feather.png"/>
-        <!--logo name="IntelliJ" href="http://www.jetbrains.com/idea/"
-        title="developed using" width="170px"
-        alt="developed using"
-        img="http://jeremylong.github.io/DependencyCheck/images/logos/logo_intellij_idea.png"/-->
+              img="/images/logos/build-by-maven-white.png"/>
     </poweredBy>
-
     <body>
-        <head>
-            <style type="text/css">
-                #bannerLeft { margin-top:50px;margin-bottom:5px !important }
-            </style>
-        </head>
+        <head><![CDATA[
+        ]]></head>
         <breadcrumbs>
             <item name=" " href="#"/>
         </breadcrumbs>
@@ -87,6 +82,6 @@ OF THE POSSIBILITY OF SUCH DAMAGE.
             <item name="JSP" href="./encoder-jsp/index.html" />
             <item name="ESAPI Thunk" href="./encoder-esapi/index.html" />
         </menu>
-        <footer>Copyright © 2011-2015 OWASP. All Rights Reserved.</footer>
+        <footer>Copyright © 2011-2017 OWASP. All Rights Reserved.</footer>
     </body>
 </project>

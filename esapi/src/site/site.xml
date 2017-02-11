@@ -37,7 +37,12 @@ OF THE POSSIBILITY OF SUCH DAMAGE.
 -->
 <project name="ESAPI">
     <bannerLeft>
-        <name>ESAPI</name>
+        <name>OWASP Java Encoder Project: ESAPI</name>
+		<title>OWASP Java Encoder Project: ESAPI</title>
+        <alt>OWASP Java Encoder Project: ESAPI</alt>
+        <src>../images/owasp.jpg</src>
+		<height>107</height>
+		<width>300</width>
     </bannerLeft>
     <body>
         <breadcrumbs>
