@@ -37,51 +37,56 @@ OF THE POSSIBILITY OF SUCH DAMAGE.
 -->
 <project name="OWASP Java Encoder Project">
     <skin>
-        <groupId>org.apache.maven.skins</groupId>
-        <artifactId>maven-fluido-skin</artifactId>
-        <version>1.6</version>
+		<groupId>lt.velykis.maven.skins</groupId>
+		<artifactId>reflow-maven-skin</artifactId>
+		<version>1.1.1</version>
     </skin>
-    <custom>
-        <fluidoSkin>
-            <sourceLineNumbersEnabled>true</sourceLineNumbersEnabled>
-            <sideBarEnabled>true</sideBarEnabled>
-            <gitHub>
-                <projectId>owasp/owasp-java-encoder</projectId>
-                <ribbonOrientation>right</ribbonOrientation>
-                <ribbonColor>gray</ribbonColor>
-            </gitHub>
-            <googlePlusOne />
-        </fluidoSkin>
-    </custom>
-    <bannerLeft>
+	<publishDate position="none" />
+    <version position="none" />
+	<bannerLeft>
         <name>OWASP Java Encoder Project</name>
 		<title>OWASP Java Encoder Project</title>
         <alt>OWASP Java Encoder Project</alt>
         <src>./images/owasp.jpg</src>
 		<height>107</height>
 		<width>300</width>
-	</bannerLeft>
+    </bannerLeft>
+    <custom>
+		<reflowSkin>
+			<theme>default</theme>
+			<highlightJs>true</highlightJs>
+			<highlightJsTheme>github</highlightJsTheme>   
+			<brand>
+				<name>${project.name}</name>
+				<href>https://www.owasp.org/index.php/OWASP_Java_Encoder_Project</href>				
+			</brand>
+			<skinAttribution>false</skinAttribution>
+			<toc>top</toc>
+			<tocTopMax>6</tocTopMax>
+			<topNav>Modules|Maven Documentation</topNav>
+			<bottomNav maxSpan="6" >
+				<column>Modules</column>
+				<column>Contribute</column>
+				<column>Maven Documentation</column>
+			</bottomNav>
+			<pages>
+                <index project="encoder" combine.self="override"></index>
+            </pages>
+		</reflowSkin>
+    </custom>
 
-    <publishDate position="right" />
-    <version position="right" />
-    <poweredBy>
-        <logo name="Maven" href="http://maven.apache.org/"
-              title="built with maven"
-              alt="built with maven"
-              img="/images/logos/build-by-maven-white.png"/>
-    </poweredBy>
     <body>
-        <head><![CDATA[
-        ]]></head>
-        <breadcrumbs>
-            <item name=" " href="#"/>
-        </breadcrumbs>
-        <menu ref="reports" />
-        <menu name="Modules">
-            <item name="Encoder" href="./encoder/index.html" />
-            <item name="JSP" href="./encoder-jsp/index.html" />
-            <item name="ESAPI Thunk" href="./encoder-esapi/index.html" />
-        </menu>
+		<menu name="Modules" inherit="bottom">
+			<item name="OWASP Encoders" href="./index.html" />
+			<item name="Java Encoder" href="./encoder/index.html" />
+			<item name="JSP Encoder" href="./encoder-jsp/index.html" />
+			<item name="ESAPI Thunk" href="./encoder-esapi/index.html" />
+		</menu>
+        <menu name="Maven Documentation" ref="reports" inherit="bottom" />
+		<menu name="Contribute" inherit="bottom">
+		  <item name="Issues" href="https://github.com/OWASP/owasp-java-encoder/issues" />
+		  <item name="Fork on GitHub" href="https://github.com/OWASP/owasp-java-encoder" />
+		</menu>
         <footer>Copyright © 2011-2017 OWASP. All Rights Reserved.</footer>
     </body>
 </project>

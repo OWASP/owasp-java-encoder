@@ -49,7 +49,7 @@
     <artifactId>encoder</artifactId>
     <packaging>jar</packaging>
 
-    <name>OWASP Encoders</name>
+    <name>Java Encoder</name>
     <description>
         The OWASP Encoders package is a collection of high-performance low-overhead
         contextual encoders, that when utilized correctly, is an effective tool in

@@ -49,7 +49,7 @@
     <artifactId>encoder-esapi</artifactId>
     <packaging>jar</packaging>
 
-    <name>OWASP Encoders ESAPI Thunk</name>
+    <name>ESAPI Thunk</name>
     <description>
         The OWASP Encoders ESAPI Thunk provides an easy way to plugin the Encoder
         Projects API into an implementation of ESAPI.

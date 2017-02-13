@@ -78,41 +78,40 @@ public final class Encode {
      *     &lt;input value="&lt;%=Encode.forHtml(unsafeData)%&gt;" /&gt;
      * </pre>
      *
-     * <table border="0" summary="Shows the input and results of encoding">
+     * <table border="0" class="memberSummary" summary="Shows the input and results of encoding">
      *   <caption><b>Encoding&nbsp;Table</b></caption>
      *   <thead>
-     *     <tr bgcolor="#ccf">
-     *       <th align="left">Input</th>
-     *       <th align="left">Result</th>
+     *     <tr>
+     *       <th align="left" class="colFirst">Input</th>
+     *       <th align="left" class="colLast">Result</th>
      *     </tr>
      *   </thead>
      *   <tbody>
-     *     <tr>
-     *       <td>&ldquo;{@code &}&rdquo;</td>
-     *       <td>&ldquo;{@code &amp;}&rdquo;</td>
+     *     <tr class="altColor">
+     *       <td class="colFirst">{@code &}</td>
+     *       <td class="colLast">{@code &amp;}</td>
      *     </tr>
-     *     <tr>
-     *       <td>&ldquo;{@code <}&rdquo;</td>
-     *       <td>&ldquo;{@code &lt;}&rdquo;</td>
+     *     <tr class="rowColor">
+     *       <td class="colFirst">{@code <}</td>
+     *       <td class="colLast">{@code &lt;}</td>
      *     </tr>
-     *     <tr>
-     *       <td>&ldquo;{@code >}&rdquo;</td>
-     *       <td>&ldquo;{@code &gt;}&rdquo;</td>
+     *     <tr class="altColor">
+     *       <td class="colFirst">{@code >}</td>
+     *       <td class="colLast">{@code &gt;}</td>
      *     </tr>
-     *     <tr>
-     *       <td>&ldquo;{@code "}&rdquo;</td>
-     *       <td>&ldquo;{@code &#34;}&rdquo;</td>
+     *     <tr class="rowColor">
+     *       <td class="colFirst">{@code "}</td>
+     *       <td class="colLast">{@code &#34;}</td>
      *     </tr>
-     *     <tr>
-     *       <td>&ldquo;{@code '}&rdquo;</td>
-     *       <td>&ldquo;{@code &#39;}&rdquo;</td>
+     *     <tr class="altColor">
+     *       <td class="colFirst">{@code '}</td>
+     *       <td class="colLast">{@code &#39;}</td>
      *     </tr>
      *   </tbody>
      * </table>
      *
-     * <b>Additional Notes</b>
+     * <p><b>Additional Notes</b></p>
      * <ul>
-     *
      * <li>The encoding of the greater-than sign ({@code >}) is not
      * strictly required, but is included for maximum
      * compatibility.</li>
@@ -132,7 +131,6 @@ public final class Encode {
      * as they could lead to parsing errors.  In particular only {@code #x9
      * | #xA | #xD | [#x20-#xD7FF] | [#xE000-#xFFFD] |
      * [#x10000-#x10FFFF]} are considered valid.</li>
-     *
      * </ul>
      *
      * @param input the data to encode
@@ -164,33 +162,32 @@ public final class Encode {
      * <pre>
      *     &lt;div&gt;&lt;%=Encode.forHtmlContent(unsafeData)%&gt;&lt;/div&gt;
      * </pre>
-     * <table border="0" summary="Shows the input and results of encoding">
+     * <table border="0" class="memberSummary" summary="Shows the input and results of encoding">
      *   <caption><b>Encoding Table</b></caption>
      *   <thead>
-     *     <tr bgcolor="#ccf">
-     *       <th align="left">Input</th>
-     *       <th align="left">Result</th>
+     *     <tr>
+     *       <th align="left" class="colFirst">Input</th>
+     *       <th align="left" class="colLast">Result</th>
      *     </tr>
      *   </thead>
      *   <tbody>
-     *     <tr>
-     *       <td>&ldquo;{@code &}&rdquo;</td>
-     *       <td>&ldquo;{@code &amp;}&rdquo;</td>
+     *     <tr class="altColor">
+     *       <td class="colFirst">{@code &}</td>
+     *       <td class="colLast">{@code &amp;}</td>
      *     </tr>
-     *     <tr>
-     *       <td>&ldquo;{@code <}&rdquo;</td>
-     *       <td>&ldquo;{@code &lt;}&rdquo;</td>
+     *     <tr class="rowColor">
+     *       <td class="colFirst">{@code <}</td>
+     *       <td class="colLast">{@code &lt;}</td>
      *     </tr>
-     *     <tr>
-     *       <td>&ldquo;{@code >}&rdquo;</td>
-     *       <td>&ldquo;{@code &gt;}&rdquo;</td>
+     *     <tr class="altColor">
+     *       <td class="colFirst">{@code >}</td>
+     *       <td class="colLast">{@code &gt;}</td>
      *     </tr>
      *   </tbody>
      * </table>
      *
-     * <b>Additional Notes</b>
+     * <p><b>Additional Notes</b></p>
      * <ul>
-     *
      * <li>Single-quote character ({@code '}) and double-quote
      * character ({@code "}) do not require encoding in HTML
      * blocks, unlike other HTML contexts.</li>
@@ -211,7 +208,6 @@ public final class Encode {
      * as they could lead to parsing errors.  In particular only {@code #x9
      * | #xA | #xD | [#x20-#xD7FF] | [#xE000-#xFFFD] |
      * [#x10000-#x10FFFF]} are considered valid.</li>
-     *
      * </ul>
      *
      * @param input the input to encode
@@ -243,37 +239,36 @@ public final class Encode {
      *     &lt;div&gt;&lt;%=Encode.forHtml(unsafeData)%&gt;&lt;/div&gt;
      * </pre>
      *
-     * <table border="0" summary="Shows the input and results of encoding">
+     * <table border="0" class="memberSummary" summary="Shows the input and results of encoding">
      *   <caption><b>Encoding Table</b></caption>
      *   <thead>
-     *     <tr bgcolor="#ccf">
-     *       <th align="left">Input</th>
-     *       <th align="left">Result</th>
+     *     <tr>
+     *       <th align="left" class="colFirst">Input</th>
+     *       <th align="left" class="colLast">Result</th>
      *     </tr>
      *   </thead>
      *   <tbody>
-     *     <tr>
-     *       <td>&ldquo;{@code &}&rdquo;</td>
-     *       <td>&ldquo;{@code &amp;}&rdquo;</td>
+     *     <tr class="altColor">
+     *       <td class="colFirst">{@code &}</td>
+     *       <td class="colLast">{@code &amp;}</td>
      *     </tr>
-     *     <tr>
-     *       <td>&ldquo;{@code <}&rdquo;</td>
-     *       <td>&ldquo;{@code &lt;}&rdquo;</td>
+     *     <tr class="rowColor">
+     *       <td class="colFirst">{@code <}</td>
+     *       <td class="colLast">{@code &lt;}</td>
      *     </tr>
-     *     <tr>
-     *       <td>&ldquo;{@code "}&rdquo;</td>
-     *       <td>&ldquo;{@code &#34;}&rdquo;</td>
+     *     <tr class="altColor">
+     *       <td class="colFirst">{@code "}</td>
+     *       <td class="colLast">{@code &#34;}</td>
      *     </tr>
-     *     <tr>
-     *       <td>&ldquo;{@code '}&rdquo;</td>
-     *       <td>&ldquo;{@code &#39;}&rdquo;</td>
+     *     <tr class="rowColor">
+     *       <td class="colFirst">{@code '}</td>
+     *       <td class="colLast">{@code &#39;}</td>
      *     </tr>
      *   </tbody>
      * </table>
      *
-     * <b>Additional Notes</b>
+     * <p><b>Additional Notes</b></p>
      * <ul>
-     *
      * <li>Both the single-quote character ({@code '}) and the
      * double-quote character ({@code "}) are encoded so this is safe
      * for HTML attributes with either enclosing character.</li>
@@ -296,7 +291,6 @@ public final class Encode {
      * as they could lead to parsing errors.  In particular only {@code #x9
      * | #xA | #xD | [#x20-#xD7FF] | [#xE000-#xFFFD] |
      * [#x10000-#x10FFFF]} are considered valid.</li>
-     *
      * </ul>
      *
      * @param input the input to encode
@@ -344,46 +338,45 @@ public final class Encode {
      *     &lt;input value=&lt;%=Encode.forHtmlUnquotedAttribute(input)%&gt; &gt;
      * </pre>
      *
-     * <table border="0" summary="Shows the input and results of encoding">
+     * <table border="0" class="memberSummary" summary="Shows the input and results of encoding">
      *   <caption><b>Encoding Table</b></caption>
      *   <thead>
-     *     <tr bgcolor="#ccf">
-     *       <th align="left">Input</th>
-     *       <th align="left">Result</th>
+     *     <tr>
+     *       <th align="left" class="colFirst">Input</th>
+     *       <th align="left" class="colLast">Result</th>
      *     </tr>
      *   </thead>
      *   <tbody>
-     *     <tr><td>{@code U+0009} (horizontal tab)</td><td>&ldquo;{@code &#9;}&rdquo;</td></tr>
-     *     <tr><td>{@code U+000A} (line feed)</td><td>&ldquo;{@code &#10;}&rdquo;</td></tr>
-     *     <tr><td>{@code U+000C} (form feed)</td><td>&ldquo;{@code &#12;}&rdquo;</td></tr>
-     *     <tr><td>{@code U+000D} (carriage return)</td><td>&ldquo;{@code &#13;}&rdquo;</td></tr>
-     *     <tr><td>{@code U+0020} (space)</td><td>&ldquo;{@code &#32;}&rdquo;</td></tr>
-     *     <tr><td>&ldquo;{@code &}&rdquo;</td><td>&ldquo;{@code &amp;}&rdquo;</td></tr>
-     *     <tr><td>&ldquo;{@code <}&rdquo;</td><td>&ldquo;{@code &lt;}&rdquo;</td></tr>
-     *     <tr><td>&ldquo;{@code >}&rdquo;</td><td>&ldquo;{@code &gt;}&rdquo;</td></tr>
-     *     <tr><td>&ldquo;{@code "}&rdquo;</td><td>&ldquo;{@code &#34;}&rdquo;</td></tr>
-     *     <tr><td>&ldquo;{@code '}&rdquo;</td><td>&ldquo;{@code &#39;}&rdquo;</td></tr>
-     *     <tr><td>&ldquo;{@code /}&rdquo;</td><td>&ldquo;{@code &#47;}&rdquo;</td></tr>
-     *     <tr><td>&ldquo;{@code =}&rdquo;</td><td>&ldquo;{@code &#61;}&rdquo;</td></tr>
-     *     <tr><td>&ldquo;{@code `}&rdquo;</td><td>&ldquo;{@code &#96;}&rdquo;</td></tr>
-     *     <tr><td>{@code U+0085} (next line)</td><td>&ldquo;{@code &#133;}&rdquo;</td></tr>
-     *     <tr><td>{@code U+2028} (line separator)</td><td>&ldquo;{@code &#8232;}&rdquo;</td></tr>
-     *     <tr><td>{@code U+2029} (paragraph separator)</td><td>&ldquo;{@code &#8233;}&rdquo;</td></tr>
+     *     <tr class="altColor"><td class="colFirst">{@code U+0009} (horizontal tab)</td><td class="colLast">{@code &#9;}</td></tr>
+     *     <tr class="rowColor"><td class="colFirst">{@code U+000A} (line feed)</td><td class="colLast">{@code &#10;}</td></tr>
+     *     <tr class="altColor"><td class="colFirst">{@code U+000C} (form feed)</td><td class="colLast">{@code &#12;}</td></tr>
+     *     <tr class="rowColor"><td class="colFirst">{@code U+000D} (carriage return)</td><td class="colLast">{@code &#13;}</td></tr>
+     *     <tr class="altColor"><td class="colFirst">{@code U+0020} (space)</td><td class="colLast">{@code &#32;}</td></tr>
+     *     <tr class="rowColor"><td class="colFirst">{@code &}</td><td class="colLast">{@code &amp;}</td></tr>
+     *     <tr class="altColor"><td class="colFirst">{@code <}</td><td class="colLast">{@code &lt;}</td></tr>
+     *     <tr class="rowColor"><td class="colFirst">{@code >}</td><td class="colLast">{@code &gt;}</td></tr>
+     *     <tr class="altColor"><td class="colFirst">{@code "}</td><td class="colLast">{@code &#34;}</td></tr>
+     *     <tr class="rowColor"><td class="colFirst">{@code '}</td><td class="colLast">{@code &#39;}</td></tr>
+     *     <tr class="altColor"><td class="colFirst">{@code /}</td><td class="colLast">{@code &#47;}</td></tr>
+     *     <tr class="rowColor"><td class="colFirst">{@code =}</td><td class="colLast">{@code &#61;}</td></tr>
+     *     <tr class="altColor"><td class="colFirst">{@code `}</td><td class="colLast">{@code &#96;}</td></tr>
+     *     <tr class="rowColor"><td class="colFirst">{@code U+0085} (next line)</td><td class="colLast">{@code &#133;}</td></tr>
+     *     <tr class="altColor"><td class="colFirst">{@code U+2028} (line separator)</td><td class="colLast">{@code &#8232;}</td></tr>
+     *     <tr class="rowColor"><td class="colFirst">{@code U+2029} (paragraph separator)</td><td class="colLast">{@code &#8233;}</td></tr>
      *   </tbody>
      * </table>
      *
-     * <b>Additional Notes</b>
+     * <p><b>Additional Notes</b></p>
      * <ul>
-     *
      * <li>The following characters are <i>not</i> encoded:
-     * {@code 0-9, a-z, A-Z}, &ldquo;{@code !}&rdquo;, &ldquo;{@code
-     * #}&rdquo;, &ldquo;{@code $}&rdquo;, &ldquo;{@code %}&rdquo;,
-     * &ldquo;{@code (}&rdquo;, &ldquo;{@code )}&rdquo;, &ldquo;{@code
-     * *}&rdquo;, &ldquo;{@code +}&rdquo;, &ldquo;{@code ,}&rdquo;,
-     * &ldquo;{@code -}&rdquo;, &ldquo;{@code .}&rdquo;, &ldquo;{@code
-     * [}&rdquo;, &ldquo;{@code \}&rdquo;, &ldquo;{@code ]}&rdquo;,
-     * &ldquo;{@code ^}&rdquo;, &ldquo;{@code _}&rdquo;, &ldquo;{@code
-     * }}&rdquo;.</li>
+     * {@code 0-9, a-z, A-Z}, {@code !}, {@code
+     * #}, {@code $}, {@code %},
+     * {@code (}, {@code )}, {@code
+     * *}, {@code +}, {@code ,},
+     * {@code -}, {@code .}, {@code
+     * [}, {@code \}, {@code ]},
+     * {@code ^}, {@code _}, {@code
+     * }}.</li>
      *
      * <li>Surrogate pairs are passed through only if valid.  Invalid
      * surrogate pairs are replaced by a hyphen (-).</li>
@@ -393,7 +386,6 @@ public final class Encode {
      * hyphen (-) character.</li>
      *
      * <li>Unicode "non-characters" are replaced by hyphens (-).</li>
-     *
      * </ul>
      *
      * @param input the attribute value to be encoded.
@@ -450,15 +442,15 @@ public final class Encode {
      *
      * <li>The following characters are encoded using hexidecimal
      * encodings: {@code U+0000} - {@code U+001f},
-     * &ldquo;{@code "}&rdquo;,
-     * &ldquo;{@code '}&rdquo;,
-     * &ldquo;{@code \}&rdquo;,
-     * &ldquo;{@code <}&rdquo;,
-     * &ldquo;{@code &}&rdquo;,
-     * &ldquo;{@code (}&rdquo;,
-     * &ldquo;{@code )}&rdquo;,
-     * &ldquo;{@code /}&rdquo;,
-     * &ldquo;{@code >}&rdquo;,
+     * {@code "},
+     * {@code '},
+     * {@code \},
+     * {@code <},
+     * {@code &},
+     * {@code (},
+     * {@code )},
+     * {@code /},
+     * {@code >},
      * {@code U+007f},
      * line separator ({@code U+2028}),
      * paragraph separator ({@code U+2029}).</li>
@@ -528,13 +520,13 @@ public final class Encode {
      *
      * <li>The following characters are encoded using hexidecimal
      * encodings: {@code U+0000} - {@code U+001f},
-     * &ldquo;{@code "}&rdquo;,
-     * &ldquo;{@code '}&rdquo;,
-     * &ldquo;{@code \}&rdquo;,
-     * &ldquo;{@code <}&rdquo;,
-     * &ldquo;{@code &}&rdquo;,
-     * &ldquo;{@code /}&rdquo;,
-     * &ldquo;{@code >}&rdquo;,
+     * {@code "},
+     * {@code '},
+     * {@code \},
+     * {@code <},
+     * {@code &},
+     * {@code /},
+     * {@code >},
      * {@code U+007f},
      * line separator ({@code U+2028}),
      * paragraph separator ({@code U+2029}).</li>
@@ -584,13 +576,13 @@ public final class Encode {
     }
 
     /**
-     * Performs percent-encoding of a URL according to RFC 3986.  The provided
+     * <p>Performs percent-encoding of a URL according to RFC 3986.  The provided
      * URL is assumed to a valid URL.  This method does not do any checking on
      * the quality or safety of the URL itself.  In many applications it may
      * be better to use {@link java.net.URI} instead.  Note: this is a
      * particularly dangerous context to put untrusted content in, as for
      * example a "javascript:" URL provided by a malicious user would be
-     * "properly" escaped, and still execute.
+     * "properly" escaped, and still execute.</p>
      *
      * <b>Encoding Table</b>
      * <p>The following characters are <i>not</i> encoded:</p>
@@ -928,78 +920,78 @@ public final class Encode {
      *    &lt;/script&gt;
      * </pre>
      *
-     * <table cellspacing="1" cellpadding="1" border="0">
+     * <table cellspacing="1" class="memberSummary" cellpadding="1" border="0">
      *   <caption><b>Encoding Description</b></caption>
      *   <thead>
-     *     <tr bgcolor="#ccf">
-     *       <th align="left" colspan="2">Input Character</th>
-     *       <th align="left">Encoded Result</th>
-     *       <th align="left">Notes</th>
+     *     <tr>
+     *       <th align="left" colspan="2" class="colFirst">Input Character</th>
+     *       <th align="left" class="colLast">Encoded Result</th>
+     *       <th align="left" class="colLast">Notes</th>
      *     </tr>
      *   </thead>
      *   <tbody>
-     *     <tr>
-     *       <td>U+0008</td><td><i>BS</i></td>
-     *       <td><code>\b</code></td>
-     *       <td>Backspace character</td>
+     *     <tr class="altColor">
+     *       <td class="colFirst">U+0008</td><td><i>BS</i></td>
+     *       <td class="colLast"><code>\b</code></td>
+     *       <td class="colLast">Backspace character</td>
      *     </tr>
-     *     <tr>
-     *       <td>U+0009</td><td><i>HT</i></td>
-     *       <td><code>\t</code></td>
-     *       <td>Horizontal tab character</td>
+     *     <tr class="rowColor">
+     *       <td class="colFirst">U+0009</td><td><i>HT</i></td>
+     *       <td class="colLast"><code>\t</code></td>
+     *       <td class="colLast">Horizontal tab character</td>
      *     </tr>
-     *     <tr>
-     *       <td>U+000A</td><td><i>LF</i></td>
-     *       <td><code>\n</code></td>
-     *       <td>Line feed character</td>
+     *     <tr class="altColor">
+     *       <td class="colFirst">U+000A</td><td><i>LF</i></td>
+     *       <td class="colLast"><code>\n</code></td>
+     *       <td class="colLast">Line feed character</td>
      *     </tr>
-     *     <tr>
-     *       <td>U+000C</td><td><i>FF</i></td>
-     *       <td><code>\f</code></td>
-     *       <td>Form feed character</td>
+     *     <tr class="rowColor">
+     *       <td class="colFirst">U+000C</td><td><i>FF</i></td>
+     *       <td class="colLast"><code>\f</code></td>
+     *       <td class="colLast">Form feed character</td>
      *     </tr>
-     *     <tr>
-     *       <td>U+000D</td><td><i>CR</i></td>
-     *       <td><code>\r</code></td>
-     *       <td>Carriage return character</td>
+     *     <tr class="altColor">
+     *       <td class="colFirst">U+000D</td><td><i>CR</i></td>
+     *       <td class="colLast"><code>\r</code></td>
+     *       <td class="colLast">Carriage return character</td>
      *     </tr>
-     *     <tr>
-     *       <td>U+0022</td><td><code>"</code></td>
-     *       <td><code>\x22</code></td>
-     *       <td>The encoding <code>\"</code> is not used here because
+     *     <tr class="rowColor">
+     *       <td class="colFirst">U+0022</td><td><code>"</code></td>
+     *       <td class="colLast"><code>\x22</code></td>
+     *       <td class="colLast">The encoding <code>\"</code> is not used here because
      *       it is not safe for use in HTML attributes.  (In HTML
      *       attributes, it would also be correct to use
      *       "\&amp;quot;".)</td>
      *     </tr>
-     *     <tr>
-     *       <td>U+0026</td><td><code>&amp;</code></td>
-     *       <td><code>\x26</code></td>
-     *       <td>Ampersand character</td>
+     *     <tr class="altColor">
+     *       <td class="colFirst">U+0026</td><td><code>&amp;</code></td>
+     *       <td class="colLast"><code>\x26</code></td>
+     *       <td class="colLast">Ampersand character</td>
      *     </tr>
-     *     <tr>
-     *       <td>U+0027</td><td><code>'</code></td>
-     *       <td><code>\x27</code></td>
-     *       <td>The encoding <code>\'</code> is not used here because
+     *     <tr class="rowColor">
+     *       <td class="colFirst">U+0027</td><td><code>'</code></td>
+     *       <td class="colLast"><code>\x27</code></td>
+     *       <td class="colLast">The encoding <code>\'</code> is not used here because
      *       it is not safe for use in HTML attributes.  (In HTML
      *       attributes, it would also be correct to use
      *       "\&amp;#39;".)</td>
      *     </tr>
-     *     <tr>
-     *       <td>U+002F</td><td><code>/</code></td>
-     *       <td><code>\/</code></td>
-     *       <td>This encoding is used to avoid an input sequence
+     *     <tr class="altColor">
+     *       <td class="colFirst">U+002F</td><td><code>/</code></td>
+     *       <td class="colLast"><code>\/</code></td>
+     *       <td class="colLast">This encoding is used to avoid an input sequence
      *       "&lt;/" from prematurely terminating a &lt;/script&gt;
      *       block.</td>
      *     </tr>
-     *     <tr>
-     *       <td>U+005C</td><td><code>\</code></td>
-     *       <td><code>\\</code></td>
-     *       <td></td>
+     *     <tr class="rowColor">
+     *       <td class="colFirst">U+005C</td><td><code>\</code></td>
+     *       <td class="colLast"><code>\\</code></td>
+     *       <td class="colLast"></td>
      *     </tr>
-     *     <tr>
-     *       <td nowrap="nowrap" colspan="2">U+0000 to U+001F</td>
-     *       <td><code>\x##</code></td>
-     *       <td>Hexadecimal encoding is used for characters in this
+     *     <tr class="altColor">
+     *       <td class="colFirst" colspan="2">U+0000&nbsp;to&nbsp;U+001F</td>
+     *       <td class="colLast"><code>\x##</code></td>
+     *       <td class="colLast">Hexadecimal encoding is used for characters in this
      *       range that were not already mentioned in above.</td>
      *     </tr>
      *   </tbody>

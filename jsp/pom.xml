@@ -49,7 +49,7 @@
     <artifactId>encoder-jsp</artifactId>
     <packaging>jar</packaging>
 
-    <name>OWASP Encoders JSP tags and EL functions</name>
+    <name>JSP Encoder</name>
     <description>
         The OWASP Encoder JSP package contains JSP tag definitions and TLDs to allow
         easy use of the OWASP Encoder Project's core API. The TLDs contain both tag
