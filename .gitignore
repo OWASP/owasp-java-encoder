@@ -1,4 +1,5 @@
 */target/**
+/target/**
 # Intellij project files
 *.iml
 *.ipr
@@ -12,4 +13,4 @@ maven-eclipse.xml
 .externalToolBuilders
 # Netbeans configuration
 nb-configuration.xml
-/target/
+*/nbproject/*
