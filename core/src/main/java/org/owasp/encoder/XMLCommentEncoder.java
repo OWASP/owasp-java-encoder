@@ -107,7 +107,8 @@ class XMLCommentEncoder extends Encoder {
                     return i;
                 }
             } else if (ch <= Character.MAX_LOW_SURROGATE || ch > '\ufffd'
-                    || ('\ufdd0' <= ch && ch <= '\ufdef')) {
+                    || ('\ufdd0' <= ch && ch <= '\ufdef'))
+            {
                 return i;
 //            } else {
 //                // valid
@@ -117,8 +118,7 @@ class XMLCommentEncoder extends Encoder {
     }
 
     @Override
-    protected CoderResult encodeArrays(
-            CharBuffer input, CharBuffer output, boolean endOfInput) {
+    protected CoderResult encodeArrays(CharBuffer input, CharBuffer output, boolean endOfInput) {
         final char[] in = input.array();
         final char[] out = output.array();
         int i = input.arrayOffset() + input.position();
@@ -210,11 +210,12 @@ class XMLCommentEncoder extends Encoder {
                 } else {
                     break;
                 }
-            } else if ( // low surrogate without preceding high surrogate
+            } else if (// low surrogate without preceding high surrogate
                     ch <= Character.MAX_LOW_SURROGATE
-                    || // non characters
-                    ch > '\ufffd'
-                    || ('\ufdd0' <= ch && ch <= '\ufdef')) {
+                    // or non-characters
+                    || ch > '\ufffd'
+                    || ('\ufdd0' <= ch && ch <= '\ufdef'))
+            {
                 if (j >= m) {
                     return overflow(input, i, output, j);
                 }

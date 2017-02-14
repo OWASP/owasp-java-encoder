@@ -31,7 +31,6 @@
 // STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
 // ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
 // OF THE POSSIBILITY OF SUCH DAMAGE.
-
 package org.owasp.encoder;
 
 import java.nio.CharBuffer;
@@ -47,38 +46,35 @@ class JavaScriptEncoder extends Encoder {
     /**
      * Mode of operation constants for the JavaScriptEncoder.
      */
-    static enum Mode {
+    enum Mode {
         /**
-         * Standard encoding of JavaScript Strings.  Escape sequences are chosen
-         * according to what is the shortest sequence possible for the character.
+         * Standard encoding of JavaScript Strings. Escape sequences are chosen
+         * according to what is the shortest sequence possible for the
+         * character.
          */
         SOURCE,
-
         /**
-         * Encoding for use in HTML attributes.  Quote characters are escaped
-         * using hex encodes instead of backslashes.  The alternate would be
-         * to use a sequence of encodes that would actually be longer.  In this
-         * mode double-quote is "\x22" and single-quote is "\x27".  (In HTML
+         * Encoding for use in HTML attributes. Quote characters are escaped
+         * using hex encodes instead of backslashes. The alternate would be to
+         * use a sequence of encodes that would actually be longer. In this mode
+         * double-quote is "\x22" and single-quote is "\x27". (In HTML
          * attributes the alternate would be encoding "\"" and "\'" with entity
          * escapes to "\&amp;#34;" and "\&amp;39;").
          */
         ATTRIBUTE,
-
         /**
-         * Encoding for use in HTML script blocks.  The main concern here is
+         * Encoding for use in HTML script blocks. The main concern here is
          * permaturely terminating a script block with a closing "&lt;/" inside
-         * the string.  This encoding escapes "/" as "\/" to prevent such
+         * the string. This encoding escapes "/" as "\/" to prevent such
          * termination.
          */
         BLOCK,
-
         /**
          * Encodes for use in either HTML script attributes or blocks.
          * Essentially this is both special escapes from HTML_ATTRIBUTE and
          * HTML_CONTENT combined.
          */
-        HTML,
-        ;
+        HTML,;
     }
 
     /**
@@ -86,21 +82,20 @@ class JavaScriptEncoder extends Encoder {
      */
     private final Mode _mode;
     /**
-     * True if quotation characters should be hex encoded.  Hex encoding
-     * quotes allows JavaScript to be included in XML attributes without
-     * additional XML-based encoding.
+     * True if quotation characters should be hex encoded. Hex encoding quotes
+     * allows JavaScript to be included in XML attributes without additional
+     * XML-based encoding.
      */
     private final boolean _hexEncodeQuotes;
     /**
      * An array of 4 32-bit integers used as bitmasks to check if a character
-     * needs encoding or not.  If the bit is set, the character is valid and
-     * does not need encoding.
+     * needs encoding or not. If the bit is set, the character is valid and does
+     * not need encoding.
      */
     private final int[] _validMasks;
     /**
-     * True if the output should only include ASCII characters.  Valid
-     * non-ASCII characters that would normally not be encoded, will be
-     * encoded.
+     * True if the output should only include ASCII characters. Valid non-ASCII
+     * characters that would normally not be encoded, will be encoded.
      */
     private final boolean _asciiOnly;
 
@@ -108,9 +103,8 @@ class JavaScriptEncoder extends Encoder {
      * Constructs a new JavaScriptEncoder for the specified contextual mode.
      *
      * @param mode the mode of operation
-     * @param asciiOnly true if only ASCII characters should be included
-     * in the output (all code-points outside the ASCII range will be
-     * encoded).
+     * @param asciiOnly true if only ASCII characters should be included in the
+     * output (all code-points outside the ASCII range will be encoded).
      */
     JavaScriptEncoder(Mode mode, boolean asciiOnly) {
         // TODO: after some testing it appears that an array of int masks
@@ -125,12 +119,11 @@ class JavaScriptEncoder extends Encoder {
         // the Java spec (x << y) where x and y are integers, is evaluated
         // as (x << (y & 31)).  Or put another way, only the lower 5 bits
         // of the shift amount are considered.
-        _validMasks = new int[] {
+        _validMasks = new int[]{
             0,
             -1 & ~((1 << '\'') | (1 << '\"')),
             -1 & ~((1 << '\\')),
-            asciiOnly ? ~(1 << Unicode.DEL) : -1,
-        };
+            asciiOnly ? ~(1 << Unicode.DEL) : -1,};
 
         if (mode == Mode.BLOCK || mode == Mode.HTML) {
             // in <script> blocks, we need to prevent the browser from seeing
@@ -154,17 +147,17 @@ class JavaScriptEncoder extends Encoder {
 
     @Override
     int maxEncodedLength(int n) {
-        return n*6;
+        return n * 6;
     }
 
     @Override
     int firstEncodedOffset(String input, int off, int len) {
         final int n = off + len;
         final int[] validMasks = this._validMasks;
-        for (int i=off ; i<n ; ++i) {
+        for (int i = off; i < n; ++i) {
             char ch = input.charAt(i);
             if (ch < 128) {
-                if ((validMasks[ch>>>5] & (1 << ch)) == 0) {
+                if ((validMasks[ch >>> 5] & (1 << ch)) == 0) {
                     return i;
                 }
             } else if (_asciiOnly || ch == Unicode.LINE_SEPARATOR || ch == Unicode.PARAGRAPH_SEPARATOR) {
@@ -185,22 +178,22 @@ class JavaScriptEncoder extends Encoder {
 
         final int[] validMasks = this._validMasks;
 
-        for ( ; i<n ; ++i) {
+        for (; i < n; ++i) {
             char ch = in[i];
 
-        hexEncoded:
+            hexEncoded:
             {
-            encoded:
+                encoded:
                 {
                     if (ch < 128) {
-                        if ((validMasks[ch>>>5] & (1 << ch)) == 0) {
+                        if ((validMasks[ch >>> 5] & (1 << ch)) == 0) {
                             break encoded;
                         }
                     } else if (_asciiOnly || ch == Unicode.LINE_SEPARATOR || ch == Unicode.PARAGRAPH_SEPARATOR) {
                         if (ch <= 0xff) {
                             break hexEncoded;
                         }
-                        if (j+6 > m) {
+                        if (j + 6 > m) {
                             return overflow(input, i, output, j);
                         }
                         out[j++] = '\\';
@@ -219,29 +212,29 @@ class JavaScriptEncoder extends Encoder {
                 }
 
                 switch (ch) {
-                case '\b':
-                    if (j+2 > m) {
-                        return overflow(input, i, output, j);
-                    }
-                    out[j++] = '\\';
-                    out[j++] = 'b';
-                    continue;
-                case '\t':
-                    if (j+2 > m) {
-                        return overflow(input, i, output, j);
-                    }
-                    out[j++] = '\\';
-                    out[j++] = 't';
-                    continue;
-                case '\n':
-                    if (j+2 > m) {
-                        return overflow(input, i, output, j);
-                    }
-                    out[j++] = '\\';
-                    out[j++] = 'n';
-                    continue;
-                // Per Mike Samuel "\v should not be used since some
-                // versions of IE treat it as a literal letter 'v'"
+                    case '\b':
+                        if (j + 2 > m) {
+                            return overflow(input, i, output, j);
+                        }
+                        out[j++] = '\\';
+                        out[j++] = 'b';
+                        continue;
+                    case '\t':
+                        if (j + 2 > m) {
+                            return overflow(input, i, output, j);
+                        }
+                        out[j++] = '\\';
+                        out[j++] = 't';
+                        continue;
+                    case '\n':
+                        if (j + 2 > m) {
+                            return overflow(input, i, output, j);
+                        }
+                        out[j++] = '\\';
+                        out[j++] = 'n';
+                        continue;
+                    // Per Mike Samuel "\v should not be used since some
+                    // versions of IE treat it as a literal letter 'v'"
 //                case 0x0b: // '\v'
 //                    if (j+1 >= m) {
 //                        return overflow(input, i, output, j);
@@ -249,44 +242,44 @@ class JavaScriptEncoder extends Encoder {
 //                    out[j++] = '\\';
 //                    out[j++] = 'v';
 //                    break;
-                case '\f':
-                    if (j+2 > m) {
-                        return overflow(input, i, output, j);
-                    }
-                    out[j++] = '\\';
-                    out[j++] = 'f';
-                    continue;
-                case '\r':
-                    if (j+2 > m) {
-                        return overflow(input, i, output, j);
-                    }
-                    out[j++] = '\\';
-                    out[j++] = 'r';
-                    continue;
-                case '\'':
-                case '\"':
-                    if (_hexEncodeQuotes) {
-                        break hexEncoded;
-                    }
+                    case '\f':
+                        if (j + 2 > m) {
+                            return overflow(input, i, output, j);
+                        }
+                        out[j++] = '\\';
+                        out[j++] = 'f';
+                        continue;
+                    case '\r':
+                        if (j + 2 > m) {
+                            return overflow(input, i, output, j);
+                        }
+                        out[j++] = '\\';
+                        out[j++] = 'r';
+                        continue;
+                    case '\'':
+                    case '\"':
+                        if (_hexEncodeQuotes) {
+                            break hexEncoded;
+                        }
                     // fall through
-                case '\\':
-                case '/':
-                case '-':
-                    // We'll only see '/' and '-' here in the BLOCK and HTML
-                    // modes otherwise it will be accepted as valid by the
-                    // bitmasks.
-                    if (j+2 > m) {
-                        return overflow(input, i, output, j);
-                    }
-                    out[j++] = '\\';
-                    out[j++] = ch;
-                    continue;
-                default:
-                    break;
+                    case '\\':
+                    case '/':
+                    case '-':
+                        // We'll only see '/' and '-' here in the BLOCK and HTML
+                        // modes otherwise it will be accepted as valid by the
+                        // bitmasks.
+                        if (j + 2 > m) {
+                            return overflow(input, i, output, j);
+                        }
+                        out[j++] = '\\';
+                        out[j++] = ch;
+                        continue;
+                    default:
+                        break;
                 }
             }
 
-            if (j+4 > m) {
+            if (j + 4 > m) {
                 return overflow(input, i, output, j);
             }
             out[j++] = '\\';
@@ -300,6 +293,6 @@ class JavaScriptEncoder extends Encoder {
 
     @Override
     public String toString() {
-        return "JavaScriptEncoder(mode="+_mode+","+(_asciiOnly?"ASCII":"UNICODE")+")";
+        return "JavaScriptEncoder(mode=" + _mode + "," + (_asciiOnly ? "ASCII" : "UNICODE") + ")";
     }
 }

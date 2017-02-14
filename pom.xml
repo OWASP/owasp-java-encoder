@@ -210,24 +210,24 @@
                     <artifactId>maven-site-plugin</artifactId>
                     <!-- upgrading beyond 3.4 may break the reflow skin -->
                     <version>3.4</version>
-					<dependencies>
-						<dependency>
-						  <groupId>lt.velykis.maven.skins</groupId>
-						  <artifactId>reflow-velocity-tools</artifactId>
-						  <version>1.1.1</version>
-						</dependency>
-						<!-- Reflow skin requires Velocity >= 1.7  -->
-						<dependency>
-						  <groupId>org.apache.velocity</groupId>
-						  <artifactId>velocity</artifactId>
-						  <version>1.7</version>
-						</dependency>
-						<dependency>
-							<groupId>org.apache.maven.doxia</groupId>
-							<artifactId>doxia-module-markdown</artifactId>
-							<version>1.6</version>
-						</dependency>
-					</dependencies>
+                    <dependencies>
+                        <dependency>
+                            <groupId>lt.velykis.maven.skins</groupId>
+                            <artifactId>reflow-velocity-tools</artifactId>
+                            <version>1.1.1</version>
+                        </dependency>
+                        <!-- Reflow skin requires Velocity >= 1.7  -->
+                        <dependency>
+                            <groupId>org.apache.velocity</groupId>
+                            <artifactId>velocity</artifactId>
+                            <version>1.7</version>
+                        </dependency>
+                        <dependency>
+                            <groupId>org.apache.maven.doxia</groupId>
+                            <artifactId>doxia-module-markdown</artifactId>
+                            <version>1.6</version>
+                        </dependency>
+                    </dependencies>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>

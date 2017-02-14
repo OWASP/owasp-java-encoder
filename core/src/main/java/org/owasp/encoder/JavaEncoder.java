@@ -31,32 +31,39 @@
 // STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
 // ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
 // OF THE POSSIBILITY OF SUCH DAMAGE.
-
 package org.owasp.encoder;
 
 import java.nio.CharBuffer;
 import java.nio.charset.CoderResult;
 
 /**
- * JavaEncoder -- Encoder for Java based strings.  Useful if in Java code
- * generators to generate efficiently encoded strings for arbitrary data.
- * This encoder uses the minimal sequence of characters required to encode
- * a character (e.g. standard backslash escapes, such as "\n", "\\" , "\'",
- * octal escapes, and unicode escapes).  This encoder does NOT check UTF-16
- * surrogate pair sequences.  The target output context supports mismatched
- * UTF-16 pairs (e.g. it will compile, run, etc... with them).
+ * JavaEncoder -- Encoder for Java based strings. Useful if in Java code
+ * generators to generate efficiently encoded strings for arbitrary data. This
+ * encoder uses the minimal sequence of characters required to encode a
+ * character (e.g. standard backslash escapes, such as "\n", "\\" , "\'", octal
+ * escapes, and unicode escapes). This encoder does NOT check UTF-16 surrogate
+ * pair sequences. The target output context supports mismatched UTF-16 pairs
+ * (e.g. it will compile, run, etc... with them).
  *
  * @author Jeff Ichnowski
  */
 class JavaEncoder extends Encoder {
 
-    /** The length of a Unicode escape, e.g. "\\u1234". */
+    /**
+     * The length of a Unicode escape, e.g. "\\u1234".
+     */
     static final int U_ESCAPE_LENGTH = 6;
-    /** The length of a octal escape sequence, e.g. "\377". */
+    /**
+     * The length of a octal escape sequence, e.g. "\377".
+     */
     static final int OCT_ESCAPE_LENGTH = 4;
-    /** Number of bits to shift for each octal unit. */
+    /**
+     * Number of bits to shift for each octal unit.
+     */
     static final int OCT_SHIFT = 3;
-    /** The bit-mask for an octal unit. */
+    /**
+     * The bit-mask for an octal unit.
+     */
     static final int OCT_MASK = 7;
 
     @Override
@@ -67,8 +74,8 @@ class JavaEncoder extends Encoder {
 
     @Override
     protected int firstEncodedOffset(String input, int off, int len) {
-        final int n = off+len;
-        for (int i=off ; i<n ; ++i) {
+        final int n = off + len;
+        for (int i = off; i < n; ++i) {
             char ch = input.charAt(i);
             if (ch >= ' ' && ch <= '~') {
                 if (ch == '\\' || ch == '\'' || ch == '\"') {
@@ -82,9 +89,7 @@ class JavaEncoder extends Encoder {
     }
 
     @Override
-    protected CoderResult encodeArrays(
-        CharBuffer input, CharBuffer output, boolean endOfInput)
-    {
+    protected CoderResult encodeArrays(CharBuffer input, CharBuffer output, boolean endOfInput) {
         final char[] in = input.array();
         final char[] out = output.array();
         int i = input.arrayOffset() + input.position();
@@ -92,12 +97,12 @@ class JavaEncoder extends Encoder {
         int j = output.arrayOffset() + output.position();
         final int m = output.arrayOffset() + output.limit();
 
-    charLoop:
-        for ( ; i<n ; ++i) {
+        charLoop:
+        for (; i < n; ++i) {
             final char ch = in[i];
             if (ch >= ' ' && ch <= '~') {
                 if (ch == '\\' || ch == '\'' || ch == '\"') {
-                    if (j+1 >= m) {
+                    if (j + 1 >= m) {
                         return overflow(input, i, output, j);
                     }
                     out[j++] = '\\';
@@ -110,97 +115,97 @@ class JavaEncoder extends Encoder {
                 }
             } else {
                 switch (ch) {
-                case '\b':
-                    if (j+1 >= m) {
-                        return overflow(input, i, output, j);
-                    }
-                    out[j++] = '\\';
-                    out[j++] = 'b';
-                    break;
-                case '\t':
-                    if (j+1 >= m) {
-                        return overflow(input, i, output, j);
-                    }
-                    out[j++] = '\\';
-                    out[j++] = 't';
-                    break;
-                case '\n':
-                    if (j+1 >= m) {
-                        return overflow(input, i, output, j);
-                    }
-                    out[j++] = '\\';
-                    out[j++] = 'n';
-                    break;
-                case '\f':
-                    if (j+1 >= m) {
-                        return overflow(input, i, output, j);
-                    }
-                    out[j++] = '\\';
-                    out[j++] = 'f';
-                    break;
-                case '\r':
-                    if (j+1 >= m) {
-                        return overflow(input, i, output, j);
-                    }
-                    out[j++] = '\\';
-                    out[j++] = 'r';
-                    break;
-                default:
-                    if (ch <= '\377') {
-                    longEscapeNeeded:
-                        {
-                            if (ch <= '\37') {
-                                // "short" octal escapes: '\0' to '\37'
-                                // cannot be followed by '0' to '7' thus
-                                // require a lookahead to use.
-                                if (i+1 < n) {
-                                    char la = in[i + 1];
-                                    if ('0' <= la && la <= '7') {
-                                        break longEscapeNeeded;
+                    case '\b':
+                        if (j + 1 >= m) {
+                            return overflow(input, i, output, j);
+                        }
+                        out[j++] = '\\';
+                        out[j++] = 'b';
+                        break;
+                    case '\t':
+                        if (j + 1 >= m) {
+                            return overflow(input, i, output, j);
+                        }
+                        out[j++] = '\\';
+                        out[j++] = 't';
+                        break;
+                    case '\n':
+                        if (j + 1 >= m) {
+                            return overflow(input, i, output, j);
+                        }
+                        out[j++] = '\\';
+                        out[j++] = 'n';
+                        break;
+                    case '\f':
+                        if (j + 1 >= m) {
+                            return overflow(input, i, output, j);
+                        }
+                        out[j++] = '\\';
+                        out[j++] = 'f';
+                        break;
+                    case '\r':
+                        if (j + 1 >= m) {
+                            return overflow(input, i, output, j);
+                        }
+                        out[j++] = '\\';
+                        out[j++] = 'r';
+                        break;
+                    default:
+                        if (ch <= '\377') {
+                            longEscapeNeeded:
+                            {
+                                if (ch <= '\37') {
+                                    // "short" octal escapes: '\0' to '\37'
+                                    // cannot be followed by '0' to '7' thus
+                                    // require a lookahead to use.
+                                    if (i + 1 < n) {
+                                        char la = in[i + 1];
+                                        if ('0' <= la && la <= '7') {
+                                            break longEscapeNeeded;
+                                        }
+                                    } else if (!endOfInput) {
+                                        // need more characters to see if we can use
+                                        // a short octal escape.
+                                        break charLoop;
                                     }
-                                } else if (!endOfInput) {
-                                    // need more characters to see if we can use
-                                    // a short octal escape.
-                                    break charLoop;
-                                }
 
-                                if (ch <= '\7') {
-                                    if (j+1 >= m) {
-                                        return overflow(input, i, output, j);
+                                    if (ch <= '\7') {
+                                        if (j + 1 >= m) {
+                                            return overflow(input, i, output, j);
+                                        }
+                                        out[j++] = '\\';
+                                        out[j++] = (char) (ch + '0');
+                                    } else {
+                                        if (j + 2 >= m) {
+                                            return overflow(input, i, output, j);
+                                        }
+                                        out[j++] = '\\';
+                                        out[j++] = (char) ((ch >>> OCT_SHIFT) + '0');
+                                        out[j++] = (char) ((ch & OCT_MASK) + '0');
                                     }
-                                    out[j++] = '\\';
-                                    out[j++] = (char)(ch + '0');
-                                } else {
-                                    if (j+2 >= m) {
-                                        return overflow(input, i, output, j);
-                                    }
-                                    out[j++] = '\\';
-                                    out[j++] = (char)((ch >>> OCT_SHIFT) + '0');
-                                    out[j++] = (char)((ch & OCT_MASK) + '0');
-                                }
 
-                                continue;
+                                    continue;
+                                }
                             }
-                        }
 
-                        if (j + OCT_ESCAPE_LENGTH > m) {
-                            return overflow(input, i, output, j);
+                            if (j + OCT_ESCAPE_LENGTH > m) {
+                                return overflow(input, i, output, j);
+                            }
+                            out[j++] = '\\';
+                            out[j++] = (char) ((ch >>> 2 * OCT_SHIFT) + '0');
+                            out[j++] = (char) (((ch >>> OCT_SHIFT) & OCT_MASK) + '0');
+                            out[j++] = (char) ((ch & OCT_MASK) + '0');
+                        } else {
+                            if (j + U_ESCAPE_LENGTH > m) {
+                                return overflow(input, i, output, j);
+                            }
+                            out[j++] = '\\';
+                            out[j++] = 'u';
+                            out[j++] = HEX[ch >>> 3 * HEX_SHIFT];
+                            out[j++] = HEX[(ch >>> 2 * HEX_SHIFT) & HEX_MASK];
+                            out[j++] = HEX[(ch >>> HEX_SHIFT) & HEX_MASK];
+                            out[j++] = HEX[ch & HEX_MASK];
                         }
-                        out[j++] = '\\';
-                        out[j++] = (char)((ch >>> 2*OCT_SHIFT) + '0');
-                        out[j++] = (char)(((ch >>> OCT_SHIFT) & OCT_MASK) + '0');
-                        out[j++] = (char)((ch & OCT_MASK) + '0');
-                    } else {
-                        if (j+U_ESCAPE_LENGTH > m) {
-                            return overflow(input, i, output, j);
-                        }
-                        out[j++] = '\\';
-                        out[j++] = 'u';
-                        out[j++] = HEX[ch >>> 3*HEX_SHIFT];
-                        out[j++] = HEX[(ch >>> 2*HEX_SHIFT) & HEX_MASK];
-                        out[j++] = HEX[(ch >>> HEX_SHIFT) & HEX_MASK];
-                        out[j++] = HEX[ch & HEX_MASK];
-                    }
                 }
             }
         }

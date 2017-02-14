@@ -13,3 +13,4 @@ maven-eclipse.xml
 # Netbeans configuration
 nb-configuration.xml
 /target/
+/core/nbproject/

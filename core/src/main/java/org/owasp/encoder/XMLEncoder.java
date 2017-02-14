@@ -37,11 +37,13 @@ import java.nio.CharBuffer;
 import java.nio.charset.CoderResult;
 
 /**
- * XMLEncoder -- encoder for XML attribute and content data. It uses XML entity entity ("&amp;...;") to encode valid but
- * significant characters. Characters that are invalid according to the XML specification are replaced by a space character
- * (U+0020). This encoder supports several modes of operation, allowing for varying contexts, such as: attribute data between
- * single-quotes, attribute data between double-quotes, attribute data with indeterminate quotes, content, or a context safe for
- * all of the above.
+ * XMLEncoder -- encoder for XML attribute and content data. It uses XML entity
+ * entity ("&amp;...;") to encode valid but significant characters. Characters
+ * that are invalid according to the XML specification are replaced by a space
+ * character (U+0020). This encoder supports several modes of operation,
+ * allowing for varying contexts, such as: attribute data between single-quotes,
+ * attribute data between double-quotes, attribute data with indeterminate
+ * quotes, content, or a context safe for all of the above.
  *
  * @author jeffi
  */
@@ -94,32 +96,36 @@ class XMLEncoder extends Encoder {
     /**
      * An enum of supported "modes" of operation for the XMLEncoder.
      */
-    static enum Mode {
+    enum Mode {
 
         /**
-         * All significant characters are encoded (&amp; &lt; &gt; ' "). This mode is safe for use in either content or
-         * attributes. See note on {@link #CONTENT} for explanation of why '>' is encoded.
+         * All significant characters are encoded (&amp; &lt; &gt; ' "). This
+         * mode is safe for use in either content or attributes. See note on
+         * {@link #CONTENT} for explanation of why '>' is encoded.
          */
         ALL("&<>\'\""),
         /**
-         * Characters are encoded for content (a.k.a. "CharData"). This means &amp; &lt; and &gt;. Note: &gt; only requires
-         * encoding if it follows "]]". However for maximum compatibility and to avoid the overhead of looking for "]]", we just
-         * always encode '>' to '&amp;gt;'.
+         * Characters are encoded for content (a.k.a. "CharData"). This means
+         * &amp; &lt; and &gt;. Note: &gt; only requires encoding if it follows
+         * "]]". However for maximum compatibility and to avoid the overhead of
+         * looking for "]]", we just always encode '>' to '&amp;gt;'.
          */
         CONTENT("&<>"),
         /**
-         * Characters are encoded for attribute values--either single or double quoted. This means the characters &amp; &lt ' and
-         * " are encoded. Note: &gt; is NOT encoded, and thus this mode is not suitable for content.
+         * Characters are encoded for attribute values--either single or double
+         * quoted. This means the characters &amp; &lt ' and " are encoded.
+         * Note: &gt; is NOT encoded, and thus this mode is not suitable for
+         * content.
          */
         ATTRIBUTE("&<\'\""),
         /**
-         * Characters are encoded for single-quoted attribute values. Thus, the same as {@link #ATTRIBUTE} except ' is not
-         * encoded.
+         * Characters are encoded for single-quoted attribute values. Thus, the
+         * same as {@link #ATTRIBUTE} except ' is not encoded.
          */
         SINGLE_QUOTED_ATTRIBUTE("&<\'"),
         /**
-         * Characters are encoded for double-quoted attribute values. Thus, the same as {@link #ATTRIBUTE} except " is not
-         * encoded.
+         * Characters are encoded for double-quoted attribute values. Thus, the
+         * same as {@link #ATTRIBUTE} except " is not encoded.
          */
         DOUBLE_QUOTED_ATTRIBUTE("&<\""),;
 
@@ -131,7 +137,8 @@ class XMLEncoder extends Encoder {
         /**
          * Sole constructor.
          *
-         * @param encodedChars -- a string of characters must be encoded in this mode. This string is converted to a bit-mask.
+         * @param encodedChars -- a string of characters must be encoded in this
+         * mode. This string is converted to a bit-mask.
          */
         Mode(String encodedChars) {
             long encodeMask = 0;
@@ -152,8 +159,9 @@ class XMLEncoder extends Encoder {
     }
 
     /**
-     * Character to use as a replacement for invalid characters (Not to be confused with characters that require encoding).
-     * Invalid characters have no encoding, and are not allowed in the context.
+     * Character to use as a replacement for invalid characters (Not to be
+     * confused with characters that require encoding). Invalid characters have
+     * no encoding, and are not allowed in the context.
      */
     static final char INVALID_CHARACTER_REPLACEMENT = ' ';
 
@@ -162,7 +170,8 @@ class XMLEncoder extends Encoder {
      */
     private final long _validMask;
     /**
-     * The mode of operation--only really stored to provide a relevant toString implementation.
+     * The mode of operation--only really stored to provide a relevant toString
+     * implementation.
      */
     private final Mode _mode;
 
@@ -219,8 +228,10 @@ class XMLEncoder extends Encoder {
                 } else {
                     return i;
                 }
-            } else if (ch <= Character.MAX_LOW_SURROGATE || ch > '\ufffd'
-                    || ('\ufdd0' <= ch && ch <= '\ufdef')) {
+            } else if (ch <= Character.MAX_LOW_SURROGATE
+                    || ch > '\ufffd'
+                    || ('\ufdd0' <= ch && ch <= '\ufdef'))
+            {
                 return i;
 //            } else {
 //                // valid
@@ -355,11 +366,12 @@ class XMLEncoder extends Encoder {
                 } else {
                     break;
                 }
-            } else if ( // low surrogate without preceding high surrogate
+            } else if (// low surrogate without preceding high surrogate
                     ch <= Character.MAX_LOW_SURROGATE
-                    || // non characters
-                    ch > '\ufffd'
-                    || ('\ufdd0' <= ch && ch <= '\ufdef')) {
+                    // or non-characters
+                    || ch > '\ufffd'
+                    || ('\ufdd0' <= ch && ch <= '\ufdef'))
+            {
                 if (j >= m) {
                     return overflow(input, i, output, j);
                 }

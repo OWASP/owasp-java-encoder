@@ -68,7 +68,7 @@ class ChainedEncoder extends Encoder {
      * @param first the first encoder to apply
      * @param last the second/last encoder to apply.
      */
-    public ChainedEncoder(Encoder first, Encoder last) {
+    ChainedEncoder(Encoder first, Encoder last) {
         _first = first;
         _last = last;
     }

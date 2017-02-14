@@ -347,22 +347,54 @@ public final class Encode {
      *     </tr>
      *   </thead>
      *   <tbody>
-     *     <tr class="altColor"><td class="colFirst">{@code U+0009} (horizontal tab)</td><td class="colLast">{@code &#9;}</td></tr>
-     *     <tr class="rowColor"><td class="colFirst">{@code U+000A} (line feed)</td><td class="colLast">{@code &#10;}</td></tr>
-     *     <tr class="altColor"><td class="colFirst">{@code U+000C} (form feed)</td><td class="colLast">{@code &#12;}</td></tr>
-     *     <tr class="rowColor"><td class="colFirst">{@code U+000D} (carriage return)</td><td class="colLast">{@code &#13;}</td></tr>
-     *     <tr class="altColor"><td class="colFirst">{@code U+0020} (space)</td><td class="colLast">{@code &#32;}</td></tr>
-     *     <tr class="rowColor"><td class="colFirst">{@code &}</td><td class="colLast">{@code &amp;}</td></tr>
-     *     <tr class="altColor"><td class="colFirst">{@code <}</td><td class="colLast">{@code &lt;}</td></tr>
-     *     <tr class="rowColor"><td class="colFirst">{@code >}</td><td class="colLast">{@code &gt;}</td></tr>
-     *     <tr class="altColor"><td class="colFirst">{@code "}</td><td class="colLast">{@code &#34;}</td></tr>
-     *     <tr class="rowColor"><td class="colFirst">{@code '}</td><td class="colLast">{@code &#39;}</td></tr>
-     *     <tr class="altColor"><td class="colFirst">{@code /}</td><td class="colLast">{@code &#47;}</td></tr>
-     *     <tr class="rowColor"><td class="colFirst">{@code =}</td><td class="colLast">{@code &#61;}</td></tr>
-     *     <tr class="altColor"><td class="colFirst">{@code `}</td><td class="colLast">{@code &#96;}</td></tr>
-     *     <tr class="rowColor"><td class="colFirst">{@code U+0085} (next line)</td><td class="colLast">{@code &#133;}</td></tr>
-     *     <tr class="altColor"><td class="colFirst">{@code U+2028} (line separator)</td><td class="colLast">{@code &#8232;}</td></tr>
-     *     <tr class="rowColor"><td class="colFirst">{@code U+2029} (paragraph separator)</td><td class="colLast">{@code &#8233;}</td></tr>
+     *     <tr class="altColor">
+     *         <td class="colFirst">{@code U+0009} (horizontal tab)</td>
+     *         <td class="colLast">{@code &#9;}</td></tr>
+     *     <tr class="rowColor">
+     *         <td class="colFirst">{@code U+000A} (line feed)</td>
+     *         <td class="colLast">{@code &#10;}</td></tr>
+     *     <tr class="altColor">
+     *         <td class="colFirst">{@code U+000C} (form feed)</td>
+     *         <td class="colLast">{@code &#12;}</td></tr>
+     *     <tr class="rowColor">
+     *         <td class="colFirst">{@code U+000D} (carriage return)</td>
+     *         <td class="colLast">{@code &#13;}</td></tr>
+     *     <tr class="altColor">
+     *         <td class="colFirst">{@code U+0020} (space)</td>
+     *         <td class="colLast">{@code &#32;}</td></tr>
+     *     <tr class="rowColor">
+     *         <td class="colFirst">{@code &}</td>
+     *         <td class="colLast">{@code &amp;}</td></tr>
+     *     <tr class="altColor">
+     *         <td class="colFirst">{@code <}</td>
+     *         <td class="colLast">{@code &lt;}</td></tr>
+     *     <tr class="rowColor">
+     *         <td class="colFirst">{@code >}</td>
+     *         <td class="colLast">{@code &gt;}</td></tr>
+     *     <tr class="altColor">
+     *         <td class="colFirst">{@code "}</td>
+     *         <td class="colLast">{@code &#34;}</td></tr>
+     *     <tr class="rowColor">
+     *         <td class="colFirst">{@code '}</td>
+     *         <td class="colLast">{@code &#39;}</td></tr>
+     *     <tr class="altColor">
+     *         <td class="colFirst">{@code /}</td>
+     *         <td class="colLast">{@code &#47;}</td></tr>
+     *     <tr class="rowColor">
+     *         <td class="colFirst">{@code =}</td>
+     *         <td class="colLast">{@code &#61;}</td></tr>
+     *     <tr class="altColor">
+     *         <td class="colFirst">{@code `}</td>
+     *         <td class="colLast">{@code &#96;}</td></tr>
+     *     <tr class="rowColor">
+     *         <td class="colFirst">{@code U+0085} (next line)</td>
+     *         <td class="colLast">{@code &#133;}</td></tr>
+     *     <tr class="altColor">
+     *         <td class="colFirst">{@code U+2028} (line separator)</td>
+     *         <td class="colLast">{@code &#8232;}</td></tr>
+     *     <tr class="rowColor">
+     *         <td class="colFirst">{@code U+2029} (paragraph separator)</td>
+     *         <td class="colLast">{@code &#8233;}</td></tr>
      *   </tbody>
      * </table>
      *
@@ -1294,9 +1326,8 @@ public final class Encode {
                 // else, it's an overflow, we need to use a new output buffer
                 // we'll allocate this buffer to be the exact size of the worst
                 // case, guaranteeing a second overflow would not be possible.
-                CharBuffer tmp = CharBuffer.allocate(
-                    _output.position() +
-                    encoder.maxEncodedLength(_input.remaining()));
+                CharBuffer tmp = CharBuffer.allocate(_output.position()
+                            + encoder.maxEncodedLength(_input.remaining()));
 
                 // copy over everything that has been encoded so far
                 tmp.put(_output.array(), 0, _output.position());
