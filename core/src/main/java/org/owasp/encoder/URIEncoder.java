@@ -168,7 +168,7 @@ class URIEncoder extends Encoder {
      * Encoding mode of operation for URI encodes. The modes define which characters get encoded using %-encoding, and which do
      * not.
      */
-    public static enum Mode {
+    public enum Mode {
 
         /**
          * In "component" mode, only the unreserved characters are left unescaped. Everything else is escaped.
@@ -235,7 +235,7 @@ class URIEncoder extends Encoder {
     /**
      * Constructor equivalent to @{code URIEncoder(Mode.FULL_URI)}.
      */
-    public URIEncoder() {
+    URIEncoder() {
         this(Mode.FULL_URI);
     }
 
@@ -244,7 +244,7 @@ class URIEncoder extends Encoder {
      *
      * @param mode the encoding mode for this encoder.
      */
-    public URIEncoder(Mode mode) {
+    URIEncoder(Mode mode) {
         _mode = mode;
         _lowMask = mode.lowMask();
         _highMask = mode.highMask();

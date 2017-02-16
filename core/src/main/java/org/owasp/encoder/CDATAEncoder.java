@@ -37,12 +37,16 @@ import java.nio.CharBuffer;
 import java.nio.charset.CoderResult;
 
 /**
- * CDATAEncoder -- encoder for CDATA sections. CDATA sections are generally good for including large blocks of text that contain
- * characters that normally require encoding (ampersand, quotes, less-than, etc...). The CDATA context however still does not
- * allow invalid characters, and can be closed by the sequence "]]>". This encoder removes invalid XML characters, and encodes
- * "]]>" (to "]]]]>&lt;![CDATA[>"). The result is that the data integrity is maintained, but the code receiving the output will
- * have to handle multiple CDATA events. As an alternate approach, the caller could pre-encode "]]>" to something of their 
- * choosing (e.g. data.replaceAll("\\]\\]>", "]] >")), then use this encoder to remove any invalid XML characters.
+ * CDATAEncoder -- encoder for CDATA sections. CDATA sections are generally good
+ * for including large blocks of text that contain characters that normally
+ * require encoding (ampersand, quotes, less-than, etc...). The CDATA context
+ * however still does not allow invalid characters, and can be closed by the
+ * sequence "]]>". This encoder removes invalid XML characters, and encodes
+ * "]]>" (to "]]]]>&lt;![CDATA[>"). The result is that the data integrity is
+ * maintained, but the code receiving the output will have to handle multiple
+ * CDATA events. As an alternate approach, the caller could pre-encode "]]>" to
+ * something of their choosing (e.g. data.replaceAll("\\]\\]>", "]] >")), then
+ * use this encoder to remove any invalid XML characters.
  *
  * @author Jeff Ichnowski
  */
@@ -94,33 +98,31 @@ class CDATAEncoder extends Encoder {
 //                        // valid
                     }
 
-                } else {
-                    if (i + 1 < n) {
-                        if (input.charAt(i + 1) != ']') {
-                            // "]x" (next character is safe for this to be ']')
-                        } else {
-                            // "]]?"
-                            // keep looping through ']'
-                            for (; i + 2 < n && input.charAt(i + 2) == ']'; ++i) {
-                                // valid
-                            }
-                            // at this point we've looped through a sequence
-                            // of 2 or more "]", if the next character is ">"
-                            // we need to encode "]]>".
-                            if (i + 2 < n) {
-                                if (input.charAt(i + 2) == '>') {
-                                    return i;
+                } else if (i + 1 < n) {
+                    if (input.charAt(i + 1) != ']') {
+                        // "]x" (next character is safe for this to be ']')
+                    } else {
+                        // "]]?"
+                        // keep looping through ']'
+                        for (; i + 2 < n && input.charAt(i + 2) == ']'; ++i) {
+                            // valid
+                        }
+                        // at this point we've looped through a sequence
+                        // of 2 or more "]", if the next character is ">"
+                        // we need to encode "]]>".
+                        if (i + 2 < n) {
+                            if (input.charAt(i + 2) == '>') {
+                                return i;
 //                                } else {
 //                                    // valid
-                                }
-
-                            } else {
-                                return n;
                             }
+
+                        } else {
+                            return n;
                         }
-                    } else {
-                        return n;
                     }
+                } else {
+                    return n;
                 }
             } else if (ch < Character.MIN_HIGH_SURROGATE) {
                 if (ch <= Unicode.MAX_C1_CTRL_CHAR && ch != Unicode.NEL) {
@@ -145,11 +147,12 @@ class CDATAEncoder extends Encoder {
                     // end of input, high without low = invalid
                     return i;
                 }
-            } else if ( // low surrogate without preceding high surrogate
+            } else if (// low surrogate without preceding high surrogate
                     ch <= Character.MAX_LOW_SURROGATE
-                    || // non characters
-                    ch > '\ufffd'
-                    || ('\ufdd0' <= ch && ch <= '\ufdef')) {
+                    // or non-characters
+                    || ch > '\ufffd'
+                    || ('\ufdd0' <= ch && ch <= '\ufdef'))
+            {
                 return i;
 //            } else {
 //                // valid
@@ -180,63 +183,61 @@ class CDATAEncoder extends Encoder {
                     } else {
                         out[j++] = XMLEncoder.INVALID_CHARACTER_REPLACEMENT;
                     }
-                } else {
-                    if (i + 1 < n) {
-                        if (in[i + 1] != ']') {
-                            // "]x" (next character is safe for this to be ']')
+                } else if (i + 1 < n) {
+                    if (in[i + 1] != ']') {
+                        // "]x" (next character is safe for this to be ']')
+                        if (j >= m) {
+                            return overflow(input, i, output, j);
+                        }
+                        out[j++] = ']';
+                    } else {
+                        // "]]?"
+                        // keep looping through ']'
+                        for (; i + 2 < n && in[i + 2] == ']'; ++i) {
                             if (j >= m) {
                                 return overflow(input, i, output, j);
                             }
                             out[j++] = ']';
-                        } else {
-                            // "]]?"
-                            // keep looping through ']'
-                            for (; i + 2 < n && in[i + 2] == ']'; ++i) {
+                        }
+                        // at this point we've looped through a sequence
+                        // of 2 or more "]", if the next character is ">"
+                        // we need to encode "]]>".
+                        if (i + 2 < n) {
+                            if (in[i + 2] == '>') {
+                                if (j + CDATA_END_ENCODED_LENGTH > m) {
+                                    return overflow(input, i, output, j);
+                                }
+                                System.arraycopy(CDATA_END_ENCODED, 0, out, j, CDATA_END_ENCODED_LENGTH);
+                                j += CDATA_END_ENCODED_LENGTH;
+                                i += 2;
+                            } else {
                                 if (j >= m) {
                                     return overflow(input, i, output, j);
                                 }
                                 out[j++] = ']';
                             }
-                            // at this point we've looped through a sequence
-                            // of 2 or more "]", if the next character is ">"
-                            // we need to encode "]]>".
-                            if (i + 2 < n) {
-                                if (in[i + 2] == '>') {
-                                    if (j + CDATA_END_ENCODED_LENGTH > m) {
-                                        return overflow(input, i, output, j);
-                                    }
-                                    System.arraycopy(CDATA_END_ENCODED, 0, out, j, CDATA_END_ENCODED_LENGTH);
-                                    j += CDATA_END_ENCODED_LENGTH;
-                                    i += 2;
-                                } else {
-                                    if (j >= m) {
-                                        return overflow(input, i, output, j);
-                                    }
-                                    out[j++] = ']';
-                                }
-                            } else if (endOfInput) {
-                                if (j + 2 > m) {
-                                    return overflow(input, i, output, j);
-                                }
-                                out[j++] = ']';
-                                out[j++] = ']';
-                                i = n;
-                                break;
-                            } else {
-                                break;
+                        } else if (endOfInput) {
+                            if (j + 2 > m) {
+                                return overflow(input, i, output, j);
                             }
+                            out[j++] = ']';
+                            out[j++] = ']';
+                            i = n;
+                            break;
+                        } else {
+                            break;
                         }
-                    } else if (endOfInput) {
-                        // seen "]", then end of input.
-                        if (j >= m) {
-                            return overflow(input, i, output, j);
-                        }
-                        out[j++] = ']';
-                        i++;
-                        break;
-                    } else {
-                        break;
                     }
+                } else if (endOfInput) {
+                    // seen "]", then end of input.
+                    if (j >= m) {
+                        return overflow(input, i, output, j);
+                    }
+                    out[j++] = ']';
+                    i++;
+                    break;
+                } else {
+                    break;
                 }
             } else if (ch < Character.MIN_HIGH_SURROGATE) {
                 if (ch > Unicode.MAX_C1_CTRL_CHAR || ch == Unicode.NEL) {
@@ -284,11 +285,12 @@ class CDATAEncoder extends Encoder {
                 } else {
                     break;
                 }
-            } else if ( // low surrogate without preceding high surrogate
+            } else if (// low surrogate without preceding high surrogate
                     ch <= Character.MAX_LOW_SURROGATE
-                    || // non characters
-                    ch > '\ufffd'
-                    || ('\ufdd0' <= ch && ch <= '\ufdef')) {
+                    // or non-characters
+                    || ch > '\ufffd'
+                    || ('\ufdd0' <= ch && ch <= '\ufdef'))
+            {
                 if (j >= m) {
                     return overflow(input, i, output, j);
                 }
@@ -299,9 +301,7 @@ class CDATAEncoder extends Encoder {
                 }
                 out[j++] = ch;
             }
-
         }
-
         return underflow(input, i, output, j);
     }
 

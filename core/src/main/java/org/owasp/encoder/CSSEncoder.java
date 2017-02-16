@@ -56,7 +56,7 @@ class CSSEncoder extends Encoder {
      * Encoding mode of operation--specified the set of characters that
      * required encoding.
      */
-    static enum Mode {
+    enum Mode {
         /**
          * String contexts.  Characters between quotes.
          *
@@ -136,7 +136,7 @@ class CSSEncoder extends Encoder {
      *
      * @param mode the mode of the encoder.
      */
-    public CSSEncoder(Mode mode) {
+    CSSEncoder(Mode mode) {
         _mode = mode;
         _lowMask = mode.lowMask();
         _highMask = mode.highMask();
@@ -256,10 +256,14 @@ class CSSEncoder extends Encoder {
             boolean needsSpace = false;
             if (i+1 < n) {
                 char la = in[i + 1];
-                if ('0' <= la && la <= '9' ||
-                    'a' <= la && la <= 'f' ||
-                    'A' <= la && la <= 'F' ||
-                    la == ' ' || la == '\n' || la == '\r' || la == '\t' || la == '\f')
+                if ('0' <= la && la <= '9'
+                        || 'a' <= la && la <= 'f'
+                        || 'A' <= la && la <= 'F'
+                        || la == ' '
+                        || la == '\n'
+                        || la == '\r'
+                        || la == '\t'
+                        || la == '\f')
                 {
                     needsSpace = true;
                     k++;

@@ -93,7 +93,7 @@
         <!-- <module name="NoWhitespaceAfter"/> -->
         <!-- <module name="NoWhitespaceBefore"/> -->
         <module name="OperatorWrap">
-            <property name="option" value="eol"/>
+            <property name="option" value="nl"/>
         </module>
         <module name="ParenPad"/>
         <module name="TypecastParenPad"/>
@@ -193,7 +193,7 @@
         <!-- TODO: add this back: <module name="TodoComment"/> -->
         <module name="UpperEll"/>
         <module name="Indentation">
-            <property name="caseIndent" value="0"/>
+            <property name="caseIndent" value="4"/>
         </module>
 
     </module>
