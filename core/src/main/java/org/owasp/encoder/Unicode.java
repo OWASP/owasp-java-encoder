@@ -31,7 +31,6 @@
 // STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
 // ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
 // OF THE POSSIBILITY OF SUCH DAMAGE.
-
 package org.owasp.encoder;
 
 /**
@@ -40,45 +39,57 @@ package org.owasp.encoder;
  * @author jeffi
  */
 final class Unicode {
-    /** No instances. */
-    private Unicode() {}
 
-    /** Highest ASCII (usually) valid ASCII char.  */
+    /**
+     * Highest ASCII (usually) valid ASCII char.
+     */
     static final char MAX_ASCII = '~';
 
-    /** ASCII "DEL" character.  */
+    /**
+     * ASCII "DEL" character.
+     */
     static final char DEL = 0x7f;
 
-
-    /** "Next Line" C1 control character. */
+    /**
+     * "Next Line" C1 control character.
+     */
     static final char NEL = 0x85;
-    /** Highest C1 control character. */
-    static final char MAX_C1_CTRL_CHAR = 0x9f;
 
+    /**
+     * Highest C1 control character.
+     */
+    static final char MAX_C1_CTRL_CHAR = 0x9f;
 
     /**
      * Unicode line separator character, must be encoded in some contexts.
      */
     static final char LINE_SEPARATOR = '\u2028';
+
     /**
      * Unicode paragraph separator character, must be encoded in some contexts.
      */
     static final char PARAGRAPH_SEPARATOR = '\u2029';
 
-
-    /** Bit-mask for Unicode non-characaters (XXfffe and XXffff). */
+    /**
+     * Bit-mask for Unicode non-characaters (XXfffe and XXffff).
+     */
     static final int NON_CHAR_MASK = 0xfffe;
 
     /**
-     * Returns true if the argument is not a character according to
-     * the Unicode standard.  Non-characters have the format XXfffe
-     * and XXffff, where XX is any code plane, and "fffe/ffff" is
-     * the low 16-bits in hex.
+     * Returns true if the argument is not a character according to the Unicode
+     * standard. Non-characters have the format XXfffe and XXffff, where XX is
+     * any code plane, and "fffe/ffff" is the low 16-bits in hex.
      *
      * @param cp the unicode code-point to check
      * @return true if {@code cp} is not a character.
      */
     static boolean isNonCharacter(int cp) {
         return (cp & NON_CHAR_MASK) == NON_CHAR_MASK;
+    }
+
+    /**
+     * No instances.
+     */
+    private Unicode() {
     }
 }
