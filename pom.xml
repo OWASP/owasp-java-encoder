@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="US-ASCII"?>
-
 <!--
 ~ Copyright (c) 2015 OWASP.
 ~ All rights reserved.
@@ -42,7 +41,7 @@
 
     <groupId>org.owasp.encoder</groupId>
     <artifactId>encoder-parent</artifactId>
-    <version>1.2.1-SNAPSHOT</version>
+    <version>1.2.1</version>
     <packaging>pom</packaging>
 
     <name>OWASP Java Encoder Project</name>
