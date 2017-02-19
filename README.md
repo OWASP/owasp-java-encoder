@@ -53,7 +53,7 @@ News
 ### 2017-02-19 - 1.2.1 Release
 The team is happy to announce that version 1.2.1 has been released! 
 * The CDATA Encoder was modified so that it does not emit intermediate characters between adjacent CDATA sections.
-* The documentation on [gh-pages](https://owasp.github.io/owasp-java-encoder/) has been improved.
+* The documentation on [gh-pages](http://owasp.github.io/owasp-java-encoder/) has been improved.
 
 ### 2015-04-12 - 1.2 Release on GitHub
 OWASP Java Encoder has been moved to GitHub. Version 1.2 was also released!
