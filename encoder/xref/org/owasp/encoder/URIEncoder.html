@@ -176,7 +176,7 @@
 <a class="jxr_linenumber" name="L168" href="#L168">168</a> <em class="jxr_javadoccomment">     * Encoding mode of operation for URI encodes. The modes define which characters get encoded using %-encoding, and which do</em>
 <a class="jxr_linenumber" name="L169" href="#L169">169</a> <em class="jxr_javadoccomment">     * not.</em>
 <a class="jxr_linenumber" name="L170" href="#L170">170</a> <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="L171" href="#L171">171</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> enum <a href="../../../org/owasp/encoder/XMLEncoder.html">Mode</a> {
+<a class="jxr_linenumber" name="L171" href="#L171">171</a>     <strong class="jxr_keyword">public</strong> enum <a href="../../../org/owasp/encoder/XMLEncoder.html">Mode</a> {
 <a class="jxr_linenumber" name="L172" href="#L172">172</a> 
 <a class="jxr_linenumber" name="L173" href="#L173">173</a>         <em class="jxr_javadoccomment">/**</em>
 <a class="jxr_linenumber" name="L174" href="#L174">174</a> <em class="jxr_javadoccomment">         * In "component" mode, only the unreserved characters are left unescaped. Everything else is escaped.</em>
@@ -243,7 +243,7 @@
 <a class="jxr_linenumber" name="L235" href="#L235">235</a>     <em class="jxr_javadoccomment">/**</em>
 <a class="jxr_linenumber" name="L236" href="#L236">236</a> <em class="jxr_javadoccomment">     * Constructor equivalent to @{code URIEncoder(Mode.FULL_URI)}.</em>
 <a class="jxr_linenumber" name="L237" href="#L237">237</a> <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="L238" href="#L238">238</a>     <strong class="jxr_keyword">public</strong> <a href="../../../org/owasp/encoder/URIEncoder.html">URIEncoder</a>() {
+<a class="jxr_linenumber" name="L238" href="#L238">238</a>     <a href="../../../org/owasp/encoder/URIEncoder.html">URIEncoder</a>() {
 <a class="jxr_linenumber" name="L239" href="#L239">239</a>         <strong class="jxr_keyword">this</strong>(Mode.FULL_URI);
 <a class="jxr_linenumber" name="L240" href="#L240">240</a>     }
 <a class="jxr_linenumber" name="L241" href="#L241">241</a> 
@@ -252,7 +252,7 @@
 <a class="jxr_linenumber" name="L244" href="#L244">244</a> <em class="jxr_javadoccomment">     *</em>
 <a class="jxr_linenumber" name="L245" href="#L245">245</a> <em class="jxr_javadoccomment">     * @param mode the encoding mode for this encoder.</em>
 <a class="jxr_linenumber" name="L246" href="#L246">246</a> <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="L247" href="#L247">247</a>     <strong class="jxr_keyword">public</strong> <a href="../../../org/owasp/encoder/URIEncoder.html">URIEncoder</a>(<a href="../../../org/owasp/encoder/XMLEncoder.html">Mode</a> mode) {
+<a class="jxr_linenumber" name="L247" href="#L247">247</a>     <a href="../../../org/owasp/encoder/URIEncoder.html">URIEncoder</a>(<a href="../../../org/owasp/encoder/XMLEncoder.html">Mode</a> mode) {
 <a class="jxr_linenumber" name="L248" href="#L248">248</a>         _mode = mode;
 <a class="jxr_linenumber" name="L249" href="#L249">249</a>         _lowMask = mode.lowMask();
 <a class="jxr_linenumber" name="L250" href="#L250">250</a>         _highMask = mode.highMask();
@@ -400,6 +400,6 @@
 <a class="jxr_linenumber" name="L392" href="#L392">392</a> }
 </pre>
 <hr/>
-<div id="footer">Copyright &#169; 2011&#x2013;2015 <a href="https://www.owasp.org/">OWASP (Open Web-Application Security Project)</a>. All rights reserved.</div>
+<div id="footer">Copyright &#169; 2011&#x2013;2017 <a href="https://www.owasp.org/">OWASP (Open Web-Application Security Project)</a>. All rights reserved.</div>
 </body>
 </html>

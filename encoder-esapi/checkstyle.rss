@@ -19,11 +19,11 @@ under the License.
 -->
 <rss version="0.91">
   <channel>
-    <title>OWASP Encoders ESAPI Thunk - Checkstyle report</title>
+    <title>ESAPI Thunk - Checkstyle report</title>
     <link>https://www.owasp.org/index.php/OWASP_Java_Encoder_Project/encoder-esapi</link>
-    <description>OWASP Encoders ESAPI Thunk - Checkstyle report</description>
+    <description>ESAPI Thunk - Checkstyle report</description>
     <language>en-us</language>
-    <copyright>&#169;2011 - 2015 OWASP (Open Web-Application Security Project)</copyright>
+    <copyright>&#169;2011 - 2017 OWASP (Open Web-Application Security Project)</copyright>
     <item>
       <title>File: 1,
              Errors: 0,

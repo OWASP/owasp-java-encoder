@@ -53,12 +53,12 @@
 <a class="jxr_linenumber" name="L45" href="#L45">45</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">class</strong> <a href="../../../org/owasp/encoder/CDATAEncoderTest.html">CDATAEncoderTest</a> <strong class="jxr_keyword">extends</strong> TestCase {
 <a class="jxr_linenumber" name="L46" href="#L46">46</a>      <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> Test suite() {
 <a class="jxr_linenumber" name="L47" href="#L47">47</a>          <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">new</strong> <a href="../../../org/owasp/encoder/EncoderTestSuiteBuilder.html">EncoderTestSuiteBuilder</a>(CDATAEncoderTest.<strong class="jxr_keyword">class</strong>, <strong class="jxr_keyword">new</strong> CDATAEncoder(), <span class="jxr_string">"-safe-"</span>, <span class="jxr_string">"-]]&gt;-"</span>)
-<a class="jxr_linenumber" name="L48" href="#L48">48</a>              .encode(<span class="jxr_string">"]]&gt;]]&lt;![CDATA[&gt;"</span>, <span class="jxr_string">"]]&gt;"</span>)
+<a class="jxr_linenumber" name="L48" href="#L48">48</a>              .encode(<span class="jxr_string">"]]]]&gt;&lt;![CDATA[&gt;"</span>, <span class="jxr_string">"]]&gt;"</span>)
 <a class="jxr_linenumber" name="L49" href="#L49">49</a>              .encode(<span class="jxr_string">"]"</span>, <span class="jxr_string">"]"</span>)
 <a class="jxr_linenumber" name="L50" href="#L50">50</a>              .encode(<span class="jxr_string">"]]"</span>, <span class="jxr_string">"]]"</span>)
-<a class="jxr_linenumber" name="L51" href="#L51">51</a>              .encode(<span class="jxr_string">"]]&gt;]]&lt;![CDATA[&gt;]"</span>, <span class="jxr_string">"]]&gt;]"</span>)
-<a class="jxr_linenumber" name="L52" href="#L52">52</a>              .encode(<span class="jxr_string">"]]&gt;]]&lt;![CDATA[&gt;]&gt;"</span>, <span class="jxr_string">"]]&gt;]&gt;"</span>)
-<a class="jxr_linenumber" name="L53" href="#L53">53</a>              .encode(<span class="jxr_string">"]]&gt;]]&lt;![CDATA[&gt;&gt;"</span>, <span class="jxr_string">"]]&gt;&gt;"</span>)
+<a class="jxr_linenumber" name="L51" href="#L51">51</a>              .encode(<span class="jxr_string">"]]]]&gt;&lt;![CDATA[&gt;]"</span>, <span class="jxr_string">"]]&gt;]"</span>)
+<a class="jxr_linenumber" name="L52" href="#L52">52</a>              .encode(<span class="jxr_string">"]]]]&gt;&lt;![CDATA[&gt;]&gt;"</span>, <span class="jxr_string">"]]&gt;]&gt;"</span>)
+<a class="jxr_linenumber" name="L53" href="#L53">53</a>              .encode(<span class="jxr_string">"]]]]&gt;&lt;![CDATA[&gt;&gt;"</span>, <span class="jxr_string">"]]&gt;&gt;"</span>)
 <a class="jxr_linenumber" name="L54" href="#L54">54</a>              .encode(<span class="jxr_string">"]]]]]"</span>, <span class="jxr_string">"]]]]]"</span>)
 <a class="jxr_linenumber" name="L55" href="#L55">55</a>              .encode(<span class="jxr_string">"&lt;\&quot;&amp;\'&gt;"</span>, <span class="jxr_string">"&lt;\&quot;&amp;\'&gt;"</span>) <em class="jxr_comment">// valid in CDATA, not in XML</em>
 <a class="jxr_linenumber" name="L56" href="#L56">56</a>  
@@ -107,6 +107,6 @@
 <a class="jxr_linenumber" name="L99" href="#L99">99</a>  }
 </pre>
 <hr/>
-<div id="footer">Copyright &#169; 2011&#x2013;2015 <a href="https://www.owasp.org/">OWASP (Open Web-Application Security Project)</a>. All rights reserved.</div>
+<div id="footer">Copyright &#169; 2011&#x2013;2017 <a href="https://www.owasp.org/">OWASP (Open Web-Application Security Project)</a>. All rights reserved.</div>
 </body>
 </html>

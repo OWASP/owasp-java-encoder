@@ -19,14 +19,14 @@ under the License.
 -->
 <rss version="0.91">
   <channel>
-    <title>OWASP Encoders - Checkstyle report</title>
+    <title>Java Encoder - Checkstyle report</title>
     <link>https://www.owasp.org/index.php/OWASP_Java_Encoder_Project/encoder</link>
-    <description>OWASP Encoders - Checkstyle report</description>
+    <description>Java Encoder - Checkstyle report</description>
     <language>en-us</language>
-    <copyright>&#169;2011 - 2015 OWASP (Open Web-Application Security Project)</copyright>
+    <copyright>&#169;2011 - 2017 OWASP (Open Web-Application Security Project)</copyright>
     <item>
       <title>File: 16,
-             Errors: 80,
+             Errors: 1,
              Warnings: 0,
              Infos: 0
       </title>
@@ -60,35 +60,7 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="https://www.owasp.org/index.php/OWASP_Java_Encoder_Project/encoder/checkstyle.html#org.owasp.encoder.Encode.java">org/owasp/encoder/Encode.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-              </tr>
-                          <tr>
-                <td>
                   <a href="https://www.owasp.org/index.php/OWASP_Java_Encoder_Project/encoder/checkstyle.html#org.owasp.encoder.Encoders.java">org/owasp/encoder/Encoders.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="https://www.owasp.org/index.php/OWASP_Java_Encoder_Project/encoder/checkstyle.html#org.owasp.encoder.Encoder.java">org/owasp/encoder/Encoder.java</a>
                 </td>
                 <td>
                   0
@@ -112,90 +84,6 @@ under the License.
                 </td>
                 <td>
                   0
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="https://www.owasp.org/index.php/OWASP_Java_Encoder_Project/encoder/checkstyle.html#org.owasp.encoder.URIEncoder.java">org/owasp/encoder/URIEncoder.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  5
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="https://www.owasp.org/index.php/OWASP_Java_Encoder_Project/encoder/checkstyle.html#org.owasp.encoder.HTMLEncoder.java">org/owasp/encoder/HTMLEncoder.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="https://www.owasp.org/index.php/OWASP_Java_Encoder_Project/encoder/checkstyle.html#org.owasp.encoder.CDATAEncoder.java">org/owasp/encoder/CDATAEncoder.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  8
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="https://www.owasp.org/index.php/OWASP_Java_Encoder_Project/encoder/checkstyle.html#org.owasp.encoder.UnsupportedContextException.java">org/owasp/encoder/UnsupportedContextException.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="https://www.owasp.org/index.php/OWASP_Java_Encoder_Project/encoder/checkstyle.html#org.owasp.encoder.XMLEncoder.java">org/owasp/encoder/XMLEncoder.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  60
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="https://www.owasp.org/index.php/OWASP_Java_Encoder_Project/encoder/checkstyle.html#org.owasp.encoder.XMLCommentEncoder.java">org/owasp/encoder/XMLCommentEncoder.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  7
                 </td>
               </tr>
                           <tr>
@@ -228,7 +116,91 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="https://www.owasp.org/index.php/OWASP_Java_Encoder_Project/encoder/checkstyle.html#org.owasp.encoder.JavaEncoder.java">org/owasp/encoder/JavaEncoder.java</a>
+                  <a href="https://www.owasp.org/index.php/OWASP_Java_Encoder_Project/encoder/checkstyle.html#org.owasp.encoder.CDATAEncoder.java">org/owasp/encoder/CDATAEncoder.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://www.owasp.org/index.php/OWASP_Java_Encoder_Project/encoder/checkstyle.html#org.owasp.encoder.XMLEncoder.java">org/owasp/encoder/XMLEncoder.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://www.owasp.org/index.php/OWASP_Java_Encoder_Project/encoder/checkstyle.html#org.owasp.encoder.EncodedWriter.java">org/owasp/encoder/EncodedWriter.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://www.owasp.org/index.php/OWASP_Java_Encoder_Project/encoder/checkstyle.html#org.owasp.encoder.Encoder.java">org/owasp/encoder/Encoder.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://www.owasp.org/index.php/OWASP_Java_Encoder_Project/encoder/checkstyle.html#org.owasp.encoder.HTMLEncoder.java">org/owasp/encoder/HTMLEncoder.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  1
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://www.owasp.org/index.php/OWASP_Java_Encoder_Project/encoder/checkstyle.html#org.owasp.encoder.URIEncoder.java">org/owasp/encoder/URIEncoder.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://www.owasp.org/index.php/OWASP_Java_Encoder_Project/encoder/checkstyle.html#org.owasp.encoder.Encode.java">org/owasp/encoder/Encode.java</a>
                 </td>
                 <td>
                   0
@@ -256,7 +228,35 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="https://www.owasp.org/index.php/OWASP_Java_Encoder_Project/encoder/checkstyle.html#org.owasp.encoder.EncodedWriter.java">org/owasp/encoder/EncodedWriter.java</a>
+                  <a href="https://www.owasp.org/index.php/OWASP_Java_Encoder_Project/encoder/checkstyle.html#org.owasp.encoder.UnsupportedContextException.java">org/owasp/encoder/UnsupportedContextException.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://www.owasp.org/index.php/OWASP_Java_Encoder_Project/encoder/checkstyle.html#org.owasp.encoder.JavaEncoder.java">org/owasp/encoder/JavaEncoder.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://www.owasp.org/index.php/OWASP_Java_Encoder_Project/encoder/checkstyle.html#org.owasp.encoder.XMLCommentEncoder.java">org/owasp/encoder/XMLCommentEncoder.java</a>
                 </td>
                 <td>
                   0
