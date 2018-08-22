@@ -236,7 +236,7 @@ public final class Encode {
      *
      * <b>Example JSP Usage</b>
      * <pre>
-     *     &lt;div&gt;&lt;%=Encode.forHtml(unsafeData)%&gt;&lt;/div&gt;
+     *     &lt;div&gt;&lt;%=Encode.forHtmlAttribute(unsafeData)%&gt;&lt;/div&gt;
      * </pre>
      *
      * <table border="0" class="memberSummary" summary="Shows the input and results of encoding">
