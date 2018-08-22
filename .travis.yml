@@ -1,6 +1,19 @@
 language: java
+
+addons:
+  apt:
+    packages:
+      - openjdk-6-jdk
+
 jdk:
-  - oraclejdk8
-  - oraclejdk7
   - openjdk6
+  - openjdk7
+  - openjdk8
+  - openjdk9
+  - openjdk10
+  - openjdk11
+  - oraclejdk8
+  - oraclejdk9
+  - oraclejdk10
+
 script: mvn test -B -X
