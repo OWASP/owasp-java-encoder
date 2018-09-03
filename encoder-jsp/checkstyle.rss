@@ -23,7 +23,7 @@ under the License.
     <link>https://www.owasp.org/index.php/OWASP_Java_Encoder_Project/encoder-jsp</link>
     <description>JSP Encoder - Checkstyle report</description>
     <language>en-us</language>
-    <copyright>&#169;2011 - 2017 OWASP (Open Web-Application Security Project)</copyright>
+    <copyright>&#169;2011 - 2018 OWASP (Open Web-Application Security Project)</copyright>
     <item>
       <title>File: 18,
              Errors: 0,
@@ -144,7 +144,7 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="https://www.owasp.org/index.php/OWASP_Java_Encoder_Project/encoder-jsp/checkstyle.html#org.owasp.encoder.tag.ForUriTag.java">org/owasp/encoder/tag/ForUriTag.java</a>
+                  <a href="https://www.owasp.org/index.php/OWASP_Java_Encoder_Project/encoder-jsp/checkstyle.html#org.owasp.encoder.tag.ForXmlAttributeTag.java">org/owasp/encoder/tag/ForXmlAttributeTag.java</a>
                 </td>
                 <td>
                   0
@@ -158,7 +158,7 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="https://www.owasp.org/index.php/OWASP_Java_Encoder_Project/encoder-jsp/checkstyle.html#org.owasp.encoder.tag.ForXmlAttributeTag.java">org/owasp/encoder/tag/ForXmlAttributeTag.java</a>
+                  <a href="https://www.owasp.org/index.php/OWASP_Java_Encoder_Project/encoder-jsp/checkstyle.html#org.owasp.encoder.tag.ForUriTag.java">org/owasp/encoder/tag/ForUriTag.java</a>
                 </td>
                 <td>
                   0
@@ -186,7 +186,7 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="https://www.owasp.org/index.php/OWASP_Java_Encoder_Project/encoder-jsp/checkstyle.html#org.owasp.encoder.tag.ForHtmlUnquotedAttributeTag.java">org/owasp/encoder/tag/ForHtmlUnquotedAttributeTag.java</a>
+                  <a href="https://www.owasp.org/index.php/OWASP_Java_Encoder_Project/encoder-jsp/checkstyle.html#org.owasp.encoder.tag.ForJavaScriptSourceTag.java">org/owasp/encoder/tag/ForJavaScriptSourceTag.java</a>
                 </td>
                 <td>
                   0
@@ -200,7 +200,7 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="https://www.owasp.org/index.php/OWASP_Java_Encoder_Project/encoder-jsp/checkstyle.html#org.owasp.encoder.tag.ForJavaScriptSourceTag.java">org/owasp/encoder/tag/ForJavaScriptSourceTag.java</a>
+                  <a href="https://www.owasp.org/index.php/OWASP_Java_Encoder_Project/encoder-jsp/checkstyle.html#org.owasp.encoder.tag.ForHtmlUnquotedAttributeTag.java">org/owasp/encoder/tag/ForHtmlUnquotedAttributeTag.java</a>
                 </td>
                 <td>
                   0
@@ -228,7 +228,7 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="https://www.owasp.org/index.php/OWASP_Java_Encoder_Project/encoder-jsp/checkstyle.html#org.owasp.encoder.tag.ForCDATATag.java">org/owasp/encoder/tag/ForCDATATag.java</a>
+                  <a href="https://www.owasp.org/index.php/OWASP_Java_Encoder_Project/encoder-jsp/checkstyle.html#org.owasp.encoder.tag.ForXmlCommentTag.java">org/owasp/encoder/tag/ForXmlCommentTag.java</a>
                 </td>
                 <td>
                   0
@@ -242,7 +242,7 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="https://www.owasp.org/index.php/OWASP_Java_Encoder_Project/encoder-jsp/checkstyle.html#org.owasp.encoder.tag.ForXmlCommentTag.java">org/owasp/encoder/tag/ForXmlCommentTag.java</a>
+                  <a href="https://www.owasp.org/index.php/OWASP_Java_Encoder_Project/encoder-jsp/checkstyle.html#org.owasp.encoder.tag.ForCDATATag.java">org/owasp/encoder/tag/ForCDATATag.java</a>
                 </td>
                 <td>
                   0
