@@ -50,6 +50,10 @@ Happy Encoding!
 
 News
 ----
+### 2018-09-14 - 1.2.2 Release
+The team is happy to announce that version 1.2.2 has been released! 
+* This is a minor release fixing documentation and licensing issues.
+
 ### 2017-02-19 - 1.2.1 Release
 The team is happy to announce that version 1.2.1 has been released! 
 * The CDATA Encoder was modified so that it does not emit intermediate characters between adjacent CDATA sections.
