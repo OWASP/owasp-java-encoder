@@ -1,0 +1,9 @@
+Manifest-Version: 1.0
+Bnd-LastModified: 1533328833261
+Bundle-ManifestVersion: 2
+Bundle-Name: org.owasp.encoder
+Bundle-SymbolicName: org.owasp.encoder
+Bundle-Version: 1.2.1
+Created-By: 1.8.0_181 (Oracle Corporation)
+Export-Package: org.owasp.encoder
+Tool: Bnd-1.50.0
