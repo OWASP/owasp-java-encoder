@@ -59,7 +59,7 @@ public class ForCssStringTagTest extends EncodingTagTest {
     /**
      * Test of doTag method, of class ForCssStringTag.
      * This is a very simple test that doesn't fully
-     * excersize/test the encoder - only that the
+     * exercise/test the encoder - only that the
      * tag itself works.
      * @throws Exception is thrown if the tag fails.
      */

@@ -1,7 +1,6 @@
 language: java
 
 jdk:
-  - openjdk7
   - openjdk8
   - oraclejdk8
 # to compile using JDK 9+ we must move from source and target 1.5 to 1.6 
