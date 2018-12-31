@@ -54,7 +54,7 @@ public abstract class EncodingTagTest extends TestCase {
     protected MockHttpServletResponse _response;
 
     /**
-     * Contructor for the EncodingTagTest
+     * Constructor for the EncodingTagTest
      * @param testName the name of the test
      */
     public EncodingTagTest(String testName) {
