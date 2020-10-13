@@ -35,8 +35,6 @@
 package org.owasp.encoder.esapi;
 
 import java.io.IOException;
-import java.net.URI;
-
 import org.owasp.encoder.Encode;
 import org.owasp.esapi.Encoder;
 import org.owasp.esapi.codecs.Codec;
@@ -237,16 +235,6 @@ public final class ESAPIEncoder {
         /** {@inheritDoc} */
         public byte[] decodeFromBase64(String s) throws IOException {
             return _referenceEncoder.decodeFromBase64(s);
-        }
-
-        /** {@inheritDoc} */
-        public String encodeForLDAP(String input, boolean encodeWildcards) {
-            return _referenceEncoder.encodeForLDAP(input, encodeWildcards);
-        }
-
-        /** {@inheritDoc} */
-        public String getCanonicalizedURI(URI dirtyUri) {
-            return _referenceEncoder.getCanonicalizedURI(dirtyUri);
         }
     }
 }
