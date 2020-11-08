@@ -48,6 +48,11 @@ Happy Encoding!
 
 News
 ----
+### 2020-11-08 - 1.2.3 Release
+The team is happy to announce that version 1.2.3 has been released! 
+* Update to  make the manifest OSGi-compliant (#39).
+* Update to support ESAPI 2.2 and later (#37).
+
 ### 2018-09-14 - 1.2.2 Release
 The team is happy to announce that version 1.2.2 has been released! 
 * This is a minor release fixing documentation and licensing issues.
