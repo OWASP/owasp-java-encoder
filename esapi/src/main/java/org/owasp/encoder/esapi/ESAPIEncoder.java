@@ -63,7 +63,7 @@ import org.owasp.esapi.reference.DefaultEncoder;
  *     <li>Input validation/normalization methods:
  *     {@link org.owasp.esapi.Encoder#canonicalize(String)},
  *     {@link org.owasp.esapi.Encoder#canonicalize(String, boolean)},
- *     {@link org.owasp.esapi.Encoder#canonicalize(String, boolean, boolean)}</li>
+ *     {@link org.owasp.esapi.Encoder#canonicalize(String, boolean, boolean)}
  *     {@link org.owasp.esapi.Encoder#getCanonicalizedURI(URI)}</li>
  *
  *     <li>Decoding methods:
