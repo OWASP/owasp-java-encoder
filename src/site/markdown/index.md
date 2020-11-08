@@ -18,7 +18,7 @@ The JARs can be found in [Maven Central](https://search.maven.org/#search%7Cga%7
 <dependency>
     <groupId>org.owasp.encoder</groupId>
     <artifactId>encoder</artifactId>
-    <version>1.2.2</version>
+    <version>1.2.3</version>
 </dependency>
 ```
 
@@ -42,7 +42,7 @@ includes tags and a set of JSP EL functions:
 <dependency>
     <groupId>org.owasp.encoder</groupId>
     <artifactId>encoder-jsp</artifactId>
-    <version>1.2.2</version>
+    <version>1.2.3</version>
 </dependency>
 ```
 
