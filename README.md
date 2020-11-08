@@ -1,7 +1,7 @@
 OWASP Java Encoder Project
 ==========================
 
-[![Build Status](https://travis-ci.org/OWASP/owasp-java-encoder.svg?branch=master)](https://travis-ci.org/OWASP/owasp-java-encoder) [![License](https://img.shields.io/badge/License-BSD%203--Clause-blue.svg)](https://opensource.org/licenses/BSD-3-Clause)
+[![Build Status](https://travis-ci.org/OWASP/owasp-java-encoder.svg?branch=main)](https://travis-ci.org/OWASP/owasp-java-encoder) [![License](https://img.shields.io/badge/License-BSD%203--Clause-blue.svg)](https://opensource.org/licenses/BSD-3-Clause)
 
 Contextual Output Encoding is a computer programming technique necessary to stop
 Cross-Site Scripting. This project is a Java 1.5+ simple-to-use drop-in high-performance
@@ -11,7 +11,7 @@ Start using the OWASP Java Encoders
 -----------------------------------
 You can download a JAR from [Maven Central](https://search.maven.org/#search|ga|1|g%3A%22org.owasp.encoder%22%20a%3A%22encoder%22).
 
-JSP tags and EL functions are available in the encoder-jsp, also available in [Central](http://search.maven.org/remotecontent?filepath=org/owasp/encoder/encoder-jsp/1.2/encoder-jsp-1.2.jar).
+JSP tags and EL functions are available in the encoder-jsp, also available in [Central](http://search.maven.org/remotecontent?filepath=org/owasp/encoder/encoder-jsp/1.2.3/encoder-jsp-1.2.3.jar).
 
 The jars are also available in Maven:
 
@@ -19,20 +19,20 @@ The jars are also available in Maven:
 <dependency>
     <groupId>org.owasp.encoder</groupId>
     <artifactId>encoder</artifactId>
-    <version>1.2.2</version>
+    <version>1.2.3</version>
 </dependency>
 
 <dependency>
     <groupId>org.owasp.encoder</groupId>
     <artifactId>encoder-jsp</artifactId>
-    <version>1.2.2</version>
+    <version>1.2.3</version>
 </dependency>
 ```
 
 Quick Overview
 --------------
 The OWASP Java Encoder library is intended for quick contextual encoding with very little
-overhead, either in performance or usage. To get started, simply add the encoder-1.2.jar,
+overhead, either in performance or usage. To get started, simply add the encoder-1.2.3.jar,
 import org.owasp.encoder.Encode and start using.
 
 Example usage:
