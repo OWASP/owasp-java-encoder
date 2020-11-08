@@ -278,6 +278,7 @@ class HTMLEncoder extends Encoder {
         return j;
     }
 
+    //CSOFF: MethodLength
     @Override
     CoderResult encodeArrays(CharBuffer input, CharBuffer output, boolean endOfInput) {
         final char[] in = input.array();
@@ -494,4 +495,5 @@ class HTMLEncoder extends Encoder {
 
         return underflow(input, i, output, j);
     }
+    //CSON: MethodLength
 }
