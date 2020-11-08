@@ -25,7 +25,11 @@
         <property name="fileExtensions" value="java"/>
         <property name="id" value="header"/>
     </module>
-
+    <!-- Checks for Size Violations.                    -->
+    <!-- See http://checkstyle.sf.net/config_sizes.html -->
+    <module name="LineLength">
+        <property name="max" value="130"/>
+    </module>
     <module name="TreeWalker">
 
         <module name="JavadocMethod"/>
@@ -75,12 +79,6 @@
             <property name="option" value="bottom"/>
         </module>
 
-
-        <!-- Checks for Size Violations.                    -->
-        <!-- See http://checkstyle.sf.net/config_sizes.html -->
-        <module name="LineLength">
-            <property name="max" value="130"/>
-        </module>
         <module name="MethodLength"/>
         <module name="ParameterNumber"/>
 
