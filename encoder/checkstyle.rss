@@ -23,10 +23,10 @@ under the License.
     <link>https://www.owasp.org/index.php/OWASP_Java_Encoder_Project/encoder</link>
     <description>Java Encoder - Checkstyle report</description>
     <language>en-us</language>
-    <copyright>&#169;2011 - 2018 OWASP (Open Web-Application Security Project)</copyright>
+    <copyright>&#169;2011 - 2020 OWASP (Open Web-Application Security Project)</copyright>
     <item>
       <title>File: 16,
-             Errors: 1,
+             Errors: 0,
              Warnings: 0,
              Infos: 0
       </title>
@@ -167,7 +167,7 @@ under the License.
                   0
                 </td>
                 <td>
-                  1
+                  0
                 </td>
               </tr>
                           <tr>
