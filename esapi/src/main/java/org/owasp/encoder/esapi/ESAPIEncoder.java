@@ -35,6 +35,7 @@
 package org.owasp.encoder.esapi;
 
 import java.io.IOException;
+import java.net.URI;
 import org.owasp.encoder.Encode;
 import org.owasp.esapi.Encoder;
 import org.owasp.esapi.codecs.Codec;
@@ -63,6 +64,7 @@ import org.owasp.esapi.reference.DefaultEncoder;
  *     {@link org.owasp.esapi.Encoder#canonicalize(String)},
  *     {@link org.owasp.esapi.Encoder#canonicalize(String, boolean)},
  *     {@link org.owasp.esapi.Encoder#canonicalize(String, boolean, boolean)}</li>
+ *     {@link org.owasp.esapi.Encoder#getCanonicalizedURI(URI)}</li>
  *
  *     <li>Decoding methods:
  *     {@link org.owasp.esapi.Encoder#decodeForHTML(String)},
@@ -80,6 +82,7 @@ import org.owasp.esapi.reference.DefaultEncoder;
  *     <li>Rarely-used or alternate compatible encoding:
  *     {@link org.owasp.esapi.Encoder#encodeForVBScript(String)},
  *     {@link org.owasp.esapi.Encoder#encodeForLDAP(String)},
+ *     {@link org.owasp.esapi.Encoder#encodeForLDAP(String, boolean)},
  *     {@link org.owasp.esapi.Encoder#encodeForDN(String)}</li>
  * </ul>
  *
@@ -153,6 +156,11 @@ public final class ESAPIEncoder {
         }
 
         /** {@inheritDoc} */
+        public String getCanonicalizedURI(URI dirtyUri) {
+            return _referenceEncoder.getCanonicalizedURI(dirtyUri);
+        }
+
+        /** {@inheritDoc} */
         public String encodeForCSS(String s) {
             return Encode.forCssString(s);
         }
@@ -198,6 +206,11 @@ public final class ESAPIEncoder {
         }
 
         /** {@inheritDoc} */
+        public String encodeForLDAP(String s, boolean b) {
+            return _referenceEncoder.encodeForLDAP(s, b);
+        }
+
+        /** {@inheritDoc} */
         public String encodeForDN(String s) {
             return _referenceEncoder.encodeForDN(s);
         }
@@ -236,5 +249,6 @@ public final class ESAPIEncoder {
         public byte[] decodeFromBase64(String s) throws IOException {
             return _referenceEncoder.decodeFromBase64(s);
         }
+
     }
 }
