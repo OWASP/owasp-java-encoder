@@ -285,6 +285,7 @@
                             <instructions>
                                 <_noee>true</_noee>
                                 <_nouses>true</_nouses>
+                                <Automatic-Module-Name>${jigsaw.module.name}</Automatic-Module-Name>
                             </instructions>
                         </configuration>
                     </execution>

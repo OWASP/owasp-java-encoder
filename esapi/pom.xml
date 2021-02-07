@@ -54,6 +54,10 @@
         Projects API into an implementation of ESAPI.
     </description>
 
+    <properties>
+        <jigsaw.module.name>org.owasp.encoder.esapi</jigsaw.module.name>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>org.owasp.encoder</groupId>
