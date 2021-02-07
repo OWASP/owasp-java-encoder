@@ -7,4 +7,3 @@ Bundle-Version: 1.2.1
 Created-By: 1.8.0_181 (Oracle Corporation)
 Export-Package: org.owasp.encoder
 Tool: Bnd-1.50.0
-Automatic-Module-Name: org.owasp.encoder
