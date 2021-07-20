@@ -55,6 +55,10 @@
         definitions and JSP EL functions.
     </description>
 
+    <properties>
+        <jigsaw.module.name>org.owasp.encoder.jsp</jigsaw.module.name>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>org.owasp.encoder</groupId>
