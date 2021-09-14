@@ -53,7 +53,12 @@ import java.nio.charset.CoderResult;
  *
  * <p>Please make sure to read and understand the context that the method encodes
  * for.  Encoding for the incorrect context will likely lead to exposing a
- * cross-site scripting vulnerability.</p>
+ * cross-site scripting vulnerability. Those new to XSS mitigation may find it
+ * useful to read the
+ * <a href="https://cheatsheetseries.owasp.org/cheatsheets/Cross_Site_Scripting_Prevention_Cheat_Sheet.html">
+ * Cross Site Scripting Prevention Cheat Sheet</a> that is part of the OWASP Cheat Sheet series for background
+ * material.
+ * </p>
  *
  * @author Jeff Ichnowski
  */
@@ -66,7 +71,7 @@ public final class Encode {
      * this method encodes for both contexts, it may be slightly less
      * efficient to use this method over the methods targeted towards
      * the specific contexts ({@link #forHtmlAttribute(String)} and
-     * {@link #forHtmlContent(String)}.  In general this method should
+     * {@link #forHtmlContent(String)}).  In general this method should
      * be preferred unless you are really concerned with saving a few
      * bytes or are writing a framework that utilizes this
      * package.</p>
@@ -155,7 +160,7 @@ public final class Encode {
     /**
      * <p>This method encodes for HTML text content.  It does not escape
      * quotation characters and is thus unsafe for use with
-     * HTML attributes.  Use either forHtml or forHtmlAttribute for those
+     * HTML attributes.  Use either {@link #forHtml(String)} or {@link #forHtmlAttribute(String)} for those
      * methods.</p>
      *
      * <b>Example JSP Usage</b>
@@ -232,7 +237,9 @@ public final class Encode {
     }
 
     /**
-     * <p>This method encodes for HTML text attributes.</p>
+     * <p>This method encodes for HTML text attributes. Do not use for JavaScript event attributes or for attributes
+     * that are interpreted as a URL. Instead use {@link #forJavaScript(String)} and {@link #forUriComponent(String)}
+     * respectively for those.</p>
      *
      * <b>Example JSP Usage</b>
      * <pre>
@@ -472,15 +479,13 @@ public final class Encode {
      * <b>Encoding  Notes</b>
      * <ul>
      *
-     * <li>The following characters are encoded using hexidecimal
+     * <li>The following characters are encoded using hexadecimal
      * encodings: {@code U+0000} - {@code U+001f},
      * {@code "},
      * {@code '},
      * {@code \},
      * {@code <},
      * {@code &},
-     * {@code (},
-     * {@code )},
      * {@code /},
      * {@code >},
      * {@code U+007f},
@@ -488,7 +493,7 @@ public final class Encode {
      * paragraph separator ({@code U+2029}).</li>
      *
      * <li>Any character requiring encoding is encoded as {@code \xxx}
-     * where {@code xxx} is the shortest hexidecimal representation of
+     * where {@code xxx} is the shortest hexadecimal representation of
      * its Unicode code point (after decoding surrogate pairs if
      * necessary).  This encoding is never zero padded.  Thus, for
      * example, the tab character is encoded as {@code \9}, not {@code
@@ -496,7 +501,7 @@ public final class Encode {
      *
      * <li>The encoder looks ahead 1 character in the input and
      * appends a space to an encoding to avoid the next character
-     * becoming part of the hexidecimal encoded sequence.  Thus
+     * becoming part of the hexadecimal encoded sequence.  Thus
      * &ldquo;{@code '1}&rdquo; is encoded as &ldquo;{@code \27
      * 1}&rdquo;, and not as &ldquo;{@code \271}&rdquo;.  If a space
      * is not necessary, it is not included, thus &ldquo;{@code
@@ -544,13 +549,13 @@ public final class Encode {
      *     &lt;div style="background:url(&lt;=Encode.forCssUrl(...)%&gt;);"&gt;
      *
      *     &lt;style type="text/css"&gt;
-     *         background: url(&lt;%=Encode.forCssUrl(...)%&gt;);
+     *         background: url('&lt;%=Encode.forCssUrl(...)%&gt;');
      *     &lt;/style&gt;
      * </pre>
      * <b>Encoding  Notes</b>
      * <ul>
      *
-     * <li>The following characters are encoded using hexidecimal
+     * <li>The following characters are encoded using hexadecimal
      * encodings: {@code U+0000} - {@code U+001f},
      * {@code "},
      * {@code '},
@@ -564,7 +569,7 @@ public final class Encode {
      * paragraph separator ({@code U+2029}).</li>
      *
      * <li>Any character requiring encoding is encoded as {@code \xxx}
-     * where {@code xxx} is the shortest hexidecimal representation of
+     * where {@code xxx} is the shortest hexadecimal representation of
      * its Unicode code point (after decoding surrogate pairs if
      * necessary).  This encoding is never zero padded.  Thus, for
      * example, the tab character is encoded as {@code \9}, not {@code
@@ -572,7 +577,7 @@ public final class Encode {
      *
      * <li>The encoder looks ahead 1 character in the input and
      * appends a space to an encoding to avoid the next character
-     * becoming part of the hexidecimal encoded sequence.  Thus
+     * becoming part of the hexadecimal encoded sequence.  Thus
      * &ldquo;{@code '1}&rdquo; is encoded as &ldquo;{@code \27
      * 1}&rdquo;, and not as &ldquo;{@code \271}&rdquo;.  If a space
      * is not necessary, it is not included, thus &ldquo;{@code
@@ -639,7 +644,7 @@ public final class Encode {
      *   <li>URL encoding is an encoding for bytes, not unicode.  The
      *   input string is thus first encoded as a sequence of UTF-8
      *   byte.  The bytes are then encoded as {@code %xx} where {@code
-     *   xx} is the two-digit hexidecimal representation of the
+     *   xx} is the two-digit hexadecimal representation of the
      *   byte. (The implementation does this as one step for
      *   performance.)</li>
      *
@@ -690,7 +695,7 @@ public final class Encode {
      * <p>The following characters are <i>not</i> encoded:</p>
      * <pre>
      * U+20:                           - .   0 1 2 3 4 5 6 7 8 9
-     * U+40: @ A B C D E F G H I J K L M N O P Q R S T U V W X Y Z         _
+     * U+40:   A B C D E F G H I J K L M N O P Q R S T U V W X Y Z         _
      * U+60:   a b c d e f g h i j k l m n o p q r s t u v w x y z       ~
      * </pre>
      *
@@ -704,7 +709,7 @@ public final class Encode {
      *   <li>URL encoding is an encoding for bytes, not unicode.  The
      *   input string is thus first encoded as a sequence of UTF-8
      *   byte.  The bytes are then encoded as {@code %xx} where {@code
-     *   xx} is the two-digit hexidecimal representation of the
+     *   xx} is the two-digit hexadecimal representation of the
      *   byte. (The implementation does this as one step for
      *   performance.)</li>
      *
@@ -937,7 +942,7 @@ public final class Encode {
      * provide the surrounding quotation characters for the string.
      * Since this performs additional encoding so it can work in all
      * of the JavaScript contexts listed, it may be slightly less
-     * efficient than using one of the methods targetted to a specific
+     * efficient than using one of the methods targeted to a specific
      * JavaScript context ({@link #forJavaScriptAttribute(String)},
      * {@link #forJavaScriptBlock}, {@link #forJavaScriptSource}).
      * Unless you are interested in saving a few bytes of output or
