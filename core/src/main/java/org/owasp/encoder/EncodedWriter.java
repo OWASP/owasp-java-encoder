@@ -39,7 +39,7 @@ import java.nio.CharBuffer;
 import java.nio.charset.CoderResult;
 
 /**
- * EncodedWriter -- A writer the encodes all input for a specific context and writes the encoded output to another writer.
+ * EncodedWriter -- A writer that encodes all input for a specific context and writes the encoded output to another writer.
  *
  * @author Jeff Ichnowski
  */
