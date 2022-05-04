@@ -15,3 +15,6 @@ maven-eclipse.xml
 nb-configuration.xml
 */nbproject/*
 
+/jsp/target/
+/esapi/target/
+/target/
