@@ -37,7 +37,7 @@ package org.owasp.encoder.tag;
 import javax.servlet.jsp.tagext.SimpleTagSupport;
 
 /**
- * The base class for the encoding tags within tihs package.
+ * The base class for the encoding tags within this package.
  *
  * @author Jeremy Long (jeremy.long@gmail.com)
  */
