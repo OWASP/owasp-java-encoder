@@ -93,11 +93,11 @@
     </distributionManagement>
     <mailingLists>
         <mailingList>
-            <name>Owasp-java-encoder-project</name>
-            <subscribe>https://lists.owasp.org/mailman/listinfo/owasp-java-encoder-project</subscribe>
-            <unsubscribe>https://lists.owasp.org/mailman/listinfo/owasp-java-encoder-project</unsubscribe>
-            <post>owasp-java-encoder-project@lists.owasp.org</post>
-            <archive>http://lists.owasp.org/pipermail/owasp-java-encoder-project/</archive>
+            <name>OWASP Java Encoder Issues at GitHub</name>
+            <subscribe>https://github.com/OWASP/owasp-java-encoder/issues</subscribe>
+            <unsubscribe>https://github.com/OWASP/owasp-java-encoder/issues</unsubscribe>
+            <post>https://github.com/OWASP/owasp-java-encoder/issues</post>
+            <archive>https://github.com/OWASP/owasp-java-encoder/issues</archive>
         </mailingList>
     </mailingLists>
 
