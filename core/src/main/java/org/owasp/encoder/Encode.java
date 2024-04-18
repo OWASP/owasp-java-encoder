@@ -276,6 +276,8 @@ public final class Encode {
      *
      * <p><b>Additional Notes</b></p>
      * <ul>
+     * <li>When using this method, the caller must provide quotes around the attribute value.</li>
+     *
      * <li>Both the single-quote character ({@code '}) and the
      * double-quote character ({@code "}) are encoded so this is safe
      * for HTML attributes with either enclosing character.</li>
