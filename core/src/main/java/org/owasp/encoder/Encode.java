@@ -243,7 +243,7 @@ public final class Encode {
      *
      * <b>Example JSP Usage</b>
      * <pre>
-     *     &lt;div&gt;&lt;%=Encode.forHtmlAttribute(unsafeData)%&gt;&lt;/div&gt;
+     *     &lt;input value=&quot;&lt;%=Encode.forHtmlAttribute(unsafeData)%&gt;&quot; title=&#39;&lt;%=Encode.forHtmlAttribute(moreUnsafeData)%&gt;&#39; /&gt;
      * </pre>
      *
      * <table border="0" class="memberSummary" summary="Shows the input and results of encoding">
@@ -276,6 +276,8 @@ public final class Encode {
      *
      * <p><b>Additional Notes</b></p>
      * <ul>
+     * <li>When using this method, the caller must provide quotes around the attribute value.</li>
+     *
      * <li>Both the single-quote character ({@code '}) and the
      * double-quote character ({@code "}) are encoded so this is safe
      * for HTML attributes with either enclosing character.</li>
