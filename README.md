@@ -4,7 +4,7 @@ OWASP Java Encoder Project
 [![Build Status](https://travis-ci.org/OWASP/owasp-java-encoder.svg?branch=main)](https://travis-ci.org/OWASP/owasp-java-encoder) [![License](https://img.shields.io/badge/License-BSD%203--Clause-blue.svg)](https://opensource.org/licenses/BSD-3-Clause) [![javadoc](https://javadoc.io/badge2/org.owasp.encoder/encoder/javadoc.svg)](https://javadoc.io/doc/org.owasp.encoder/encoder)
 
 Contextual Output Encoding is a computer programming technique necessary to stop
-Cross-Site Scripting. This project is a Java 1.5+ simple-to-use drop-in high-performance
+Cross-Site Scripting. This project is a Java 1.8+ simple-to-use drop-in high-performance
 encoder class with little baggage.
 
 For more detailed documentation on the OWASP Javca Encoder please visit https://owasp.org/www-project-java-encoder/.
@@ -21,13 +21,23 @@ The jars are also available in Maven:
 <dependency>
     <groupId>org.owasp.encoder</groupId>
     <artifactId>encoder</artifactId>
-    <version>1.2.3</version>
+    <version>1.3.0</version>
 </dependency>
 
 <dependency>
     <groupId>org.owasp.encoder</groupId>
     <artifactId>encoder-jsp</artifactId>
-    <version>1.2.3</version>
+    <version>1.3.0</version>
+</dependency>
+```
+
+If using Java 17 and need to use the Jakarta Servelt Spec you can use:
+
+```xml
+<dependency>
+    <groupId>org.owasp.encoder</groupId>
+    <artifactId>encoder-jakarta-jsp</artifactId>
+    <version>1.3.0</version>
 </dependency>
 ```
 
@@ -50,6 +60,10 @@ Happy Encoding!
 
 News
 ----
+### 2024-08-01 - 1.2.3 Release
+The team is happy to announce that version 1.3.0 has been released! 
+
+
 ### 2020-11-08 - 1.2.3 Release
 The team is happy to announce that version 1.2.3 has been released! 
 * Update to  make the manifest OSGi-compliant (#39).
