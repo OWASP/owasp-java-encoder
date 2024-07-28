@@ -141,113 +141,147 @@ public final class ESAPIEncoder {
         private final Encoder _referenceEncoder = DefaultEncoder.getInstance();
 
         /** {@inheritDoc} */
+        @Override
         public String canonicalize(String s) {
             return _referenceEncoder.canonicalize(s);
         }
 
         /** {@inheritDoc} */
+        @Override
         public String canonicalize(String s, boolean strict) {
             return _referenceEncoder.canonicalize(s, strict);
         }
 
         /** {@inheritDoc} */
+        @Override
         public String canonicalize(String s, boolean restrictMultiple, boolean restrictMixed) {
             return _referenceEncoder.canonicalize(s, restrictMultiple, restrictMixed);
         }
 
         /** {@inheritDoc} */
+        @Override
         public String getCanonicalizedURI(URI dirtyUri) {
             return _referenceEncoder.getCanonicalizedURI(dirtyUri);
         }
 
         /** {@inheritDoc} */
+        @Override
         public String encodeForCSS(String s) {
             return Encode.forCssString(s);
         }
 
         /** {@inheritDoc} */
+        @Override
         public String encodeForHTML(String s) {
             return Encode.forHtml(s);
         }
 
         /** {@inheritDoc} */
+        @Override
         public String decodeForHTML(String s) {
             return _referenceEncoder.decodeForHTML(s);
         }
 
         /** {@inheritDoc} */
+        @Override
         public String encodeForHTMLAttribute(String s) {
             return Encode.forHtmlAttribute(s);
         }
 
         /** {@inheritDoc} */
+        @Override
         public String encodeForJavaScript(String s) {
             return Encode.forJavaScript(s);
         }
 
         /** {@inheritDoc} */
+        @Override
         public String encodeForVBScript(String s) {
             return _referenceEncoder.encodeForVBScript(s);
         }
 
         /** {@inheritDoc} */
+        @Override
         public String encodeForSQL(Codec codec, String s) {
             return _referenceEncoder.encodeForSQL(codec, s);
         }
 
         /** {@inheritDoc} */
+        @Override
         public String encodeForOS(Codec codec, String s) {
             return _referenceEncoder.encodeForOS(codec, s);
         }
 
         /** {@inheritDoc} */
+        @Override
         public String encodeForLDAP(String s) {
             return _referenceEncoder.encodeForLDAP(s);
         }
 
         /** {@inheritDoc} */
+        @Override
         public String encodeForLDAP(String s, boolean b) {
             return _referenceEncoder.encodeForLDAP(s, b);
         }
 
         /** {@inheritDoc} */
+        @Override
         public String encodeForDN(String s) {
             return _referenceEncoder.encodeForDN(s);
         }
 
         /** {@inheritDoc} */
+        @Override
         public String encodeForXPath(String s) {
             return _referenceEncoder.encodeForXPath(s);
         }
 
         /** {@inheritDoc} */
+        @Override
         public String encodeForXML(String s) {
             return Encode.forXml(s);
         }
 
         /** {@inheritDoc} */
+        @Override
         public String encodeForXMLAttribute(String s) {
             return Encode.forXmlAttribute(s);
         }
 
         /** {@inheritDoc} */
+        @Override
         public String encodeForURL(String s) throws EncodingException {
             return Encode.forUri(s);
         }
 
         /** {@inheritDoc} */
+        @Override
         public String decodeFromURL(String s) throws EncodingException {
             return _referenceEncoder.decodeFromURL(s);
         }
 
         /** {@inheritDoc} */
+        @Override
         public String encodeForBase64(byte[] bytes, boolean wrap) {
             return _referenceEncoder.encodeForBase64(bytes, wrap);
         }
 
         /** {@inheritDoc} */
+        @Override
         public byte[] decodeFromBase64(String s) throws IOException {
             return _referenceEncoder.decodeFromBase64(s);
+        }
+
+        /** {@inheritDoc} */
+        @Override
+        public String encodeForJSON(String s) {
+            return _referenceEncoder.encodeForJSON(s);
+        }
+
+        /** {@inheritDoc} */
+        @Override
+        public String decodeFromJSON(String s) {
+            return _referenceEncoder.decodeFromJSON(s);
         }
 
     }
