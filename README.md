@@ -68,6 +68,15 @@ the project. Simply run:
 mvn package
 ```
 
+Java 9+ Module Names
+--------------------
+
+| JAR                 | Module Name           |
+|---------------------|-----------------------|
+| encoder             | owasp.encoder         |
+| encoder-jakarta-jsp | owasp.encoder.jakarta |
+| encoder-jsp         | owasp.encoder.jsp     |
+| encoder-espai       | owasp.encoder.esapi   |
 
 News
 ----
