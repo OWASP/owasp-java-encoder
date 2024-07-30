@@ -81,8 +81,12 @@ Java 9+ Module Names
 News
 ----
 ### 2024-08-01 - 1.2.3 Release
-The team is happy to announce that version 1.3.0 has been released! 
-
+The team is happy to announce that version 1.3.0 has been released!
+* Minimum JDK Requirement are now Java 8
+  - Requires Java 17 to build due to test case dependencies.
+* Adds Java 9 Module name via Multi-Release Jars (#77).
+* Fixed compilation errors with the ESAPI Thunk (#76).
+* Adds support for Servlet Spec 5 using the `jakarta.servlet.*` (#75).
 
 ### 2020-11-08 - 1.2.3 Release
 The team is happy to announce that version 1.2.3 has been released! 
