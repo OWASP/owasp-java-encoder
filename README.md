@@ -13,9 +13,11 @@ Start using the OWASP Java Encoders
 -----------------------------------
 You can download a JAR from [Maven Central](https://search.maven.org/#search|ga|1|g%3A%22org.owasp.encoder%22%20a%3A%22encoder%22).
 
-JSP tags and EL functions are available in the encoder-jsp, also available in [Central](http://search.maven.org/remotecontent?filepath=org/owasp/encoder/encoder-jsp/1.2.3/encoder-jsp-1.2.3.jar).
+JSP tags and EL functions are available in the encoder-jsp, also available:
+- [encoder-jakarta-jsp](http://search.maven.org/remotecontent?filepath=org/owasp/encoder/encoder-jakarta-jsp/1.2.3/encoder-jakarta-jsp-1.2.3.jar) - Servlet Spec 5.0
+- [encoder-jsp](http://search.maven.org/remotecontent?filepath=org/owasp/encoder/encoder-jsp/1.2.3/encoder-jsp-1.2.3.jar) - Servlet Spec 3.0
 
-The jars are also available in Maven:
+The jars are also available in Central:
 
 ```xml
 <dependency>
@@ -24,19 +26,17 @@ The jars are also available in Maven:
     <version>1.3.0</version>
 </dependency>
 
-<dependency>
-    <groupId>org.owasp.encoder</groupId>
-    <artifactId>encoder-jsp</artifactId>
-    <version>1.3.0</version>
-</dependency>
-```
-
-If using Java 17 and need to use the Jakarta Servelt Spec you can use:
-
-```xml
+<!-- using Servlet Spec 5 in the jakarta.servlet package use: -->
 <dependency>
     <groupId>org.owasp.encoder</groupId>
     <artifactId>encoder-jakarta-jsp</artifactId>
+    <version>1.3.0</version>
+</dependency>
+
+<!-- using the Legacy Servlet Spec in the javax.servlet package use: -->
+<dependency>
+    <groupId>org.owasp.encoder</groupId>
+    <artifactId>encoder-jsp</artifactId>
     <version>1.3.0</version>
 </dependency>
 ```
@@ -57,6 +57,17 @@ Example usage:
 Please look at the javadoc for Encode to see the variety of contexts for which you can encode.
 
 Happy Encoding!
+
+Building
+--------
+
+Due to test cases for the `encoder-jakarta-jsp` project Java 17 is required to package and test
+the project. Simply run:
+
+```shell
+mvn package
+```
+
 
 News
 ----
