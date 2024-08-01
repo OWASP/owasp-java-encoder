@@ -527,11 +527,9 @@
             </build>
         </profile>
         <profile>
-            <id>integration-test</id>
+            <id>testJakarta</id>
             <activation>
-                <property>
-                    <name>testJakarta</name>
-                </property>
+                <activeByDefault>false</activeByDefault>
             </activation>
             <modules>
                 <module>jakarta-test</module>
