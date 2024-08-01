@@ -526,5 +526,16 @@
                 </plugins>
             </build>
         </profile>
+        <profile>
+            <id>integration-test</id>
+            <activation>
+                <property>
+                    <name>testJakarta</name>
+                </property>
+            </activation>
+            <modules>
+                <module>jakarta-test</module>
+            </modules>
+        </profile>
     </profiles>
 </project>

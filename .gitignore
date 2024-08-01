@@ -19,3 +19,4 @@ nb-configuration.xml
 /esapi/target/
 /target/
 /jakarta/target/
+/jakarta-test/target/

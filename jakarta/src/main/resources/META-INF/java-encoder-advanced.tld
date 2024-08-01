@@ -3,7 +3,7 @@
     <display-name>OWASP Java Encoder Project</display-name>
     <tlib-version>1.0</tlib-version>
     <short-name>java-encoder</short-name>
-    <uri>https://www.owasp.org/index.php/OWASP_Java_Encoder_Project#advanced</uri>
+    <uri>owasp.encoder.jakarta.advanced</uri>
     <tag>
         <description>
             Encodes data for an XML CDATA section.  On the chance that the input
