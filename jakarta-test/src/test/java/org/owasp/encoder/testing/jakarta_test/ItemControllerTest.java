@@ -5,9 +5,11 @@
 package org.owasp.encoder.testing.jakarta_test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
+import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.remote.RemoteWebDriver;
@@ -29,7 +31,6 @@ public class ItemControllerTest {
     @Container
     static BrowserWebDriverContainer<?> container = new BrowserWebDriverContainer<>().
             withCapabilities(new ChromeOptions());
-     
 
     @LocalServerPort
     private int port;
@@ -42,10 +43,20 @@ public class ItemControllerTest {
 
     @Test
     void shouldDisplayMessage() {
-        RemoteWebDriver browser = new RemoteWebDriver(container.getSeleniumAddress(), new ChromeOptions());   
+        RemoteWebDriver browser = new RemoteWebDriver(container.getSeleniumAddress(), new ChromeOptions());
         browser.get("http://host.testcontainers.internal:" + port + "/jakarta-test/item/viewItems");
-        assertEquals("top&lt;script&gt;alert(1)&lt;/script&gt;", browser.findElement(By.id("b2")).getText());
-        assertEquals("fancy &lt;script&gt;alert(1)&lt;/script&gt;", browser.findElement(By.id("c2")).getText());
+        WebElement first = browser.findElement(By.id("b2"));
+        WebElement second = browser.findElement(By.id("c2"));
+        assertEquals("top<script>alert(1)</script>", first.getText());
+        assertEquals("fancy <script>alert(1)</script>", second.getText());
+        //todo yes - there are much better ways to check for an exception in junit
+        NoSuchElementException exception = null;
+        try {
+            first.findElement(By.tagName("script"));
+        } catch (NoSuchElementException ex) {
+            exception = ex;
+        }
+        assertNull(exception);
 
     }
 }
