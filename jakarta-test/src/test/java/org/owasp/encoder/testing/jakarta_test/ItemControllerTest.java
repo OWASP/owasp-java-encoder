@@ -5,7 +5,7 @@
 package org.owasp.encoder.testing.jakarta_test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
@@ -56,7 +56,14 @@ public class ItemControllerTest {
         } catch (NoSuchElementException ex) {
             exception = ex;
         }
-        assertNull(exception);
+        assertNotNull(exception);
 
+        exception = null;
+        try {
+            second.findElement(By.tagName("script"));
+        } catch (NoSuchElementException ex) {
+            exception = ex;
+        }
+        assertNotNull(exception);
     }
 }
