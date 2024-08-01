@@ -21,6 +21,6 @@ jobs:
         distribution: 'temurin'
     - name: Run build
       run: |
-        mvn install -PtestJakarta
+        mvn -B install -PtestJakarta
 
 
