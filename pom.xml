@@ -41,7 +41,7 @@
 
     <groupId>org.owasp.encoder</groupId>
     <artifactId>encoder-parent</artifactId>
-    <version>1.2.3</version>
+    <version>1.3.0</version>
     <packaging>pom</packaging>
 
     <name>OWASP Java Encoder Project</name>
@@ -55,6 +55,7 @@
     <modules>
         <module>core</module>
         <module>jsp</module>
+        <module>jakarta</module>
         <module>esapi</module>
     </modules>
 
@@ -378,6 +379,10 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
+                <configuration>
+                    <source>8</source>
+                    <failOnError>false</failOnError>
+                </configuration>
                 <executions>
                     <execution>
                         <id>attach-javadocs</id>
@@ -385,10 +390,6 @@
                         <goals>
                             <goal>jar</goal>
                         </goals>
-                        <configuration>
-                            <source>1.6</source>
-                            <failOnError>false</failOnError>
-                        </configuration>
                     </execution>
                 </executions>
             </plugin>
@@ -463,7 +464,7 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-pmd-plugin</artifactId>
                 <configuration>
-                    <targetJdk>1.5</targetJdk>
+                    <targetJdk>1.8</targetJdk>
                     <linkXref>true</linkXref>
                     <sourceEncoding>utf-8</sourceEncoding>
                 </configuration>
@@ -478,7 +479,7 @@
                             <report>javadoc</report>
                         </reports>
                         <configuration>
-                            <source>1.6</source>
+                            <source>8</source>
                             <failOnError>false</failOnError>
                         </configuration>
                     </reportSet>
@@ -524,6 +525,15 @@
                     </plugin>
                 </plugins>
             </build>
+        </profile>
+        <profile>
+            <id>testJakarta</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <modules>
+                <module>jakarta-test</module>
+            </modules>
         </profile>
     </profiles>
 </project>

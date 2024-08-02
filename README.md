@@ -4,7 +4,7 @@ OWASP Java Encoder Project
 [![Build Status](https://travis-ci.org/OWASP/owasp-java-encoder.svg?branch=main)](https://travis-ci.org/OWASP/owasp-java-encoder) [![License](https://img.shields.io/badge/License-BSD%203--Clause-blue.svg)](https://opensource.org/licenses/BSD-3-Clause) [![javadoc](https://javadoc.io/badge2/org.owasp.encoder/encoder/javadoc.svg)](https://javadoc.io/doc/org.owasp.encoder/encoder)
 
 Contextual Output Encoding is a computer programming technique necessary to stop
-Cross-Site Scripting. This project is a Java 1.5+ simple-to-use drop-in high-performance
+Cross-Site Scripting. This project is a Java 1.8+ simple-to-use drop-in high-performance
 encoder class with little baggage.
 
 For more detailed documentation on the OWASP Javca Encoder please visit https://owasp.org/www-project-java-encoder/.
@@ -13,21 +13,31 @@ Start using the OWASP Java Encoders
 -----------------------------------
 You can download a JAR from [Maven Central](https://search.maven.org/#search|ga|1|g%3A%22org.owasp.encoder%22%20a%3A%22encoder%22).
 
-JSP tags and EL functions are available in the encoder-jsp, also available in [Central](http://search.maven.org/remotecontent?filepath=org/owasp/encoder/encoder-jsp/1.2.3/encoder-jsp-1.2.3.jar).
+JSP tags and EL functions are available in the encoder-jsp, also available:
+- [encoder-jakarta-jsp](http://search.maven.org/remotecontent?filepath=org/owasp/encoder/encoder-jakarta-jsp/1.2.3/encoder-jakarta-jsp-1.2.3.jar) - Servlet Spec 5.0
+- [encoder-jsp](http://search.maven.org/remotecontent?filepath=org/owasp/encoder/encoder-jsp/1.2.3/encoder-jsp-1.2.3.jar) - Servlet Spec 3.0
 
-The jars are also available in Maven:
+The jars are also available in Central:
 
 ```xml
 <dependency>
     <groupId>org.owasp.encoder</groupId>
     <artifactId>encoder</artifactId>
-    <version>1.2.3</version>
+    <version>1.3.0</version>
 </dependency>
 
+<!-- using Servlet Spec 5 in the jakarta.servlet package use: -->
+<dependency>
+    <groupId>org.owasp.encoder</groupId>
+    <artifactId>encoder-jakarta-jsp</artifactId>
+    <version>1.3.0</version>
+</dependency>
+
+<!-- using the Legacy Servlet Spec in the javax.servlet package use: -->
 <dependency>
     <groupId>org.owasp.encoder</groupId>
     <artifactId>encoder-jsp</artifactId>
-    <version>1.2.3</version>
+    <version>1.3.0</version>
 </dependency>
 ```
 
@@ -48,8 +58,55 @@ Please look at the javadoc for Encode to see the variety of contexts for which y
 
 Happy Encoding!
 
+Building
+--------
+
+Due to test cases for the `encoder-jakarta-jsp` project Java 17 is required to package and test
+the project. Simply run:
+
+```shell
+mvn package
+```
+
+To run the Jakarta JSP intgration test, to validate that the JSP Tags and EL work correctly run:
+
+```shell
+mvn verify -PtestJakarta
+```
+
+* Note that the above test may fail on modern Apple silicon.
+
+Java 9+ Module Names
+--------------------
+
+| JAR                 | Module Name           |
+|---------------------|-----------------------|
+| encoder             | owasp.encoder         |
+| encoder-jakarta-jsp | owasp.encoder.jakarta |
+| encoder-jsp         | owasp.encoder.jsp     |
+| encoder-espai       | owasp.encoder.esapi   |
+
+
+TagLib
+--------------------
+
+| Lib                 | TagLib                                                                                        |
+|---------------------|-----------------------------------------------------------------------------------------------|
+| encoder-jakarta-jsp | &lt;%@taglib prefix="e" uri="owasp.encoder.jakarta"%&gt;                                      |
+| encoder-jsp         | &lt;%@taglib prefix="e" uri="https://www.owasp.org/index.php/OWASP_Java_Encoder_Project"%&gt; |
+
+
 News
 ----
+### 2024-08-02 - 1.3.0 Release
+The team is happy to announce that version 1.3.0 has been released!
+* Minimum JDK Requirement is now Java 8
+  - Requires Java 17 to build due to test case dependencies.
+* Adds Java 9 Module name via Multi-Release Jars (#77).
+* Fixed compilation errors with the ESAPI Thunk (#76).
+* Adds support for Servlet Spec 5 using the `jakarta.servlet.*` (#75).
+  - taglib : &lt;%@taglib prefix="e" uri="owasp.encoder.jakarta"%&gt;
+
 ### 2020-11-08 - 1.2.3 Release
 The team is happy to announce that version 1.2.3 has been released! 
 * Update to  make the manifest OSGi-compliant (#39).

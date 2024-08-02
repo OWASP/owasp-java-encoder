@@ -18,3 +18,5 @@ nb-configuration.xml
 /jsp/target/
 /esapi/target/
 /target/
+/jakarta/target/
+/jakarta-test/target/
