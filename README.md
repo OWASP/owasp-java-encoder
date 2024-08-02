@@ -68,6 +68,14 @@ the project. Simply run:
 mvn package
 ```
 
+To run the Jakarta JSP intgration test, to validate that the JSP Tags and EL work correctly run:
+
+```shell
+mvn verify -PtestJakarta
+```
+
+* Note that the above test may fail on modern Apple silicon.
+
 Java 9+ Module Names
 --------------------
 
