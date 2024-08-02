@@ -479,7 +479,6 @@
                             <report>javadoc</report>
                         </reports>
                         <configuration>
-                            <sourcepath>${project.basedir}/src/main/java</sourcepath>
                             <source>8</source>
                             <failOnError>false</failOnError>
                         </configuration>
