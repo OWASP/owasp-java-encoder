@@ -379,6 +379,10 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
+                <configuration>
+                    <source>8</source>
+                    <failOnError>false</failOnError>
+                </configuration>
                 <executions>
                     <execution>
                         <id>attach-javadocs</id>
@@ -386,10 +390,6 @@
                         <goals>
                             <goal>jar</goal>
                         </goals>
-                        <configuration>
-                            <source>1.8</source>
-                            <failOnError>false</failOnError>
-                        </configuration>
                     </execution>
                 </executions>
             </plugin>
@@ -479,7 +479,8 @@
                             <report>javadoc</report>
                         </reports>
                         <configuration>
-                            <source>1.8</source>
+                            <sourcepath>${project.basedir}/src/main/java</sourcepath>
+                            <source>8</source>
                             <failOnError>false</failOnError>
                         </configuration>
                     </reportSet>
