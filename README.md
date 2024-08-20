@@ -98,6 +98,11 @@ TagLib
 
 News
 ----
+### 2024-08-20 - 1.3.1 Release
+The team is happy to announce that version 1.3.1 has been released!
+* fix: add OSGi related entries in the MANIFEST.MF file (#82).
+* fix: java.lang.NoSuchMethodError when running on Java 8 (#80).
+
 ### 2024-08-02 - 1.3.0 Release
 The team is happy to announce that version 1.3.0 has been released!
 * Minimum JDK Requirement is now Java 8
