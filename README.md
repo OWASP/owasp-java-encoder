@@ -7,7 +7,7 @@ Contextual Output Encoding is a computer programming technique necessary to stop
 Cross-Site Scripting. This project is a Java 1.8+ simple-to-use drop-in high-performance
 encoder class with little baggage.
 
-For more detailed documentation on the OWASP Javca Encoder please visit https://owasp.org/www-project-java-encoder/.
+For more detailed documentation on the OWASP Java Encoder please visit https://owasp.org/www-project-java-encoder/.
 
 Start using the OWASP Java Encoders
 -----------------------------------
