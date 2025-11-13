@@ -206,7 +206,7 @@ public class XML11EncoderTest extends TestCase {
             char ch = (char) i;
             String input = "a" + ch + "b";
             String result = Encode.forXml11(input);
-            String expected = "a&#x" + Integer.toHexString(i) + ";b";
+            String expected = "a&#x" + String.format("%02x", i) + ";b";
             assertEquals("C0 control char 0x" + Integer.toHexString(i) + " should be encoded", 
                         expected, result);
         }
@@ -225,8 +225,8 @@ public class XML11EncoderTest extends TestCase {
             char ch = (char) i;
             String input = "a" + ch + "b";
             String result = Encode.forXml11(input);
-            String expected = "a&#x" + Integer.toHexString(i) + ";b";
-            assertEquals("C1 control char 0x" + Integer.toHexString(i) + " should be encoded", 
+            String expected = "a&#x" + String.format("%02x", i) + ";b";
+            assertEquals("C1 control char 0x" + String.format("%02x", i) + " should be encoded", 
                         expected, result);
         }
     }
