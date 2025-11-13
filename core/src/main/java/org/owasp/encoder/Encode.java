@@ -869,6 +869,87 @@ public final class Encode {
     }
 
     /**
+     * Encoder for XML 1.1 contexts.  Similar to {@link #forXml(String)} but
+     * follows the XML 1.1 specification which allows all control characters
+     * (except null) to be encoded as character references.  This method encodes
+     * control characters in the ranges [#x1-#x8, #xB-#xC, #xE-#x1F, #x7F-#x9F]
+     * as character references (e.g., {@code &#x01;}), while tab, line feed,
+     * and carriage return are passed through unencoded. This is safe for use
+     * in both XML 1.1 content and attributes.
+     *
+     * @param input the input to encode
+     * @return the encoded result
+     */
+    public static String forXml11(String input) {
+        return encode(Encoders.XML_11_ENCODER, input);
+    }
+
+    /**
+     * See {@link #forXml11(String)} for description of encoding.  This
+     * version writes directly to a Writer without an intervening string.
+     *
+     * @param out where to write encoded output
+     * @param input the input string to encode
+     * @throws IOException if thrown by writer
+     */
+    public static void forXml11(Writer out, String input)
+        throws IOException
+    {
+        encode(Encoders.XML_11_ENCODER, out, input);
+    }
+
+    /**
+     * Encoder for XML 1.1 content.  Similar to {@link #forXmlContent(String)}
+     * but follows the XML 1.1 specification for control character handling.
+     *
+     * @param input the input to encode
+     * @return the encoded result
+     */
+    public static String forXml11Content(String input) {
+        return encode(Encoders.XML_11_CONTENT_ENCODER, input);
+    }
+
+    /**
+     * See {@link #forXml11Content(String)} for description of encoding.  This
+     * version writes directly to a Writer without an intervening string.
+     *
+     * @param out where to write encoded output
+     * @param input the input string to encode
+     * @throws IOException if thrown by writer
+     */
+    public static void forXml11Content(Writer out, String input)
+        throws IOException
+    {
+        encode(Encoders.XML_11_CONTENT_ENCODER, out, input);
+    }
+
+    /**
+     * Encoder for XML 1.1 attribute content.  Similar to
+     * {@link #forXmlAttribute(String)} but follows the XML 1.1 specification
+     * for control character handling.
+     *
+     * @param input the input to encode
+     * @return the encoded result
+     */
+    public static String forXml11Attribute(String input) {
+        return encode(Encoders.XML_11_ATTRIBUTE_ENCODER, input);
+    }
+
+    /**
+     * See {@link #forXml11Attribute(String)} for description of encoding.  This
+     * version writes directly to a Writer without an intervening string.
+     *
+     * @param out where to write encoded output
+     * @param input the input string to encode
+     * @throws IOException if thrown by writer
+     */
+    public static void forXml11Attribute(Writer out, String input)
+        throws IOException
+    {
+        encode(Encoders.XML_11_ATTRIBUTE_ENCODER, out, input);
+    }
+
+    /**
      * Encodes data for an XML CDATA section.  On the chance that the input
      * contains a terminating {@code "]]>"}, it will be replaced by
      * {@code "]]>]]<![CDATA[>"}.
