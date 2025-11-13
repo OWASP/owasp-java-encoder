@@ -11,4 +11,4 @@ Only the currently released version of the OWASP Java Encoder is supported.
 
 ## Reporting a Vulnerability
 
-If you suspect that there is a vulnerability, please report it privately using GitHub's [Security Advisories](https://github.com/OWASP/owasp-java-encoder/security/advisories/new) or email security@owasp.org.
+If you suspect that there is a vulnerability, please report it privately using GitHub's [Security Advisories](https://github.com/OWASP/owasp-java-encoder/security/advisories/new).
