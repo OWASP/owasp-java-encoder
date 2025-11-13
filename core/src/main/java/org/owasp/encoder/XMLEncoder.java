@@ -92,6 +92,27 @@ class XMLEncoder extends Encoder {
      * The encoded length of a double-quotation character.
      */
     static final int QUOT_LENGTH = 5;
+    /**
+     * The encoded length of a control character reference (e.g., &#x01;).
+     */
+    static final int CONTROL_CHAR_REF_LENGTH = 6;
+
+    /**
+     * An enum of supported XML versions for the XMLEncoder.
+     */
+    enum Version {
+        /**
+         * XML 1.0 - control characters (except tab, lf, cr) are replaced with space.
+         * Valid chars: #x9 | #xA | #xD | [#x20-#xD7FF] | [#xE000-#xFFFD] | [#x10000-#x10FFFF]
+         */
+        XML_1_0,
+        /**
+         * XML 1.1 - control characters (except tab, lf, cr) are encoded as character references.
+         * All chars [#x1-#x10FFFF] are allowed (excluding noncharacters).
+         * Restricted chars [#x1-#x8, #xB-#xC, #xE-#x1F, #x7F-#x9F] must be encoded.
+         */
+        XML_1_1
+    }
 
     /**
      * An enum of supported "modes" of operation for the XMLEncoder.
@@ -174,27 +195,45 @@ class XMLEncoder extends Encoder {
      * implementation.
      */
     private final Mode _mode;
+    /**
+     * The XML version for this encoder.
+     */
+    private final Version _version;
 
     /**
-     * Default constructor--equivalent to XMLEncoder(Mode.ALL).
+     * Default constructor--equivalent to XMLEncoder(Mode.ALL, Version.XML_1_0).
      */
     XMLEncoder() {
-        this(Mode.ALL);
+        this(Mode.ALL, Version.XML_1_0);
     }
 
     /**
-     * Creates an XMLEncoder for the specified mode constant.
+     * Creates an XMLEncoder for the specified mode constant with XML 1.0.
      *
      * @param mode the mode of the encoder.
      */
     XMLEncoder(Mode mode) {
+        this(mode, Version.XML_1_0);
+    }
+
+    /**
+     * Creates an XMLEncoder for the specified mode and version.
+     *
+     * @param mode the mode of the encoder.
+     * @param version the XML version for the encoder.
+     */
+    XMLEncoder(Mode mode, Version version) {
         _mode = mode;
+        _version = version;
         _validMask = mode.validMask();
     }
 
     @Override
     public int maxEncodedLength(int n) {
-        // "&amp;" = 5 chars.
+        // "&amp;" = 5 chars, "&#x01;" = 6 chars (XML 1.1 control chars)
+        if (_version == Version.XML_1_1) {
+            return n * CONTROL_CHAR_REF_LENGTH;
+        }
         return n * MAX_ENCODED_CHAR_LENGTH;
     }
 
@@ -213,6 +252,7 @@ class XMLEncoder extends Encoder {
                 }
             } else if (ch < Character.MIN_HIGH_SURROGATE) {
                 if (ch <= Unicode.MAX_C1_CTRL_CHAR && ch != Unicode.NEL) {
+                    // C1 control character - needs encoding in XML 1.1 or replacement in XML 1.0
                     return i;
 //                } else {
 //                    // valid
@@ -314,23 +354,57 @@ class XMLEncoder extends Encoder {
                             out[j++] = ';';
                             break;
                         default:
-                            // invalid character
-                            if (j >= m) {
-                                return overflow(input, i, output, j);
+                            // invalid character for XML 1.0
+                            if (_version == Version.XML_1_1 && ch != 0) {
+                                // In XML 1.1, encode C0 control characters (except null) as character references
+                                if (j + CONTROL_CHAR_REF_LENGTH > m) {
+                                    return overflow(input, i, output, j);
+                                }
+                                out[j++] = '&';
+                                out[j++] = '#';
+                                out[j++] = 'x';
+                                int val = ch;
+                                out[j++] = Character.forDigit((val >> 4) & 0xF, 16);
+                                out[j++] = Character.forDigit(val & 0xF, 16);
+                                out[j++] = ';';
+                            } else {
+                                // XML 1.0: replace invalid character with space
+                                // XML 1.1: null is still invalid, replace with space
+                                if (j >= m) {
+                                    return overflow(input, i, output, j);
+                                }
+                                out[j++] = INVALID_CHARACTER_REPLACEMENT;
                             }
-                            out[j++] = INVALID_CHARACTER_REPLACEMENT;
                             break;
                     }
                 }
             } else if (ch < Character.MIN_HIGH_SURROGATE) {
-                if (j >= m) {
-                    return overflow(input, i, output, j);
-                }
                 if (ch > Unicode.MAX_C1_CTRL_CHAR || ch == Unicode.NEL) {
+                    if (j >= m) {
+                        return overflow(input, i, output, j);
+                    }
                     out[j++] = ch;
                 } else {
                     // C1 control code
-                    out[j++] = INVALID_CHARACTER_REPLACEMENT;
+                    if (_version == Version.XML_1_1) {
+                        // In XML 1.1, encode C1 control characters (except NEL) as character references
+                        if (j + CONTROL_CHAR_REF_LENGTH > m) {
+                            return overflow(input, i, output, j);
+                        }
+                        out[j++] = '&';
+                        out[j++] = '#';
+                        out[j++] = 'x';
+                        int val = ch;
+                        out[j++] = Character.forDigit((val >> 4) & 0xF, 16);
+                        out[j++] = Character.forDigit(val & 0xF, 16);
+                        out[j++] = ';';
+                    } else {
+                        // XML 1.0: replace invalid character with space
+                        if (j >= m) {
+                            return overflow(input, i, output, j);
+                        }
+                        out[j++] = INVALID_CHARACTER_REPLACEMENT;
+                    }
                 }
             } else if (ch <= Character.MAX_HIGH_SURROGATE) {
                 if (i + 1 < n) {
@@ -389,6 +463,6 @@ class XMLEncoder extends Encoder {
 
     @Override
     public String toString() {
-        return "XMLEncoder(" + _mode + ")";
+        return "XMLEncoder(" + _mode + ", " + _version + ")";
     }
 }

@@ -89,6 +89,18 @@ public final class Encoders {
      */
     public static final String XML_COMMENT = "xml-comment";
     /**
+     * Name of XML 1.1 general context.
+     */
+    public static final String XML_11 = "xml-1.1";
+    /**
+     * Name of XML 1.1 content context.
+     */
+    public static final String XML_11_CONTENT = "xml-1.1-content";
+    /**
+     * Name of XML 1.1 attribute context.
+     */
+    public static final String XML_11_ATTRIBUTE = "xml-1.1-attribute";
+    /**
      * Name of {@linkplain Encode#forCDATA(String) CDATA} context.
      */
     public static final String CDATA = "cdata";
@@ -160,6 +172,21 @@ public final class Encoders {
      */
     static final XMLCommentEncoder XML_COMMENT_ENCODER
             = map(XML_COMMENT, new XMLCommentEncoder());
+    /**
+     * Encoder for general XML 1.1 contexts.
+     */
+    static final XMLEncoder XML_11_ENCODER
+            = map(XML_11, new XMLEncoder(XMLEncoder.Mode.ALL, XMLEncoder.Version.XML_1_1));
+    /**
+     * Encoder for XML 1.1 content contexts.
+     */
+    static final XMLEncoder XML_11_CONTENT_ENCODER
+            = map(XML_11_CONTENT, new XMLEncoder(XMLEncoder.Mode.CONTENT, XMLEncoder.Version.XML_1_1));
+    /**
+     * Encoder for XML 1.1 attribute contexts.
+     */
+    static final XMLEncoder XML_11_ATTRIBUTE_ENCODER
+            = map(XML_11_ATTRIBUTE, new XMLEncoder(XMLEncoder.Mode.ATTRIBUTE, XMLEncoder.Version.XML_1_1));
     /**
      * Encoder for CDATA contexts.
      */
