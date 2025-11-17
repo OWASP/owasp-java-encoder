@@ -95,6 +95,27 @@ TagLib
 | encoder-jakarta-jsp | &lt;%@taglib prefix="e" uri="owasp.encoder.jakarta"%&gt;                                      |
 | encoder-jsp         | &lt;%@taglib prefix="e" uri="https://www.owasp.org/index.php/OWASP_Java_Encoder_Project"%&gt; |
 
+Development
+-----------
+
+The OWASP Java Encoder project is a multi-module Maven project:
+
+```bash
+$ mvn package
+```
+
+Benchmarks (currently in need of improvement) can be run with:
+
+```bash
+$ mvn verify -Pbenchmarks
+```
+
+Releases are done via central-publishing-maven-plugin:
+
+```bash
+$ mvn mvn clean package deploy -DperformRelease=true
+```
+
 
 News
 ----
