@@ -23,21 +23,21 @@ The jars are also available in Central:
 <dependency>
     <groupId>org.owasp.encoder</groupId>
     <artifactId>encoder</artifactId>
-    <version>1.3.0</version>
+    <version>1.4.0</version>
 </dependency>
 
 <!-- using Servlet Spec 5 in the jakarta.servlet package use: -->
 <dependency>
     <groupId>org.owasp.encoder</groupId>
     <artifactId>encoder-jakarta-jsp</artifactId>
-    <version>1.3.0</version>
+    <version>1.4.0</version>
 </dependency>
 
 <!-- using the Legacy Servlet Spec in the javax.servlet package use: -->
 <dependency>
     <groupId>org.owasp.encoder</groupId>
     <artifactId>encoder-jsp</artifactId>
-    <version>1.3.0</version>
+    <version>1.4.0</version>
 </dependency>
 ```
 
@@ -98,24 +98,28 @@ TagLib
 
 News
 ----
+### 2025-11-17 - 1.4.0 Release
+The team is happy to announce that version 1.4.0 has been released!
+* feat: add XML 1.1 encoding support [#88](https://github.com/OWASP/owasp-java-encoder/pull/88).
+
 ### 2024-08-20 - 1.3.1 Release
 The team is happy to announce that version 1.3.1 has been released!
-* fix: add OSGi related entries in the MANIFEST.MF file (#82).
-* fix: java.lang.NoSuchMethodError when running on Java 8 (#80).
+* fix: add OSGi related entries in the MANIFEST.MF file [#82](https://github.com/OWASP/owasp-java-encoder/pull/82).
+* fix: java.lang.NoSuchMethodError when running on Java 8 [#80](https://github.com/OWASP/owasp-java-encoder/pull/80).
 
 ### 2024-08-02 - 1.3.0 Release
 The team is happy to announce that version 1.3.0 has been released!
 * Minimum JDK Requirement is now Java 8
   - Requires Java 17 to build due to test case dependencies.
-* Adds Java 9 Module name via Multi-Release Jars (#77).
-* Fixed compilation errors with the ESAPI Thunk (#76).
-* Adds support for Servlet Spec 5 using the `jakarta.servlet.*` (#75).
+* Adds Java 9 Module name via Multi-Release Jars [#77](https://github.com/OWASP/owasp-java-encoder/pull/77).
+* Fixed compilation errors with the ESAPI Thunk [#76](https://github.com/OWASP/owasp-java-encoder/pull/76).
+* Adds support for Servlet Spec 5 using the `jakarta.servlet.*` [#75](https://github.com/OWASP/owasp-java-encoder/pull/88).
   - taglib : &lt;%@taglib prefix="e" uri="owasp.encoder.jakarta"%&gt;
 
 ### 2020-11-08 - 1.2.3 Release
 The team is happy to announce that version 1.2.3 has been released! 
-* Update to  make the manifest OSGi-compliant (#39).
-* Update to support ESAPI 2.2 and later (#37).
+* Update to  make the manifest OSGi-compliant [#39](https://github.com/OWASP/owasp-java-encoder/pull/39).
+* Update to support ESAPI 2.2 and later [#37](https://github.com/OWASP/owasp-java-encoder/pull/37).
 
 ### 2018-09-14 - 1.2.2 Release
 The team is happy to announce that version 1.2.2 has been released! 
