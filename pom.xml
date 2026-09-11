@@ -299,8 +299,8 @@
                                 <!-- OSGi frameworks before R7 reject java.* imports. -->
                                 <_noimportjava>true</_noimportjava>
                                 <_nouses>true</_nouses>
-                                <!-- Preserve published fallback names independently of src/main/java9/module-info.java. -->
-                                <Automatic-Module-Name>${automatic.module.name}</Automatic-Module-Name>
+                                <!-- This legacy property controls only the manifest fallback name, not the explicit JPMS descriptor. -->
+                                <Automatic-Module-Name>${jigsaw.module.name}</Automatic-Module-Name>
                                 <Export-Package>!META-INF.versions.*,*</Export-Package>
                             </instructions>
                         </configuration>

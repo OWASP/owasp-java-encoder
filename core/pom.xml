@@ -57,7 +57,7 @@
     </description>
 
     <properties>
-        <automatic.module.name>org.owasp.encoder</automatic.module.name>
+        <jigsaw.module.name>org.owasp.encoder</jigsaw.module.name>
     </properties>
 
     <dependencies>

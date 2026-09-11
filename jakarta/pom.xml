@@ -56,7 +56,7 @@
     </description>
 
     <properties>
-        <automatic.module.name>org.owasp.encoder.jakarta</automatic.module.name>
+        <jigsaw.module.name>org.owasp.encoder.jakarta</jigsaw.module.name>
     </properties>
 
     <dependencies>
