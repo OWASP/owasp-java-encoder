@@ -26,7 +26,7 @@
         <property name="id" value="header"/>
     </module>
     <!-- Checks for Size Violations.                    -->
-    <!-- See http://checkstyle.sf.net/config_sizes.html -->
+    <!-- See https://checkstyle.org/checks/sizes/index.html -->
     <module name="LineLength">
         <property name="max" value="130"/>
     </module>
@@ -42,7 +42,7 @@
         <module name="JavadocStyle"/>
 
         <!-- Checks for Naming Conventions.                  -->
-        <!-- See http://checkstyle.sf.net/config_naming.html -->
+        <!-- See https://checkstyle.org/checks/naming/index.html -->
         <module name="ConstantName">
             <property name="format" value="^(?:[A-Z][A-Z0-9]*(?:_[A-Z0-9]+)*)|(?:_log)$"/>
         </module>
@@ -73,7 +73,7 @@
 
 
         <!-- Checks for imports                              -->
-        <!-- See http://checkstyle.sf.net/config_import.html -->
+        <!-- See https://checkstyle.org/checks/imports/index.html -->
         <module name="AvoidStarImport"/>
         <module name="IllegalImport"/> <!-- defaults to sun.* packages -->
         <module name="RedundantImport"/>
@@ -88,7 +88,7 @@
 
 
         <!-- Checks for whitespace                               -->
-        <!-- See http://checkstyle.sf.net/config_whitespace.html -->
+        <!-- See https://checkstyle.org/checks/whitespace/index.html -->
         <module name="EmptyForIteratorPad"/>
         <module name="GenericWhitespace"/>
         <module name="MethodParamPad"/>
@@ -103,13 +103,13 @@
         <!-- <module name="WhitespaceAround"/> -->
 
         <!-- Modifier Checks                                    -->
-        <!-- See http://checkstyle.sf.net/config_modifiers.html -->
+        <!-- See https://checkstyle.org/checks/modifiers/index.html -->
         <module name="ModifierOrder"/>
         <module name="RedundantModifier"/>
 
 
         <!-- Checks for blocks. You know, those {}'s         -->
-        <!-- See http://checkstyle.sf.net/config_blocks.html -->
+        <!-- See https://checkstyle.org/checks/blocks/index.html -->
         <module name="AvoidNestedBlocks"/>
         <module name="EmptyBlock">
             <property name="option" value="text"/>
@@ -122,7 +122,7 @@
 
 
         <!-- Checks for common coding problems               -->
-        <!-- See http://checkstyle.sf.net/config_coding.html -->
+        <!-- See https://checkstyle.org/checks/coding/index.html -->
         <!-- <module name="AvoidInlineConditionals"/> -->
         <module name="CovariantEquals"/>
         <module name="EmptyStatement"/>
@@ -166,7 +166,7 @@
         <module name="FallThrough"/>
 
         <!-- Checks for class design                         -->
-        <!-- See http://checkstyle.sf.net/config_design.html -->
+        <!-- See https://checkstyle.org/checks/design/index.html -->
         <!-- <module name="DesignForExtension"/> -->
         <module name="FinalClass"/>
         <module name="HideUtilityClassConstructor"/>
@@ -174,7 +174,7 @@
         <!-- <module name="VisibilityModifier"/> -->
 
         <!-- Miscellaneous other checks.                   -->
-        <!-- See http://checkstyle.sf.net/config_misc.html -->
+        <!-- See https://checkstyle.org/checks/misc/index.html -->
         <module name="ArrayTypeStyle"/>
         <!-- module name="FinalParameters"/ -->
         <module name="Regexp">
@@ -201,4 +201,3 @@
     </module>
 
 </module>
-

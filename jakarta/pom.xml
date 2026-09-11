@@ -56,7 +56,7 @@
     </description>
 
     <properties>
-        <jigsaw.module.name>org.owasp.encoder.jakarta</jigsaw.module.name>
+        <jigsaw.module.name>owasp.encoder.jakarta</jigsaw.module.name>
     </properties>
 
     <dependencies>
@@ -72,21 +72,15 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
+            <groupId>jakarta.el</groupId>
+            <artifactId>jakarta.el-api</artifactId>
+            <version>4.0.0</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
             <groupId>jakarta.servlet</groupId>
             <artifactId>jakarta.servlet-api</artifactId>
             <version>6.0.0</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-test</artifactId>
-            <version>6.0.22</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-core</artifactId>
-            <version>5.3.19</version>
             <scope>test</scope>
         </dependency>
     </dependencies>

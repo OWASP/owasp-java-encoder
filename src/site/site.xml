@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="ISO-8859-1"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!--
 Copyright (c) 2015 Jeremy Long
 All rights reserved.
@@ -58,7 +58,7 @@ OF THE POSSIBILITY OF SUCH DAMAGE.
 			<highlightJsTheme>github</highlightJsTheme>   
 			<brand>
 				<name>${project.name}</name>
-				<href>https://www.owasp.org/index.php/OWASP_Java_Encoder_Project</href>				
+				<href>https://owasp.org/www-project-java-encoder/</href>
 			</brand>
 			<skinAttribution>false</skinAttribution>
 			<toc>top</toc>
@@ -87,6 +87,6 @@ OF THE POSSIBILITY OF SUCH DAMAGE.
 		  <item name="Issues" href="https://github.com/OWASP/owasp-java-encoder/issues" />
 		  <item name="Fork on GitHub" href="https://github.com/OWASP/owasp-java-encoder" />
 		</menu>
-        <footer>Copyright © 2011-2017 OWASP. All Rights Reserved.</footer>
+        <footer>Copyright Â© 2011-2017 OWASP. All Rights Reserved.</footer>
     </body>
 </project>

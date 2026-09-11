@@ -5,20 +5,20 @@ contextual encoders, that when utilized correctly, is an effective tool in
 preventing Web Application security vulnerabilities such as Cross-Site
 Scripting (XSS).
 
-Please see the [OWASP XSS Prevention Cheat Sheet](https://www.owasp.org/index.php/XSS_%28Cross_Site_Scripting%29_Prevention_Cheat_Sheet)
+Please see the [OWASP XSS Prevention Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Cross_Site_Scripting_Prevention_Cheat_Sheet.html)
 for more information on preventing XSS.
 
 ### Usage
 
-In addition to the usage guidance below, more examples can be found on the [OWASP Java Encoder Project Wiki](https://www.owasp.org/index.php/OWASP_Java_Encoder_Project#tab=Use_the_Java_Encoder_Project).
+In addition to the usage guidance below, more examples can be found on the [OWASP Java Encoder project page](https://owasp.org/www-project-java-encoder/).
 
-The JARs can be found in [Maven Central](https://search.maven.org/#search%7Cga%7C1%7Cg%3A%22org.owasp.encoder%22).
+The JARs can be found in [Maven Central](https://central.sonatype.com/namespace/org.owasp.encoder).
 
 ```xml
 <dependency>
     <groupId>org.owasp.encoder</groupId>
     <artifactId>encoder</artifactId>
-    <version>1.2.3</version>
+    <version>1.4.0</version>
 </dependency>
 ```
 
@@ -42,7 +42,7 @@ includes tags and a set of JSP EL functions:
 <dependency>
     <groupId>org.owasp.encoder</groupId>
     <artifactId>encoder-jsp</artifactId>
-    <version>1.2.3</version>
+    <version>1.4.0</version>
 </dependency>
 ```
 

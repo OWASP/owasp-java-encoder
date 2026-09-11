@@ -34,24 +34,27 @@
 
 package org.owasp.encoder.tag;
 
+import java.io.IOException;
+import java.io.StringWriter;
+import java.util.Collections;
+import java.util.Enumeration;
+import jakarta.el.ELContext;
+import jakarta.servlet.jsp.JspContext;
+import jakarta.servlet.jsp.JspWriter;
+import jakarta.servlet.jsp.el.ExpressionEvaluator;
+import jakarta.servlet.jsp.el.VariableResolver;
 import junit.framework.TestCase;
-import org.springframework.mock.web.MockHttpServletRequest;
-import org.springframework.mock.web.MockHttpServletResponse;
-import org.springframework.mock.web.MockPageContext;
-import org.springframework.mock.web.MockServletContext;
 
 /**
  * EncodingTagTest is the base class for all unit tests for the tags.
- * This sets up the ServletContext so that tags can be tested.
+ * This sets up the minimal JSP context and output writer needed to test tags.
  *
  * @author Jeremy Long (jeremy.long@gmail.com)
  */
 public abstract class EncodingTagTest extends TestCase {
 
-    protected MockServletContext _servletContext;
-    protected MockPageContext _pageContext;
-    protected MockHttpServletRequest _request;
-    protected MockHttpServletResponse _response;
+    protected JspContext _pageContext;
+    protected TestJspWriter _response;
 
     /**
      * Constructor for the EncodingTagTest
@@ -64,14 +67,227 @@ public abstract class EncodingTagTest extends TestCase {
     @Override
     protected void setUp() throws Exception {
         super.setUp();
-        _servletContext = new MockServletContext();
-        _request = new MockHttpServletRequest();
-        _response = new MockHttpServletResponse();
-        _pageContext = new MockPageContext(_servletContext, _request, _response);
+        _response = new TestJspWriter();
+        _pageContext = new TestJspContext(_response);
     }
 
-    @Override
-    protected void tearDown() throws Exception {
-        super.tearDown();
+    /** Minimal JSP context used by tags that only write to {@link #getOut()}. */
+    private static final class TestJspContext extends JspContext {
+
+        private final JspWriter _out;
+
+        private TestJspContext(JspWriter out) {
+            _out = out;
+        }
+
+        @Override
+        public JspWriter getOut() {
+            return _out;
+        }
+
+        @Override
+        public void setAttribute(String name, Object value) {}
+
+        @Override
+        public void setAttribute(String name, Object value, int scope) {}
+
+        @Override
+        public Object getAttribute(String name) {
+            return null;
+        }
+
+        @Override
+        public Object getAttribute(String name, int scope) {
+            return null;
+        }
+
+        @Override
+        public Object findAttribute(String name) {
+            return null;
+        }
+
+        @Override
+        public void removeAttribute(String name) {}
+
+        @Override
+        public void removeAttribute(String name, int scope) {}
+
+        @Override
+        public int getAttributesScope(String name) {
+            return 0;
+        }
+
+        @Override
+        public Enumeration<String> getAttributeNamesInScope(int scope) {
+            return Collections.enumeration(Collections.<String>emptyList());
+        }
+
+        @Override
+        public ExpressionEvaluator getExpressionEvaluator() {
+            return null;
+        }
+
+        @Override
+        public VariableResolver getVariableResolver() {
+            return null;
+        }
+
+        @Override
+        public ELContext getELContext() {
+            return null;
+        }
+    }
+
+    /** Unbuffered JSP writer that captures tag output for assertions. */
+    protected static final class TestJspWriter extends JspWriter {
+
+        private final StringWriter _delegate = new StringWriter();
+
+        private TestJspWriter() {
+            super(NO_BUFFER, true);
+        }
+
+        public String getContentAsString() {
+            return _delegate.toString();
+        }
+
+        @Override
+        public void write(char[] buffer, int offset, int length) {
+            _delegate.write(buffer, offset, length);
+        }
+
+        @Override
+        public void newLine() {
+            _delegate.write(System.lineSeparator());
+        }
+
+        @Override
+        public void print(boolean value) throws IOException {
+            write(String.valueOf(value));
+        }
+
+        @Override
+        public void print(char value) throws IOException {
+            write(value);
+        }
+
+        @Override
+        public void print(int value) throws IOException {
+            write(String.valueOf(value));
+        }
+
+        @Override
+        public void print(long value) throws IOException {
+            write(String.valueOf(value));
+        }
+
+        @Override
+        public void print(float value) throws IOException {
+            write(String.valueOf(value));
+        }
+
+        @Override
+        public void print(double value) throws IOException {
+            write(String.valueOf(value));
+        }
+
+        @Override
+        public void print(char[] value) throws IOException {
+            write(String.valueOf(value));
+        }
+
+        @Override
+        public void print(String value) throws IOException {
+            write(String.valueOf(value));
+        }
+
+        @Override
+        public void print(Object value) throws IOException {
+            write(String.valueOf(value));
+        }
+
+        @Override
+        public void println() {
+            newLine();
+        }
+
+        @Override
+        public void println(boolean value) throws IOException {
+            print(value);
+            newLine();
+        }
+
+        @Override
+        public void println(char value) throws IOException {
+            print(value);
+            newLine();
+        }
+
+        @Override
+        public void println(int value) throws IOException {
+            print(value);
+            newLine();
+        }
+
+        @Override
+        public void println(long value) throws IOException {
+            print(value);
+            newLine();
+        }
+
+        @Override
+        public void println(float value) throws IOException {
+            print(value);
+            newLine();
+        }
+
+        @Override
+        public void println(double value) throws IOException {
+            print(value);
+            newLine();
+        }
+
+        @Override
+        public void println(char[] value) throws IOException {
+            print(value);
+            newLine();
+        }
+
+        @Override
+        public void println(String value) throws IOException {
+            print(value);
+            newLine();
+        }
+
+        @Override
+        public void println(Object value) throws IOException {
+            print(value);
+            newLine();
+        }
+
+        @Override
+        public void clear() {
+            _delegate.getBuffer().setLength(0);
+        }
+
+        @Override
+        public void clearBuffer() {
+            clear();
+        }
+
+        @Override
+        public void flush() throws IOException {
+            _delegate.flush();
+        }
+
+        @Override
+        public void close() throws IOException {
+            _delegate.close();
+        }
+
+        @Override
+        public int getRemaining() {
+            return 0;
+        }
     }
 }

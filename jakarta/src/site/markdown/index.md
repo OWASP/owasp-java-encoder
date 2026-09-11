@@ -1,11 +1,11 @@
-## OWASP JSP
+## OWASP Jakarta JSP
 
-The OWASP JSP Encoder is a collection of high-performance low-overhead
+The OWASP Jakarta JSP Encoder is a collection of high-performance low-overhead
 contextual encoders that, when utilized correctly, is an effective tool in
 preventing Web Application security vulnerabilities such as Cross-Site
 Scripting (XSS).
 
-Please see the [OWASP XSS Prevention Cheat Sheet](https://www.owasp.org/index.php/XSS_%28Cross_Site_Scripting%29_Prevention_Cheat_Sheet)
+Please see the [OWASP XSS Prevention Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Cross_Site_Scripting_Prevention_Cheat_Sheet.html)
 for more information on preventing XSS.
 
 ### JSP Usage
@@ -16,13 +16,13 @@ includes tags and a set of JSP EL functions:
 ```xml
 <dependency>
     <groupId>org.owasp.encoder</groupId>
-    <artifactId>encoder-jsp</artifactId>
-    <version>1.2.3</version>
+    <artifactId>encoder-jakarta-jsp</artifactId>
+    <version>1.4.0</version>
 </dependency>
 ```
 
 ```JSP
-<%@taglib prefix="e" uri="https://www.owasp.org/index.php/OWASP_Java_Encoder_Project" %>
+<%@taglib prefix="e" uri="owasp.encoder.jakarta" %>
 
 <%-- ... --%>
 

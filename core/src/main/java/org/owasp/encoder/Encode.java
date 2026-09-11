@@ -83,12 +83,12 @@ public final class Encode {
      *     &lt;input value="&lt;%=Encode.forHtml(unsafeData)%&gt;" /&gt;
      * </pre>
      *
-     * <table border="0" class="memberSummary" summary="Shows the input and results of encoding">
+     * <table class="memberSummary">
      *   <caption><b>Encoding&nbsp;Table</b></caption>
      *   <thead>
      *     <tr>
-     *       <th align="left" class="colFirst">Input</th>
-     *       <th align="left" class="colLast">Result</th>
+     *       <th class="colFirst" scope="col">Input</th>
+     *       <th class="colLast" scope="col">Result</th>
      *     </tr>
      *   </thead>
      *   <tbody>
@@ -167,12 +167,12 @@ public final class Encode {
      * <pre>
      *     &lt;div&gt;&lt;%=Encode.forHtmlContent(unsafeData)%&gt;&lt;/div&gt;
      * </pre>
-     * <table border="0" class="memberSummary" summary="Shows the input and results of encoding">
+     * <table class="memberSummary">
      *   <caption><b>Encoding Table</b></caption>
      *   <thead>
      *     <tr>
-     *       <th align="left" class="colFirst">Input</th>
-     *       <th align="left" class="colLast">Result</th>
+     *       <th class="colFirst" scope="col">Input</th>
+     *       <th class="colLast" scope="col">Result</th>
      *     </tr>
      *   </thead>
      *   <tbody>
@@ -246,12 +246,12 @@ public final class Encode {
      *     &lt;input value=&quot;&lt;%=Encode.forHtmlAttribute(unsafeData)%&gt;&quot; title=&#39;&lt;%=Encode.forHtmlAttribute(moreUnsafeData)%&gt;&#39; /&gt;
      * </pre>
      *
-     * <table border="0" class="memberSummary" summary="Shows the input and results of encoding">
+     * <table class="memberSummary">
      *   <caption><b>Encoding Table</b></caption>
      *   <thead>
      *     <tr>
-     *       <th align="left" class="colFirst">Input</th>
-     *       <th align="left" class="colLast">Result</th>
+     *       <th class="colFirst" scope="col">Input</th>
+     *       <th class="colLast" scope="col">Result</th>
      *     </tr>
      *   </thead>
      *   <tbody>
@@ -347,12 +347,12 @@ public final class Encode {
      *     &lt;input value=&lt;%=Encode.forHtmlUnquotedAttribute(input)%&gt; &gt;
      * </pre>
      *
-     * <table border="0" class="memberSummary" summary="Shows the input and results of encoding">
+     * <table class="memberSummary">
      *   <caption><b>Encoding Table</b></caption>
      *   <thead>
      *     <tr>
-     *       <th align="left" class="colFirst">Input</th>
-     *       <th align="left" class="colLast">Result</th>
+     *       <th class="colFirst" scope="col">Input</th>
+     *       <th class="colLast" scope="col">Result</th>
      *     </tr>
      *   </thead>
      *   <tbody>
@@ -1040,13 +1040,13 @@ public final class Encode {
      *    &lt;/script&gt;
      * </pre>
      *
-     * <table cellspacing="1" class="memberSummary" cellpadding="1" border="0">
+     * <table class="memberSummary">
      *   <caption><b>Encoding Description</b></caption>
      *   <thead>
      *     <tr>
-     *       <th align="left" colspan="2" class="colFirst">Input Character</th>
-     *       <th align="left" class="colLast">Encoded Result</th>
-     *       <th align="left" class="colLast">Notes</th>
+     *       <th colspan="2" class="colFirst" scope="colgroup">Input Character</th>
+     *       <th class="colLast" scope="col">Encoded Result</th>
+     *       <th class="colLast" scope="col">Notes</th>
      *     </tr>
      *   </thead>
      *   <tbody>
