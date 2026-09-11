@@ -80,12 +80,16 @@ The integration test requires a running Docker-compatible container runtime.
 Java 9+ Module Names
 --------------------
 
-| JAR                 | Module Name           |
-|---------------------|-----------------------|
-| encoder             | owasp.encoder         |
-| encoder-jakarta-jsp | owasp.encoder.jakarta |
-| encoder-jsp         | owasp.encoder.jsp     |
-| encoder-esapi       | owasp.encoder.esapi   |
+| JAR                 | Explicit JPMS Module  | Automatic-Module-Name     |
+|---------------------|-----------------------|--------------------------|
+| encoder             | owasp.encoder         | org.owasp.encoder        |
+| encoder-jakarta-jsp  | owasp.encoder.jakarta | org.owasp.encoder.jakarta |
+| encoder-jsp          | owasp.encoder.jsp     | org.owasp.encoder.jsp     |
+| encoder-esapi        | owasp.encoder.esapi   | org.owasp.encoder.esapi   |
+
+The multi-release descriptors define the explicit Java 9+ module names. The
+manifest names intentionally retain their historical values for consumers that
+disable multi-release support or otherwise use automatic-module discovery.
 
 
 TagLib

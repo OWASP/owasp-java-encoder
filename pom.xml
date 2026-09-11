@@ -299,7 +299,8 @@
                                 <!-- OSGi frameworks before R7 reject java.* imports. -->
                                 <_noimportjava>true</_noimportjava>
                                 <_nouses>true</_nouses>
-                                <Automatic-Module-Name>${jigsaw.module.name}</Automatic-Module-Name>
+                                <!-- Preserve published fallback names independently of src/main/java9/module-info.java. -->
+                                <Automatic-Module-Name>${automatic.module.name}</Automatic-Module-Name>
                                 <Export-Package>!META-INF.versions.*,*</Export-Package>
                             </instructions>
                         </configuration>

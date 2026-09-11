@@ -55,7 +55,7 @@
     </description>
 
     <properties>
-        <jigsaw.module.name>owasp.encoder.esapi</jigsaw.module.name>
+        <automatic.module.name>org.owasp.encoder.esapi</automatic.module.name>
     </properties>
 
     <dependencies>
