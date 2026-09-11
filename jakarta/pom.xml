@@ -84,4 +84,49 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>compile-module-path-test-support</id>
+                        <phase>test-compile</phase>
+                        <goals>
+                            <goal>testCompile</goal>
+                        </goals>
+                        <configuration>
+                            <compileSourceRoots>
+                                <compileSourceRoot>${project.basedir}/../src/test-support/java</compileSourceRoot>
+                            </compileSourceRoots>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-failsafe-plugin</artifactId>
+                <configuration>
+                    <systemPropertyVariables>
+                        <adapter.bundle>${project.build.directory}/${project.build.finalName}.jar</adapter.bundle>
+                        <encoder.bundle>${maven.multiModuleProjectDirectory}/core/target/encoder-${project.version}.jar</encoder.bundle>
+                        <module.consumer.api.class>jakarta.servlet.jsp.JspException</module.consumer.api.class>
+                        <module.consumer.main>owasp.encoder.jakarta.consumer/org.owasp.encoder.consumer.JakartaConsumer</module.consumer.main>
+                        <module.consumer.sources>${project.basedir}/src/test/modules/owasp.encoder.jakarta.consumer</module.consumer.sources>
+                    </systemPropertyVariables>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>module-path-consumer</id>
+                        <goals>
+                            <goal>integration-test</goal>
+                            <goal>verify</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
 </project>

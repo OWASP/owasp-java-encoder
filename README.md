@@ -91,6 +91,20 @@ The multi-release descriptors define the explicit Java 9+ module names. The
 manifest names intentionally retain their historical values for consumers that
 disable multi-release support or otherwise use automatic-module discovery.
 
+The adapter modules also require their public API dependency on the module path:
+
+| Adapter module            | Required dependency module | Supported Maven artifact                              |
+|---------------------------|----------------------------|-------------------------------------------------------|
+| `owasp.encoder.jsp`       | `javax.servlet.jsp.api`    | `javax.servlet.jsp:javax.servlet.jsp-api:2.2.1`       |
+| `owasp.encoder.jakarta`   | `jakarta.servlet.jsp`      | `jakarta.servlet.jsp:jakarta.servlet.jsp-api:3.0.0`   |
+| `owasp.encoder.esapi`     | `esapi`                    | `org.owasp.esapi:esapi:[2.5.1.0,3)`                   |
+
+These dependencies are transitive in the module descriptors because their types
+appear in the adapters' public APIs. The JSP and ESAPI dependencies are automatic
+modules; use the original Maven artifact filenames so Java derives the module
+names shown above. Servlet containers continue to provide the JSP APIs at runtime,
+and classpath-based applications are unaffected.
+
 
 TagLib
 --------------------
