@@ -20,5 +20,17 @@ jobs:
         java-version: '17'
         distribution: 'temurin'
         cache: maven
+    - name: Check jakarta-test uses this build's encoder version
+      run: |
+        evaluate() {
+          mvn -B -ntp -q "$@" org.apache.maven.plugins:maven-help-plugin:3.5.2:evaluate -DforceStdout
+        }
+        reactor=$(evaluate -N -Dexpression=project.version) || { echo "$reactor"; exit 1; }
+        tested=$(evaluate -f jakarta-test/pom.xml -Dexpression=encoder.version) || { echo "$tested"; exit 1; }
+        if [ "$reactor" != "$tested" ]; then
+          echo "::error file=jakarta-test/pom.xml::encoder.version is '$tested' but the build is '$reactor'. Update jakarta-test/pom.xml when bumping the version."
+          exit 1
+        fi
+        echo "jakarta-test tests encoder-jakarta-jsp $tested from this build"
     - name: Run build
       run: mvn -B -ntp install -PtestJakarta
