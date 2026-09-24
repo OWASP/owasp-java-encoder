@@ -12,8 +12,9 @@ older release lines are not patched.
 | `org.owasp.encoder:encoder-jakarta-jsp` | 1.4.0     | < 1.4.0       |
 | `org.owasp.encoder:encoder-esapi`       | 1.4.0     | < 1.4.0       |
 
-Upgrading the core `encoder` artifact to the latest 1.x release is a drop-in change:
-no public API was removed between 1.2.3 and 1.4.0.
+Upgrading the core `encoder` artifact to the latest 1.x release needs no code changes:
+no public API was removed between 1.2.3 and 1.4.0. It does need Java 8 or later;
+1.2.3 and earlier also ran on Java 5 through 7.
 
 ## Reporting a Vulnerability
 
