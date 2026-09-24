@@ -91,6 +91,9 @@ The multi-release descriptors define the explicit Java 9+ module names. The
 manifest names intentionally retain their historical values for consumers that
 disable multi-release support or otherwise use automatic-module discovery.
 
+The ESAPI adapter's fixed dependency and tested compatibility policy are
+documented in [esapi/README.md](esapi/README.md).
+
 
 TagLib
 --------------------
