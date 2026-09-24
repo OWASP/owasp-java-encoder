@@ -138,6 +138,10 @@ Releases are done via `central-publishing-maven-plugin`:
 mvn clean deploy -DperformRelease=true
 ```
 
+When changing the version, update the root `pom.xml`, the `<parent>` version in each
+module POM, and `encoder.version` in `jakarta-test/pom.xml`. CI fails if
+`jakarta-test` would test a different `encoder-jakarta-jsp` version than the one being built.
+
 
 News
 ----

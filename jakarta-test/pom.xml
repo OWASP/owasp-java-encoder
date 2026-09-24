@@ -16,12 +16,15 @@
     <description>Test for OWASP encoder jakarta JSP</description>
     <properties>
         <java.version>17</java.version>
+        <!-- Must equal the version in the root pom.xml so this app tests the
+             encoder-jakarta-jsp built in the same reactor. CI checks this. -->
+        <encoder.version>1.4.0</encoder.version>
     </properties>
     <dependencies>
         <dependency>
             <groupId>org.owasp.encoder</groupId>
             <artifactId>encoder-jakarta-jsp</artifactId>
-            <version>1.4.0</version>
+            <version>${encoder.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
