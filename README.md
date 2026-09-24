@@ -59,6 +59,11 @@ Please look at the javadoc for Encode to see the variety of contexts for which y
 
 Happy Encoding!
 
+Security
+--------
+Please report suspected vulnerabilities privately. See [SECURITY.md](SECURITY.md) for
+the reporting channels, supported versions, and scope.
+
 Building
 --------
 
@@ -141,6 +146,7 @@ mvn clean deploy -DperformRelease=true
 When changing the version, update the root `pom.xml`, the `<parent>` version in each
 module POM, and `encoder.version` in `jakarta-test/pom.xml`. CI fails if
 `jakarta-test` would test a different `encoder-jakarta-jsp` version than the one being built.
+When publishing a release, also update the supported versions in `SECURITY.md`.
 
 
 News
