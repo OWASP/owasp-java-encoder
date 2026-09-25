@@ -183,9 +183,11 @@ public class EncodeTest extends TestCase {
     }
 
     /**
-     * Regression test for EncodedWriter: a character left over from one
-     * write (the Java encoder needs to see what follows "\0") must survive
-     * an empty write instead of looping forever.
+     * Regression test for EncodedWriter: when an encoder leaves characters
+     * pending for look-ahead, a later write that is absorbed entirely into
+     * the left-over buffer without resolving the look-ahead must keep them
+     * for the next write or close instead of looping forever.  Here the
+     * Java encoder needs to see what follows "\0" and the write is empty.
      *
      * @throws IOException not thrown
      */
@@ -197,6 +199,39 @@ public class EncodeTest extends TestCase {
         writer.write("1");
         writer.close();
         assertEquals(Encode.forJava("\0" + "1"), out.toString());
+    }
+
+    /**
+     * Same look-ahead case with single-character writes through
+     * {@link java.io.Writer#write(int)}: the CDATA encoder must see what
+     * follows "]]" before it can encode either "]".
+     *
+     * @throws IOException not thrown
+     */
+    public void testEncodedWriterSingleCharWritesWithLeftOver() throws IOException {
+        StringWriter out = new StringWriter();
+        EncodedWriter writer = new EncodedWriter(out, Encoders.CDATA);
+        writer.write(']');
+        writer.write(']');
+        writer.write('>');
+        writer.close();
+        assertEquals(Encode.forCDATA("]]>"), out.toString());
+    }
+
+    /**
+     * Same look-ahead case with two separate writes of "]" through the
+     * CDATA encoder.
+     *
+     * @throws IOException not thrown
+     */
+    public void testEncodedWriterRepeatedLookAheadWrites() throws IOException {
+        StringWriter out = new StringWriter();
+        EncodedWriter writer = new EncodedWriter(out, Encoders.CDATA);
+        writer.write("]");
+        writer.write("]");
+        writer.write("x");
+        writer.close();
+        assertEquals(Encode.forCDATA("]]x"), out.toString());
     }
 
     public void testVeryLargeEncodeToString() {

@@ -188,9 +188,11 @@ public class EncodedWriter extends Writer {
             } else if (done) {
                 break;
             } else if (input == null || !input.hasRemaining()) {
-                // the encoder needs more input than is available (e.g. a
-                // zero-length write).  Keep the left over characters for
-                // the next write or close.
+                // the encoder still needs more input to resolve its
+                // look-ahead, and this write has been absorbed entirely
+                // (e.g. an empty write, a single character, or a second
+                // "]" for CDATA).  Keep the left over characters for the
+                // next write or close.
                 return;
             }
         }

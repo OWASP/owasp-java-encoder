@@ -185,6 +185,13 @@ public class JSONWriterTest extends TestCase {
         assertEquals("\ud83d\ude00", encodeInWrites("\ud83d", "", "", "\ude00"));
     }
 
+    /**
+     * Writing U+D800, U+D800 and U+DC00 separately also covers the
+     * EncodedWriter look-ahead regression: the second write is absorbed
+     * into the left over buffer without resolving the look-ahead.
+     *
+     * @throws IOException not thrown
+     */
     public void testUnpairedHighSurrogateSplitAcrossWrites() throws IOException {
         assertEquals("\\ud800a", encodeInWrites("\ud800", "a"));
         assertEquals("\\ud800\\u003c", encodeInWrites("\ud800", "<"));
