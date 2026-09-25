@@ -1,4 +1,4 @@
-// Copyright (c) 2012 Jeff Ichnowski
+// Copyright (c) 2026 OWASP
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -32,50 +32,43 @@
 // ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
 // OF THE POSSIBILITY OF SUCH DAMAGE.
 
-package org.owasp.encoder;
-
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
-
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
+package org.owasp.encoder.tag;
 
 /**
- * EncodersTest -- Tests for the Encoders class.
- *
- * @author Jeff Ichnowski
+ * Simple tests for the ForJsonTag.
  */
-public class EncodersTest extends TestCase {
+public class ForJsonTagTest extends EncodingTagTest {
 
-    public static Test suite() throws Exception {
-        return new TestSuite(EncodersTest.class);
+    public ForJsonTagTest(String testName) {
+        super(testName);
     }
 
-    public void testForNameIsNotNull() throws Exception {
-        Field[] fields = Encoders.class.getFields();
-        int count = 0;
-        for (Field field : fields) {
-            if (Modifier.isPublic(field.getModifiers()) &&
-                Modifier.isStatic(field.getModifiers()) &&
-                Modifier.isFinal(field.getModifiers()) &&
-                field.getType() == String.class)
-            {
-                String contextName = (String) field.get(null);
-                Encoder encoder = Encoders.forName(contextName);
-                assertNotNull("Encoder: "+contextName, encoder);
-                count++;
-            }
-        }
-
-        assertTrue(count > 0);
+    @Override
+    protected void setUp() throws Exception {
+        super.setUp();
     }
 
-    public void testJsonContext() throws Exception {
-        assertEquals("json", Encoders.JSON);
-        Encoder encoder = Encoders.forName(Encoders.JSON);
-        assertSame(Encoders.JSON_ENCODER, encoder);
-        assertTrue(encoder instanceof JSONEncoder);
-        assertNotSame(Encoders.JAVASCRIPT_SOURCE_ENCODER, encoder);
+    @Override
+    protected void tearDown() throws Exception {
+        super.tearDown();
+    }
+
+    /**
+     * Test of doTag method, of class ForJsonTag.
+     * This is a very simple test that doesn't fully
+     * exercise/test the encoder - only that the
+     * tag itself works.
+     * @throws Exception is thrown if the tag fails.
+     */
+    public void testDoTag() throws Exception {
+        System.out.println("doTag");
+        ForJsonTag instance = new ForJsonTag();
+        String value = "\0'\"</script>";
+        String expected = "\\u0000'\\\"\\u003c/script\\u003e";
+        instance.setJspContext(_pageContext);
+        instance.setValue(value);
+        instance.doTag();
+        String results = _response.getContentAsString();
+        assertEquals(expected,results);
     }
 }

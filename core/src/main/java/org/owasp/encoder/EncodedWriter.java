@@ -172,6 +172,7 @@ public class EncodedWriter extends Writer {
             return;
         }
 
+        // _leftOverBuffer is in "put" mode at the top of each iteration.
         for (;;) {
             if (input != null && input.hasRemaining()) {
                 _leftOverBuffer.put(input.get());
@@ -179,16 +180,18 @@ public class EncodedWriter extends Writer {
 
             _leftOverBuffer.flip();
             CoderResult cr = _encoder.encode(_leftOverBuffer, _buffer, input == null);
+            boolean done = !_leftOverBuffer.hasRemaining();
+            _leftOverBuffer.compact();
 
-            if (cr.isUnderflow()) {
-                if (_leftOverBuffer.hasRemaining()) {
-                    _leftOverBuffer.compact();
-                } else {
-                    break;
-                }
-            }
             if (cr.isOverflow()) {
                 flushBufferToWriter();
+            } else if (done) {
+                break;
+            } else if (input == null || !input.hasRemaining()) {
+                // the encoder needs more input than is available (e.g. a
+                // zero-length write).  Keep the left over characters for
+                // the next write or close.
+                return;
             }
         }
 

@@ -1,4 +1,4 @@
-// Copyright (c) 2012 Jeff Ichnowski
+// Copyright (c) 2026 OWASP
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -32,50 +32,19 @@
 // ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
 // OF THE POSSIBILITY OF SUCH DAMAGE.
 
-package org.owasp.encoder;
+package org.owasp.encoder.tag;
 
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
-
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
+import java.io.IOException;
+import javax.servlet.jsp.JspException;
+import org.owasp.encoder.Encode;
 
 /**
- * EncodersTest -- Tests for the Encoders class.
- *
- * @author Jeff Ichnowski
+ * A tag to perform JSON string encoding.
+ * This wraps the {@link org.owasp.encoder.Encode#forJson(java.lang.String)}.
  */
-public class EncodersTest extends TestCase {
-
-    public static Test suite() throws Exception {
-        return new TestSuite(EncodersTest.class);
-    }
-
-    public void testForNameIsNotNull() throws Exception {
-        Field[] fields = Encoders.class.getFields();
-        int count = 0;
-        for (Field field : fields) {
-            if (Modifier.isPublic(field.getModifiers()) &&
-                Modifier.isStatic(field.getModifiers()) &&
-                Modifier.isFinal(field.getModifiers()) &&
-                field.getType() == String.class)
-            {
-                String contextName = (String) field.get(null);
-                Encoder encoder = Encoders.forName(contextName);
-                assertNotNull("Encoder: "+contextName, encoder);
-                count++;
-            }
-        }
-
-        assertTrue(count > 0);
-    }
-
-    public void testJsonContext() throws Exception {
-        assertEquals("json", Encoders.JSON);
-        Encoder encoder = Encoders.forName(Encoders.JSON);
-        assertSame(Encoders.JSON_ENCODER, encoder);
-        assertTrue(encoder instanceof JSONEncoder);
-        assertNotSame(Encoders.JAVASCRIPT_SOURCE_ENCODER, encoder);
+public class ForJsonTag extends EncodingTag {
+    @Override
+    public void doTag() throws JspException, IOException {
+        Encode.forJson(getJspContext().getOut(), _value);
     }
 }

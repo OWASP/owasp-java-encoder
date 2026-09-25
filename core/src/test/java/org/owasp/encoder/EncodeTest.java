@@ -146,6 +146,59 @@ public class EncodeTest extends TestCase {
         assertEquals(input.replace("&", "&amp;"), output);
     }
 
+    public void testForJson() throws IOException {
+        assertEquals("\\u003c/script\\u003e", Encode.forJson("</script>"));
+        StringWriter out = new StringWriter();
+        Encode.forJson(out, "</script>");
+        assertEquals("\\u003c/script\\u003e", out.toString());
+    }
+
+    public void testForJsonNull() throws IOException {
+        // null becomes the text null, so "<%=Encode.forJson(null)%>" is the
+        // JSON string "null"
+        assertEquals("null", Encode.forJson(null));
+        StringWriter out = new StringWriter();
+        Encode.forJson(out, null);
+        assertEquals("null", out.toString());
+    }
+
+    /**
+     * Regression test for the Writer encode loop: when an encoder leaves a
+     * character unread at the end of an input batch (here the Java encoder
+     * looking ahead after "\0"), that character must not be loaded again
+     * from the source string.
+     *
+     * @throws IOException not thrown
+     */
+    public void testWriterBatchBoundaryWithLookahead() throws IOException {
+        final int batch = Encode.Buffer.INPUT_BUFFER_SIZE;
+        StringBuilder buf = new StringBuilder("\n");
+        while (buf.length() < batch - 1) {
+            buf.append('a');
+        }
+        String input = buf.append("\0" + "0" + "b").toString();
+        StringWriter out = new StringWriter();
+        Encode.forJava(out, input);
+        assertEquals(Encode.forJava(input), out.toString());
+    }
+
+    /**
+     * Regression test for EncodedWriter: a character left over from one
+     * write (the Java encoder needs to see what follows "\0") must survive
+     * an empty write instead of looping forever.
+     *
+     * @throws IOException not thrown
+     */
+    public void testEncodedWriterEmptyWriteWithLeftOver() throws IOException {
+        StringWriter out = new StringWriter();
+        EncodedWriter writer = new EncodedWriter(out, Encoders.JAVA);
+        writer.write("\0");
+        writer.write("");
+        writer.write("1");
+        writer.close();
+        assertEquals(Encode.forJava("\0" + "1"), out.toString());
+    }
+
     public void testVeryLargeEncodeToString() {
         final String input = "&&&&&&&&&&&&&&&&&&&&"
             .replace("&", "&&&&&&&&&&&&&&&&&&&&") // 400

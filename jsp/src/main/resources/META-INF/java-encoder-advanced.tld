@@ -167,6 +167,31 @@
     </tag>
     <tag>
         <description>
+			Encodes for the contents of a JSON string literal (RFC 8259), for use
+			in a JSON document or in an HTML script type="application/json"
+			element.  The caller MUST provide the surrounding double quotation
+			marks.  " and \ are encoded as \" and \\, control characters as
+			\b, \t, \n, \f, \r or \u00xx, and &lt;, &gt;, &amp;, U+2028,
+			U+2029 and unpaired surrogates as \uxxxx with lowercase hex digits.
+			Valid surrogate pairs and all other characters are passed through
+			unchanged.  This method is NOT safe for use in HTML attributes.  A
+			null value is written as the text null, which becomes the JSON
+			string "null" inside the caller's quotation marks.
+        </description>
+        <display-name>forJson</display-name>
+        <name>forJson</name>
+        <tag-class>org.owasp.encoder.tag.ForJsonTag</tag-class>
+        <body-content>empty</body-content>
+        <attribute>
+            <description>value to be written out</description>
+            <name>value</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>java.lang.String</type>
+        </attribute>
+    </tag>
+    <tag>
+        <description>
 			Encodes for unquoted HTML attribute values. forHtml(String) or
 			forHtmlAttribute(String) should usually be preferred over this
 			method as quoted attributes are XHTML compliant.
@@ -555,6 +580,28 @@
         <example>
 			&lt;%@page contentType="text/javascript; charset=UTF-8"%>
 			var data = '${forJavaScriptSource(unsafeData)}';
+        </example>
+    </function>
+    <function>
+        <description>
+			Encodes for the contents of a JSON string literal (RFC 8259), for use
+			in a JSON document or in an HTML script type="application/json"
+			element.  The caller MUST provide the surrounding double quotation
+			marks.  " and \ are encoded as \" and \\, control characters as
+			\b, \t, \n, \f, \r or \u00xx, and &lt;, &gt;, &amp;, U+2028,
+			U+2029 and unpaired surrogates as \uxxxx with lowercase hex digits.
+			Valid surrogate pairs and all other characters are passed through
+			unchanged.  This method is NOT safe for use in HTML attributes.  A
+			null value is written as the text null, which becomes the JSON
+			string "null" inside the caller's quotation marks.
+        </description>
+        <display-name>forJson</display-name>
+        <name>forJson</name>
+        <function-class>org.owasp.encoder.Encode</function-class>
+        <function-signature>java.lang.String forJson(java.lang.String)</function-signature>
+        <example>
+			&lt;%@page contentType="application/json; charset=UTF-8"%>
+			{"data":"${forJson(unsafeData)}"}
         </example>
     </function>
 </taglib>
