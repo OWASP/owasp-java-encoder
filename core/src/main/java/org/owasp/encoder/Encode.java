@@ -396,12 +396,9 @@ public final class Encode {
      *         <td class="colFirst">{@code `}</td>
      *         <td class="colLast">{@code &#96;}</td></tr>
      *     <tr class="rowColor">
-     *         <td class="colFirst">{@code U+0085} (next line)</td>
-     *         <td class="colLast">{@code &#133;}</td></tr>
-     *     <tr class="altColor">
      *         <td class="colFirst">{@code U+2028} (line separator)</td>
      *         <td class="colLast">{@code &#8232;}</td></tr>
-     *     <tr class="rowColor">
+     *     <tr class="altColor">
      *         <td class="colFirst">{@code U+2029} (paragraph separator)</td>
      *         <td class="colLast">{@code &#8233;}</td></tr>
      *   </tbody>
@@ -874,7 +871,10 @@ public final class Encode {
      * (except null) to be encoded as character references.  This method encodes
      * control characters in the ranges [#x1-#x8, #xB-#xC, #xE-#x1F, #x7F-#x9F]
      * as character references (e.g., {@code &#x01;}), while tab, line feed,
-     * and carriage return are passed through unencoded. This is safe for use
+     * and carriage return are passed through unencoded.  NEL ({@code U+0085})
+     * and line separator ({@code U+2028}) are also encoded, as {@code &#x85;}
+     * and {@code &#x2028;}, because an XML 1.1 processor would otherwise
+     * normalize them to a line feed.  This is safe for use
      * in both XML 1.1 content and attributes.
      *
      * @param input the input to encode

@@ -151,6 +151,10 @@ When publishing a release, also update the supported versions in `SECURITY.md`.
 
 News
 ----
+### Unreleased - 1.5.0
+* fix: `forHtmlUnquotedAttribute` now replaces U+0085 (NEL) with a hyphen like the other C1 control characters, instead of emitting `&#133;`, which HTML5 parsers decode as U+2026 [#136](https://github.com/OWASP/owasp-java-encoder/issues/136).
+* fix: the XML 1.1 encoders (`forXml11`, `forXml11Content`, `forXml11Attribute`) now encode U+0085 (NEL) as `&#x85;` and U+2028 (line separator) as `&#x2028;`, so they are not normalized to a line feed [#136](https://github.com/OWASP/owasp-java-encoder/issues/136).
+
 ### 2025-11-17 - 1.4.0 Release
 The team is happy to announce that version 1.4.0 has been released!
 * feat: add XML 1.1 encoding support [#88](https://github.com/OWASP/owasp-java-encoder/pull/88).

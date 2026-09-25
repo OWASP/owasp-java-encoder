@@ -59,7 +59,9 @@ class XMLEncoder extends Encoder {
     // U+FDD0 .. U+FDEF
     // Control Characters
     // U+0000 .. U+001F <-- CR, LF, TAB are in this range and ok.
-    // U+007f .. U+009F <-- U+85 = NEL (next line) = CR+LF in one = ok.
+    // U+007f .. U+009F <-- U+85 = NEL (next line) = CR+LF in one = ok in
+    // XML 1.0, but normalized to LF by XML 1.1 (as is U+2028), so
+    // XML 1.1 output uses character references for both.
     // Note: the standard says it is a good practice to replace noncharacters
     // with U+FFFD "replacement character".
     /**
@@ -96,6 +98,11 @@ class XMLEncoder extends Encoder {
      * The encoded length of a control character reference (e.g., &#x01;).
      */
     static final int CONTROL_CHAR_REF_LENGTH = 6;
+    /**
+     * The encoded length of a character reference for a character above
+     * U+00FF (e.g., &#x2028;).
+     */
+    static final int WIDE_CHAR_REF_LENGTH = 8;
 
     /**
      * An enum of supported XML versions for the XMLEncoder.
@@ -110,6 +117,8 @@ class XMLEncoder extends Encoder {
          * XML 1.1 - control characters (except tab, lf, cr) are encoded as character references.
          * All chars [#x1-#x10FFFF] are allowed (excluding noncharacters).
          * Restricted chars [#x1-#x8, #xB-#xC, #xE-#x1F, #x7F-#x9F] must be encoded.
+         * NEL (#x85) and LINE SEPARATOR (#x2028) are also encoded, because an XML 1.1
+         * processor normalizes them to #xA when they appear literally.
          */
         XML_1_1
     }
@@ -230,9 +239,9 @@ class XMLEncoder extends Encoder {
 
     @Override
     public int maxEncodedLength(int n) {
-        // "&amp;" = 5 chars, "&#x01;" = 6 chars (XML 1.1 control chars)
+        // "&amp;" = 5 chars, "&#x2028;" = 8 chars (XML 1.1 line separator)
         if (_version == Version.XML_1_1) {
-            return n * CONTROL_CHAR_REF_LENGTH;
+            return n * WIDE_CHAR_REF_LENGTH;
         }
         return n * MAX_ENCODED_CHAR_LENGTH;
     }
@@ -251,8 +260,14 @@ class XMLEncoder extends Encoder {
 //                    // valid
                 }
             } else if (ch < Character.MIN_HIGH_SURROGATE) {
-                if (ch <= Unicode.MAX_C1_CTRL_CHAR && ch != Unicode.NEL) {
-                    // C1 control character - needs encoding in XML 1.1 or replacement in XML 1.0
+                if (ch <= Unicode.MAX_C1_CTRL_CHAR) {
+                    if (ch != Unicode.NEL || _version == Version.XML_1_1) {
+                        // C1 control character - needs encoding in XML 1.1 or replacement in XML 1.0
+                        // (NEL is valid in XML 1.0, but XML 1.1 normalizes it to LF)
+                        return i;
+                    }
+                } else if (ch == Unicode.LINE_SEPARATOR && _version == Version.XML_1_1) {
+                    // XML 1.1 normalizes LS to LF, must be a character reference
                     return i;
 //                } else {
 //                    // valid
@@ -379,22 +394,33 @@ class XMLEncoder extends Encoder {
                     }
                 }
             } else if (ch < Character.MIN_HIGH_SURROGATE) {
-                if (ch > Unicode.MAX_C1_CTRL_CHAR || ch == Unicode.NEL) {
+                final boolean xml11 = _version == Version.XML_1_1;
+                if (ch > Unicode.MAX_C1_CTRL_CHAR
+                        ? (ch != Unicode.LINE_SEPARATOR || !xml11)
+                        : (ch == Unicode.NEL && !xml11))
+                {
                     if (j >= m) {
                         return overflow(input, i, output, j);
                     }
                     out[j++] = ch;
                 } else {
-                    // C1 control code
-                    if (_version == Version.XML_1_1) {
-                        // In XML 1.1, encode C1 control characters (except NEL) as character references
-                        if (j + CONTROL_CHAR_REF_LENGTH > m) {
+                    // C1 control code, or NEL/LS in XML 1.1
+                    if (xml11) {
+                        // In XML 1.1, encode C1 control characters (including NEL) and
+                        // LS as character references, since XML 1.1 parsers normalize
+                        // NEL and LS to LF.
+                        final boolean wide = ch > 0xff;
+                        if (j + (wide ? WIDE_CHAR_REF_LENGTH : CONTROL_CHAR_REF_LENGTH) > m) {
                             return overflow(input, i, output, j);
                         }
                         out[j++] = '&';
                         out[j++] = '#';
                         out[j++] = 'x';
                         int val = ch;
+                        if (wide) {
+                            out[j++] = Character.forDigit((val >> 12) & 0xF, 16);
+                            out[j++] = Character.forDigit((val >> 8) & 0xF, 16);
+                        }
                         out[j++] = Character.forDigit((val >> 4) & 0xF, 16);
                         out[j++] = Character.forDigit(val & 0xF, 16);
                         out[j++] = ';';
