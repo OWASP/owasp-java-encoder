@@ -89,7 +89,8 @@
 			are writing a framework on top of this library, it is recommend
 			that you use this method over the others.
 
-			Backtick (`) and dollar sign ($) are also encoded, so the output is safe inside a JavaScript template literal as well.
+			Backtick (`) and dollar sign ($) are also encoded, so the output is
+			safe inside a JavaScript template literal as well.
         </description>
         <display-name>forJavaScript</display-name>
         <name>forJavaScript</name>
@@ -396,7 +397,8 @@
 			blocks, JSON files, and JavaScript source.  The caller MUST
 			provide the surrounding quotation characters (' or ") for the string.
 
-			Backtick (`) and dollar sign ($) are also encoded, so the output is safe inside a JavaScript template literal as well.
+			Backtick (`) and dollar sign ($) are also encoded, so the output is
+			safe inside a JavaScript template literal as well.
         </description>
         <display-name>forJavaScript</display-name>
         <name>forJavaScript</name>

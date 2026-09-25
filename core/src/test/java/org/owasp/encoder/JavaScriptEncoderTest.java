@@ -101,7 +101,7 @@ public class JavaScriptEncoderTest extends TestCase {
                     .encode("Paragraph Separator", "\\u2029", "\u2029")
                     .encode("backtick", "\\x60", "`")
                     .encode("dollar", "\\x24", "$")
-                    .encode("template expression", "\\x24{", "${")
+                    .encode("template expression", "\\x24{alert(1)}", "${alert(1)}")
                     .encode("template breakout", "hell\\x60;alert(1);\\x60o", "hell`;alert(1);`o")
                     .encode("abc", "abc")
                     .encode("ABC", "ABC");

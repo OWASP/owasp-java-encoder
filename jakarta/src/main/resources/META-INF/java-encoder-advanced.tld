@@ -89,7 +89,8 @@
 			are writing a framework on top of this library, it is recommend
 			that you use this method over the others.
 
-			Backtick (`) and dollar sign ($) are also encoded, so the output is safe inside a JavaScript template literal as well.
+			Backtick (`) and dollar sign ($) are also encoded, so the output is
+			safe inside a JavaScript template literal as well.
         </description>
         <display-name>forJavaScript</display-name>
         <name>forJavaScript</name>
@@ -112,7 +113,8 @@
 			same encode as Encode.forJavaScript(String) with the
 			exception that / is not escaped.
 
-			Backtick (`) and dollar sign ($) are also encoded, so the output is safe inside a JavaScript template literal as well.
+			Backtick (`) and dollar sign ($) are also encoded, so the output is
+			safe inside a JavaScript template literal as well.
         </description>
         <display-name>forJavaScriptAttribute</display-name>
         <name>forJavaScriptAttribute</name>
@@ -135,7 +137,8 @@
 			performs the same encode as Encode.forJavaScript(String)} with
 			the exception that " and ' are encoded as \" and \' respectively.
 
-			Backtick (`) and dollar sign ($) are also encoded, so the output is safe inside a JavaScript template literal as well.
+			Backtick (`) and dollar sign ($) are also encoded, so the output is
+			safe inside a JavaScript template literal as well.
         </description>
         <display-name>forJavaScriptBlock</display-name>
         <name>forJavaScriptBlock</name>
@@ -159,7 +162,8 @@
 			the exception that / and &amp; are not escaped and " and ' are
 			encoded as \" and \' respectively.
 
-			Backtick (`) and dollar sign ($) are also encoded, so the output is safe inside a JavaScript template literal as well.
+			Backtick (`) and dollar sign ($) are also encoded, so the output is
+			safe inside a JavaScript template literal as well.
         </description>
         <display-name>forJavaScriptSource</display-name>
         <name>forJavaScriptSource</name>
@@ -510,7 +514,8 @@
 			are writing a framework on top of this library, it is recommend
 			that you use this method over the others.
 
-			Backtick (`) and dollar sign ($) are also encoded, so the output is safe inside a JavaScript template literal as well.
+			Backtick (`) and dollar sign ($) are also encoded, so the output is
+			safe inside a JavaScript template literal as well.
         </description>
         <display-name>forJavaScript</display-name>
         <name>forJavaScript</name>
@@ -527,7 +532,8 @@
 			same encode as Encode.forJavaScript(String) with the
 			exception that / is not escaped.
 
-			Backtick (`) and dollar sign ($) are also encoded, so the output is safe inside a JavaScript template literal as well.
+			Backtick (`) and dollar sign ($) are also encoded, so the output is
+			safe inside a JavaScript template literal as well.
         </description>
         <display-name>forJavaScriptAttribute</display-name>
         <name>forJavaScriptAttribute</name>
@@ -544,7 +550,8 @@
 			performs the same encode as Encode.forJavaScript(String)} with
 			the exception that " and ' are encoded as \" and \' respectively.
 
-			Backtick (`) and dollar sign ($) are also encoded, so the output is safe inside a JavaScript template literal as well.
+			Backtick (`) and dollar sign ($) are also encoded, so the output is
+			safe inside a JavaScript template literal as well.
         </description>
         <display-name>forJavaScriptBlock</display-name>
         <name>forJavaScriptBlock</name>
@@ -562,7 +569,8 @@
 			the exception that / and &amp; are not escaped and " and ' are
 			encoded as \" and \' respectively.
 
-			Backtick (`) and dollar sign ($) are also encoded, so the output is safe inside a JavaScript template literal as well.
+			Backtick (`) and dollar sign ($) are also encoded, so the output is
+			safe inside a JavaScript template literal as well.
         </description>
         <display-name>forJavaScriptSource</display-name>
         <name>forJavaScriptSource</name>

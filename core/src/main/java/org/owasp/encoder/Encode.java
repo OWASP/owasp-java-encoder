@@ -1023,9 +1023,9 @@ public final class Encode {
      * script attributes (such as {@code onclick}), script
      * blocks, JSON files, and JavaScript source.  The caller MUST
      * provide the surrounding quotation characters for the string,
-     * either <code>'</code> or <code>"</code>.  Backtick and
-     * <code>$</code> are also encoded, so the output is safe inside a
-     * template literal as well.
+     * either <code>'</code> or <code>"</code>.  Backtick
+     * (<code>`</code>) and <code>$</code> are also encoded, so the
+     * output is safe inside a template literal as well.
      * Since this performs additional encoding so it can work in all
      * of the JavaScript contexts listed, it may be slightly less
      * efficient than using one of the methods targeted to a specific
@@ -1162,7 +1162,8 @@ public final class Encode {
      * surrounding quotation characters (<code>'</code> or
      * <code>"</code>).  This method performs the
      * same encode as {@link #forJavaScript(String)} with the
-     * exception that <code>/</code> is not escaped.</p>
+     * exception that <code>/</code> is not escaped.  The output is also
+     * safe inside a template literal.</p>
      *
      * <p><strong>Unless you are interested in saving a few bytes of
      * output or are writing a framework on top of this library, it is
@@ -1206,7 +1207,8 @@ public final class Encode {
      * performs the same encode as {@link #forJavaScript(String)} with
      * the exception that <code>"</code> and <code>'</code> are
      * encoded as <code>\"</code> and <code>\'</code>
-     * respectively.</p>
+     * respectively.  The output is also safe inside a template
+     * literal.</p>
      *
      * <p><strong>Unless you are interested in saving a few bytes of
      * output or are writing a framework on top of this library, it is
@@ -1252,7 +1254,8 @@ public final class Encode {
      * performs the same encode as {@link #forJavaScript(String)} with
      * the exception that <code>/</code> and <code>&amp;</code> are not
      * escaped and <code>"</code> and <code>'</code> are encoded as
-     * <code>\"</code> and <code>\'</code> respectively.</p>
+     * <code>\"</code> and <code>\'</code> respectively.  The output is
+     * also safe inside a template literal.</p>
      *
      * <p><strong>Unless you are interested in saving a few bytes of
      * output or are writing a framework on top of this library, it is
