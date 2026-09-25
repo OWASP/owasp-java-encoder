@@ -44,6 +44,25 @@ public class ESAPIEncoderTest extends TestCase {
         assertEquals(Encode.forUri(input), encoder.encodeForURL(input));
     }
 
+    public void testEncodeForJSONUsesJavaEncoder() throws Exception {
+        Encoder encoder = ESAPIEncoder.getInstance();
+        String input = "</script>&\"\\\n\u2028/'\ud800";
+
+        // OWASP Java Encoder output: <, & and U+2028 escaped with lowercase
+        // hex, / and ' unchanged, unpaired surrogate escaped.
+        assertEquals("\\u003c/script\\u003e\\u0026\\\"\\\\\\n\\u2028/'\\ud800",
+            encoder.encodeForJSON(input));
+        assertEquals(Encode.forJson(input), encoder.encodeForJSON(input));
+        assertEquals("null", encoder.encodeForJSON(null));
+    }
+
+    public void testEncodeForJSONDecodesWithReferenceDecoder() throws Exception {
+        Encoder encoder = ESAPIEncoder.getInstance();
+        String input = "</script>&\"\\\n\u2028\ud83d\ude00/'\ud800";
+
+        assertEquals(input, encoder.decodeFromJSON(encoder.encodeForJSON(input)));
+    }
+
     public void testDelegatedTextMethods() throws Exception {
         Encoder encoder = ESAPIEncoder.getInstance();
         Encoder reference = DefaultEncoder.getInstance();
@@ -64,7 +83,6 @@ public class ESAPIEncoderTest extends TestCase {
             encoder.encodeForDN("CN=Test, O=Example"));
         assertEquals(reference.encodeForXPath("a'b"), encoder.encodeForXPath("a'b"));
         assertEquals(reference.decodeFromURL("a%20b"), encoder.decodeFromURL("a%20b"));
-        assertEquals(reference.encodeForJSON("a\"b"), encoder.encodeForJSON("a\"b"));
         assertEquals(reference.decodeFromJSON("a\\\"b"), encoder.decodeFromJSON("a\\\"b"));
     }
 

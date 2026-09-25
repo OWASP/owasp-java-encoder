@@ -275,7 +275,7 @@ public final class ESAPIEncoder {
         /** {@inheritDoc} */
         @Override
         public String encodeForJSON(String s) {
-            return _referenceEncoder.encodeForJSON(s);
+            return Encode.forJson(s);
         }
 
         /** {@inheritDoc} */
