@@ -131,11 +131,6 @@ The OWASP Java Encoder project is a multi-module Maven project:
 $ mvn package
 ```
 
-Benchmarks (currently in need of improvement) can be run with:
-
-```bash
-$ mvn verify -Pbenchmarks
-```
 
 Releases are done via `central-publishing-maven-plugin`:
 
