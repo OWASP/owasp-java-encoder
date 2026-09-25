@@ -1281,10 +1281,20 @@ public final class Encode {
     }
 
     /**
-     * <p>Encodes for the contents of a JSON string literal (RFC 8259),
-     * for use in a JSON document or in an HTML
-     * <code>&lt;script type="application/json"&gt;</code> element.  The
-     * caller must provide the surrounding double quotation marks.</p>
+     * <p>Encodes for the contents of a JSON string literal (RFC 8259).
+     * The caller must provide the surrounding double quotation marks.
+     * The result is safe to use as a JSON string value:</p>
+     *
+     * <ul>
+     * <li>in a JSON document, such as an <code>application/json</code>
+     * response, and</li>
+     * <li>in JSON inside an HTML <code>&lt;script&gt;</code> element,
+     * including <code>&lt;script type="application/json"&gt;</code>,
+     * because the output never contains <code>&lt;</code>,
+     * <code>&gt;</code> or <code>&amp;</code>.</li>
+     * </ul>
+     *
+     * <p>The encoding is:</p>
      *
      * <ul>
      * <li><code>"</code> and <code>\</code> are encoded as
@@ -1309,10 +1319,13 @@ public final class Encode {
      * output must be sent using a Unicode character encoding such as
      * UTF-8.</p>
      *
-     * <p><strong>This method is NOT safe for use in HTML attributes or
-     * other HTML contexts.</strong> Use
-     * {@link #forHtmlAttribute(String)} or
-     * {@link #forJavaScriptAttribute(String)} for those.</p>
+     * <p><strong>This method is NOT an HTML encoder.</strong>  Do not use
+     * it for HTML text content or HTML attribute values: HTML does not
+     * decode JSON escapes, and in a double-quoted attribute the
+     * <code>\"</code> this method produces still ends the value.  To put
+     * JSON in an HTML attribute, first encode each string value with this
+     * method and build the complete JSON text, then encode that complete
+     * attribute value with {@link #forHtmlAttribute(String)}.</p>
      *
      * <p>A {@code null} input is encoded as the text <code>null</code>,
      * like the other methods of this class.  Because the caller
@@ -1336,8 +1349,14 @@ public final class Encode {
      *    &lt;script type="application/json" id="data"&gt;{"name":"&lt;%=Encode.forJson(name)%&gt;"}&lt;/script&gt;
      * </pre>
      *
+     * <pre>
+     *    &lt;% String json = "{\"name\":\"" + Encode.forJson(name) + "\"}"; %&gt;
+     *    &lt;div data-config="&lt;%=Encode.forHtmlAttribute(json)%&gt;"&gt;&lt;/div&gt;
+     * </pre>
+     *
      * @param input the input string to encode
      * @return the input encoded for a JSON string literal
+     * @see #forHtmlAttribute(String)
      * @see #forJavaScriptSource(String)
      */
     public static String forJson(String input) {
