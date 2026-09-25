@@ -78,7 +78,7 @@
 			Encodes for a JavaScript string.  It is safe for use in HTML
 			script attributes (such as onclick), script
 			blocks, JSON files, and JavaScript source.  The caller MUST
-			provide the surrounding quotation characters for the string.
+			provide the surrounding quotation characters (' or ") for the string.
 			Since this performs additional encoding so it can work in all
 			of the JavaScript contexts listed, it may be slightly less
 			efficient then using one of the methods targetted to a specific
@@ -88,6 +88,8 @@
 			Unless you are interested in saving a few bytes of output or
 			are writing a framework on top of this library, it is recommend
 			that you use this method over the others.
+
+			Backtick (`) and dollar sign ($) are also encoded, so the output is safe inside a JavaScript template literal as well.
         </description>
         <display-name>forJavaScript</display-name>
         <name>forJavaScript</name>
@@ -106,9 +108,11 @@
 			This method encodes for JavaScript strings contained within
 			HTML script attributes (such as onclick).  It is
 			NOT safe for use in script blocks.  The caller MUST provide the
-			surrounding quotation characters.  This method performs the
+			surrounding quotation characters (' or ").  This method performs the
 			same encode as Encode.forJavaScript(String) with the
 			exception that / is not escaped.
+
+			Backtick (`) and dollar sign ($) are also encoded, so the output is safe inside a JavaScript template literal as well.
         </description>
         <display-name>forJavaScriptAttribute</display-name>
         <name>forJavaScriptAttribute</name>
@@ -127,9 +131,11 @@
 			This method encodes for JavaScript strings contained within
 			HTML script blocks.  It is NOT safe for use in script
 			attributes (such as onclick).  The caller must
-			provide the surrounding quotation characters.  This method
+			provide the surrounding quotation characters (' or ").  This method
 			performs the same encode as Encode.forJavaScript(String)} with
 			the exception that " and ' are encoded as \" and \' respectively.
+
+			Backtick (`) and dollar sign ($) are also encoded, so the output is safe inside a JavaScript template literal as well.
         </description>
         <display-name>forJavaScriptBlock</display-name>
         <name>forJavaScriptBlock</name>
@@ -148,10 +154,12 @@
 			This method encodes for JavaScript strings contained within
 			a JavaScript or JSON file. This method is NOT safe for
 			use in ANY context embedded in HTML. The caller must
-			provide the surrounding quotation characters.  This method
+			provide the surrounding quotation characters (' or ").  This method
 			performs the same encode as Encode.forJavaScript(String) with
 			the exception that / and &amp; are not escaped and " and ' are
 			encoded as \" and \' respectively.
+
+			Backtick (`) and dollar sign ($) are also encoded, so the output is safe inside a JavaScript template literal as well.
         </description>
         <display-name>forJavaScriptSource</display-name>
         <name>forJavaScriptSource</name>
@@ -491,7 +499,7 @@
 			Encodes for a JavaScript string.  It is safe for use in HTML
 			script attributes (such as onclick), script
 			blocks, JSON files, and JavaScript source.  The caller MUST
-			provide the surrounding quotation characters for the string.
+			provide the surrounding quotation characters (' or ") for the string.
 			Since this performs additional encoding so it can work in all
 			of the JavaScript contexts listed, it may be slightly less
 			efficient then using one of the methods targetted to a specific
@@ -501,6 +509,8 @@
 			Unless you are interested in saving a few bytes of output or
 			are writing a framework on top of this library, it is recommend
 			that you use this method over the others.
+
+			Backtick (`) and dollar sign ($) are also encoded, so the output is safe inside a JavaScript template literal as well.
         </description>
         <display-name>forJavaScript</display-name>
         <name>forJavaScript</name>
@@ -513,9 +523,11 @@
 			This method encodes for JavaScript strings contained within
 			HTML script attributes (such as onclick).  It is
 			NOT safe for use in script blocks.  The caller MUST provide the
-			surrounding quotation characters.  This method performs the
+			surrounding quotation characters (' or ").  This method performs the
 			same encode as Encode.forJavaScript(String) with the
 			exception that / is not escaped.
+
+			Backtick (`) and dollar sign ($) are also encoded, so the output is safe inside a JavaScript template literal as well.
         </description>
         <display-name>forJavaScriptAttribute</display-name>
         <name>forJavaScriptAttribute</name>
@@ -528,9 +540,11 @@
 			This method encodes for JavaScript strings contained within
 			HTML script blocks.  It is NOT safe for use in script
 			attributes (such as onclick).  The caller must
-			provide the surrounding quotation characters.  This method
+			provide the surrounding quotation characters (' or ").  This method
 			performs the same encode as Encode.forJavaScript(String)} with
 			the exception that " and ' are encoded as \" and \' respectively.
+
+			Backtick (`) and dollar sign ($) are also encoded, so the output is safe inside a JavaScript template literal as well.
         </description>
         <display-name>forJavaScriptBlock</display-name>
         <name>forJavaScriptBlock</name>
@@ -543,10 +557,12 @@
 			This method encodes for JavaScript strings contained within
 			a JavaScript or JSON file. This method is NOT safe for
 			use in ANY context embedded in HTML. The caller must
-			provide the surrounding quotation characters.  This method
+			provide the surrounding quotation characters (' or ").  This method
 			performs the same encode as Encode.forJavaScript(String) with
 			the exception that / and &amp; are not escaped and " and ' are
 			encoded as \" and \' respectively.
+
+			Backtick (`) and dollar sign ($) are also encoded, so the output is safe inside a JavaScript template literal as well.
         </description>
         <display-name>forJavaScriptSource</display-name>
         <name>forJavaScriptSource</name>

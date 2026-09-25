@@ -1022,7 +1022,10 @@ public final class Encode {
      * <p>Encodes for a JavaScript string.  It is safe for use in HTML
      * script attributes (such as {@code onclick}), script
      * blocks, JSON files, and JavaScript source.  The caller MUST
-     * provide the surrounding quotation characters for the string.
+     * provide the surrounding quotation characters for the string,
+     * either <code>'</code> or <code>"</code>.  Backtick and
+     * <code>$</code> are also encoded, so the output is safe inside a
+     * template literal as well.
      * Since this performs additional encoding so it can work in all
      * of the JavaScript contexts listed, it may be slightly less
      * efficient than using one of the methods targeted to a specific
@@ -1084,11 +1087,17 @@ public final class Encode {
      *       "\&amp;quot;".)</td>
      *     </tr>
      *     <tr class="altColor">
+     *       <td class="colFirst">U+0024</td><td><code>$</code></td>
+     *       <td class="colLast"><code>\x24</code></td>
+     *       <td class="colLast">Dollar sign.  Encoded so that <code>${</code>
+     *       cannot start an expression inside a template literal.</td>
+     *     </tr>
+     *     <tr class="rowColor">
      *       <td class="colFirst">U+0026</td><td><code>&amp;</code></td>
      *       <td class="colLast"><code>\x26</code></td>
      *       <td class="colLast">Ampersand character</td>
      *     </tr>
-     *     <tr class="rowColor">
+     *     <tr class="altColor">
      *       <td class="colFirst">U+0027</td><td><code>'</code></td>
      *       <td class="colLast"><code>\x27</code></td>
      *       <td class="colLast">The encoding <code>\'</code> is not used here because
@@ -1096,17 +1105,23 @@ public final class Encode {
      *       attributes, it would also be correct to use
      *       "\&amp;#39;".)</td>
      *     </tr>
-     *     <tr class="altColor">
+     *     <tr class="rowColor">
      *       <td class="colFirst">U+002F</td><td><code>/</code></td>
      *       <td class="colLast"><code>\/</code></td>
      *       <td class="colLast">This encoding is used to avoid an input sequence
      *       "&lt;/" from prematurely terminating a &lt;/script&gt;
      *       block.</td>
      *     </tr>
-     *     <tr class="rowColor">
+     *     <tr class="altColor">
      *       <td class="colFirst">U+005C</td><td><code>\</code></td>
      *       <td class="colLast"><code>\\</code></td>
      *       <td class="colLast"></td>
+     *     </tr>
+     *     <tr class="rowColor">
+     *       <td class="colFirst">U+0060</td><td><code>`</code></td>
+     *       <td class="colLast"><code>\x60</code></td>
+     *       <td class="colLast">Backtick.  Encoded so that it cannot end a
+     *       template literal.</td>
      *     </tr>
      *     <tr class="altColor">
      *       <td class="colFirst" colspan="2">U+0000&nbsp;to&nbsp;U+001F</td>
@@ -1144,7 +1159,8 @@ public final class Encode {
      * <p>This method encodes for JavaScript strings contained within
      * HTML script attributes (such as {@code onclick}).  It is
      * NOT safe for use in script blocks.  The caller MUST provide the
-     * surrounding quotation characters.  This method performs the
+     * surrounding quotation characters (<code>'</code> or
+     * <code>"</code>).  This method performs the
      * same encode as {@link #forJavaScript(String)} with the
      * exception that <code>/</code> is not escaped.</p>
      *
@@ -1185,7 +1201,8 @@ public final class Encode {
      * <p>This method encodes for JavaScript strings contained within
      * HTML script blocks.  It is NOT safe for use in script
      * attributes (such as <code>onclick</code>).  The caller must
-     * provide the surrounding quotation characters.  This method
+     * provide the surrounding quotation characters (<code>'</code> or
+     * <code>"</code>).  This method
      * performs the same encode as {@link #forJavaScript(String)} with
      * the exception that <code>"</code> and <code>'</code> are
      * encoded as <code>\"</code> and <code>\'</code>
@@ -1230,7 +1247,8 @@ public final class Encode {
      * <p>This method encodes for JavaScript strings contained within
      * a JavaScript or JSON file.  <strong>This method is NOT safe for
      * use in ANY context embedded in HTML.</strong> The caller must
-     * provide the surrounding quotation characters.  This method
+     * provide the surrounding quotation characters (<code>'</code> or
+     * <code>"</code>).  This method
      * performs the same encode as {@link #forJavaScript(String)} with
      * the exception that <code>/</code> and <code>&amp;</code> are not
      * escaped and <code>"</code> and <code>'</code> are encoded as

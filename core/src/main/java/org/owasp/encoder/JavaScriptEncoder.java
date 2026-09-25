@@ -119,11 +119,15 @@ class JavaScriptEncoder extends Encoder {
         // the Java spec (x << y) where x and y are integers, is evaluated
         // as (x << (y & 31)).  Or put another way, only the lower 5 bits
         // of the shift amount are considered.
+        //
+        // '`' and '$' are encoded in every mode so that the output is also
+        // safe inside a template literal, where '`' ends the literal and
+        // "${" starts an embedded expression.
         _validMasks = new int[]{
             0,
-            -1 & ~((1 << '\'') | (1 << '\"')),
+            -1 & ~((1 << '\'') | (1 << '\"') | (1 << '$')),
             -1 & ~((1 << '\\')),
-            asciiOnly ? ~(1 << Unicode.DEL) : -1,};
+            (asciiOnly ? ~(1 << Unicode.DEL) : -1) & ~(1 << '`'),};
 
         if (mode == Mode.BLOCK || mode == Mode.HTML) {
             // in <script> blocks, we need to prevent the browser from seeing
