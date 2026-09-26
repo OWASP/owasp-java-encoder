@@ -16,6 +16,13 @@ MODULES = {'': 'encoder-parent', 'core': 'encoder', 'jsp': 'encoder-jsp',
            'jakarta': 'encoder-jakarta-jsp', 'esapi': 'encoder-esapi'}
 
 
+def require_identical(first, second):
+    differences = sorted(name for name in set(first) | set(second)
+                         if first.get(name) != second.get(name))
+    if differences:
+        raise ValueError('Artifact bytes differ: ' + ', '.join(differences))
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--commit', required=True)
@@ -26,7 +33,8 @@ def main():
     java = Path(os.environ['JAVA_HOME']) / 'bin/java'
     props = subprocess.run([str(java), '-XshowSettings:properties', '-version'],
                            text=True, capture_output=True, check=True).stderr
-    assert 'java.vendor = Eclipse Adoptium' in props and 'java.runtime.version = 17.0.20.1+1\n' in props, props
+    if 'java.vendor = Eclipse Adoptium' not in props or 'java.runtime.version = 17.0.20.1+1\n' not in props:
+        raise ValueError('Unexpected reference JDK: ' + props)
     directory = args.directory.resolve()
     directory.mkdir(parents=True, exist_ok=False)
     archive = subprocess.check_output(['git', 'archive', commit], cwd=ROOT)
@@ -54,13 +62,14 @@ def main():
             for suffix in suffixes:
                 filename = artifact + '-' + version + suffix
                 hashes[filename] = hashlib.sha256((base / filename).read_bytes()).hexdigest()
-        assert len(hashes) == 17
+        if len(hashes) != 17:
+            raise ValueError('Expected seventeen release payload files')
         results.append(hashes)
     differences = [name for name in results[0] if results[0][name] != results[1][name]]
     report = {'commit': commit, 'java': props, 'maven': '3.9.16',
               'hashes': results, 'differences': differences}
     (directory / 'comparison.json').write_text(json.dumps(report, indent=2) + '\n')
-    assert not differences, differences
+    require_identical(results[0], results[1])
     print('Identical: twelve binary/source/Javadoc JARs and five POMs from', commit)
 
 

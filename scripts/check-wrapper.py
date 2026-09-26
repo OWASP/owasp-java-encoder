@@ -29,9 +29,11 @@ def bootstrap(directory, bad_hash):
                             env=env, text=True, stdout=subprocess.PIPE,
                             stderr=subprocess.STDOUT, timeout=240)
     if bad_hash:
-        assert result.returncode != 0 and 'SHA-256' in result.stdout, result.stdout
+        if result.returncode == 0 or 'SHA-256' not in result.stdout:
+            raise ValueError('Checksum rejection did not work: ' + result.stdout)
     else:
-        assert result.returncode == 0 and 'Apache Maven 3.9.16' in result.stdout, result.stdout
+        if result.returncode != 0 or 'Apache Maven 3.9.16' not in result.stdout:
+            raise ValueError('Wrapper bootstrap failed: ' + result.stdout)
     print(('Rejected incorrect checksum' if bad_hash else 'Verified bootstrap'), WRAPPER)
 
 

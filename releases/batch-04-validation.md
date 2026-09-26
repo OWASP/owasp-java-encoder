@@ -92,3 +92,11 @@ All 28 PR checks passed at `8b548244233330872ba2c6d165f7624b5e6cddff`, including
 both wrapper platforms, ten ESAPI versions, Docker/browser/WAR, Java 8 unit JVM,
 original-JAR runtimes 8/11/17/21/25 and CodeQL. Final follow-up CI and model review
 are required before merge; AI review is not independent maintainer approval.
+
+Sol's final review found optimization-sensitive `assert` checks in the new release
+assembler/reproducibility checker. They were replaced with explicit failures,
+including wrapper probes. Four added regression tests run Python with `-O`:
+changed/missing comparison payloads, a real valid signature from the wrong key,
+a stale signed POM and a snapshot bundle are rejected. All 14 policy/verification
+tests pass. A missing-key Maven signing attempt fails noninteractively, and the
+release profile rejects the development SNAPSHOT version as intended.
