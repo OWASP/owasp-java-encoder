@@ -68,12 +68,15 @@ testing the original local backup does not test either person's vault copy.
 3. Create a harmless challenge file identifying the custodian, date, and drill.
    Make an armored detached signature, selecting the full project fingerprint
    with `--local-user`. Unlock through GnuPG's passphrase prompt using the vault
-   copy; never place the passphrase in command arguments or logs. Do not sign a
-   release artifact or tag for this drill.
+   copy. If a passphrase cache or system keychain signs without requiring that
+   copy, clear or disable that cached retrieval and repeat the signing step
+   before counting the drill. Never place the passphrase in command arguments
+   or logs. Do not sign a release artifact or tag for this drill.
 4. Import only the public `KEYS` into the verification home and verify the
-   detached signature with both filenames specified explicitly. Confirm that
-   the signing fingerprint matches the expected project key. A trust warning
-   in a fresh keyring does not replace this fingerprint check.
+   detached signature with both filenames specified explicitly. Require a
+   successful verification and compare the full signer fingerprint in the
+   `VALIDSIG` status line with the expected project key. A trust warning in a
+   fresh keyring does not replace this fingerprint check.
 5. Record the result and remove the temporary recovered files and both temporary
    keyrings after stopping their GnuPG agents. Preserve the vault copies.
 
@@ -86,7 +89,7 @@ gpg --homedir /private/path/recovery-home \
   --local-user 1C5F632B86809F2F5DB25092BEA0075F94074A9B \
   --armor --detach-sign /private/path/challenge.txt
 gpg --homedir /private/path/verification-home --import /path/to/trusted/checkout/KEYS
-gpg --homedir /private/path/verification-home \
+gpg --homedir /private/path/verification-home --status-fd 1 \
   --verify /private/path/challenge.txt.asc /private/path/challenge.txt
 ```
 
