@@ -41,7 +41,7 @@ class JavaScriptTemplateTest {
         if (Boolean.getBoolean("encoder.browser.local")) {
             browser = new ChromeDriver(options);
         } else {
-            container = new BrowserWebDriverContainer<>().withCapabilities(options);
+            container = BrowserFixture.container(options);
             container.start();
             browser = new RemoteWebDriver(container.getSeleniumAddress(), options);
         }
@@ -60,11 +60,10 @@ class JavaScriptTemplateTest {
 
     @AfterAll
     static void stopBrowser() {
-        if (browser != null) {
-            browser.quit();
-        }
-        if (container != null) {
-            container.stop();
+        try {
+            if (browser != null) browser.quit();
+        } finally {
+            if (container != null) container.stop();
         }
     }
 

@@ -1,4 +1,5 @@
-<%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@page session="false" contentType="text/html" pageEncoding="UTF-8"%>
+<%@taglib prefix="c" uri="jakarta.tags.core"%>
 <!DOCTYPE html>
 <html>
     <head>
@@ -7,6 +8,6 @@
     </head>
     <body>
         <h1>Hello World!</h1>
-        You are likely looking for the test page located <a href="/jakarta-test/item/viewItems">here</a>.
+        You are likely looking for the test page located <a href="<c:url value="/item/viewItems"/>">here</a>.
     </body>
 </html>

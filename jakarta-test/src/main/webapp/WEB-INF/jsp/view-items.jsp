@@ -1,6 +1,7 @@
-<%@page contentType="text/html;charset=UTF-8" language="java"%>
+<%@page session="false" contentType="text/html;charset=UTF-8" language="java"%>
 <%@taglib prefix="c" uri="jakarta.tags.core"%>
 <%@taglib prefix="e" uri="owasp.encoder.jakarta"%>
+<!DOCTYPE html>
 <html>
     <head>
         <title>View Items</title>
