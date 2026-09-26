@@ -119,11 +119,16 @@ class JavaScriptEncoder extends Encoder {
         // the Java spec (x << y) where x and y are integers, is evaluated
         // as (x << (y & 31)).  Or put another way, only the lower 5 bits
         // of the shift amount are considered.
+        //
+        // '`', '$', and '{' are encoded in every mode for ordinary template
+        // literal text. An unescaped '`' ends the literal; "${" starts an
+        // expression even when '$' is trusted text before the encoded input.
+        // DEL is hex-encoded in every mode, like the C1 controls.
         _validMasks = new int[]{
             0,
-            -1 & ~((1 << '\'') | (1 << '\"')),
+            -1 & ~((1 << '\'') | (1 << '\"') | (1 << '$')),
             -1 & ~((1 << '\\')),
-            asciiOnly ? ~(1 << Unicode.DEL) : -1,};
+            ~((1 << Unicode.DEL) | (1 << '`') | (1 << '{')),};
 
         if (mode == Mode.BLOCK || mode == Mode.HTML) {
             // in <script> blocks, we need to prevent the browser from seeing
@@ -160,7 +165,15 @@ class JavaScriptEncoder extends Encoder {
                 if ((validMasks[ch >>> 5] & (1 << ch)) == 0) {
                     return i;
                 }
-            } else if (_asciiOnly || ch == Unicode.LINE_SEPARATOR || ch == Unicode.PARAGRAPH_SEPARATOR) {
+            } else if (_asciiOnly || ch <= Unicode.MAX_C1_CTRL_CHAR
+                    || ch == Unicode.LINE_SEPARATOR || ch == Unicode.PARAGRAPH_SEPARATOR) {
+                return i;
+            } else if (Character.isHighSurrogate(ch)) {
+                if (i + 1 == n || !Character.isLowSurrogate(input.charAt(i + 1))) {
+                    return i;
+                }
+                ++i;
+            } else if (Character.isLowSurrogate(ch)) {
                 return i;
             }
         }
@@ -189,20 +202,37 @@ class JavaScriptEncoder extends Encoder {
                         if ((validMasks[ch >>> 5] & (1 << ch)) == 0) {
                             break encoded;
                         }
-                    } else if (_asciiOnly || ch == Unicode.LINE_SEPARATOR || ch == Unicode.PARAGRAPH_SEPARATOR) {
-                        if (ch <= 0xff) {
+                    } else {
+                        if (ch <= Unicode.MAX_C1_CTRL_CHAR || (_asciiOnly && ch <= 0xff)) {
                             break hexEncoded;
                         }
-                        if (j + 6 > m) {
-                            return overflow(input, i, output, j);
+                        if (!_asciiOnly && Character.isHighSurrogate(ch)) {
+                            if (i + 1 == n && !endOfInput) {
+                                // Leave the high surrogate unread until the next chunk.
+                                return underflow(input, i, output, j);
+                            }
+                            if (i + 1 < n && Character.isLowSurrogate(in[i + 1])) {
+                                if (j + 2 > m) {
+                                    return overflow(input, i, output, j);
+                                }
+                                out[j++] = ch;
+                                out[j++] = in[++i];
+                                continue;
+                            }
                         }
-                        out[j++] = '\\';
-                        out[j++] = 'u';
-                        out[j++] = HEX[ch >>> 3 * HEX_SHIFT];
-                        out[j++] = HEX[ch >>> 2 * HEX_SHIFT & HEX_MASK];
-                        out[j++] = HEX[ch >>> HEX_SHIFT & HEX_MASK];
-                        out[j++] = HEX[ch & HEX_MASK];
-                        continue;
+                        if (_asciiOnly || ch == Unicode.LINE_SEPARATOR
+                                || ch == Unicode.PARAGRAPH_SEPARATOR || Character.isSurrogate(ch)) {
+                            if (j + 6 > m) {
+                                return overflow(input, i, output, j);
+                            }
+                            out[j++] = '\\';
+                            out[j++] = 'u';
+                            out[j++] = HEX[ch >>> 3 * HEX_SHIFT];
+                            out[j++] = HEX[ch >>> 2 * HEX_SHIFT & HEX_MASK];
+                            out[j++] = HEX[ch >>> HEX_SHIFT & HEX_MASK];
+                            out[j++] = HEX[ch & HEX_MASK];
+                            continue;
+                        }
                     }
                     if (j >= m) {
                         return overflow(input, i, output, j);

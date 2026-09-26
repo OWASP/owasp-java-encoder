@@ -73,10 +73,18 @@
     <tag>
         <description>
             Encodes a JavaScript string for HTML event attributes (such as onclick), HTML script
-            blocks, or standalone JavaScript source. Caller must supply single (') or double (")
-            quotation marks around the JavaScript string. Template literals (backticks) and JSON are
-            unsupported; use a JSON serializer for JSON. Do not use in javascript: or data: URLs,
-            where URL decoding introduces a separate parsing context.
+            blocks, or standalone JavaScript source.
+            Caller must supply single (') or double (") quotation marks, or backticks (`)
+            for an ordinary (untagged) template literal. Insert encoded output into literal text,
+            not a ${...} expression. Dollar sign ($), backtick, and opening brace ({) are encoded
+            as \x24, \x60, and \x7b. Escaping { also prevents input after a trusted $ from
+            completing ${...}.
+            DEL and C1 controls (U+007F to U+009F) use \xNN escapes. Unpaired UTF-16 surrogates
+            use \uXXXX escapes; valid surrogate pairs remain unescaped.
+            Tagged templates (including String.raw) are unsupported: tags can observe raw escapes
+            or interpret another language. This is not a JSON encoder; use a JSON serializer for
+            JSON. Do not use in javascript: or data: URLs, where URL decoding introduces a separate
+            parsing context.
         </description>
         <display-name>forJavaScript</display-name>
         <name>forJavaScript</name>
@@ -93,11 +101,19 @@
     <tag>
         <description>
             Encodes a JavaScript string in an HTML event attribute (such as onclick). Not safe in
-            HTML script blocks. Uses the same encoding as forJavaScript except that slash and hyphen
-            are not escaped. Caller must supply single (') or double (") quotation marks around the
-            JavaScript string. Template literals (backticks) and JSON are unsupported; use a JSON
-            serializer for JSON. Do not use in javascript: or data: URLs, where URL decoding
-            introduces a separate parsing context.
+            HTML script blocks. Uses the same encoding as forJavaScript except that slash and
+            hyphen are not escaped.
+            Caller must supply single (') or double (") quotation marks, or backticks (`)
+            for an ordinary (untagged) template literal. Insert encoded output into literal text,
+            not a ${...} expression. Dollar sign ($), backtick, and opening brace ({) are encoded
+            as \x24, \x60, and \x7b. Escaping { also prevents input after a trusted $ from
+            completing ${...}.
+            DEL and C1 controls (U+007F to U+009F) use \xNN escapes. Unpaired UTF-16 surrogates
+            use \uXXXX escapes; valid surrogate pairs remain unescaped.
+            Tagged templates (including String.raw) are unsupported: tags can observe raw escapes
+            or interpret another language. This is not a JSON encoder; use a JSON serializer for
+            JSON. Do not use in javascript: or data: URLs, where URL decoding introduces a separate
+            parsing context.
         </description>
         <display-name>forJavaScriptAttribute</display-name>
         <name>forJavaScriptAttribute</name>
@@ -115,10 +131,18 @@
         <description>
             Encodes a JavaScript string in an HTML script block. Not safe in HTML event attributes.
             Uses the same encoding as forJavaScript except that double and single quotes use
-            backslash escapes. Caller must supply single (') or double (") quotation marks around
-            the JavaScript string. Template literals (backticks) and JSON are unsupported; use a
-            JSON serializer for JSON. Do not use in javascript: or data: URLs, where URL decoding
-            introduces a separate parsing context.
+            backslash escapes.
+            Caller must supply single (') or double (") quotation marks, or backticks (`)
+            for an ordinary (untagged) template literal. Insert encoded output into literal text,
+            not a ${...} expression. Dollar sign ($), backtick, and opening brace ({) are encoded
+            as \x24, \x60, and \x7b. Escaping { also prevents input after a trusted $ from
+            completing ${...}.
+            DEL and C1 controls (U+007F to U+009F) use \xNN escapes. Unpaired UTF-16 surrogates
+            use \uXXXX escapes; valid surrogate pairs remain unescaped.
+            Tagged templates (including String.raw) are unsupported: tags can observe raw escapes
+            or interpret another language. This is not a JSON encoder; use a JSON serializer for
+            JSON. Do not use in javascript: or data: URLs, where URL decoding introduces a separate
+            parsing context.
         </description>
         <display-name>forJavaScriptBlock</display-name>
         <name>forJavaScriptBlock</name>
@@ -135,11 +159,18 @@
     <tag>
         <description>
             Encodes a JavaScript string in a standalone JavaScript file. Not safe in any context
-            embedded in HTML. Uses the same encoding as forJavaScript except that slash, hyphen, and
-            ampersand are not escaped and double and single quotes use backslash escapes. Caller
-            must supply single (') or double (") quotation marks around the JavaScript string.
-            Template literals (backticks) and JSON are unsupported; use a JSON serializer for JSON.
-            Do not use in javascript: or data: URLs, where URL decoding introduces a separate
+            embedded in HTML. Uses the same encoding as forJavaScript except that slash, hyphen,
+            and ampersand are not escaped and double and single quotes use backslash escapes.
+            Caller must supply single (') or double (") quotation marks, or backticks (`)
+            for an ordinary (untagged) template literal. Insert encoded output into literal text,
+            not a ${...} expression. Dollar sign ($), backtick, and opening brace ({) are encoded
+            as \x24, \x60, and \x7b. Escaping { also prevents input after a trusted $ from
+            completing ${...}.
+            DEL and C1 controls (U+007F to U+009F) use \xNN escapes. Unpaired UTF-16 surrogates
+            use \uXXXX escapes; valid surrogate pairs remain unescaped.
+            Tagged templates (including String.raw) are unsupported: tags can observe raw escapes
+            or interpret another language. This is not a JSON encoder; use a JSON serializer for
+            JSON. Do not use in javascript: or data: URLs, where URL decoding introduces a separate
             parsing context.
         </description>
         <display-name>forJavaScriptSource</display-name>
@@ -516,10 +547,18 @@
     <function>
         <description>
             Encodes a JavaScript string for HTML event attributes (such as onclick), HTML script
-            blocks, or standalone JavaScript source. Caller must supply single (') or double (")
-            quotation marks around the JavaScript string. Template literals (backticks) and JSON are
-            unsupported; use a JSON serializer for JSON. Do not use in javascript: or data: URLs,
-            where URL decoding introduces a separate parsing context.
+            blocks, or standalone JavaScript source.
+            Caller must supply single (') or double (") quotation marks, or backticks (`)
+            for an ordinary (untagged) template literal. Insert encoded output into literal text,
+            not a ${...} expression. Dollar sign ($), backtick, and opening brace ({) are encoded
+            as \x24, \x60, and \x7b. Escaping { also prevents input after a trusted $ from
+            completing ${...}.
+            DEL and C1 controls (U+007F to U+009F) use \xNN escapes. Unpaired UTF-16 surrogates
+            use \uXXXX escapes; valid surrogate pairs remain unescaped.
+            Tagged templates (including String.raw) are unsupported: tags can observe raw escapes
+            or interpret another language. This is not a JSON encoder; use a JSON serializer for
+            JSON. Do not use in javascript: or data: URLs, where URL decoding introduces a separate
+            parsing context.
         </description>
         <display-name>forJavaScript</display-name>
         <name>forJavaScript</name>
@@ -530,11 +569,19 @@
     <function>
         <description>
             Encodes a JavaScript string in an HTML event attribute (such as onclick). Not safe in
-            HTML script blocks. Uses the same encoding as forJavaScript except that slash and hyphen
-            are not escaped. Caller must supply single (') or double (") quotation marks around the
-            JavaScript string. Template literals (backticks) and JSON are unsupported; use a JSON
-            serializer for JSON. Do not use in javascript: or data: URLs, where URL decoding
-            introduces a separate parsing context.
+            HTML script blocks. Uses the same encoding as forJavaScript except that slash and
+            hyphen are not escaped.
+            Caller must supply single (') or double (") quotation marks, or backticks (`)
+            for an ordinary (untagged) template literal. Insert encoded output into literal text,
+            not a ${...} expression. Dollar sign ($), backtick, and opening brace ({) are encoded
+            as \x24, \x60, and \x7b. Escaping { also prevents input after a trusted $ from
+            completing ${...}.
+            DEL and C1 controls (U+007F to U+009F) use \xNN escapes. Unpaired UTF-16 surrogates
+            use \uXXXX escapes; valid surrogate pairs remain unescaped.
+            Tagged templates (including String.raw) are unsupported: tags can observe raw escapes
+            or interpret another language. This is not a JSON encoder; use a JSON serializer for
+            JSON. Do not use in javascript: or data: URLs, where URL decoding introduces a separate
+            parsing context.
         </description>
         <display-name>forJavaScriptAttribute</display-name>
         <name>forJavaScriptAttribute</name>
@@ -546,10 +593,18 @@
         <description>
             Encodes a JavaScript string in an HTML script block. Not safe in HTML event attributes.
             Uses the same encoding as forJavaScript except that double and single quotes use
-            backslash escapes. Caller must supply single (') or double (") quotation marks around
-            the JavaScript string. Template literals (backticks) and JSON are unsupported; use a
-            JSON serializer for JSON. Do not use in javascript: or data: URLs, where URL decoding
-            introduces a separate parsing context.
+            backslash escapes.
+            Caller must supply single (') or double (") quotation marks, or backticks (`)
+            for an ordinary (untagged) template literal. Insert encoded output into literal text,
+            not a ${...} expression. Dollar sign ($), backtick, and opening brace ({) are encoded
+            as \x24, \x60, and \x7b. Escaping { also prevents input after a trusted $ from
+            completing ${...}.
+            DEL and C1 controls (U+007F to U+009F) use \xNN escapes. Unpaired UTF-16 surrogates
+            use \uXXXX escapes; valid surrogate pairs remain unescaped.
+            Tagged templates (including String.raw) are unsupported: tags can observe raw escapes
+            or interpret another language. This is not a JSON encoder; use a JSON serializer for
+            JSON. Do not use in javascript: or data: URLs, where URL decoding introduces a separate
+            parsing context.
         </description>
         <display-name>forJavaScriptBlock</display-name>
         <name>forJavaScriptBlock</name>
@@ -560,11 +615,18 @@
     <function>
         <description>
             Encodes a JavaScript string in a standalone JavaScript file. Not safe in any context
-            embedded in HTML. Uses the same encoding as forJavaScript except that slash, hyphen, and
-            ampersand are not escaped and double and single quotes use backslash escapes. Caller
-            must supply single (') or double (") quotation marks around the JavaScript string.
-            Template literals (backticks) and JSON are unsupported; use a JSON serializer for JSON.
-            Do not use in javascript: or data: URLs, where URL decoding introduces a separate
+            embedded in HTML. Uses the same encoding as forJavaScript except that slash, hyphen,
+            and ampersand are not escaped and double and single quotes use backslash escapes.
+            Caller must supply single (') or double (") quotation marks, or backticks (`)
+            for an ordinary (untagged) template literal. Insert encoded output into literal text,
+            not a ${...} expression. Dollar sign ($), backtick, and opening brace ({) are encoded
+            as \x24, \x60, and \x7b. Escaping { also prevents input after a trusted $ from
+            completing ${...}.
+            DEL and C1 controls (U+007F to U+009F) use \xNN escapes. Unpaired UTF-16 surrogates
+            use \uXXXX escapes; valid surrogate pairs remain unescaped.
+            Tagged templates (including String.raw) are unsupported: tags can observe raw escapes
+            or interpret another language. This is not a JSON encoder; use a JSON serializer for
+            JSON. Do not use in javascript: or data: URLs, where URL decoding introduces a separate
             parsing context.
         </description>
         <display-name>forJavaScriptSource</display-name>

@@ -57,9 +57,11 @@ import org.owasp.esapi.reference.DefaultEncoder;
  * here have the contextual contracts described below.</p>
  *
  * <p>The adapter's {@code encodeForCSS} encodes only quoted CSS strings, and
- * {@code encodeForJavaScript} encodes only single- or double-quoted JavaScript
- * strings, not JSON, template literals, or script URLs. Its
- * {@code encodeForURL} delegates to deprecated {@link Encode#forUri(String)}:
+ * {@code encodeForJavaScript} encodes single- or double-quoted JavaScript
+ * strings and literal text in ordinary (untagged) template literals, not JSON,
+ * tagged templates (including {@code String.raw}), or script URLs. It escapes
+ * DEL/C1 controls and unpaired UTF-16 surrogates while preserving valid pairs.
+ * Its {@code encodeForURL} delegates to deprecated {@link Encode#forUri(String)}:
  * it preserves URI delimiters such as {@code &amp; = / ? #} and therefore is
  * not a URL-component or form encoder. For an inserted component, use
  * {@link Encode#forUriComponent(String)}. Validate complete URLs and their
@@ -215,8 +217,11 @@ public final class ESAPIEncoder {
         }
 
         /**
-         * Encodes a single- or double-quoted JavaScript string using
-         * {@link Encode#forJavaScript(String)}. Not for JSON, template literals, or script URLs.
+         * Encodes a single- or double-quoted JavaScript string or literal text in an
+         * ordinary (untagged) template literal using {@link Encode#forJavaScript(String)}.
+         * Not for JSON, tagged templates (including {@code String.raw}), or script URLs.
+         * DEL/C1 controls and unpaired UTF-16 surrogates are escaped; valid pairs
+         * remain unescaped.
          */
         @Override
         public String encodeForJavaScript(String s) {
