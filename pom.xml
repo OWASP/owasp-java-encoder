@@ -330,7 +330,7 @@
                         <groupId>com.puppycrawl.tools</groupId>
                         <artifactId>checkstyle</artifactId>
                         <!-- Last Java 17-compatible line; 13+ requires Java 21. -->
-                        <version>12.3.1</version>
+                        <version>14.1.0</version>
                     </dependency>
                 </dependencies>
                 <configuration>
