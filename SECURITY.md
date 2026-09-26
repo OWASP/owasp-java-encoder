@@ -2,6 +2,9 @@
 
 ## Supported Versions
 
+**Maven Central publication is pending.** Version 1.4.1 is available as signed
+artifacts from the [GitHub security release](https://github.com/OWASP/owasp-java-encoder/releases/tag/v1.4.1).
+
 Only the latest 1.x release receives security fixes. Fixes ship in a new release;
 older release lines are not patched.
 
@@ -23,7 +26,7 @@ Please report suspected vulnerabilities privately, not in public issues or pull 
 Use the **Report a vulnerability** button on the repository's
 [Security Advisories](https://github.com/OWASP/owasp-java-encoder/security/advisories)
 page. The form requires a GitHub account. If you cannot use it, email the project
-leaders at jeremy.long@owasp.org and jim@owasp.org.
+leaders at jeremy.long@owasp.org and jim.manico@owasp.org.
 
 A useful report includes:
 

@@ -75,7 +75,10 @@ uploading. Keep an audit record of the exact uploaded bundle and its SHA-256.
 ## Publish and resume development
 
 1. Wait for Central Portal validation, publish, and confirm the exact new POMs
-   and binaries are downloadable from Maven Central.
+   and binaries are downloadable from Maven Central. For an emergency release
+   blocked on namespace access, publish the signed GitHub assets first, clearly
+   label Central publication as pending in the README and release notes, and
+   retain the exact signed bundle for later Central publication.
 2. Create and verify a signed `v<VERSION>` tag on the release commit, using the
    project key explicitly. Push the release commit and tag without rewriting
    existing release tags.

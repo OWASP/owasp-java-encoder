@@ -11,6 +11,12 @@ For more detailed documentation on the OWASP Java Encoder please visit https://o
 
 Start using the OWASP Java Encoders
 -----------------------------------
+**Maven Central publication is pending.** Version 1.4.1 is available as signed
+artifacts from the [GitHub security release](https://github.com/OWASP/owasp-java-encoder/releases/tag/v1.4.1).
+Until Central publication completes, download and verify those artifacts and
+install them in your local or organizational Maven repository; the dependency
+examples below require that installation. Maven Central 1.4.0 remains affected.
+
 You can download the core library from [Maven Central](https://central.sonatype.com/artifact/org.owasp.encoder/encoder).
 
 JSP tags and EL functions are also available from Maven Central:
