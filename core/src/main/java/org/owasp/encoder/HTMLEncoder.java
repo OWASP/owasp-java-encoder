@@ -77,13 +77,8 @@ class HTMLEncoder extends Encoder {
 
     // The large table-switch implementation used here is fast to
     // implement but slower at runtime than tuned-for-expected-input
-    // encoders that use selective if/else's.  Look at the results of
-    // BenchmarkTest to see the difference.  See note in javadoc as to
+    // encoders that use selective if/else's. See note in javadoc as to
     // reasoning.
-    // On Core i7 (Sandybridge)
-    // Baseline is 371.401009 ns/op
-    // Benchmarked Encode.forXml: 324.219992 ns/op (-12.70% on baseline)
-    // Benchmarked Encode.forHtmlUnquotedAttribute: 821.583263 ns/op (+121.21% on baseline)
     @Override
     int maxEncodedLength(int n) {
         // if everything is line separators and paragraph separators then
