@@ -66,21 +66,17 @@ class CSSEncoder extends Encoder {
         /**
          * String contexts.  Characters between quotes.
          *
-         * <pre>
-         *   Not allowed: \n \r \f \\ " '  (everything else is allowed)
-         *   Allows: "\\{nl}" (escaped newline)
-         * </pre>
+         * Printable ASCII characters are passed through except quotes,
+         * backslash, ampersand, less-than, greater-than, and slash.
+         * Control characters and line/paragraph separators are escaped.
          */
         STRING(new ASCIIBits().set(' ', '~').clear("\"\'<&/\\>")),
 
         /**
          * URL context.  Characters inside a "url(...)".
          *
-         * <pre>
-         *   Allowed: [!#$%&*-\[\]-~]|{nonascii}|{escape}
-         *   Escapes: \\[0-9a-f]{1,6}(\s?)
-         *            \\[^\n\r\f0-9a-f]
-         * </pre>
+         * Uses the string context exclusions and also escapes spaces and
+         * parentheses so the result can appear unquoted inside url(...).
          */
         URL(new ASCIIBits().set("!#$%").set('*', '[').set(']', '~').clear("/<>")),
 
