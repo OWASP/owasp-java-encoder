@@ -122,3 +122,7 @@ choose a new `--directory` when rebuilding. `--maven` and `--repository` allow a
 explicit Maven executable and isolated dependency cache. Runtime `--directory`
 must point to the prepared fixture directory. CI uploads build reports, API diff
 reports, preparation output, and each runtime's output even when a step fails.
+
+The Docker-free [Jasper engine fixture](jsp-engine/README.md) also runs in normal
+`verify`: it compiles and serves both packaged TLD surfaces on maintained javax
+and Jakarta engines, with exact-byte and translation-rejection assertions.

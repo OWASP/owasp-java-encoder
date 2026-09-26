@@ -65,6 +65,7 @@ jobs:
           build.log
           **/target/surefire-reports/
           **/target/failsafe-reports/
+          **/target/jsp-engine/
 
   esapi-compatibility:
     name: ESAPI ${{ matrix.esapi-version }}
