@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Convert Maven dependency:resolve-plugins 3.9.0 reports to a GitHub snapshot.
+"""Convert Maven dependency:resolve-plugins 3.11.0 reports to a GitHub snapshot.
 
 Runtime/test graphs are submitted by the Maven submission action. This separate
 development-scope graph retains each build plugin's resolved dependency edges.

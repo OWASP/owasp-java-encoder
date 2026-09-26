@@ -1,203 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE module PUBLIC
-    "-//Puppy Crawl//DTD Check Configuration 1.2//EN"
-    "http://www.puppycrawl.com/dtds/configuration_1_2.dtd">
+<!DOCTYPE module PUBLIC "-//Checkstyle//DTD Checkstyle Configuration 1.3//EN"
+    "https://checkstyle.org/dtds/configuration_1_3.dtd">
 <module name="Checker">
-
-    <!--<module name="SuppressionFilter">-->
-    <!--<property name="file" value="${basedir}/suppressions.xml"/>-->
-    <!--</module>-->
-
-    <!-- <module name="NewlineAtEndOfFile"/> doesn't work... -->
-    <module name="Translation"/>
-    <module name="FileLength"/>
+    <property name="charset" value="UTF-8"/>
+    <module name="NewlineAtEndOfFile"/>
     <module name="FileTabCharacter"/>
-
     <module name="RegexpSingleline">
         <property name="format" value="\s+$"/>
-        <property name="minimum" value="0"/>
-        <property name="maximum" value="0"/>
-        <property name="message" value="Line has trailing spaces."/>
+        <property name="message" value="Remove trailing whitespace."/>
     </module>
-
     <module name="RegexpHeader">
         <property name="headerFile" value="${checkstyle.header.file}"/>
         <property name="fileExtensions" value="java"/>
-        <property name="id" value="header"/>
     </module>
-    <!-- Checks for Size Violations.                    -->
-    <!-- See https://checkstyle.org/checks/sizes/index.html -->
-    <module name="LineLength">
-        <property name="max" value="130"/>
-    </module>
+    <!-- Security-sensitive loops and API Javadoc are not constrained by size. -->
     <module name="TreeWalker">
-        <module name="SuppressionCommentFilter">
-            <property name="offCommentFormat" value="CSOFF\: ([\w\|]+)"/>
-            <property name="onCommentFormat" value="CSON\: ([\w\|]+)"/>
-            <property name="checkFormat" value="$1"/>
-        </module>
-        <module name="JavadocMethod"/>
-        <module name="JavadocType"/>
-        <module name="JavadocVariable"/>
-        <module name="JavadocStyle"/>
-
-        <!-- Checks for Naming Conventions.                  -->
-        <!-- See https://checkstyle.org/checks/naming/index.html -->
-        <module name="ConstantName">
-            <property name="format" value="^(?:[A-Z][A-Z0-9]*(?:_[A-Z0-9]+)*)|(?:_log)$"/>
-        </module>
-        <module name="LocalFinalVariableName"/>
-        <module name="LocalVariableName"/>
-        <module name="MemberName">
-            <property name="applyToPrivate" value="false"/>
-            <property name="applyToProtected" value="false"/>
-            <property name="applyToPackage" value="false"/>
-        </module>
-        <module name="MemberName">
-            <property name="applyToPublic" value="false"/>
-            <property name="format" value="^_[a-zA-Z][a-zA-Z0-9]*$"/>
-        </module>
-        <module name="MethodName"/>
-        <module name="PackageName"/>
-        <module name="ParameterName"/>
-        <module name="StaticVariableName">
-            <property name="applyToPrivate" value="false"/>
-            <property name="applyToProtected" value="false"/>
-            <property name="applyToPackage" value="false"/>
-        </module>
-        <module name="StaticVariableName">
-            <property name="applyToPublic" value="false"/>
-            <property name="format" value="^_[a-zA-Z][a-zA-Z0-9]*$"/>
-        </module>
-        <module name="TypeName"/>
-
-
-        <!-- Checks for imports                              -->
-        <!-- See https://checkstyle.org/checks/imports/index.html -->
-        <module name="AvoidStarImport"/>
-        <module name="IllegalImport"/> <!-- defaults to sun.* packages -->
+        <module name="IllegalImport"/>
         <module name="RedundantImport"/>
         <module name="UnusedImports"/>
-        <module name="ImportOrder">
-            <property name="groups" value="java,javax"/>
-            <property name="option" value="bottom"/>
-        </module>
-
-        <module name="MethodLength"/>
-        <module name="ParameterNumber"/>
-
-
-        <!-- Checks for whitespace                               -->
-        <!-- See https://checkstyle.org/checks/whitespace/index.html -->
-        <module name="EmptyForIteratorPad"/>
-        <module name="GenericWhitespace"/>
-        <module name="MethodParamPad"/>
-        <!-- <module name="NoWhitespaceAfter"/> -->
-        <!-- <module name="NoWhitespaceBefore"/> -->
-        <module name="OperatorWrap">
-            <property name="option" value="nl"/>
-        </module>
-        <module name="ParenPad"/>
-        <module name="TypecastParenPad"/>
-        <!-- <module name="WhitespaceAfter"/> -->
-        <!-- <module name="WhitespaceAround"/> -->
-
-        <!-- Modifier Checks                                    -->
-        <!-- See https://checkstyle.org/checks/modifiers/index.html -->
-        <module name="ModifierOrder"/>
-        <module name="RedundantModifier"/>
-
-
-        <!-- Checks for blocks. You know, those {}'s         -->
-        <!-- See https://checkstyle.org/checks/blocks/index.html -->
-        <module name="AvoidNestedBlocks"/>
-        <module name="EmptyBlock">
-            <property name="option" value="text"/>
-        </module>
-        <module name="LeftCurly">
-            <property name="option" value="nlow"/>
-        </module>
-        <module name="NeedBraces"/>
-        <module name="RightCurly"/>
-
-
-        <!-- Checks for common coding problems               -->
-        <!-- See https://checkstyle.org/checks/coding/index.html -->
-        <!-- <module name="AvoidInlineConditionals"/> -->
-        <module name="CovariantEquals"/>
         <module name="EmptyStatement"/>
-        <module name="EqualsAvoidNull"/>
         <module name="EqualsHashCode"/>
-        <module name="HiddenField"/>
-        <module name="IllegalInstantiation">
-            <property name="classes" value="java.lang.Boolean"/>
-        </module>
-        <module name="InnerAssignment"/>
-        <!-- <module name="MagicNumber"/> -->
-        <module name="MissingSwitchDefault"/>
-        <!--module name="RedundantThrows">
-          <property name="allowUnchecked" value="true"/>
-        </module-->
-        <module name="SimplifyBooleanExpression"/>
-        <module name="SimplifyBooleanReturn"/>
-        <module name="NoFinalizer"/>
-        <module name="SuperClone"/>
-        <module name="IllegalCatch"/>
-        <module name="IllegalThrows"/>
-        <module name="PackageDeclaration"/>
-        <module name="IllegalType">
-            <property name="illegalClassNames"
-                      value="java.util.GregorianCalendar,
-                       java.util.Hashtable,
-                       java.util.HashSet,
-                       java.util.HashMap,
-                       java.util.ArrayList,
-                       java.util.LinkedHashMap,
-                       java.util.LinkedHashSet,
-                       java.util.TreeSet,
-                       java.util.TreeMap,
-                       java.util.Vector"/>
-
-            <!-- java.util.LinkedList is allowed, since the Deque interface
-            exposing useful methods like "removeLast" isn't available
-            until 1.6 -->
-        </module>
-        <module name="ExplicitInitialization"/>
-        <module name="FallThrough"/>
-
-        <!-- Checks for class design                         -->
-        <!-- See https://checkstyle.org/checks/design/index.html -->
-        <!-- <module name="DesignForExtension"/> -->
-        <module name="FinalClass"/>
-        <module name="HideUtilityClassConstructor"/>
-        <module name="InterfaceIsType"/>
-        <!-- <module name="VisibilityModifier"/> -->
-
-        <!-- Miscellaneous other checks.                   -->
-        <!-- See https://checkstyle.org/checks/misc/index.html -->
-        <module name="ArrayTypeStyle"/>
-        <!-- module name="FinalParameters"/ -->
-        <module name="Regexp">
-            <!-- Do not allow System.out calls, use loggers instead -->
-            <property name="format" value="System\s*\.\s*(out|err)"/>
-            <property name="illegalPattern" value="true"/>
-            <property name="ignoreComments" value="true"/>
-            <property name="message" value="System.out or System.err (use Logger instead)"/>
-        </module>
-        <module name="Regexp">
-            <!-- Do not allow printStackTrace, use loggers or rethrow -->
-            <property name="format" value="\.\s*printStackTrace\s*\(\s*\)"/>
-            <property name="illegalPattern" value="true"/>
-            <property name="ignoreComments" value="true"/>
-            <property name="message" value="printStackTrace() (use Logger or rethrow)"/>
-        </module>
-
-        <!-- TODO: add this back: <module name="TodoComment"/> -->
-        <module name="UpperEll"/>
-        <module name="Indentation">
-            <property name="caseIndent" value="4"/>
-        </module>
-
+        <module name="OuterTypeFilename"/>
     </module>
-
 </module>

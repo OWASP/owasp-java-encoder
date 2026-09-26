@@ -30,7 +30,7 @@ JDK 17. The isolated packaged consumer job covers those four artifacts on Java 8
 
 ## What runs
 
-`consumers.py prepare` copies the four JARs produced by `mvn clean verify`, resolves
+`consumers.py prepare` copies the four JARs produced by `./mvnw clean verify`, resolves
 the pinned fixture dependencies, and compiles consumers independently of reactor
 classes or test classpaths. Core consumers assert String and Writer output,
 including input that crosses internal buffer boundaries, plus JavaScript and URI
@@ -81,7 +81,7 @@ classes must stay within each artifact's own package; test classes and embedded
 JARs are rejected. Negative fixture tests verify representative broken packages
 fail these guards.
 
-During ordinary `mvn verify`, Animal Sniffer checks each library against the Java 8
+During ordinary `./mvnw verify`, Animal Sniffer checks each library against the Java 8
 API signature. This catches linkage such as Java 9's covariant `CharBuffer.flip()`
 even when bytecode still has class version 52. japicmp checks public/protected API
 binary and source compatibility against **1.4.0**, the latest available Central
@@ -110,14 +110,14 @@ and successful runtime matrix, including an actual Java 8 run, before publicatio
 With JDK 17, Maven, and Python 3.8+ on PATH:
 
 ```sh
-mvn -B -ntp clean verify
+./mvnw -B -ntp clean verify
 python3 compatibility/consumers.py prepare
 python3 -m unittest discover -s compatibility/tests
 python3 compatibility/consumers.py run --runtime 17 --java-home "$JAVA_HOME"
 python3 compatibility/consumers.py run --runtime 8 --java-home /path/to/jdk8
 ```
 
-Preparation requires an empty `target/compatibility`; use `mvn clean verify` or
+Preparation requires an empty `target/compatibility`; use `./mvnw clean verify` or
 choose a new `--directory` when rebuilding. `--maven` and `--repository` allow an
 explicit Maven executable and isolated dependency cache. Runtime `--directory`
 must point to the prepared fixture directory. CI uploads build reports, API diff

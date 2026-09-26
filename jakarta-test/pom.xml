@@ -14,7 +14,13 @@
     <packaging>war</packaging>
     <name>jakarta-test</name>
     <description>Test for OWASP encoder jakarta JSP</description>
+    <licenses>
+        <license><name>The BSD 3-Clause License</name><url>https://opensource.org/license/bsd-3-clause</url><distribution>repo</distribution></license>
+    </licenses>
     <properties>
+        <maven.deploy.skip>true</maven.deploy.skip>
+        <maven.install.skip>true</maven.install.skip>
+        <skipPublishing>true</skipPublishing>
         <java.version>17</java.version>
         <!-- September security fixes, newer than Boot 4.1.1's managed 11.0.24. -->
         <tomcat.version>11.0.26</tomcat.version>
@@ -88,8 +94,60 @@
     </dependencies>
 
     <build>
+        <pluginManagement><plugins><plugin>
+            <groupId>org.apache.maven.plugins</groupId><artifactId>maven-site-plugin</artifactId><version>3.22.0</version>
+            <configuration><skip>true</skip><skipDeploy>true</skipDeploy></configuration>
+        </plugin></plugins></pluginManagement>
         <finalName>jakarta-test</finalName>
         <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-checkstyle-plugin</artifactId>
+                <version>3.6.0</version>
+                <dependencies>
+                    <dependency>
+                        <groupId>com.puppycrawl.tools</groupId>
+                        <artifactId>checkstyle</artifactId>
+                        <!-- Last Java 17-compatible line; 13+ requires Java 21. -->
+                        <version>12.3.1</version>
+                    </dependency>
+                </dependencies>
+                <configuration>
+                    <configLocation>${maven.multiModuleProjectDirectory}/src/main/config/checkstyle.xml</configLocation>
+                    <headerLocation>${maven.multiModuleProjectDirectory}/src/main/config/checkstyle-header.txt</headerLocation>
+                    <!-- Checkstyle 12's parser cannot parse module declarations; packaged JPMS guards cover them. -->
+                    <excludes>module-info.java</excludes>
+                    <includeResources>false</includeResources>
+                    <includeTestResources>false</includeTestResources>
+                    <sourceDirectories>
+                        <sourceDirectory>${project.basedir}/src/main/java</sourceDirectory>
+                        <sourceDirectory>${project.basedir}/src/main/java9</sourceDirectory>
+                    </sourceDirectories>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>main-source-policy</id>
+                        <phase>validate</phase>
+                        <goals><goal>check</goal></goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <!-- Separate Boot parent: enforce the same build minimums; its BOM owns app plugin versions. -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-enforcer-plugin</artifactId>
+                <version>3.6.3</version>
+                <executions><execution><id>fixture-build-policy</id><goals><goal>enforce</goal></goals>
+                    <configuration><rules>
+                        <requireMavenVersion><version>[3.9.16,)</version></requireMavenVersion>
+                        <requireJavaVersion><version>[17,)</version></requireJavaVersion>
+                        <banDuplicatePomDependencyVersions/>
+                        <dependencyConvergence/>
+                        <requireUpperBoundDeps/>
+                        <requirePluginVersions><phases>clean,verify,install,deploy</phases></requirePluginVersions>
+                    </rules></configuration>
+                </execution></executions>
+            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-failsafe-plugin</artifactId>

@@ -1,4 +1,4 @@
-^// Copyright \(c\) 201[2-9] (Jeff Ichnowski|Jim Manico|Jeremy Long)\s*$
+^// Copyright \(c\) (?:19|20)\d{2}(?:-(?:19|20)\d{2})? (Jeff Ichnowski|Jim Manico|Jeremy Long|OWASP)\.?\s*$
 ^// All rights reserved\.\s*$
 ^//
 ^// Redistribution and use in source and binary forms, with or without\s*$

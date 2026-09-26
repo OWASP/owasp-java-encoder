@@ -4,7 +4,7 @@ This optional application is a test fixture, not a dependency of an encoder
 library. From the repository root, with JDK 17, Maven and Docker available:
 
 ```sh
-mvn -B -ntp -Dmaven.repo.local=/tmp/encoder-browser-m2 clean verify -PtestJakarta
+./mvnw -B -ntp -Dmaven.repo.local=/tmp/encoder-browser-m2 clean verify -PtestJakarta
 ```
 
 Use an empty task-specific Maven directory for fresh validation. The reactor

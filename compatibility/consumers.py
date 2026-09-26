@@ -164,7 +164,7 @@ def source_metadata(kind, source_jar):
 def prepare(args):
     out = args.directory.resolve()
     if out.exists() and any(out.iterdir()):
-        raise ValueError('Preparation requires an empty directory; run mvn clean verify or choose a new --directory: ' + str(out))
+        raise ValueError('Preparation requires an empty directory; run ./mvnw clean verify or choose a new --directory: ' + str(out))
     out.mkdir(parents=True, exist_ok=True)
     shutil.copytree(ROOT / 'compatibility/config', out / 'config', dirs_exist_ok=True)
     ns = {'p': 'http://maven.apache.org/POM/4.0.0'}
@@ -199,7 +199,7 @@ def prepare(args):
     for kind in ('jsp', 'jakarta', 'esapi', 'osgi-r6', 'osgi-r8', 'legacy-core'):
         run(args.maven, '-B', '-ntp', '-f', ROOT / 'compatibility/dependencies' / (kind + '.xml'),
             '-Dmaven.repo.local=' + str(args.repository.resolve()),
-            'org.apache.maven.plugins:maven-dependency-plugin:3.9.0:copy-dependencies',
+            'org.apache.maven.plugins:maven-dependency-plugin:3.11.0:copy-dependencies',
             '-DincludeScope=runtime', '-DoutputDirectory=' + str(out / 'dependencies' / kind))
     for kind, (artifact, explicit, automatic, package, main) in ARTIFACTS.items():
         deps = sorted((out / 'dependencies' / kind).glob('*.jar'))
@@ -282,7 +282,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('action', choices=['prepare', 'run'])
     parser.add_argument('--directory', type=Path, default=ROOT / 'target/compatibility')
-    parser.add_argument('--maven', default='mvn')
+    parser.add_argument('--maven', default=str(ROOT / ('mvnw.cmd' if os.name == 'nt' else 'mvnw')))
     parser.add_argument('--repository', type=Path, default=Path.home() / '.m2/repository')
     parser.add_argument('--runtime', type=int, choices=[8, 11, 17, 21, 25], default=17)
     parser.add_argument('--java-home', default=os.environ.get('JAVA_HOME'))
