@@ -9,6 +9,12 @@ encoder class with little baggage.
 
 For more detailed documentation on the OWASP Java Encoder please visit https://owasp.org/www-project-java-encoder/.
 
+Project Leaders
+---------------
+
+- [Jim Manico](https://github.com/jmanico)
+- [Jeremy Long](https://github.com/jeremylong)
+
 Start using the OWASP Java Encoders
 -----------------------------------
 **Maven Central publication is pending.** Version 1.4.1 is available as signed
