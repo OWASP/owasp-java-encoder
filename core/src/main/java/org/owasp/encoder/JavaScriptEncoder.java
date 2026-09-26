@@ -64,15 +64,15 @@ class JavaScriptEncoder extends Encoder {
         ATTRIBUTE,
         /**
          * Encoding for use in HTML script blocks. The main concern here is
-         * permaturely terminating a script block with a closing "&lt;/" inside
+         * prematurely terminating a script block with a closing "&lt;/" inside
          * the string. This encoding escapes "/" as "\/" to prevent such
          * termination.
          */
         BLOCK,
         /**
          * Encodes for use in either HTML script attributes or blocks.
-         * Essentially this is both special escapes from HTML_ATTRIBUTE and
-         * HTML_CONTENT combined.
+         * Essentially this is both special escapes from ATTRIBUTE and
+         * BLOCK combined.
          */
         HTML,;
     }

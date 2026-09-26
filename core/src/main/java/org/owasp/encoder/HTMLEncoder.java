@@ -98,7 +98,6 @@ class HTMLEncoder extends Encoder {
                 case '\f':
                 case '\n':
                 case ' ':
-                case Unicode.NEL:
                 case '\"':
                 case '\'':
                 case '/':
@@ -312,13 +311,6 @@ class HTMLEncoder extends Encoder {
                 case '=':
                 case '`':
                     if (ENCODE_AFFIX_CHAR_COUNT + 2 + j > m) {
-                        return overflow(input, i, output, j);
-                    }
-                    j = encode(ch, out, j);
-                    break;
-
-                case Unicode.NEL:
-                    if (ENCODE_AFFIX_CHAR_COUNT + 3 + j > m) {
                         return overflow(input, i, output, j);
                     }
                     j = encode(ch, out, j);
