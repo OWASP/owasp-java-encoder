@@ -101,6 +101,22 @@ public class JSONHtmlEmbeddingTest extends TestCase {
         }
     }
 
+    public void testInlineJavaScriptElement() throws IOException {
+        for (String value : HOSTILE) {
+            String script = "const data = " + json(value) + ";";
+            Document document = Jsoup.parse("<script id=\"data\">" + script
+                + "</script><p id=after>after</p>");
+
+            assertEquals(value, 1, document.select("script").size());
+            assertEquals(value, 0, document.select("img").size());
+            assertEquals(value, "after", document.getElementById("after").text());
+            String parsedScript = document.getElementById("data").data();
+            assertEquals(value, script, parsedScript);
+            assertEquals(value, parseName(parsedScript.substring("const data = ".length(),
+                parsedScript.length() - 1)));
+        }
+    }
+
     public void testHtmlAttribute() throws IOException {
         for (String value : HOSTILE) {
             String json = json(value);
