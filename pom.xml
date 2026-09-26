@@ -196,6 +196,11 @@
                     <version>3.16.0</version>
                 </plugin>
                 <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>build-helper-maven-plugin</artifactId>
+                    <version>3.6.2</version>
+                </plugin>
+                <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-jar-plugin</artifactId>
                     <version>3.5.1</version>
@@ -359,6 +364,16 @@
                 </configuration>
                 <executions>
                     <execution>
+                        <!-- src/main/java9 is a project source root (for the sources JAR)
+                             but must never reach the Java 8 compilation. -->
+                        <id>default-compile</id>
+                        <configuration>
+                            <compileSourceRoots>
+                                <compileSourceRoot>${project.basedir}/src/main/java</compileSourceRoot>
+                            </compileSourceRoots>
+                        </configuration>
+                    </execution>
+                    <execution>
                         <id>compile-java-9</id>
                         <phase>compile</phase>
                         <goals>
@@ -439,6 +454,25 @@
                 </configuration>
             </plugin>
             <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <!-- Makes the sources JAR include the Java 9 module descriptor. -->
+                        <id>add-java9-sources</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>add-source</goal>
+                        </goals>
+                        <configuration>
+                            <sources>
+                                <source>${project.basedir}/src/main/java9</source>
+                            </sources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-source-plugin</artifactId>
                 <executions>
@@ -457,6 +491,9 @@
                 <configuration>
                     <source>8</source>
                     <failOnError>true</failOnError>
+                    <sourceFileExcludes>
+                        <sourceFileExclude>module-info.java</sourceFileExclude>
+                    </sourceFileExcludes>
                 </configuration>
                 <executions>
                     <execution>
@@ -565,6 +602,9 @@
                         <configuration>
                             <source>8</source>
                             <failOnError>true</failOnError>
+                            <sourceFileExcludes>
+                                <sourceFileExclude>module-info.java</sourceFileExclude>
+                            </sourceFileExcludes>
                         </configuration>
                     </reportSet>
                 </reportSets>

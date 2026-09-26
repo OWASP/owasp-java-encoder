@@ -147,6 +147,18 @@ def metadata(kind, jar, core):
     print('Metadata passed:', jar.name)
 
 
+def check_sources_jar(kind, jar):
+    """The published sources JAR must carry the Java 9 module descriptor source."""
+    source_jar = ROOT / kind / 'target' / (jar.name[:-len('.jar')] + '-sources.jar')
+    with zipfile.ZipFile(source_jar) as archive:
+        names = archive.namelist()
+    assert 'module-info.java' in names, (source_jar, 'missing module-info.java')
+    assert not any(name.endswith('.class') for name in names), source_jar
+    package = ARTIFACTS[kind][3].replace('.', '/') + '/'
+    assert any(name.startswith(package) and name.endswith('.java') for name in names), source_jar
+    print('Sources passed:', source_jar.name)
+
+
 def prepare(args):
     out = args.directory.resolve()
     if out.exists() and any(out.iterdir()):
@@ -167,6 +179,7 @@ def prepare(args):
         shutil.copy2(candidates[0], target)
         jars[kind] = target
     for kind, jar in jars.items(): metadata(kind, jar, jars['core'])
+    for kind, jar in jars.items(): check_sources_jar(kind, jar)
     run('javac', '--release', '9', '-d', out / 'metadata', SOURCE / 'ModuleMetadata.java')
     run('java', '-cp', out / 'metadata', 'consumer.ModuleMetadata', *jars.values())
     # javac's module discovery does not honor the runtime multi-release property.
