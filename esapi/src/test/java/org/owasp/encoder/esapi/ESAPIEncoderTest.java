@@ -2,14 +2,20 @@ package org.owasp.encoder.esapi;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Arrays;
+import java.util.concurrent.TimeUnit;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
+import org.junit.rules.TemporaryFolder;
 import org.owasp.encoder.Encode;
 import org.owasp.esapi.ESAPI;
 import org.owasp.esapi.Encoder;
@@ -29,6 +35,70 @@ public class ESAPIEncoderTest extends TestCase {
 
     public void testConfiguredAsEsapiEncoder() {
         assertSame(ESAPIEncoder.getInstance(), ESAPI.encoder());
+    }
+
+    public void testInitializationRecoversWhenConfigurationArrives() throws Exception {
+        TemporaryFolder temporary = new TemporaryFolder();
+        temporary.create();
+        try {
+            File work = temporary.newFolder("work");
+            File home = temporary.newFolder("home");
+            File configuration = temporary.newFolder("configuration");
+            File classes = temporary.newFolder("classes");
+            String probe = ESAPIInitializationProbe.class.getName();
+            String resource = probe.replace('.', '/') + ".class";
+            Path target = classes.toPath().resolve(resource);
+            Files.createDirectories(target.getParent());
+            try (InputStream input = getClass().getResourceAsStream("/" + resource)) {
+                assertNotNull(input);
+                Files.copy(input, target);
+            }
+            File fixture = new File(temporary.getRoot(), "fixture.properties");
+            try (InputStream input = getClass().getResourceAsStream("/.esapi/ESAPI.properties")) {
+                assertNotNull(input);
+                Files.copy(input, fixture.toPath());
+            }
+
+            // Include production classes and dependency JARs, but never the test
+            // output directory: it contains .esapi/ESAPI.properties.
+            StringBuilder classpath = new StringBuilder(classes.getAbsolutePath());
+            for (Class<?> type : new Class<?>[] {ESAPIEncoder.class, Encode.class}) {
+                classpath.append(File.pathSeparator).append(new File(type.getProtectionDomain()
+                        .getCodeSource().getLocation().toURI()).getAbsolutePath());
+            }
+            String testClasspath = System.getProperty("surefire.test.class.path",
+                    System.getProperty("java.class.path"));
+            for (String entry : testClasspath.split(File.pathSeparator)) {
+                File file = new File(entry);
+                if (file.isFile() && file.getName().endsWith(".jar")) {
+                    classpath.append(File.pathSeparator).append(file.getAbsolutePath());
+                }
+            }
+            File java = new File(System.getProperty("java.home"),
+                    File.separatorChar == '\\' ? "bin/java.exe" : "bin/java");
+            File output = temporary.newFile("probe.log");
+            ProcessBuilder builder = new ProcessBuilder(java.getAbsolutePath(),
+                    "-Duser.home=" + home.getAbsolutePath(),
+                    "-Dorg.owasp.esapi.resources=" + configuration.getAbsolutePath(),
+                    "-cp", classpath.toString(), probe, fixture.getAbsolutePath());
+            // Do not inherit JVM options that could supply configuration or a
+            // previously customized ESAPI implementation to the isolated process.
+            builder.environment().remove("JAVA_TOOL_OPTIONS");
+            builder.environment().remove("JDK_JAVA_OPTIONS");
+            builder.environment().remove("_JAVA_OPTIONS");
+            Process process = builder.directory(work).redirectErrorStream(true)
+                    .redirectOutput(output).start();
+            try {
+                assertTrue("Initialization probe timed out", process.waitFor(30, TimeUnit.SECONDS));
+                String text = new String(Files.readAllBytes(output.toPath()), StandardCharsets.UTF_8);
+                assertEquals(text, 0, process.exitValue());
+                assertTrue(text, text.contains("ESAPI initialization recovery passed"));
+            } finally {
+                process.destroyForcibly();
+            }
+        } finally {
+            temporary.delete();
+        }
     }
 
     public void testJavaEncoderBackedMethods() throws Exception {
