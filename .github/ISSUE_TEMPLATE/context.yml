@@ -1,0 +1,21 @@
+name: Output-context question
+description: Ask which documented API fits an ordinary output context.
+title: "Context: "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        This is a public discussion. Suspected encoding bypasses or vulnerabilities belong in [SECURITY.md's private channels](https://github.com/OWASP/owasp-java-encoder/security/policy).
+  - type: input
+    id: version
+    attributes:
+      label: Artifact and version
+    validations:
+      required: true
+  - type: textarea
+    id: context
+    attributes:
+      label: Surrounding syntax and question
+      description: Show a harmless placeholder, the template/framework and the parser receiving it. Explain any automatic escaping.
+    validations:
+      required: true

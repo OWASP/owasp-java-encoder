@@ -1,0 +1,25 @@
+= Deploy the Java Encoder Project =
+
+The OWASP Java Encoder version 1.2 is now available in central!
+
+[https://search.maven.org/#search%7Cga%7C1%7Cg%3A%22org.owasp.encoder%22 OWASP Encoder at Maven Central].
+
+== Core ==
+Direct Download: [http://search.maven.org/remotecontent?filepath=org/owasp/encoder/encoder/1.2/encoder-1.2.jar encoder-1.2.jar]
+
+== Maven for Core Encoder == 
+ <dependency>
+    <groupId>org.owasp.encoder</groupId>
+    <artifactId>encoder</artifactId>
+    <version>1.2</version>
+ </dependency>
+
+== JSP Tag Library ==
+Direct Download: [https://search.maven.org/remotecontent?filepath=org/owasp/encoder/encoder-jsp/1.2/encoder-jsp-1.2.jar encoder-jsp-1.2.jar]
+
+=== Maven for JSP Tag Library ===
+ <dependency>
+    <groupId>org.owasp.encoder</groupId>
+    <artifactId>encoder-jsp</artifactId>
+    <version>1.2</version>
+ </dependency>

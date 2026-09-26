@@ -9,3 +9,6 @@
 *.pdf binary
 *.png binary
 *.zip binary
+
+# Preserve the historical wiki snapshot byte-for-byte, including old whitespace.
+docs/archive/wiki-2019/*.mediawiki -text whitespace=-blank-at-eol,-blank-at-eof

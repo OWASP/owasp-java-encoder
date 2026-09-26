@@ -1,0 +1,51 @@
+= Executive Overview =
+
+The OWASP Java Encoder provides:
+
+* Output Encoding functions to help stop XSS
+* Java 1.5+ standalone library
+
+= Introduction =
+
+The OWASP Java Encoder is a Java 1.5+ simple-to-use drop-in high-performance encoder class with no dependencies and little baggage. This project will help Java web developers defend against Cross Site Scripting!
+
+Cross-Site Scripting (XSS) attacks are a type of injection, in which malicious scripts (primarily JavaScript) are injected into otherwise trusted web sites. You can [https://www.owasp.org/index.php/Cross-site_Scripting_(XSS) read more about Cross Site Scripting here]. One of the primary defenses to stop Cross Site Scripting is a technique called <i>Contextual Output Encoding</i>. You can read more about [https://www.owasp.org/index.php/XSS_(Cross_Site_Scripting)_Prevention_Cheat_Sheet Cross Site Scripting prevention here].
+
+= Contextual Output Encoding =
+
+<i>Contextual Output Encoding</i> is a computer programming technique necessary to stop [https://www.owasp.org/index.php/XSS_Prevention_Cheat_Sheet Cross Site Scripting]. This project is a Java 1.5+ simple-to-use drop-in high-performance encoder class with no dependencies and little baggage. It provides numerous encoding functions to help defend against XSS in a variety of different HTML, JavaScript, XML and CSS contexts.
+
+= Getting Started = 
+
+The OWASP Java Encoder library is intended for quick contextual encoding with very little overhead, either in performance or usage. To get started, simply add the encoder-1.2.jar, import org.owasp.encoder.Encode and start encoding.
+
+Please look at the [https://search.maven.org/remotecontent?filepath=org/owasp/encoder/encoder/1.2/encoder-1.2-javadoc.jar javadoc for Encode] to see the variety of contexts for which you can encode. Tag libraries and JSP EL functions can be found in the encoder-jsp-1.2.jar.
+
+= Licensing =
+
+The OWASP Java Encoder is free to use under the [http://opensource.org/licenses/BSD-3-Clause New BSD License].
+
+= Mailing List =
+
+[https://lists.owasp.org/mailman/listinfo/owasp-java-encoder-project Java Encoder Mailing List]
+
+= Project Leaders =
+Lead Author:  Jeff Ichnowski [mailto:jeff.ichnowski@gmail.com @]<br/>
+[https://www.owasp.org/index.php/User:Jeremy_Long Jeremy Long] [mailto:jeremy.long@owasp.org @]<br/>
+[https://www.owasp.org/index.php/User:Jmanico Jim Manico] [mailto:jim.manico@owasp.org @]
+
+
+= Quick Download =
+
+* [https://search.maven.org/#search%7Cga%7C1%7Cg%3A%22org.owasp.encoder%22 All Maven Central Java Encoder Downloads]
+* [https://search.maven.org/remotecontent?filepath=org/owasp/encoder/encoder/1.2.1/encoder-1.2.1.jar encoder-1.2.1.jar]
+* [https://search.maven.org/remotecontent?filepath=org/owasp/encoder/encoder-jsp/1.2.1/encoder-jsp-1.2.1.jar encoder-jsp-1.2.1.jar]
+
+= News and Events =
+* (Feb 2017) 1.2.1 Released
+* (Apr 2015) 1.2 Released
+* (Apr 2015) Moved to GitHub
+* (Feb 2015) Removed ThreadLocal use from trunk
+* (20 Mar 2014) Doc additions
+* (5 Feb 2014) New Wiki
+* (4 Feb 2014) 1.1.1 Released

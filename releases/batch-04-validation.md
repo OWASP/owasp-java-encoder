@@ -6,7 +6,8 @@ policy/release changes; it is not release approval.
 
 ## Reference payload comparison
 
-Commit `8b548244233330872ba2c6d165f7624b5e6cddff`, exported twice with `git archive`; each copy used a
+Commit `d110c3594e3c78e46d2b652adadb356df64bf2cb` (PR #187 release-plugin
+follow-up), exported twice with `git archive`; each copy used a
 new empty local Maven repository and wrapper cache. Eclipse Temurin
 17.0.20.1+1 (macOS aarch64 archive SHA-256
 `196d13ba5f10414bef7f6a05a9b3f00edacb18ebacef2b99485db9e2ee18f0e8`),
@@ -35,7 +36,7 @@ No cross-OS/architecture claim and no comparison of signing timestamps is made.
 | `encoder-jsp-1.5.0-SNAPSHOT-sources.jar` | `8ce08bbcd7c067038556cd525d42d09781875a60f89709f74c4be385302d70a5` |
 | `encoder-jsp-1.5.0-SNAPSHOT.jar` | `f95dbbbc2bbe00acbefb2848e7c3c137396271f68358d1d0640c87399aa2dc80` |
 | `encoder-jsp-1.5.0-SNAPSHOT.pom` | `6343c9cc2d5a5582b3c98444b139eecb792c416af8f96eb3d3efb88f146678a5` |
-| `encoder-parent-1.5.0-SNAPSHOT.pom` | `8c15bf168cf491d2cebabd683c3550f6b8dbba8fdaa2647ecea7d1526be1209b` |
+| `encoder-parent-1.5.0-SNAPSHOT.pom` | `a4981d5e9a0c617b6341a309299ad7f547f7611c42bb50646dd98a572c556dd9` |
 
 ## Build and policy evidence
 
@@ -61,7 +62,7 @@ No cross-OS/architecture claim and no comparison of signing timestamps is made.
 
 ## Local signing rehearsal
 
-The same committed sources were exported to an isolated directory and changed
+The original PR #185 sources were exported to an isolated directory and changed
 only there to the non-published fixture version `9.9.9-validation` and matching
 SCM tag text. A disposable, one-day **local validation only** RSA key, separate
 GnuPG home, dummy Central settings entry and new Maven repository were used.
@@ -100,3 +101,66 @@ changed/missing comparison payloads, a real valid signature from the wrong key,
 a stale signed POM and a snapshot bundle are rejected. All 14 policy/verification
 tests pass. A missing-key Maven signing attempt fails noninteractively, and the
 release profile rejects the development SNAPSHOT version as intended.
+
+## Release-plugin dependency follow-up (#187)
+
+A broader query of the 29 distinct resolved GPG/Central plugin coordinates found
+advisories in Bouncy Castle 1.81 and Plexus Utils 3.5.1/3.6.0. Plugin-only overrides
+now align `bcpg-jdk18on`, `bcprov-jdk18on`, and `bcutil-jdk18on` at 1.86 and both
+Plexus Utils uses at compatible 3.6.2. Application/runtime dependencies are unchanged.
+
+The reference payload comparison above was repeated after this parent POM change:
+all 17 files matched between the two new clean builds. Compared with the earlier
+PR #185 evidence, only the parent POM hash changed; all 12 JARs and four module
+POMs retained their hashes.
+
+A fresh export of `d110c3594e3c78e46d2b652adadb356df64bf2cb`, changed only to the
+local `9.9.9-validation` fixture version/tag text, passed both the default GnuPG
+signer (`clean deploy`, publishing disabled) and optional Bouncy Castle signer
+(`verify`). Both used a new one-day disposable test key, isolated Maven repository
+and dummy Central settings. Each path verified all 17 signatures and assembled
+its own 102-entry local bundle. Bundle SHA-256 values:
+
+- GnuPG: `dd27bac64d2226b9b5dd644507167e5520808c101710dceb10b73e366433da2c`.
+- Bouncy Castle: `778fd62f2d5c2f2b6287872455351ea1ea91b075ee857cd6ad850cc0cf79c229`.
+
+Signatures were checked independently, not compared for reproducibility. The
+disposable private key was deleted afterward. No production signing credentials,
+upload or Git tag was used. Live Central transport remains outside this rehearsal.
+
+After signing, dependency-plugin 3.11.0 resolved the actual release profile.
+An exact-version [OSV query](https://osv.dev/) on 2026-09-26 returned no advisory
+matches for these **28 distinct coordinates**, including the two plugin roots.
+This covers the resolved GPG/Central plugin closures, not every project build
+plugin, operating system package, or live publishing service.
+
+| Resolved release-plugin coordinate | Version |
+| --- | --- |
+| `com.fasterxml.jackson.core:jackson-annotations` | `2.22` |
+| `com.fasterxml.jackson.core:jackson-core` | `2.22.3` |
+| `com.fasterxml.jackson.core:jackson-databind` | `2.22.3` |
+| `com.github.package-url:packageurl-java` | `1.4.1` |
+| `com.google.code.findbugs:jsr305` | `3.0.2` |
+| `com.google.errorprone:error_prone_annotations` | `2.18.0` |
+| `com.google.guava:failureaccess` | `1.0.1` |
+| `com.google.guava:guava` | `32.1.0-jre` |
+| `com.google.guava:listenablefuture` | `9999.0-empty-to-avoid-conflict-with-guava` |
+| `com.google.j2objc:j2objc-annotations` | `2.8` |
+| `com.kohlschutter.junixsocket:junixsocket-common` | `2.10.1` |
+| `com.kohlschutter.junixsocket:junixsocket-core` | `2.10.1` |
+| `com.kohlschutter.junixsocket:junixsocket-native-common` | `2.10.1` |
+| `commons-io:commons-io` | `2.15.1` |
+| `org.apache.commons:commons-lang3` | `3.18.0` |
+| `org.apache.httpcomponents.client5:httpclient5` | `5.6.4` |
+| `org.apache.httpcomponents.core5:httpcore5-h2` | `5.4.4` |
+| `org.apache.httpcomponents.core5:httpcore5` | `5.4.4` |
+| `org.apache.maven.plugins:maven-gpg-plugin` | `3.2.8` |
+| `org.apache.maven.resolver:maven-resolver-api` | `1.9.22` |
+| `org.apache.maven.resolver:maven-resolver-util` | `1.9.22` |
+| `org.bouncycastle:bcpg-jdk18on` | `1.86` |
+| `org.bouncycastle:bcprov-jdk18on` | `1.86` |
+| `org.bouncycastle:bcutil-jdk18on` | `1.86` |
+| `org.checkerframework:checker-qual` | `3.33.0` |
+| `org.codehaus.plexus:plexus-utils` | `3.6.2` |
+| `org.slf4j:slf4j-api` | `1.7.36` |
+| `org.sonatype.central:central-publishing-maven-plugin` | `0.11.0` |

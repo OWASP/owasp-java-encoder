@@ -74,7 +74,7 @@ adapter tests on an older ESAPI version does not make it supported upstream.
 Maintainers can deliberately test another version without changing the POM:
 
 ```shell
-mvn -pl esapi -am clean verify -Desapi.version=2.5.1.0
+./mvnw -pl esapi -am clean verify -Desapi.version=2.5.1.0
 ```
 
 Applications can select another tested version with normal Maven dependency
