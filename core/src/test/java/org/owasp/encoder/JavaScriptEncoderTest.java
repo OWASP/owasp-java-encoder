@@ -34,6 +34,8 @@
 
 package org.owasp.encoder;
 
+import java.io.StringWriter;
+import java.io.Writer;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
@@ -46,7 +48,7 @@ import org.owasp.encoder.JavaScriptEncoder.Mode;
  */
 public class JavaScriptEncoderTest extends TestCase {
     public static Test suite() {
-        TestSuite suite = new TestSuite();
+        TestSuite suite = new TestSuite(JavaScriptEncoderTest.class);
         for (int asciiOnly = 0 ; asciiOnly <= 1 ; ++asciiOnly) {
             for (JavaScriptEncoder.Mode mode : JavaScriptEncoder.Mode.values()) {
 //                if (!(mode == JavaScriptEncoder.Mode.HTML_CONTENT && asciiOnly == 0)) continue;
@@ -101,6 +103,10 @@ public class JavaScriptEncoderTest extends TestCase {
                     .encode("Paragraph Separator", "\\u2029", "\u2029")
                     .encode("backtick", "\\x60", "`")
                     .encode("dollar", "\\x24", "$")
+                    .encode("template start", "\\x24{", "${")
+                    .encode("trailing dollar", "end\\x24", "end$")
+                    .encode("escaped-looking interpolation", "\\\\\\x24{value}", "\\${value}")
+                    .encode("escaped-looking backtick", "\\\\\\x60", "\\`")
                     .encode("template expression", "\\x24{alert(1)}", "${alert(1)}")
                     .encode("template breakout", "hell\\x60;alert(1);\\x60o", "hell`;alert(1);`o")
                     .encode("abc", "abc")
@@ -126,5 +132,56 @@ public class JavaScriptEncoderTest extends TestCase {
             }
         }
         return suite;
+    }
+
+    public void testTemplateCharactersThroughPublicFacadesAndRegistry() throws Exception {
+        String input = "price=$5;`${value}`;\\${escaped}";
+        String expected = "price=\\x245;\\x60\\x24{value}\\x60;\\\\\\x24{escaped}";
+        String[] methods = {"forJavaScript", "forJavaScriptAttribute",
+            "forJavaScriptBlock", "forJavaScriptSource"};
+        String[] contexts = {Encoders.JAVASCRIPT, Encoders.JAVASCRIPT_ATTRIBUTE,
+            Encoders.JAVASCRIPT_BLOCK, Encoders.JAVASCRIPT_SOURCE};
+        for (int i = 0; i < methods.length; i++) {
+            assertEquals(methods[i], expected,
+                Encode.class.getMethod(methods[i], String.class).invoke(null, input));
+            StringWriter out = new StringWriter();
+            Encode.class.getMethod(methods[i], Writer.class, String.class).invoke(null, out, input);
+            assertEquals(methods[i], expected, out.toString());
+            assertEquals(contexts[i], expected, Encode.encode(Encoders.forName(contexts[i]), input));
+        }
+    }
+
+    public void testTemplateCharactersAcrossWriterBuffers() throws Exception {
+        // Place '$' at an input-buffer boundary and make output exceed its buffer,
+        // then write each character separately to exercise chunk-independent escapes.
+        StringBuilder input = new StringBuilder();
+        StringBuilder expected = new StringBuilder();
+        for (int i = 0; i < Encode.Buffer.INPUT_BUFFER_SIZE - 1; i++) {
+            input.append('a');
+            expected.append('a');
+        }
+        for (int i = 0; i < Encode.Buffer.OUTPUT_BUFFER_SIZE; i++) {
+            input.append("${`}");
+            expected.append("\\x24{\\x60}");
+        }
+        String[] methods = {"forJavaScript", "forJavaScriptAttribute",
+            "forJavaScriptBlock", "forJavaScriptSource"};
+        String[] contexts = {Encoders.JAVASCRIPT, Encoders.JAVASCRIPT_ATTRIBUTE,
+            Encoders.JAVASCRIPT_BLOCK, Encoders.JAVASCRIPT_SOURCE};
+        for (int i = 0; i < methods.length; i++) {
+            assertEquals(methods[i], expected.toString(),
+                Encode.class.getMethod(methods[i], String.class).invoke(null, input.toString()));
+            StringWriter out = new StringWriter();
+            Encode.class.getMethod(methods[i], Writer.class, String.class)
+                .invoke(null, out, input.toString());
+            assertEquals(methods[i], expected.toString(), out.toString());
+            out = new StringWriter();
+            EncodedWriter writer = new EncodedWriter(out, contexts[i]);
+            for (int j = 0; j < input.length(); j++) {
+                writer.write(input.charAt(j));
+            }
+            writer.close();
+            assertEquals(contexts[i], expected.toString(), out.toString());
+        }
     }
 }

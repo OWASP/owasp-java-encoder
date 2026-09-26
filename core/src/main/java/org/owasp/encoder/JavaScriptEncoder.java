@@ -64,15 +64,15 @@ class JavaScriptEncoder extends Encoder {
         ATTRIBUTE,
         /**
          * Encoding for use in HTML script blocks. The main concern here is
-         * permaturely terminating a script block with a closing "&lt;/" inside
+         * prematurely terminating a script block with a closing "&lt;/" inside
          * the string. This encoding escapes "/" as "\/" to prevent such
          * termination.
          */
         BLOCK,
         /**
          * Encodes for use in either HTML script attributes or blocks.
-         * Essentially this is both special escapes from HTML_ATTRIBUTE and
-         * HTML_CONTENT combined.
+         * Essentially this is both special escapes from ATTRIBUTE and
+         * BLOCK combined.
          */
         HTML,;
     }
@@ -121,7 +121,7 @@ class JavaScriptEncoder extends Encoder {
         // of the shift amount are considered.
         //
         // '`' and '$' are encoded in every mode so that the output is also
-        // safe inside a template literal, where '`' ends the literal and
+        // safe as ordinary template literal text, where '`' ends the literal and
         // "${" starts an embedded expression.
         _validMasks = new int[]{
             0,

@@ -53,7 +53,18 @@ import org.owasp.esapi.reference.DefaultEncoder;
  * implementation will fallback onto the default reference implementation
  * included with ESAPI.  Thus you should see the performance benefit from
  * the methods included in the Encoder, but still maintain compatibility
- * with all methods from ESAPI Encoder.</p>
+ * with the delegated methods from ESAPI Encoder. The methods implemented
+ * here have the contextual contracts described below.</p>
+ *
+ * <p>The adapter's {@code encodeForCSS} encodes only quoted CSS strings, and
+ * {@code encodeForJavaScript} encodes single- or double-quoted JavaScript
+ * strings and literal text in ordinary (untagged) template literals, not JSON,
+ * tagged templates (including {@code String.raw}), or script URLs. Its
+ * {@code encodeForURL} delegates to deprecated {@link Encode#forUri(String)}:
+ * it preserves URI delimiters such as {@code &amp; = / ? #} and therefore is
+ * not a URL-component or form encoder. For an inserted component, use
+ * {@link Encode#forUriComponent(String)}. Validate complete URLs and their
+ * schemes, then encode for the enclosing output context.</p>
  *
  * <p>For clarity, the reason the OWASP Java Encoders do not include some
  * of the ESAPI library is that the Encoders library is specifically focused
@@ -69,6 +80,11 @@ import org.owasp.esapi.reference.DefaultEncoder;
  *     <li>Decoding methods:
  *     {@link org.owasp.esapi.Encoder#decodeForHTML(String)},
  *     {@link org.owasp.esapi.Encoder#decodeFromURL(String)}</li>
+ *
+ *     <li>JSON encoding and decoding:
+ *     {@link org.owasp.esapi.Encoder#encodeForJSON(String)},
+ *     {@link org.owasp.esapi.Encoder#decodeFromJSON(String)}.
+ *     These delegate to ESAPI; the JavaScript encoder is not a JSON encoder.</li>
  *
  *     <li>Binary-to-text/text-to-binary:
  *     {@link org.owasp.esapi.Encoder#encodeForBase64(byte[], boolean)},
@@ -164,7 +180,10 @@ public final class ESAPIEncoder {
             return _referenceEncoder.getCanonicalizedURI(dirtyUri);
         }
 
-        /** {@inheritDoc} */
+        /**
+         * Encodes a quoted CSS string using {@link Encode#forCssString(String)}.
+         * This is not an encoder for arbitrary CSS expressions or property values.
+         */
         @Override
         public String encodeForCSS(String s) {
             return Encode.forCssString(s);
@@ -188,7 +207,11 @@ public final class ESAPIEncoder {
             return Encode.forHtmlAttribute(s);
         }
 
-        /** {@inheritDoc} */
+        /**
+         * Encodes a single- or double-quoted JavaScript string or literal text in an
+         * ordinary (untagged) template literal using {@link Encode#forJavaScript(String)}.
+         * Not for JSON, tagged templates (including {@code String.raw}), or script URLs.
+         */
         @Override
         public String encodeForJavaScript(String s) {
             return Encode.forJavaScript(s);
@@ -248,7 +271,11 @@ public final class ESAPIEncoder {
             return Encode.forXmlAttribute(s);
         }
 
-        /** {@inheritDoc} */
+        /**
+         * Encodes a complete URI using deprecated {@link Encode#forUri(String)}.
+         * Preserves delimiters such as {@code &amp; = / ? #}; not a component
+         * or form encoder. The caller must validate the URI and its scheme.
+         */
         @Override
         public String encodeForURL(String s) throws EncodingException {
             return Encode.forUri(s);
@@ -272,13 +299,17 @@ public final class ESAPIEncoder {
             return _referenceEncoder.decodeFromBase64(s);
         }
 
-        /** {@inheritDoc} */
+        /**
+         * Delegates JSON string encoding to the ESAPI reference encoder.
+         */
         @Override
         public String encodeForJSON(String s) {
             return _referenceEncoder.encodeForJSON(s);
         }
 
-        /** {@inheritDoc} */
+        /**
+         * Delegates JSON string decoding to the ESAPI reference encoder.
+         */
         @Override
         public String decodeFromJSON(String s) {
             return _referenceEncoder.decodeFromJSON(s);

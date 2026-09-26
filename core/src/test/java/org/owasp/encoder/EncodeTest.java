@@ -157,4 +157,33 @@ public class EncodeTest extends TestCase {
         assertEquals(40000, output.length());
         assertEquals(input.replace("&", "&amp;"), output);
     }
+
+    public void testCssLineAndParagraphSeparatorRunsToString() throws IOException {
+        // U+2028 and U+2029 have the longest CSS escapes (5 characters).  The
+        // lengths straddle the sizes where the String encode loop falls back
+        // to buffers sized by maxEncodedLength.
+        for (int n : new int[] {1, 409, 410, 1024, 1025, 4096}) {
+            String lineSeparators = repeat("\u2028", n);
+            String paragraphSeparators = repeat("\u2029", n);
+            assertEquals(repeat("\\2028", n), Encode.forCssString(lineSeparators));
+            assertEquals(repeat("\\2028", n), Encode.forCssUrl(lineSeparators));
+            assertEquals(repeat("\\2029", n), Encode.forCssString(paragraphSeparators));
+            assertEquals(repeat("\\2029", n), Encode.forCssUrl(paragraphSeparators));
+
+            // a hex digit after the escape requires a separating space
+            String mixed = repeat("\u2028a", n);
+            StringWriter out = new StringWriter();
+            Encode.forCssString(out, mixed);
+            assertEquals(repeat("\\2028 a", n), out.toString());
+            assertEquals(out.toString(), Encode.forCssString(mixed));
+        }
+    }
+
+    private static String repeat(String s, int n) {
+        StringBuilder buf = new StringBuilder(s.length() * n);
+        for (int i = 0; i < n; ++i) {
+            buf.append(s);
+        }
+        return buf.toString();
+    }
 }

@@ -43,11 +43,10 @@ import java.nio.charset.CoderResult;
  * encoding.  Overriding and implementing Encoders outside of the
  * OWASP Encoder's project is not currently supported.</p>
  *
- * <p>Unless otherwise documented, instances of these classes are
- * thread-safe.  Encoders implementations do not generally carry
- * state, and if they do the state will be flush with a call to {@link
- * #encode(java.nio.CharBuffer, java.nio.CharBuffer, boolean)} with
- * {@code endOfInput} set to {@code true}.</p>
+ * <p>All encoder singletons returned by {@link Encoders} are stateless and
+ * thread-safe. Incomplete sequences remain in the caller's input buffer;
+ * callers must preserve those characters between calls and must not share
+ * mutable input or output buffers across concurrent calls.</p>
  *
  * <p>To use an Encoder instance directly, repeatedly call {@link
  * #encode(java.nio.CharBuffer, java.nio.CharBuffer, boolean)} with
@@ -59,7 +58,7 @@ import java.nio.charset.CoderResult;
  * java.nio.charset.CoderResult#UNDERFLOW}.</p>
  *
  * <p>In general, this class is not expected to be needed directly.
- * Use the {@link Encode} fluent interface for encoding Strings or
+ * Use the {@link Encode} static methods for encoding Strings or
  * {@link EncodedWriter} for large blocks of contextual encoding.</p>
  *
  * @author Jeff Ichnowski
@@ -93,14 +92,15 @@ public abstract class Encoder {
      * <p>This is the kernel of encoding.  Currently only CharBuffers
      * backed by arrays (i.e. {@link java.nio.CharBuffer#hasArray()}
      * returns {@code true}) are supported.  <strong>Using a
-     * direct-mapped CharBuffer will result in an
-     * UnsupportedOperationException</strong>, though this behavior
+     * direct buffer, a read-only buffer, or a buffer created with
+     * {@link java.nio.CharBuffer#wrap(CharSequence)} with remaining input
+     * will result in an UnsupportedOperationException</strong>, though this behavior
      * may change in future releases.</p>
      *
      * <p>This method should be called repeatedly while {@code
      * endOfInput} set to {@code false} while there is more input.
      * Once there is no more input, this method should be called
-     * {@code endOfInput} set to {@code false} until {@link
+     * with {@code endOfInput} set to {@code true} until {@link
      * java.nio.charset.CoderResult#UNDERFLOW} is returned.</p>
      *
      * <p>After any call to this method, except when {@code
@@ -112,6 +112,12 @@ public abstract class Encoder {
      * for CDATA, if the input ends with {@code "foo]]"}, the encoder
      * will need to see the next character to determine if it is a "&gt;"
      * or not.</p>
+     *
+     * <p>The output buffer must have enough remaining space for an entire
+     * encoded sequence. Allow at least 15 characters of output space to support
+     * every encoder (CDATA requires 15 for its terminator replacement).
+     * An undersized buffer can cause repeated {@code OVERFLOW} results without
+     * advancing either buffer; drain or enlarge it before retrying.</p>
      *
      * <p>Example usage:</p>
      * <pre>
@@ -159,6 +165,10 @@ public abstract class Encoder {
      * that might conceivably return and invalid or unmappable
      * character result (as part of the nio Charset API) are
      * automatically replaced to avoid security implications.
+     * @throws NullPointerException if input is null, or output is null while
+     * input has remaining characters
+     * @throws UnsupportedOperationException if input has remaining characters
+     * and either buffer does not expose a backing array
      */
     public CoderResult encode(CharBuffer input, CharBuffer output, boolean endOfInput) {
         if (input.hasRemaining()) {
