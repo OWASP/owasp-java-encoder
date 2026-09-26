@@ -9,7 +9,9 @@ final class BrowserFixture {
     private static final String IMAGE = "selenium/standalone-chrome:4.49.0-20260909@sha256:7efe71e7e4a83bdf574b26bd354690928075e8f443223d2ced16a2c208eae1d7";
 
     static BrowserWebDriverContainer<?> container(ChromeOptions options) {
-        return new BrowserWebDriverContainer<>(DockerImageName.parse(IMAGE))
+        return new BrowserWebDriverContainer<>(DockerImageName.parse(IMAGE)
+            // Testcontainers 2 parses tag+digest names differently during its compatibility check.
+            .asCompatibleSubstituteFor("selenium/standalone-chrome"))
             .withCapabilities(options)
             .withSharedMemorySize(2L * 1024 * 1024 * 1024)
             .withRecordingMode(BrowserWebDriverContainer.VncRecordingMode.SKIP, null);
