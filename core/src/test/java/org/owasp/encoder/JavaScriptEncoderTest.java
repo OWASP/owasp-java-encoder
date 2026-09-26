@@ -101,6 +101,12 @@ public class JavaScriptEncoderTest extends TestCase {
                     .encode("NUL", "\\x00", "\0")
                     .encode("Line Separator", "\\u2028", "\u2028")
                     .encode("Paragraph Separator", "\\u2029", "\u2029")
+                    .encode("DEL", "\\x7f", "\u007f")
+                    .encode("NEL", "\\x85", "\u0085")
+                    .encode("last C1 control", "\\x9f", "\u009f")
+                    .encode("lone high surrogate", "\\ud800", "\ud800")
+                    .encode("lone low surrogate", "\\udfff", "\udfff")
+                    .encode("reversed pair", "\\udc00\\ud800", "\udc00\ud800")
                     .encode("backtick", "\\x60", "`")
                     .encode("dollar", "\\x24", "$")
                     .encode("opening brace", "\\x7b", "{")
@@ -118,12 +124,18 @@ public class JavaScriptEncoderTest extends TestCase {
                     builder
                         .encode("unicode", "\u1234", "\u1234")
                         .encode("high-ascii", "\u00ff", "\u00ff")
-                        .valid(0x7f, Character.MAX_CODE_POINT)
+                        .encode("non-breaking space", "\u00a0", "\u00a0")
+                        .encode("surrogate pair", "\ud83d\ude00", "\ud83d\ude00")
+                        .valid(0xa0, Character.MAX_CODE_POINT)
+                        .encoded(0x7f, 0x9f)
+                        .encoded(Character.MIN_SURROGATE, Character.MAX_SURROGATE)
                         .encoded("\u2028\u2029");
                 } else {
                     builder
                         .encode("unicode", "\\u1234", "\u1234")
                         .encode("high-ascii", "\\xff", "\u00ff")
+                        .encode("non-breaking space", "\\xa0", "\u00a0")
+                        .encode("surrogate pair", "\\ud83d\\ude00", "\ud83d\ude00")
                         .encoded(0x7f, Character.MAX_CODE_POINT);
                 }
 

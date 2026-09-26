@@ -79,6 +79,8 @@
             not a ${...} expression. Dollar sign ($), backtick, and opening brace ({) are encoded
             as \x24, \x60, and \x7b. Escaping { also prevents input after a trusted $ from
             completing ${...}.
+            DEL and C1 controls (U+007F to U+009F) use \xNN escapes. Unpaired UTF-16 surrogates
+            use \uXXXX escapes; valid surrogate pairs remain unescaped.
             Tagged templates (including String.raw) are unsupported: tags can observe raw escapes
             or interpret another language. This is not a JSON encoder; use a JSON serializer for
             JSON. Do not use in javascript: or data: URLs, where URL decoding introduces a separate
@@ -397,6 +399,8 @@
             not a ${...} expression. Dollar sign ($), backtick, and opening brace ({) are encoded
             as \x24, \x60, and \x7b. Escaping { also prevents input after a trusted $ from
             completing ${...}.
+            DEL and C1 controls (U+007F to U+009F) use \xNN escapes. Unpaired UTF-16 surrogates
+            use \uXXXX escapes; valid surrogate pairs remain unescaped.
             Tagged templates (including String.raw) are unsupported: tags can observe raw escapes
             or interpret another language. This is not a JSON encoder; use a JSON serializer for
             JSON. Do not use in javascript: or data: URLs, where URL decoding introduces a separate

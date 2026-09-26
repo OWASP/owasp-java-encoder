@@ -45,7 +45,8 @@
  * <tr><td>Inserted URI component</td><td>{@link org.owasp.encoder.Encode#forUriComponent(String)}</td></tr>
  * <tr><td>JavaScript string</td><td>{@link org.owasp.encoder.Encode#forJavaScript(String)};
  * single or double quotes, or literal text in ordinary (untagged) template literals;
- * not tagged templates, JSON, or script URLs</td></tr>
+ * not tagged templates, JSON, or script URLs. DEL/C1 controls and unpaired
+ * UTF-16 surrogates are escaped; valid surrogate pairs remain unescaped</td></tr>
  * <tr><td>CSS string / unquoted url(...)</td><td>{@link org.owasp.encoder.Encode#forCssString(String)} /
  * {@link org.owasp.encoder.Encode#forCssUrl(String)}; validate URLs separately</td></tr>
  * <tr><td>XML 1.0 text / quoted attribute</td><td>{@link org.owasp.encoder.Encode#forXmlContent(String)} /

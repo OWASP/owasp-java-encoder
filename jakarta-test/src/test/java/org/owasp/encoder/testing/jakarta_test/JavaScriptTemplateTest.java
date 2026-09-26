@@ -1,5 +1,9 @@
 package org.owasp.encoder.testing.jakarta_test;
 
+import java.io.ByteArrayOutputStream;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.UnaryOperator;
@@ -25,7 +29,7 @@ class JavaScriptTemplateTest {
         "", "plain", "$", "`", "{executed=true}", "${", "${executed=true}",
         "hell`;executed=true;value=`o", "\\${executed=true}", "\\`", "end$",
         "'\"\\\r\n\t\b\f\u0000\u000b\u2028\u2029",
-        "\u00e9\u0085\u1234\ud83d\ude00",
+        "\u007f\u0080\u0085\u009f\u00a0\u00e9\u1234\ud83d\ude00",
         "</script><script>executed=true</script>", "<!--<script>-->",
         "&quot;&#96;&#36;{executed=true}"
     };
@@ -120,6 +124,57 @@ class JavaScriptTemplateTest {
             Object raw = evaluate("return String.raw`" + encoded + "`;");
             assertEquals(encoded, raw);
             assertNotEquals(input, raw);
+        }
+    }
+
+    @Test
+    void preservesEveryLoneSurrogateAndControlThroughUtf8AndJavaScriptParsing() throws Exception {
+        StringBuilder input = new StringBuilder("\u00a0\u00ff\ud83d\ude00\udc00\ud800|");
+        for (int ch = 0x7f; ch <= 0x9f; ch++) {
+            input.append((char) ch);
+        }
+        for (int ch = Character.MIN_SURROGATE; ch <= Character.MAX_SURROGATE; ch++) {
+            input.append((char) ch).append('|');
+        }
+        String value = input.toString();
+        // Numeric code units avoid asking WebDriver to serialize lone surrogates.
+        List<Long> expected = value.chars().mapToObj(ch -> (long) ch).toList();
+        String[] methods = {"forJavaScript", "forJavaScriptAttribute",
+            "forJavaScriptBlock", "forJavaScriptSource"};
+        for (int mode = 0; mode < methods.length; mode++) {
+            String encoded = ENCODERS.get(mode).apply(value);
+            for (boolean writerApi : new boolean[]{false, true}) {
+                ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+                try (Writer out = new OutputStreamWriter(bytes, StandardCharsets.UTF_8.newEncoder())) {
+                    if (writerApi) {
+                        Encode.class.getMethod(methods[mode], Writer.class, String.class)
+                            .invoke(null, out, value);
+                    } else {
+                        out.write(encoded);
+                    }
+                }
+                String transported = bytes.toString(StandardCharsets.UTF_8);
+                assertEquals(encoded, transported);
+                for (String quote : new String[]{"'", "\"", "`"}) {
+                    String source = "var value=" + quote + transported + quote
+                        + ";return Array.from({length:value.length},(_,i)=>value.charCodeAt(i));";
+                    assertEquals(expected, evaluate(source), methods[mode] + ", writer=" + writerApi);
+                }
+                String source = "var value=`" + transported
+                    + "`;return Array.from({length:value.length},(_,i)=>value.charCodeAt(i));";
+                if (mode == 0 || mode == 2) {
+                    assertEquals(expected, browser.executeScript(
+                        "const doc=new DOMParser().parseFromString(arguments[0],'text/html');"
+                        + "return new Function(doc.querySelector('script').textContent)();",
+                        "<script>" + source + "</script>"));
+                }
+                if (mode == 0 || mode == 1) {
+                    assertEquals(expected, browser.executeScript(
+                        "const doc=new DOMParser().parseFromString(arguments[0],'text/html');"
+                        + "return new Function(doc.querySelector('button').getAttribute('onclick'))();",
+                        "<button onclick=\"" + source + "\">ok</button>"));
+                }
+            }
         }
     }
 

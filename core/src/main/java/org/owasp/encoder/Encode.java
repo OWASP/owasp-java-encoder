@@ -1197,6 +1197,17 @@ public final class Encode {
      *       <td class="colLast"><code>&#92;u2028</code>, <code>&#92;u2029</code></td>
      *       <td class="colLast">Line and paragraph separators</td>
      *     </tr>
+     *     <tr class="altColor">
+     *       <td class="colFirst" colspan="2">U+007F&nbsp;to&nbsp;U+009F</td>
+     *       <td class="colLast"><code>\x##</code></td>
+     *       <td class="colLast">DEL and C1 controls, including U+0085 (NEL).</td>
+     *     </tr>
+     *     <tr class="rowColor">
+     *       <td class="colFirst" colspan="2">Unpaired UTF-16 surrogates</td>
+     *       <td class="colLast"><code>&#92;u####</code></td>
+     *       <td class="colLast">Preserves each unpaired code unit through charset
+     *       conversion. Valid surrogate pairs remain unescaped.</td>
+     *     </tr>
      *   </tbody>
      * </table>
      *
@@ -1245,6 +1256,8 @@ public final class Encode {
      * an ordinary (untagged) template literal. This method performs the
      * same encode as {@link #forJavaScript(String)} with the
      * exception that <code>/</code> and <code>-</code> are not escaped.</p>
+     * <p>DEL and C1 controls (U+007F to U+009F) are hex-escaped. Unpaired UTF-16
+     * surrogates use Unicode escapes; valid surrogate pairs remain unescaped.</p>
      *
      * <p><strong>Unless you are interested in saving a few bytes of
      * output or are writing a framework on top of this library, it is
@@ -1297,6 +1310,8 @@ public final class Encode {
      * the exception that <code>"</code> and <code>'</code> are
      * encoded as <code>\"</code> and <code>\'</code>
      * respectively.</p>
+     * <p>DEL and C1 controls (U+007F to U+009F) are hex-escaped. Unpaired UTF-16
+     * surrogates use Unicode escapes; valid surrogate pairs remain unescaped.</p>
      *
      * <p><strong>Unless you are interested in saving a few bytes of
      * output or are writing a framework on top of this library, it is
@@ -1351,6 +1366,8 @@ public final class Encode {
      * the exception that <code>/</code>, <code>-</code>, and <code>&amp;</code> are not
      * escaped and <code>"</code> and <code>'</code> are encoded as
      * <code>\"</code> and <code>\'</code> respectively.</p>
+     * <p>DEL and C1 controls (U+007F to U+009F) are hex-escaped. Unpaired UTF-16
+     * surrogates use Unicode escapes; valid surrogate pairs remain unescaped.</p>
      *
      * <p><strong>Unless you are interested in saving a few bytes of
      * output or are writing a framework on top of this library, it is
