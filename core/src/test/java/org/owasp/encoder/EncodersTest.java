@@ -70,4 +70,21 @@ public class EncodersTest extends TestCase {
 
         assertTrue(count > 0);
     }
+
+    public void testXML11Names() {
+        assertXML11Encoder("xml-1.1", XMLEncoder.Mode.ALL,
+            "&#x01;&amp;&lt;&gt;&#34;&#39;");
+        assertXML11Encoder("xml-1.1-content", XMLEncoder.Mode.CONTENT,
+            "&#x01;&amp;&lt;&gt;\"'");
+        assertXML11Encoder("xml-1.1-attribute", XMLEncoder.Mode.ATTRIBUTE,
+            "&#x01;&amp;&lt;>&#34;&#39;");
+    }
+
+    private void assertXML11Encoder(String name, XMLEncoder.Mode mode, String expected) {
+        Encoder encoder = Encoders.forName(name);
+        assertTrue(name, encoder instanceof XMLEncoder);
+        assertEquals("XMLEncoder(" + mode + ", " + XMLEncoder.Version.XML_1_1 + ")",
+            encoder.toString());
+        assertEquals(name, expected, Encode.encode(encoder, "\u0001&<>\"'"));
+    }
 }

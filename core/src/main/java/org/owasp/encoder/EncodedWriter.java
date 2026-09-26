@@ -162,7 +162,8 @@ public class EncodedWriter extends Writer {
 
     /**
      * Flushes the left-over buffer. Characters from the input buffer are used to add more data to the _leftOverBuffer in order to
-     * make the flush happen.
+     * make the flush happen. If the input runs out before the encoder can consume the left-over characters, they are kept for the
+     * next write (or close).
      *
      * @param input the next input to encode, or null if at end of file.
      * @throws IOException from the underlying writer.
@@ -172,6 +173,7 @@ public class EncodedWriter extends Writer {
             return;
         }
 
+        // _leftOverBuffer is in write mode (position = number of pending characters) on entry and at the top of each iteration.
         for (;;) {
             if (input != null && input.hasRemaining()) {
                 _leftOverBuffer.put(input.get());
@@ -179,16 +181,16 @@ public class EncodedWriter extends Writer {
 
             _leftOverBuffer.flip();
             CoderResult cr = _encoder.encode(_leftOverBuffer, _buffer, input == null);
+            // compact() returns the buffer to write mode, keeping only the characters the encoder did not consume.
+            _leftOverBuffer.compact();
 
-            if (cr.isUnderflow()) {
-                if (_leftOverBuffer.hasRemaining()) {
-                    _leftOverBuffer.compact();
-                } else {
-                    break;
-                }
-            }
             if (cr.isOverflow()) {
                 flushBufferToWriter();
+            } else if (_leftOverBuffer.position() == 0) {
+                break;
+            } else if (input == null || !input.hasRemaining()) {
+                // The encoder needs more input than this write provided.
+                return;
             }
         }
 
