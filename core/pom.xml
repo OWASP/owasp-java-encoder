@@ -58,6 +58,7 @@
 
     <properties>
         <jigsaw.module.name>org.owasp.encoder</jigsaw.module.name>
+        <osgi.symbolic.name>org.owasp.encoder</osgi.symbolic.name>
     </properties>
 
     <dependencies>

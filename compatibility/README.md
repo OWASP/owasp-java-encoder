@@ -60,7 +60,11 @@ unrelated split packages among legacy dependency JARs.
 OSGi tests start Felix 5.6.12 (R6) and 7.0.5 (R8), install the actual core/adapter
 JARs and a consumer probe bundle, assert ACTIVE state, invoke encoding through
 the probe's bundle class loader, and shut down the framework. The framework host
-supplies the pinned servlet/JSP/EL or ESAPI API packages via system-package exports.
+supplies the pinned servlet/JSP/EL or ESAPI API packages via system-package exports,
+at the versions the pinned API JARs declare (ESAPI packages are unversioned). The
+JSP and Jakarta probes also run `ForJsonTag`, which needs the 1.5 core API. Each
+adapter is then installed with the released 1.4.0 core and must fail to resolve,
+proving its `org.owasp.encoder` import range excludes cores it cannot run on.
 Encoder code is absent from the host classpath. This tests the encoder bundles'
 imports, resolution, and execution; it does not test independently installed
 vendor API bundles or a full servlet container. Legacy Felix URL handlers are
@@ -70,7 +74,7 @@ disabled because this fixture does not use them.
 
 Preparation asserts all four artifacts' automatic/explicit module names,
 descriptor requirements (including transitive API readability), exports, OSGi
-identities, imports and export versions, absence of execution-environment
+identities, imported packages with their exact version ranges, export versions, absence of execution-environment
 requirements, multi-release layout, Java 8 class versions, TLD identities and
 referenced packaged classes, and allowed published runtime dependencies. Base
 classes must stay within each artifact's own package; test classes and embedded

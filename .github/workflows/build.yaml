@@ -5,43 +5,71 @@ on:
     branches:
       - main
   pull_request:
+  workflow_dispatch:
+  schedule:
+    - cron: '23 6 * * 1'
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
 
 permissions:
   contents: read
 
+defaults:
+  run:
+    shell: bash
+
 jobs:
   build:
     runs-on: ubuntu-latest
+    timeout-minutes: 25
     steps:
-    - uses: actions/checkout@v7
+    - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      with:
+        persist-credentials: false
+    - name: Check versions and isolate Maven storage
+      run: |
+        python3 scripts/check-ci-version.py --ref "$GITHUB_REF"
+        echo "MAVEN_OPTS=-Dmaven.repo.local=$RUNNER_TEMP/m2" >> "$GITHUB_ENV"
     - name: Check JSP and Jakarta source parity
       run: python3 scripts/check-taglib-parity.py
     - name: Set up JDK 17
-      uses: actions/setup-java@v6
+      uses: actions/setup-java@de7274f081f381c8f8158605e0321c36c376e2e6 # v6.0.1
       with:
         java-version: '17'
         distribution: 'temurin'
-        cache: maven
-    - name: Check jakarta-test uses this build's encoder version
+    - name: Test CI policy boundaries
+      run: python3 -m unittest discover -s scripts/tests
+    - name: Verify clean reactor including the required Docker/browser test
+      run: mvn -B -ntp clean verify -PtestJakarta 2>&1 | tee build.log
+    - name: Confirm the Jakarta application contains this reactor's exact JAR
       run: |
-        evaluate() {
-          mvn -B -ntp -q "$@" org.apache.maven.plugins:maven-help-plugin:3.5.2:evaluate -DforceStdout
-        }
-        reactor=$(evaluate -N -Dexpression=project.version) || { echo "$reactor"; exit 1; }
-        tested=$(evaluate -f jakarta-test/pom.xml -Dexpression=encoder.version) || { echo "$tested"; exit 1; }
-        if [ "$reactor" != "$tested" ]; then
-          echo "::error file=jakarta-test/pom.xml::encoder.version is '$tested' but the build is '$reactor'. Update jakarta-test/pom.xml when bumping the version."
-          exit 1
-        fi
-        echo "jakarta-test tests encoder-jakarta-jsp $tested from this build"
-    - name: Test clean reactor compilation
-      run: mvn -B -ntp clean test-compile
-    - name: Run build
-      run: mvn -B -ntp install -PtestJakarta
+        python3 - <<'PY'
+        from pathlib import Path
+        from zipfile import ZipFile
+        jars = [p for p in Path('jakarta/target').glob('encoder-jakarta-jsp-*.jar')
+                if not p.name.endswith(('-sources.jar', '-javadoc.jar'))]
+        assert len(jars) == 1, jars
+        jar = jars[0]
+        with ZipFile('jakarta-test/target/jakarta-test.war') as war:
+            assert war.read('WEB-INF/lib/' + jar.name) == jar.read_bytes()
+        print('Jakarta WAR contains the exact reactor JAR:', jar.name)
+        PY
+    - name: Preserve build and browser diagnostics
+      if: always()
+      uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+      with:
+        name: reactor-browser-diagnostics
+        path: |
+          build.log
+          **/target/surefire-reports/
+          **/target/failsafe-reports/
 
   esapi-compatibility:
     name: ESAPI ${{ matrix.esapi-version }}
     runs-on: ubuntu-latest
+    timeout-minutes: 25
     strategy:
       fail-fast: false
       matrix:
@@ -57,12 +85,32 @@ jobs:
           - '2.6.2.0'
           - '2.7.0.0'
     steps:
-    - uses: actions/checkout@v7
+    - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      with:
+        persist-credentials: false
+    - name: Check versions and isolate Maven storage
+      run: |
+        python3 scripts/check-ci-version.py --ref "$GITHUB_REF"
+        echo "MAVEN_OPTS=-Dmaven.repo.local=$RUNNER_TEMP/m2" >> "$GITHUB_ENV"
     - name: Set up JDK 17
-      uses: actions/setup-java@v6
+      uses: actions/setup-java@de7274f081f381c8f8158605e0321c36c376e2e6 # v6.0.1
       with:
         java-version: '17'
         distribution: 'temurin'
-        cache: maven
     - name: Test ESAPI compatibility
       run: mvn -B -ntp -pl esapi -am verify -Desapi.version=${{ matrix.esapi-version }}
+
+  gate:
+    name: Java CI gate
+    if: ${{ always() }}
+    needs: [build, esapi-compatibility]
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Require every build, browser and ESAPI matrix result
+        env:
+          NEEDS: ${{ toJSON(needs) }}
+        run: python3 scripts/check-ci-gate.py build esapi-compatibility

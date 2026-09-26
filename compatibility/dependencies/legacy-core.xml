@@ -1,0 +1,3 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"><modelVersion>4.0.0</modelVersion><groupId>org.owasp.encoder.tests</groupId><artifactId>consumer-legacy-core</artifactId><version>1</version><dependencies>
+    <dependency><groupId>org.owasp.encoder</groupId><artifactId>encoder</artifactId><version>1.4.0</version></dependency>
+</dependencies></project>

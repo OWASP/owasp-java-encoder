@@ -131,6 +131,9 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <!-- Each module sets its published Bundle-SymbolicName explicitly (#137). -->
+        <osgi.symbolic.name/>
+        <osgi.import.package>*</osgi.import.package>
     </properties>
 
     <dependencyManagement>
@@ -356,6 +359,11 @@
                                 <!-- This legacy property controls only the manifest fallback name, not the explicit JPMS descriptor. -->
                                 <Automatic-Module-Name>${jigsaw.module.name}</Automatic-Module-Name>
                                 <Export-Package>!META-INF.versions.*,*</Export-Package>
+                                <!-- Frozen published identity; do not derive it from the artifactId. -->
+                                <Bundle-SymbolicName>${osgi.symbolic.name}</Bundle-SymbolicName>
+                                <!-- Dependencies are excluded from bnd's analysis, so version ranges
+                                     for imported packages must be stated explicitly per module. -->
+                                <Import-Package>${osgi.import.package}</Import-Package>
                             </instructions>
                         </configuration>
                     </execution>
