@@ -59,13 +59,29 @@ import org.owasp.esapi.reference.DefaultEncoder;
  * <p>The adapter's {@code encodeForCSS} encodes only quoted CSS strings, and
  * {@code encodeForJavaScript} encodes single- or double-quoted JavaScript
  * strings and literal text in ordinary (untagged) template literals, not JSON,
- * tagged templates (including {@code String.raw}), or script URLs. It escapes
+ * tagged templates (including {@code String.raw}), template expression bodies,
+ * or script URLs. It escapes
  * DEL/C1 controls and unpaired UTF-16 surrogates while preserving valid pairs.
- * Its {@code encodeForURL} delegates to deprecated {@link Encode#forUri(String)}:
- * it preserves URI delimiters such as {@code &amp; = / ? #} and therefore is
- * not a URL-component or form encoder. For an inserted component, use
- * {@link Encode#forUriComponent(String)}. Validate complete URLs and their
- * schemes, then encode for the enclosing output context.</p>
+ * Neither method encodes arbitrary unquoted CSS or JavaScript code.</p>
+ *
+ * <p>{@code encodeForHTMLAttribute} encodes quoted HTML text attributes using
+ * {@link Encode#forHtmlAttribute(String)}. It does not make event-handler code
+ * or an untrusted URL safe. For a URL-valued attribute, validate the complete
+ * URL against application rules, including allowed schemes, then encode it for
+ * the enclosing HTML attribute.</p>
+ *
+ * <p>Starting with 1.5, {@code encodeForURL} encodes one raw URL component using
+ * {@link Encode#forUriComponent(String)}. It percent-encodes UTF-8 bytes,
+ * including delimiters such as {@code & = / ? # +}, and uses {@code %20}
+ * for spaces. This intentionally differs from ESAPI's reference form encoding,
+ * which uses {@code +} for spaces and a configurable character encoding. The
+ * adapter retains its historical {@code "null"} result for {@code null} input
+ * and replaces unpaired UTF-16 surrogates with {@code -}. Already percent-encoded
+ * input is encoded again. It neither validates a complete URL nor reads ESAPI
+ * configuration. Assemble the URL from trusted structure and encoded raw
+ * components, validate it for its intended use, then encode for the enclosing
+ * output context. For form encoding specifically, use
+ * {@link java.net.URLEncoder} with an explicit character encoding.</p>
  *
  * <p>The following methods delegate to ESAPI. Most are outside the scope of
  * contextual output encoding; JSON encoding retains the reference behavior
@@ -210,7 +226,11 @@ public final class ESAPIEncoder {
             return reference().decodeForHTML(s);
         }
 
-        /** {@inheritDoc} */
+        /**
+         * Encodes a quoted HTML text attribute, not an unquoted attribute,
+         * event-handler program, or unvalidated URL. See
+         * {@link Encode#forHtmlAttribute(String)} for the enclosing-context rules.
+         */
         @Override
         public String encodeForHTMLAttribute(String s) {
             return Encode.forHtmlAttribute(s);
@@ -219,7 +239,8 @@ public final class ESAPIEncoder {
         /**
          * Encodes a single- or double-quoted JavaScript string or literal text in an
          * ordinary (untagged) template literal using {@link Encode#forJavaScript(String)}.
-         * Not for JSON, tagged templates (including {@code String.raw}), or script URLs.
+         * Not for JSON, tagged templates (including {@code String.raw}), template
+         * expression bodies, unquoted code, or script URLs.
          * DEL/C1 controls and unpaired UTF-16 surrogates are escaped; valid pairs
          * remain unescaped.
          */
@@ -283,13 +304,15 @@ public final class ESAPIEncoder {
         }
 
         /**
-         * Encodes a complete URI using deprecated {@link Encode#forUri(String)}.
-         * Preserves delimiters such as {@code &amp; = / ? #}; not a component
-         * or form encoder. The caller must validate the URI and its scheme.
+         * Encodes a raw URL component as UTF-8 with spaces as {@code %20}, using
+         * {@link Encode#forUriComponent(String)}. Retains the adapter's
+         * {@code "null"} result for null and {@code -} for unpaired surrogates.
+         * The checked exception remains in the ESAPI interface contract;
+         * this implementation does not depend on a configurable charset.
          */
         @Override
         public String encodeForURL(String s) throws EncodingException {
-            return Encode.forUri(s);
+            return Encode.forUriComponent(s);
         }
 
         /** {@inheritDoc} */

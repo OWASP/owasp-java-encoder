@@ -162,7 +162,9 @@ always encodes `%`, so an already percent-encoded URI is double-encoded.
 
 - For an entire untrusted URL, parse it with `java.net.URI`, allow-list its scheme
   (for example `http` and `https`, rejecting a missing scheme unless relative URLs are
-  intended), and then encode the whole value for the enclosing context:
+  intended), enforce application-specific restrictions on its destination and
+  path, and then encode the whole value for the enclosing context. Parsing alone
+  does not establish safety:
 
   ```jsp
   <a href="<%=Encode.forHtmlAttribute(validatedUri.toString())%>">
@@ -170,6 +172,12 @@ always encodes `%`, so an already percent-encoded URI is double-encoded.
 
 `forUri` is retained for compatibility in all 1.x releases. Whether 2.0 removes it is
 tracked in [#142](https://github.com/OWASP/owasp-java-encoder/issues/142).
+
+The ESAPI adapter's `encodeForURL` changes separately in unreleased 1.5: it now
+uses `forUriComponent`, escaping URL delimiters while retaining `%20` for spaces.
+Pass raw component data, not a complete or already encoded URL. See the
+[adapter migration and context contracts](esapi/README.md#url-encoding-migration-in-15-unreleased)
+for differences from earlier adapter releases and ESAPI's reference form encoder.
 
 Development
 -----------
@@ -193,6 +201,7 @@ News
 ### Unreleased - 1.5.0
 Development builds use `1.5.0-SNAPSHOT`; this is not a published release.
 
+* fix: the ESAPI adapter's `encodeForURL` now encodes individual URL components with UTF-8, including reserved delimiters and literal `+`, instead of preserving whole-URI delimiters. Spaces remain `%20`, null remains the string `"null"`, and unpaired surrogates remain `-`. See the [migration guide](esapi/README.md#url-encoding-migration-in-15-unreleased) for output changes, form-encoding differences, and the retained quoted HTML/CSS/JavaScript contracts [#100](https://github.com/OWASP/owasp-java-encoder/issues/100).
 * feat: all four `forJavaScript*` methods encode dollar sign (`$`) as `\x24`, backtick as `\x60`, and opening brace (`{`) as `\x7b` [#129](https://github.com/OWASP/owasp-java-encoder/issues/129). Escaping `{` prevents input after a trusted `$` from completing `${...}`. Encoded output now supports literal text in ordinary (untagged) template literals as well as single- and double-quoted strings. This changes the encoded output while preserving its decoded JavaScript string value. Tagged templates (including `String.raw`), `${...}` expression bodies, JSON, and script URLs are unsupported; each method's HTML context restrictions still apply.
 * fix: all four `forJavaScript*` methods escape unpaired UTF-16 surrogates as `\uXXXX`, preserving their JavaScript string values through UTF-8 serialization [#135](https://github.com/OWASP/owasp-java-encoder/issues/135), and escape DEL/C1 controls (U+007F to U+009F) as `\xNN` [#163](https://github.com/OWASP/owasp-java-encoder/issues/163). Valid surrogate pairs and other non-ASCII text remain unescaped except U+2028/U+2029. These are output-fidelity changes; NEL was already ordinary JavaScript string data.
 * feat: add `Encode.forJson` String/Writer methods, the `json` encoder context, and `forJson` tags and EL functions in both JSP and Jakarta tag libraries [#145](https://github.com/OWASP/owasp-java-encoder/issues/145). The caller supplies double quotes. Output uses RFC 8259 string escapes and also escapes HTML script delimiters. Java `null` becomes the text `null` (the JSON string `"null"` when quoted); unpaired surrogates use Unicode escapes and may not interoperate with every JSON consumer. Prefer a serializer for complete JSON documents. The ESAPI adapter retains its existing JSON delegation and null behavior.

@@ -86,7 +86,9 @@ public final class ESAPIInitializationProbe {
         assertEquals(Encode.forJavaScript(input), encoder.encodeForJavaScript(input));
         assertEquals(Encode.forXml(input), encoder.encodeForXML(input));
         assertEquals(Encode.forXmlAttribute(input), encoder.encodeForXMLAttribute(input));
-        assertEquals(Encode.forUri(input), encoder.encodeForURL(input));
+        assertEquals("%3C%3E%26%22%27%20%2F%CE%A9", encoder.encodeForURL(input));
+        assertEquals("null", encoder.encodeForURL(null));
+        assertEquals("-", encoder.encodeForURL("\ud800"));
     }
 
     private static void assertSingletonSerialization(Encoder encoder) throws Exception {

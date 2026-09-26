@@ -71,6 +71,13 @@
             <artifactId>esapi</artifactId>
             <version>${esapi.version}</version>
         </dependency>
+        <!-- Independently parse the adapter's quoted HTML attribute output. -->
+        <dependency>
+            <groupId>org.jsoup</groupId>
+            <artifactId>jsoup</artifactId>
+            <version>1.23.2</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <build>
