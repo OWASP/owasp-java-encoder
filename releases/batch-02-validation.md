@@ -41,7 +41,9 @@ build, three CodeQL analyses and both advisory build probes:
 - [CodeQL](https://github.com/OWASP/owasp-java-encoder/actions/runs/36221392642)
 
 CodeQL's Java, Actions and Python analyses all uploaded reports with zero
-findings. The browser build took 2m39s versus the 3m14s baseline; packaged
+findings. The final provenance check replaced CodeQL's annotated tag-object ID
+with its dereferenced commit SHA, preserving the reviewed release source. Final
+head check evidence is recorded in #169. The browser build took 2m39s versus the 3m14s baseline; packaged
 preparation took 1m52s versus 1m25s; Java 8 tests took 1m13s versus 1m27s.
 These are single-run observations, not a benchmark. See the baseline cache
 inventory and preserved coverage in [CI_SECURITY.md](../.github/CI_SECURITY.md).
