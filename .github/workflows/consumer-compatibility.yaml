@@ -1,0 +1,151 @@
+name: Packaged consumer compatibility
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  prepare:
+    name: Build and inspect packaged artifacts (JDK 17)
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-java@v6
+        with:
+          distribution: temurin
+          java-version: '17'
+          cache: maven
+      - name: Verify libraries, Java 8 API signatures, and public API compatibility
+        run: mvn -B -ntp clean verify 2>&1 | tee build.log
+      - name: Prepare isolated packaged consumers
+        run: python3 compatibility/consumers.py prepare 2>&1 | tee prepare.log
+      - name: Verify artifact guards reject broken packages
+        run: python3 -m unittest discover -s compatibility/tests 2>&1 | tee guards.log
+      - uses: actions/upload-artifact@v4
+        with:
+          name: packaged-consumers
+          path: target/compatibility
+          if-no-files-found: error
+      - name: Preserve build diagnostics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: consumer-build-diagnostics
+          path: |
+            *.log
+            **/target/surefire-reports/
+            **/target/failsafe-reports/
+            **/target/japicmp/
+
+  runtime:
+    name: Packaged consumers on Java ${{ matrix.java }}
+    needs: prepare
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        java: ['8', '11', '17', '21', '25']
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-java@v6
+        with:
+          distribution: temurin
+          java-version: ${{ matrix.java }}
+      - uses: actions/download-artifact@v4
+        with:
+          name: packaged-consumers
+          path: target/compatibility
+      # No Maven, compilation, reactor classes, or test dependencies in this job.
+      - name: Execute original packaged JARs
+        run: python3 compatibility/consumers.py run --runtime ${{ matrix.java }} 2>&1 | tee runtime.log
+      - name: Preserve runtime diagnostics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: consumer-java-${{ matrix.java }}-diagnostics
+          path: runtime.log
+
+  java8-unit-tests:
+    name: Core, JSP, and ESAPI unit tests on Java 8
+    needs: prepare
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-java@v6
+        with:
+          distribution: temurin
+          java-version: |
+            8
+            17
+          cache: maven
+      - name: Build with JDK 17
+        run: mvn -B -ntp -DskipTests install -pl core,jsp,esapi -am 2>&1 | tee build.log
+      - name: Run unit tests and collect coverage with Java 8
+        run: mvn -B -ntp -pl core,jsp,esapi jacoco:prepare-agent@prepare-agent surefire:test -Djvm="$JAVA_HOME_8_X64/bin/java" 2>&1 | tee java8-tests.log
+      - name: Confirm Java 8 execution and coverage in every tested module
+        run: |
+          for module in core jsp esapi; do
+            grep -q 'name="java.specification.version" value="1.8"' "$module"/target/surefire-reports/TEST-*.xml || {
+              echo "::error::Missing Java 8 Surefire report for $module"
+              exit 1
+            }
+            test -s "$module/target/jacoco.exec" || {
+              echo "::error::Missing Java 8 coverage for $module"
+              exit 1
+            }
+          done
+      - name: Preserve Java 8 unit-test diagnostics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: consumer-java-8-unit-test-diagnostics
+          path: |
+            build.log
+            java8-tests.log
+            core/target/surefire-reports/
+            jsp/target/surefire-reports/
+            esapi/target/surefire-reports/
+            core/target/jacoco.exec
+            jsp/target/jacoco.exec
+            esapi/target/jacoco.exec
+
+  forward-build:
+    name: Advisory build on JDK ${{ matrix.java }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    continue-on-error: true
+    strategy:
+      fail-fast: false
+      matrix:
+        java: ['21', '25']
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-java@v6
+        with:
+          distribution: temurin
+          java-version: ${{ matrix.java }}
+          cache: maven
+      - name: Verify libraries on a newer build JDK
+        run: mvn -B -ntp clean verify 2>&1 | tee build.log
+      - name: Preserve build diagnostics including compiler warnings
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: advisory-build-${{ matrix.java }}-diagnostics
+          path: |
+            build.log
+            **/target/surefire-reports/
+            **/target/failsafe-reports/
+            **/target/japicmp/
