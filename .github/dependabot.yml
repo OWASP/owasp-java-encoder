@@ -1,0 +1,38 @@
+version: 2
+updates:
+  - package-ecosystem: maven
+    directories:
+      - /
+      - /core
+      - /jsp
+      - /jakarta
+      - /esapi
+      - /jakarta-test
+    schedule:
+      interval: weekly
+      day: monday
+      time: '09:00'
+      timezone: Etc/UTC
+    open-pull-requests-limit: 5
+    groups:
+      maven-dependencies:
+        applies-to: version-updates
+        patterns: ['*']
+      maven-security:
+        applies-to: security-updates
+        patterns: ['*']
+    # The Felix 5.6.12 fixture is the intentional OSGi R6/Java 8 baseline.
+    # Review alerts by execution scope; never dismiss or upgrade it blindly.
+    ignore:
+      - dependency-name: org.apache.felix:org.apache.felix.framework
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+      time: '09:00'
+      timezone: Etc/UTC
+    open-pull-requests-limit: 3
+    groups:
+      actions:
+        patterns: ['*']
