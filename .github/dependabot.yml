@@ -18,6 +18,21 @@ updates:
       maven-dependencies:
         applies-to: version-updates
         patterns: ['*']
+        # These need individual compatibility review, not a mixed version PR.
+        # Group exclusions do not ignore updates or suppress security proposals.
+        # Rationale and revisit conditions: DEPENDENCY_DECISIONS.md.
+        exclude-patterns:
+          - org.apache.felix:maven-bundle-plugin
+          - com.puppycrawl.tools:checkstyle
+          - org.codehaus.plexus:plexus-utils
+          - javax.servlet.jsp:javax.servlet.jsp-api
+          - javax.servlet:javax.servlet-api
+          - javax.el:javax.el-api
+          - jakarta.servlet.jsp:jakarta.servlet.jsp-api
+          - jakarta.servlet:jakarta.servlet-api
+          - jakarta.el:jakarta.el-api
+          - org.apache.tomcat.embed:tomcat-embed-jasper
+          - org.apache.tomcat:tomcat-annotations-api
       maven-security:
         applies-to: security-updates
         patterns: ['*']

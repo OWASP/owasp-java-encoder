@@ -73,6 +73,11 @@ Dependabot checks all library POMs, the parent and optional app weekly, with
 separate Maven and SHA-pinned Actions groups and grouped Maven security updates.
 Normal review and complete CI apply to automated PRs; no automatic merging is
 configured. Review new action source and transitive downloads as well as pins.
+Baseline-sensitive API, JSP-engine and build-plugin dependencies are excluded only
+from the broad Maven **version-update group**, so their proposals receive individual
+review. They remain eligible for updates; the security-update group is unchanged.
+See [dependency decisions](DEPENDENCY_DECISIONS.md) for the current contracts,
+PR dispositions and conditions for reconsideration.
 The nonstandard XML files under `compatibility/dependencies` remain explicit
 manual compatibility fixtures. In particular Felix 5.6.12 is an intentional
 OSGi R6/Java 8 baseline, not a production dependency; the Maven ignore prevents
