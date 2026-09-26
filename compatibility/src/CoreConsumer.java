@@ -41,5 +41,18 @@ public final class CoreConsumer {
         java.io.StringWriter out = new java.io.StringWriter();
         org.owasp.encoder.Encode.forHtml(out, "A&B<");
         Checks.encoded(out.toString());
+        String input = String.join("", java.util.Collections.nCopies(4096, "A&B<"));
+        String expected = String.join("", java.util.Collections.nCopies(4096, "A&amp;B&lt;"));
+        out = new java.io.StringWriter();
+        org.owasp.encoder.Encode.forHtml(out, input);
+        if (!expected.equals(out.toString()) || !expected.equals(org.owasp.encoder.Encode.forHtml(input))) {
+            throw new AssertionError("Buffered HTML encoding");
+        }
+        if (!"A\\x26B".equals(org.owasp.encoder.Encode.forJavaScript("A&B"))) {
+            throw new AssertionError("JavaScript encoding");
+        }
+        if (!"a%20b".equals(org.owasp.encoder.Encode.forUri("a b"))) {
+            throw new AssertionError("URI encoding");
+        }
     }
 }
