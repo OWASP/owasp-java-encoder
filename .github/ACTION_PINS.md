@@ -8,15 +8,16 @@ that runtime tool downloads are made immutable by pinning an action.
 | --- | --- | --- |
 | `actions/checkout` | [v7.0.1](https://github.com/actions/checkout/releases/tag/v7.0.1) | `3d3c42e5aac5ba805825da76410c181273ba90b1` |
 | `actions/setup-java` | [v6.0.1](https://github.com/actions/setup-java/releases/tag/v6.0.1) | `de7274f081f381c8f8158605e0321c36c376e2e6` |
-| `actions/upload-artifact` | [v4.6.2](https://github.com/actions/upload-artifact/releases/tag/v4.6.2) | `ea165f8d65b6e75b540449e92b4886f43607fa02` |
-| `actions/download-artifact` | [v4.3.0](https://github.com/actions/download-artifact/releases/tag/v4.3.0) | `d3f86a106a0bac45b974a628896c90dbdf5c8093` |
+| `actions/upload-artifact` | [v7.0.1](https://github.com/actions/upload-artifact/releases/tag/v7.0.1) | `043fb46d1a93c77aae656e7c1c64a875d1fc6a0a` |
+| `actions/download-artifact` | [v8.0.1](https://github.com/actions/download-artifact/releases/tag/v8.0.1) | `3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c` |
 | `github/codeql-action` | [v4.38.2](https://github.com/github/codeql-action/releases/tag/v4.38.2) | `2892aa5e19bbd11bc0cff5427e3b750a04d9e3c2` |
 | `advanced-security/maven-dependency-submission-action` | [v6.0.1](https://github.com/advanced-security/maven-dependency-submission-action/releases/tag/v6.0.1) | `a64327a7329c9939cf675e458452febe1894a70c` |
 
 CodeQL uses the `init` and `analyze` subactions at the same commit. No other
-external actions or reusable workflows are referenced. Upload/download stay on
-the existing v4 major versions; upgrading their packaging protocol is separate
-work. All actions are JavaScript actions, not composite actions with hidden
+external actions or reusable workflows are referenced. Upload/download were
+reviewed together for PR #175; the two official lightweight release tags resolve
+directly to the commits above. All actions are JavaScript actions, not composite
+actions with hidden
 `uses` references. Their metadata, entrypoints and relevant credential/download
 paths were reviewed, along with the release changes.
 
@@ -31,8 +32,19 @@ pin. Verify the object's type and follow tag targets until it is a commit
   service when absent from the hosted toolcache and verifies the distribution.
   Dependency caching is disabled. JDK version lines are intentionally updated
   within their supported major versions; a commit pin does not pin the JDK bytes.
-- Artifact actions use bundled clients and GitHub's artifact service. Download
-  is restricted to the same workflow run; no privileged cross-run reuse occurs.
+- Artifact actions use bundled clients and GitHub's artifact service. Both run on
+  Node.js 24 and require a runner supporting that runtime (2.327.1+); this project
+  uses current GitHub-hosted runners, including in Java 8 jobs. The action runtime
+  does not change the library JVM baseline. Upload 7 defaults to ZIP archives;
+  the packaged-consumer upload explicitly retains `archive: true`. The optional
+  direct single-file upload mode is not used. Download 8 extracts those archives
+  with `skip-decompress: false` and explicitly fails a digest mismatch with
+  `digest-mismatch: error`, replacing the old warning behavior. The only download
+  names `packaged-consumers` from the same workflow run; no cross-repository/run
+  token or privileged cross-run reuse is configured. Source, action metadata,
+  packaged client dependency changes and release notes were reviewed together.
+  The full PR runtime matrix verifies the resulting directory layout against
+  original-JAR classpath/JPMS/OSGi consumers before merge.
 - CodeQL runs bundled JavaScript and obtains its corresponding CodeQL tools/query
   bundle. No repository token with content-write permission or custom scanner
   secret is available to the analysis jobs.
