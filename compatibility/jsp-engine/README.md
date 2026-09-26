@@ -1,6 +1,6 @@
 # Packaged taglibs through real JSP engines
 
-Normal JDK 17 `mvn clean verify` runs this Docker-free fixture after each adapter
+Normal JDK 17 `./mvnw clean verify` runs this Docker-free fixture after each adapter
 has been packaged. It deploys only the packaged core and adapter JARs into a
 loopback-only temporary web application. Jasper discovers their actual TLDs,
 compiles generated JSPs and serves HTTP responses. No install is necessary.
@@ -46,7 +46,7 @@ scriptlet passing Java null directly to the tag's String setter.
 Every tag must also reject a nonempty body and an omitted required value at JSP
 translation time. A generic HTTP 500 does not suffice: the response must identify
 a Jasper exception and the expected constraint. Generated sources and engine
-work directories remain under `target` for diagnosis; `mvn clean` removes them.
+work directories remain under `target` for diagnosis; `./mvnw clean` removes them.
 
 This fixture proves binding, compilation, coercion and emitted bytes. It does
 not prove that an arbitrary use of those bytes is safe in a browser context.

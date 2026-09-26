@@ -94,13 +94,13 @@ If a future javac removes `--release 8`, a runtime baseline change requires a
 future-major-version decision; it does not change the 1.x baseline. Simply run:
 
 ```shell
-mvn package
+./mvnw verify
 ```
 
 To validate that the Jakarta JSP tags and EL functions work correctly, run the integration test:
 
 ```shell
-mvn verify -PtestJakarta
+./mvnw verify -PtestJakarta
 ```
 
 The integration test requires a running Docker-compatible container runtime.
@@ -208,7 +208,7 @@ Development
 The OWASP Java Encoder project is a multi-module Maven project:
 
 ```bash
-$ mvn package
+$ ./mvnw verify
 ```
 
 See [RELEASING.md](RELEASING.md) for signing, Maven Central publication, and release verification.
@@ -291,3 +291,5 @@ We're happy to announce that version 1.1.1 has been released. Along with an impo
 
 ### 2013-02-14 - Version 1.1 released
 We're happy to announce that version 1.1 has been released. Along with a few minor encoding enhancements, we improved performance, and added a JSP tag and function library.
+
+Build policy, wrapper provenance, source checks, and coverage are documented in [BUILDING.md](BUILDING.md). The migrated [Java/JSP examples](docs/usage.md) preserve the former Maven Site usage guide.

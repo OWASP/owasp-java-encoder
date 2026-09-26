@@ -55,6 +55,8 @@
     </description>
 
     <properties>
+        <coverage.line.minimum>0.964</coverage.line.minimum>
+        <coverage.branch.minimum>1.000</coverage.branch.minimum>
         <!-- Override with -Desapi.version to verify another supported ESAPI release. -->
         <esapi.version>2.7.0.0</esapi.version>
         <jigsaw.module.name>org.owasp.encoder.esapi</jigsaw.module.name>
@@ -91,24 +93,6 @@
 
     <build>
         <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-enforcer-plugin</artifactId>
-                <version>3.6.3</version>
-                <executions>
-                    <execution>
-                        <id>enforce-esapi-dependency-convergence</id>
-                        <goals>
-                            <goal>enforce</goal>
-                        </goals>
-                        <configuration>
-                            <rules>
-                                <dependencyConvergence/>
-                            </rules>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>

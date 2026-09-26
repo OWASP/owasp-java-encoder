@@ -42,7 +42,7 @@ jobs:
     - name: Test CI policy boundaries
       run: python3 -m unittest discover -s scripts/tests
     - name: Verify clean reactor including the required Docker/browser test
-      run: mvn -B -ntp clean verify -PtestJakarta 2>&1 | tee build.log
+      run: ./mvnw -B -ntp clean verify -PtestJakarta 2>&1 | tee build.log
     - name: Confirm the Jakarta application contains this reactor's exact JAR
       run: |
         python3 - <<'PY'
@@ -66,6 +66,8 @@ jobs:
           **/target/surefire-reports/
           **/target/failsafe-reports/
           **/target/jsp-engine/
+          **/target/site/jacoco/
+          **/target/checkstyle-result.xml
           jakarta-test/target/packaged-war.log
 
   esapi-compatibility:
@@ -100,7 +102,7 @@ jobs:
         java-version: '17'
         distribution: 'temurin'
     - name: Test ESAPI compatibility
-      run: mvn -B -ntp -pl esapi -am verify -Desapi.version=${{ matrix.esapi-version }}
+      run: ./mvnw -B -ntp -pl esapi -am verify -Desapi.version=${{ matrix.esapi-version }}
 
   gate:
     name: Java CI gate

@@ -74,25 +74,12 @@
         </license>
     </licenses>
 
-    <parent>
-        <groupId>org.sonatype.oss</groupId>
-        <artifactId>oss-parent</artifactId>
-        <version>9</version>
-    </parent>
-
     <scm>
         <developerConnection>scm:git:git@github.com:owasp/owasp-java-encoder.git</developerConnection>
         <connection>scm:git:git@github.com:owasp/owasp-java-encoder.git</connection>
         <url>https://github.com/owasp/owasp-java-encoder</url>
         <tag>HEAD</tag>
     </scm>
-    <distributionManagement>
-        <site>
-            <id>gh-pages</id>
-            <name>gh-pages</name>
-            <url>https://owasp.github.io/owasp-java-encoder/</url>
-        </site>
-    </distributionManagement>
 
     <issueManagement>
         <system>github</system>
@@ -129,10 +116,17 @@
     </developers>
 
     <properties>
+        <!-- Reviewed source timestamp; update with the release commit, not wall-clock build time. -->
+        <project.build.outputTimestamp>2026-09-26T00:00:00Z</project.build.outputTimestamp>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <!-- Each module sets its published Bundle-SymbolicName explicitly (#137). -->
         <osgi.symbolic.name/>
+        <!-- Empty defaults make -Djacoco.skip and caller JVM arguments safe. -->
+        <surefireArgLine/>
+        <argLine/>
+        <coverage.line.minimum>0.990</coverage.line.minimum>
+        <coverage.branch.minimum>0.985</coverage.branch.minimum>
         <osgi.import.package>*</osgi.import.package>
     </properties>
 
@@ -155,6 +149,58 @@
     <build>
         <pluginManagement>
             <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-clean-plugin</artifactId>
+                    <version>3.5.0</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-resources-plugin</artifactId>
+                    <version>3.5.0</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-install-plugin</artifactId>
+                    <version>3.2.0</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-deploy-plugin</artifactId>
+                    <version>3.2.0</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-enforcer-plugin</artifactId>
+                    <version>3.6.3</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-dependency-plugin</artifactId>
+                    <version>3.11.0</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-help-plugin</artifactId>
+                    <version>3.5.2</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-wrapper-plugin</artifactId>
+                    <version>3.3.4</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-checkstyle-plugin</artifactId>
+                    <version>3.6.0</version>
+                </plugin>
+                <!-- Maven's implicit site lifecycle is pinned and disabled, never published. -->
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-site-plugin</artifactId>
+                    <version>3.22.0</version>
+                    <configuration><skip>true</skip><skipDeploy>true</skipDeploy></configuration>
+                </plugin>
                 <!-- Forked JSP engines use plugin-only dependencies, never the library test classpath. -->
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
@@ -227,47 +273,8 @@
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-surefire-report-plugin</artifactId>
-                    <version>3.6.0</version>
-                </plugin>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-gpg-plugin</artifactId>
-                    <version>1.6</version>
-                </plugin>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-site-plugin</artifactId>
-                    <!-- upgrading beyond 3.4 may break the reflow skin -->
-                    <version>3.4</version>
-                    <dependencies>
-                        <dependency>
-                            <groupId>lt.velykis.maven.skins</groupId>
-                            <artifactId>reflow-velocity-tools</artifactId>
-                            <version>1.1.1</version>
-                        </dependency>
-                        <!-- Reflow skin requires Velocity >= 1.7  -->
-                        <dependency>
-                            <groupId>org.apache.velocity</groupId>
-                            <artifactId>velocity</artifactId>
-                            <version>1.7</version>
-                        </dependency>
-                        <dependency>
-                            <groupId>org.apache.maven.doxia</groupId>
-                            <artifactId>doxia-module-markdown</artifactId>
-                            <version>1.6</version>
-                        </dependency>
-                    </dependencies>
-                </plugin>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-project-info-reports-plugin</artifactId>
-                    <version>2.9</version>
-                </plugin>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-pmd-plugin</artifactId>
-                    <version>3.6</version>
+                    <version>3.2.8</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.felix</groupId>
@@ -277,27 +284,71 @@
                 <plugin>
                     <groupId>org.codehaus.mojo</groupId>
                     <artifactId>versions-maven-plugin</artifactId>
-                    <version>2.3</version>
-                </plugin>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-jxr-plugin</artifactId>
-                    <version>2.5</version>
-                </plugin>
-                <plugin>
-                    <groupId>org.codehaus.mojo</groupId>
-                    <artifactId>findbugs-maven-plugin</artifactId>
-                    <version>3.0.4</version>
+                    <version>2.22.0</version>
                 </plugin>
                 <plugin>
                     <groupId>org.sonatype.central</groupId>
                     <artifactId>central-publishing-maven-plugin</artifactId>
-                    <version>0.9.0</version>
+                    <version>0.11.0</version>
                 </plugin>
             </plugins>
         </pluginManagement>
 
         <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-enforcer-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>build-policy</id>
+                        <phase>validate</phase>
+                        <goals><goal>enforce</goal></goals>
+                        <configuration>
+                            <rules>
+                                <requireMavenVersion><version>[3.9.16,)</version></requireMavenVersion>
+                                <requireJavaVersion><version>[17,)</version></requireJavaVersion>
+                                <banDuplicatePomDependencyVersions/>
+                                <dependencyConvergence/>
+                                <requireUpperBoundDeps/>
+                                <requirePluginVersions>
+                                    <phases>clean,verify,install,deploy</phases>
+                                </requirePluginVersions>
+                            </rules>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-checkstyle-plugin</artifactId>
+                <dependencies>
+                    <dependency>
+                        <groupId>com.puppycrawl.tools</groupId>
+                        <artifactId>checkstyle</artifactId>
+                        <!-- Last Java 17-compatible line; 13+ requires Java 21. -->
+                        <version>12.3.1</version>
+                    </dependency>
+                </dependencies>
+                <configuration>
+                    <configLocation>${maven.multiModuleProjectDirectory}/src/main/config/checkstyle.xml</configLocation>
+                    <headerLocation>${maven.multiModuleProjectDirectory}/src/main/config/checkstyle-header.txt</headerLocation>
+                    <!-- Checkstyle 12's parser cannot parse module declarations; packaged JPMS guards cover them. -->
+                    <excludes>module-info.java</excludes>
+                    <includeResources>false</includeResources>
+                    <includeTestResources>false</includeTestResources>
+                    <sourceDirectories>
+                        <sourceDirectory>${project.basedir}/src/main/java</sourceDirectory>
+                        <sourceDirectory>${project.basedir}/src/main/java9</sourceDirectory>
+                    </sourceDirectories>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>main-source-policy</id>
+                        <phase>validate</phase>
+                        <goals><goal>check</goal></goals>
+                    </execution>
+                </executions>
+            </plugin>
             <!-- Check the library API against the last release available in Central. -->
             <plugin>
                 <groupId>com.github.siom79.japicmp</groupId>
@@ -387,6 +438,8 @@
                         <configuration>
                             <excludeDependencies>true</excludeDependencies>
                             <instructions>
+                                <_reproducible>true</_reproducible>
+                                <_noextraheaders>true</_noextraheaders>
                                 <_noee>true</_noee>
                                 <!-- OSGi frameworks before R7 reject java.* imports. -->
                                 <_noimportjava>true</_noimportjava>
@@ -415,6 +468,23 @@
                         </goals>
                         <configuration>
                             <propertyName>surefireArgLine</propertyName>
+                            <append>true</append>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>coverage-report</id>
+                        <phase>verify</phase>
+                        <goals><goal>report</goal><goal>check</goal></goals>
+                        <configuration>
+                            <rules>
+                                <rule>
+                                    <element>BUNDLE</element>
+                                    <limits>
+                                        <limit><counter>LINE</counter><value>COVEREDRATIO</value><minimum>${coverage.line.minimum}</minimum></limit>
+                                        <limit><counter>BRANCH</counter><value>COVEREDRATIO</value><minimum>${coverage.branch.minimum}</minimum></limit>
+                                    </limits>
+                                </rule>
+                            </rules>
                         </configuration>
                     </execution>
                 </executions>
@@ -423,7 +493,7 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <configuration>
-                    <argLine>${surefireArgLine}</argLine>
+                    <argLine>@{surefireArgLine} @{argLine}</argLine>
                 </configuration>
             </plugin>
             <plugin>
@@ -490,121 +560,8 @@
                     </execution>
                 </executions>
             </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-site-plugin</artifactId>
-            </plugin>
-            <plugin>
-                <groupId>org.sonatype.central</groupId>
-                <artifactId>central-publishing-maven-plugin</artifactId>
-                <extensions>true</extensions>
-                <configuration>
-                    <publishingServerId>central</publishingServerId>
-                    <autoPublish>false</autoPublish>
-                </configuration>
-            </plugin>
         </plugins>
     </build>
-    <reporting>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-project-info-reports-plugin</artifactId>
-                <reportSets>
-                    <reportSet>
-                        <reports>
-                            <report>index</report>
-                            <report>summary</report>
-                            <report>license</report>
-                            <report>scm</report>
-                            <report>mailing-list</report>
-                            <report>issue-tracking</report>
-                            <report>dependencies</report>
-                            <report>plugin-management</report>
-                            <report>project-team</report>
-                        </reports>
-                    </reportSet>
-                </reportSets>
-            </plugin>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>versions-maven-plugin</artifactId>
-                <reportSets>
-                    <reportSet>
-                        <reports>
-                            <report>dependency-updates-report</report>
-                            <report>plugin-updates-report</report>
-                        </reports>
-                    </reportSet>
-                </reportSets>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-jxr-plugin</artifactId>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-surefire-report-plugin</artifactId>
-                <reportSets>
-                    <reportSet>
-                        <reports>
-                            <report>report-only</report>
-                            <report>failsafe-report-only</report>
-                        </reports>
-                    </reportSet>
-                </reportSets>
-            </plugin>
-            <plugin>
-                <groupId>org.jacoco</groupId>
-                <artifactId>jacoco-maven-plugin</artifactId>
-                <reportSets>
-                    <reportSet>
-                        <reports>
-                            <!-- select non-aggregate reports -->
-                            <report>report</report>
-                        </reports>
-                    </reportSet>
-                </reportSets>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-pmd-plugin</artifactId>
-                <configuration>
-                    <targetJdk>1.8</targetJdk>
-                    <linkXref>true</linkXref>
-                    <sourceEncoding>utf-8</sourceEncoding>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-javadoc-plugin</artifactId>
-                <reportSets>
-                    <reportSet>
-                        <id>default</id>
-                        <reports>
-                            <report>javadoc</report>
-                        </reports>
-                        <configuration>
-                            <source>8</source>
-                            <failOnError>true</failOnError>
-                        </configuration>
-                    </reportSet>
-                </reportSets>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-checkstyle-plugin</artifactId>
-                <configuration>
-                    <configLocation>src/main/config/checkstyle.xml</configLocation>
-                    <headerLocation>src/main/config/checkstyle-header.txt</headerLocation>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>findbugs-maven-plugin</artifactId>
-            </plugin>
-        </plugins>
-    </reporting>
     <profiles>
         <profile>
             <id>sign-artifacts</id>
@@ -618,7 +575,47 @@
                 <plugins>
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-enforcer-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>release-toolchain</id>
+                                <goals><goal>enforce</goal></goals>
+                                <configuration><rules>
+                                    <requireJavaVersion><version>[17.0.20-1]</version></requireJavaVersion>
+                                    <requireReleaseVersion/>
+                                    <requireJavaVendor><includes><include>Eclipse Adoptium</include></includes></requireJavaVendor>
+                                    <requireProperty><property>java.runtime.version</property><regex>17\.0\.20\.1\+1</regex></requireProperty>
+                                    <requireMavenVersion><version>[3.9.16]</version></requireMavenVersion>
+                                </rules></configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.sonatype.central</groupId>
+                        <artifactId>central-publishing-maven-plugin</artifactId>
+                        <extensions>true</extensions>
+                        <!-- Mitigate reviewed upstream publisher dependencies; isolated plugin realm only. -->
+                        <dependencies>
+                            <dependency><groupId>com.fasterxml.jackson.core</groupId><artifactId>jackson-databind</artifactId><version>2.22.3</version></dependency>
+                            <dependency><groupId>com.fasterxml.jackson.core</groupId><artifactId>jackson-core</artifactId><version>2.22.3</version></dependency>
+                            <dependency><groupId>com.fasterxml.jackson.core</groupId><artifactId>jackson-annotations</artifactId><version>2.22</version></dependency>
+                            <dependency><groupId>org.apache.httpcomponents.client5</groupId><artifactId>httpclient5</artifactId><version>5.6.4</version></dependency>
+                            <dependency><groupId>org.apache.httpcomponents.core5</groupId><artifactId>httpcore5</artifactId><version>5.4.4</version></dependency>
+                            <dependency><groupId>org.apache.httpcomponents.core5</groupId><artifactId>httpcore5-h2</artifactId><version>5.4.4</version></dependency>
+                        </dependencies>
+
+                        <configuration>
+                            <publishingServerId>central</publishingServerId>
+                            <autoPublish>false</autoPublish>
+                            <excludeArtifacts><excludeArtifact>jakarta-test</excludeArtifact></excludeArtifacts>
+                        </configuration>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-gpg-plugin</artifactId>
+                        <configuration>
+                            <bestPractices>true</bestPractices>
+                        </configuration>
                         <executions>
                             <execution>
                                 <id>sign-artifacts</id>

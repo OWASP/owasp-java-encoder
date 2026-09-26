@@ -56,6 +56,8 @@
     </description>
 
     <properties>
+        <coverage.line.minimum>1.000</coverage.line.minimum>
+        <coverage.branch.minimum>1.000</coverage.branch.minimum>
         <jigsaw.module.name>org.owasp.encoder.jakarta</jigsaw.module.name>
         <osgi.symbolic.name>org.owasp.encoder.jakarta-jsp</osgi.symbolic.name>
         <!-- The tags call Encode.forJson, added in 1.5. Jakarta Pages 3.x is the

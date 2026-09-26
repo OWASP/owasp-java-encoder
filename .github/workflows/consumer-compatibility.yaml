@@ -37,7 +37,7 @@ jobs:
           distribution: temurin
           java-version: '17'
       - name: Verify libraries, Java 8 API signatures, and public API compatibility
-        run: mvn -B -ntp clean verify 2>&1 | tee build.log
+        run: ./mvnw -B -ntp clean verify 2>&1 | tee build.log
       - name: Prepare isolated packaged consumers
         run: python3 compatibility/consumers.py prepare --repository "$RUNNER_TEMP/m2" 2>&1 | tee prepare.log
       - name: Verify artifact guards reject broken packages
@@ -58,6 +58,7 @@ jobs:
             **/target/failsafe-reports/
             **/target/jsp-engine/
             **/target/japicmp/
+            **/target/site/jacoco/
 
   runtime:
     name: Packaged consumers on Java ${{ matrix.java }}
@@ -114,9 +115,9 @@ jobs:
             8
             17
       - name: Build with JDK 17
-        run: mvn -B -ntp -DskipTests install -pl core,jsp,esapi -am 2>&1 | tee build.log
+        run: ./mvnw -B -ntp -DskipTests install -pl core,jsp,esapi -am 2>&1 | tee build.log
       - name: Run unit tests and collect coverage with Java 8
-        run: mvn -B -ntp -pl core,jsp,esapi jacoco:prepare-agent@prepare-agent surefire:test -Djvm="$JAVA_HOME_8_X64/bin/java" 2>&1 | tee java8-tests.log
+        run: ./mvnw -B -ntp -pl core,jsp,esapi jacoco:prepare-agent@prepare-agent surefire:test jacoco:report -Djvm="$JAVA_HOME_8_X64/bin/java" 2>&1 | tee java8-tests.log
       - name: Confirm Java 8 execution and coverage in every tested module
         run: |
           for module in core jsp esapi; do
@@ -140,6 +141,9 @@ jobs:
             core/target/surefire-reports/
             jsp/target/surefire-reports/
             esapi/target/surefire-reports/
+            core/target/site/jacoco/
+            jsp/target/site/jacoco/
+            esapi/target/site/jacoco/
             core/target/jacoco.exec
             jsp/target/jacoco.exec
             esapi/target/jacoco.exec
@@ -166,7 +170,7 @@ jobs:
           distribution: temurin
           java-version: ${{ matrix.java }}
       - name: Verify libraries on a newer build JDK
-        run: mvn -B -ntp clean verify 2>&1 | tee build.log
+        run: ./mvnw -B -ntp clean verify 2>&1 | tee build.log
       - name: Preserve build diagnostics including compiler warnings
         if: always()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
@@ -178,11 +182,36 @@ jobs:
             **/target/failsafe-reports/
             **/target/jsp-engine/
             **/target/japicmp/
+            **/target/site/jacoco/
+
+  wrapper:
+    name: Maven wrapper on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 10
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-java@de7274f081f381c8f8158605e0321c36c376e2e6 # v6.0.1
+        with:
+          distribution: temurin
+          java-version: '17'
+      - name: Bootstrap Unix wrapper and reject wrong distribution hash
+        if: runner.os != 'Windows'
+        run: python3 scripts/check-wrapper.py
+      - name: Bootstrap Windows wrapper and reject wrong distribution hash
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: python scripts/check-wrapper.py
 
   gate:
     name: Packaged consumer gate
     if: ${{ always() }}
-    needs: [prepare, runtime, java8-unit-tests]
+    needs: [prepare, runtime, java8-unit-tests, wrapper]
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
@@ -192,4 +221,4 @@ jobs:
       - name: Require artifact preparation, every runtime and Java 8 unit tests
         env:
           NEEDS: ${{ toJSON(needs) }}
-        run: python3 scripts/check-ci-gate.py prepare runtime java8-unit-tests
+        run: python3 scripts/check-ci-gate.py prepare runtime java8-unit-tests wrapper
