@@ -44,6 +44,7 @@ import javax.servlet.jsp.JspWriter;
 import javax.servlet.jsp.el.ExpressionEvaluator;
 import javax.servlet.jsp.el.VariableResolver;
 import org.owasp.encoder.tag.ForHtmlTag;
+import org.owasp.encoder.tag.ForJsonTag;
 
 public final class TagConsumer {
     public static void main(String[] args) throws Exception {
@@ -54,6 +55,17 @@ public final class TagConsumer {
         tag.setJspContext(new TestJspContext(writer));
         tag.doTag();
         Checks.encoded(writer.getContentAsString());
+
+        // ForJsonTag calls Encode.forJson, added in 1.5; this proves that linkage.
+        TestJspWriter jsonWriter = new TestJspWriter();
+        ForJsonTag json = new ForJsonTag();
+        json.setValue("</script>'");
+        json.setJspContext(new TestJspContext(jsonWriter));
+        json.doTag();
+        String expected = "\\u003c/script\\u003e'";
+        if (!expected.equals(jsonWriter.getContentAsString())) {
+            throw new AssertionError(jsonWriter.getContentAsString());
+        }
     }
 
     /** Minimal JSP context used by tags that only write to {@link #getOut()}. */

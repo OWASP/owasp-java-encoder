@@ -93,6 +93,31 @@ class ArtifactGuards(unittest.TestCase):
             entries[name] = entries[name].replace(b'<scope>provided</scope>', b'<scope>test</scope>')
         self.rejected('jsp', mutate)
 
+    @staticmethod
+    def header(entries, key, change):
+        """Rewrite one manifest header; bnd folds long lines, so patching bytes is unreliable."""
+        name = 'META-INF/MANIFEST.MF'
+        text = entries[name].decode().replace('\r\n', '\n').replace('\n ', '')
+        lines = [key + ': ' + change(line.split(': ', 1)[1]) if line.startswith(key + ': ') else line
+                 for line in text.split('\n')]
+        entries[name] = '\r\n'.join(lines).encode()
+
+    def test_unversioned_core_import(self):
+        self.rejected('jsp', lambda entries: self.header(
+            entries, 'Import-Package', lambda value: value.replace('org.owasp.encoder;version="[1.5,2)"', 'org.owasp.encoder')))
+
+    def test_lowered_core_floor(self):
+        self.rejected('esapi', lambda entries: self.header(
+            entries, 'Import-Package', lambda value: value.replace('[1.4.1,2)', '[1.4,2)')))
+
+    def test_widened_jakarta_pages_range(self):
+        self.rejected('jakarta', lambda entries: self.header(
+            entries, 'Import-Package', lambda value: value.replace('[3.0,4)', '[3.0,5)')))
+
+    def test_changed_symbolic_name(self):
+        self.rejected('jakarta', lambda entries: self.header(
+            entries, 'Bundle-SymbolicName', lambda value: 'org.owasp.encoder.jakarta'))
+
 
 if __name__ == '__main__':
     unittest.main()

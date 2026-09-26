@@ -26,6 +26,20 @@ API_MODULES = {'core': [], 'jsp': ['javax.servlet.jsp.api', 'javax.el.api', 'jav
 HOST_PACKAGES = {'core': [], 'jsp': ['javax.servlet.jsp', 'javax.servlet.jsp.tagext', 'javax.servlet.jsp.el', 'javax.el'],
                  'jakarta': ['jakarta.servlet.jsp', 'jakarta.servlet.jsp.tagext', 'jakarta.servlet.jsp.el', 'jakarta.el'],
                  'esapi': ['org.owasp.esapi', 'org.owasp.esapi.codecs', 'org.owasp.esapi.errors', 'org.owasp.esapi.reference']}
+# Versions the framework exports for host packages, copied from the Export-Package
+# headers of the API JARs in compatibility/dependencies (ESAPI has no OSGi metadata).
+HOST_VERSIONS = {'javax.servlet.jsp': '2.2.1', 'javax.servlet.jsp.tagext': '2.2.1', 'javax.servlet.jsp.el': '2.2.1',
+                 'javax.el': '2.2.5', 'jakarta.servlet.jsp': '3.0.0.SNAPSHOT', 'jakarta.servlet.jsp.tagext': '3.0.0.SNAPSHOT',
+                 'jakarta.servlet.jsp.el': '3.0.0.SNAPSHOT', 'jakarta.el': '4.0.0'}
+# Published Import-Package version ranges (#137); None means deliberately unversioned.
+# The tags call Encode.forJson (1.5); the ESAPI adapter's floor is the oldest supported core.
+IMPORT_RANGES = {
+    'core': {},
+    'jsp': {'org.owasp.encoder': '[1.5,2)', 'javax.servlet.jsp': '[2.0,3)', 'javax.servlet.jsp.tagext': '[2.0,3)'},
+    'jakarta': {'org.owasp.encoder': '[1.5,2)', 'jakarta.servlet.jsp': '[3.0,4)', 'jakarta.servlet.jsp.tagext': '[3.0,4)'},
+    'esapi': {'org.owasp.encoder': '[1.4.1,2)', 'org.owasp.esapi': None, 'org.owasp.esapi.codecs': None,
+              'org.owasp.esapi.errors': None, 'org.owasp.esapi.reference': None},
+}
 
 
 def run(*args, **kwargs):
@@ -65,9 +79,13 @@ def metadata(kind, jar, core):
     assert [entry.split(';')[0] for entry in exports] == [package], exports
     assert ';version="' + '.'.join(attrs['Bundle-Version'].split('.')[:3]) + '"' in exports[0], exports
     imports = clauses(attrs.get('Import-Package', ''))
-    expected_imports = set(HOST_PACKAGES[kind]) - {'javax.servlet.jsp.el', 'javax.el', 'jakarta.servlet.jsp.el', 'jakarta.el'}
-    if kind != 'core': expected_imports.add('org.owasp.encoder')
-    assert set(x.split(';')[0] for x in imports) == expected_imports, imports
+    actual_ranges = {}
+    for entry in imports:
+        name, *parameters = entry.split(';')
+        versions = [p.split('=', 1)[1].strip('"') for p in parameters if p.startswith('version=')]
+        assert name not in actual_ranges, ('duplicate import', entry)
+        actual_ranges[name] = versions[0] if versions else None
+    assert actual_ranges == IMPORT_RANGES[kind], (kind, imports)
     assert not any(x.startswith('java.') for x in imports), imports
     with zipfile.ZipFile(jar) as archive, zipfile.ZipFile(core) as core_archive:
         names = archive.namelist()
@@ -161,7 +179,7 @@ def prepare(args):
             for entry in source.infolist():
                 if not entry.filename.endswith('module-info.class'):
                     target.writestr(entry, source.read(entry))
-    for kind in ('jsp', 'jakarta', 'esapi', 'osgi-r6', 'osgi-r8'):
+    for kind in ('jsp', 'jakarta', 'esapi', 'osgi-r6', 'osgi-r8', 'legacy-core'):
         run(args.maven, '-B', '-ntp', '-f', ROOT / 'compatibility/dependencies' / (kind + '.xml'),
             '-Dmaven.repo.local=' + str(args.repository.resolve()),
             'org.apache.maven.plugins:maven-dependency-plugin:3.9.0:copy-dependencies',
@@ -225,12 +243,21 @@ def consume(args):
                 run(java, *config, '-Djdk.util.jar.enableMultiRelease=' + str(mode == 'explicit').lower(),
                     '-Dconsumer.module=' + name, '--module-path', path([out / mode / kind] + artifacts + module_deps),
                     '--class-path', path(classpath), '--module', 'consumer.fixture/consumer.' + main)
+        host = ','.join(p + (';version="' + HOST_VERSIONS[p] + '"' if p in HOST_VERSIONS else '')
+                        for p in HOST_PACKAGES[kind])
+        legacy_core = sorted((out / 'dependencies' / 'legacy-core').glob('encoder-*.jar'))
         for framework in ('osgi-r6', 'osgi-r8'):
             framework_jars = sorted((out / 'dependencies' / framework).glob('*.jar'))
             with tempfile.TemporaryDirectory(prefix='encoder-osgi-') as storage:
                 run(java, *config, '-cp', path([out / 'osgi'] + framework_jars + deps), 'consumer.OsgiConsumer',
-                    storage, ','.join(HOST_PACKAGES[kind]), 'consumer.' + main,
+                    storage, host, 'consumer.' + main,
                     *artifacts, out / 'probes' / (kind + '.jar'))
+            if kind != 'core':
+                # A released core older than the adapter's import range must not wire.
+                assert len(legacy_core) == 1, legacy_core
+                with tempfile.TemporaryDirectory(prefix='encoder-osgi-') as storage:
+                    run(java, *config, '-cp', path([out / 'osgi'] + framework_jars + deps), 'consumer.OsgiConsumer',
+                        storage, host, '--expect-unresolved', legacy_core[0], jars[kind])
         print('PASS Java', args.runtime, kind, flush=True)
 
 

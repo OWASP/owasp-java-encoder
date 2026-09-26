@@ -57,6 +57,15 @@
 
     <properties>
         <jigsaw.module.name>org.owasp.encoder.jsp</jigsaw.module.name>
+        <osgi.symbolic.name>org.owasp.encoder.jsp</osgi.symbolic.name>
+        <!-- The tags call Encode.forJson, added in 1.5. SimpleTagSupport and the
+             other tag APIs used here are JSP 2.0; javax.servlet.jsp has no 3.x. -->
+        <osgi.import.package>
+            org.owasp.encoder;version="[1.5,2)",
+            javax.servlet.jsp;version="[2.0,3)",
+            javax.servlet.jsp.tagext;version="[2.0,3)",
+            *
+        </osgi.import.package>
     </properties>
 
     <dependencies>

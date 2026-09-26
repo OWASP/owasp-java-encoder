@@ -137,6 +137,26 @@ The ESAPI adapter's fixed dependency and tested compatibility policy are
 documented in [esapi/README.md](esapi/README.md).
 
 
+OSGi Bundles
+------------
+
+| JAR                 | Bundle-SymbolicName             | Export-Package           | Imports `org.owasp.encoder` | Imports API packages                                        |
+|---------------------|---------------------------------|--------------------------|-----------------------------|-------------------------------------------------------------|
+| encoder             | `org.owasp.encoder`             | `org.owasp.encoder`      | (none)                      | (none)                                                      |
+| encoder-jsp         | `org.owasp.encoder.jsp`         | `org.owasp.encoder.tag`  | `[1.5,2)`                   | `javax.servlet.jsp`, `javax.servlet.jsp.tagext`: `[2.0,3)`   |
+| encoder-jakarta-jsp | `org.owasp.encoder.jakarta-jsp` | `org.owasp.encoder.tag`  | `[1.5,2)`                   | `jakarta.servlet.jsp`, `jakarta.servlet.jsp.tagext`: `[3.0,4)` |
+| encoder-esapi       | `org.owasp.encoder.esapi`       | `org.owasp.encoder.esapi`| `[1.4.1,2)`                 | `org.owasp.esapi.*`: unversioned                            |
+
+The symbolic names are fixed; note that the Jakarta bundle's differs from its
+`Automatic-Module-Name`. Core exports `org.owasp.encoder` at its release version.
+The JSP and Jakarta tags require core 1.5 because they call `Encode.forJson`; the
+ESAPI adapter only calls older methods, so its floor is the oldest supported core,
+the 1.4.1 security release. Jakarta Pages 4 is not in the accepted range until
+compatibility with it has been verified. ESAPI publishes no OSGi metadata: OSGi
+users must wrap ESAPI and its dependencies as bundles themselves. The project's
+tests supply the ESAPI packages from the framework host, which is not a statement
+that upstream ESAPI supports OSGi.
+
 TagLib
 --------------------
 
@@ -206,6 +226,7 @@ Development builds use `1.5.0-SNAPSHOT`; this is not a published release.
 * fix: all four `forJavaScript*` methods escape unpaired UTF-16 surrogates as `\uXXXX`, preserving their JavaScript string values through UTF-8 serialization [#135](https://github.com/OWASP/owasp-java-encoder/issues/135), and escape DEL/C1 controls (U+007F to U+009F) as `\xNN` [#163](https://github.com/OWASP/owasp-java-encoder/issues/163). Valid surrogate pairs and other non-ASCII text remain unescaped except U+2028/U+2029. These are output-fidelity changes; NEL was already ordinary JavaScript string data.
 * feat: add `Encode.forJson` String/Writer methods, the `json` encoder context, and `forJson` tags and EL functions in both JSP and Jakarta tag libraries [#145](https://github.com/OWASP/owasp-java-encoder/issues/145). The caller supplies double quotes. Output uses RFC 8259 string escapes and also escapes HTML script delimiters. Java `null` becomes the text `null` (the JSON string `"null"` when quoted); unpaired surrogates use Unicode escapes and may not interoperate with every JSON consumer. Prefer a serializer for complete JSON documents. The ESAPI adapter retains its existing JSON delegation and null behavior.
 * deprecation: `Encoders.URI` and both `ForUriTag` classes are now deprecated like `Encode.forUri`, whose Javadoc now says what to use instead; the `forUri` TLD descriptions warn about double encoding, the adapter builds show deprecation call sites, and the README has a [forUri migration section](#migrating-from-foruri) [#130](https://github.com/OWASP/owasp-java-encoder/issues/130).
+* fix: the JSP, Jakarta and ESAPI bundles now declare the core versions they need (`[1.5,2)` for the tags, which call `Encode.forJson`; `[1.4.1,2)` for ESAPI) and the JSP API ranges they support, instead of unversioned imports that could wire to an older core and fail when a tag ran. Bundle symbolic names are now declared explicitly and unchanged [#137](https://github.com/OWASP/owasp-java-encoder/issues/137).
 * fix: `forHtmlUnquotedAttribute` now replaces U+0085 (NEL) with a hyphen like the other C1 control characters, instead of emitting `&#133;`, which HTML5 parsers decode as U+2026 [#136](https://github.com/OWASP/owasp-java-encoder/issues/136).
 * fix: the XML 1.1 encoders (`forXml11`, `forXml11Content`, `forXml11Attribute`) now encode U+0085 (NEL) as `&#x85;` and U+2028 (line separator) as `&#x2028;`, so they are not normalized to a line feed [#136](https://github.com/OWASP/owasp-java-encoder/issues/136).
 * maintenance: clarify output-context contracts and expand XML 1.1 tests, fix clean reactor compilation, and remove the obsolete benchmark profile.
