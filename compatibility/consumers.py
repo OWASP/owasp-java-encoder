@@ -147,6 +147,20 @@ def metadata(kind, jar, core):
     print('Metadata passed:', jar.name)
 
 
+def source_metadata(kind, source_jar):
+    """A complete source attachment includes the separate Java 9 descriptor."""
+    with zipfile.ZipFile(source_jar) as archive:
+        names = archive.namelist()
+        assert len(names) == len(set(names)), ('duplicate source entry', source_jar)
+        for source in (ROOT / kind / 'src/main/java').rglob('*.java'):
+            name = source.relative_to(ROOT / kind / 'src/main/java').as_posix()
+            assert archive.read(name) == source.read_bytes(), ('source mismatch', name)
+        assert archive.read('META-INF/versions/9/module-info.java') == (
+            ROOT / kind / 'src/main/java9/module-info.java').read_bytes(), kind
+        assert 'module-info.java' not in names, ('descriptor in Java 8 source root', kind)
+    print('Source attachment passed:', source_jar.name)
+
+
 def prepare(args):
     out = args.directory.resolve()
     if out.exists() and any(out.iterdir()):
@@ -166,6 +180,9 @@ def prepare(args):
         target.parent.mkdir(exist_ok=True)
         shutil.copy2(candidates[0], target)
         jars[kind] = target
+        source_metadata(kind, candidates[0].with_name(candidates[0].stem + '-sources.jar'))
+        with zipfile.ZipFile(candidates[0].with_name(candidates[0].stem + '-javadoc.jar')) as docs:
+            assert 'index.html' in docs.namelist(), ('missing Javadoc index', kind)
     for kind, jar in jars.items(): metadata(kind, jar, jars['core'])
     run('javac', '--release', '9', '-d', out / 'metadata', SOURCE / 'ModuleMetadata.java')
     run('java', '-cp', out / 'metadata', 'consumer.ModuleMetadata', *jars.values())

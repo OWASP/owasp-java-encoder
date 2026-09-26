@@ -126,3 +126,9 @@ reports, preparation output, and each runtime's output even when a step fails.
 The Docker-free [Jasper engine fixture](jsp-engine/README.md) also runs in normal
 `verify`: it compiles and serves both packaged TLD surfaces on maintained javax
 and Jakarta engines, with exact-byte and translation-rejection assertions.
+
+Preparation also verifies each source attachment against the main sources and
+requires its Java 9 descriptor at `META-INF/versions/9/module-info.java`, plus a
+Javadoc index in every documentation attachment. Descriptor sources are added
+only after compilation/resource copying; Java 8 compiler inputs and the binary
+multi-release layout remain unchanged.

@@ -1,0 +1,11 @@
+# Normalize repository text while preserving binary artifacts and fixtures.
+* text=auto eol=lf
+*.bat text eol=crlf
+*.cmd text eol=crlf
+*.gif binary
+*.ico binary
+*.jar binary
+*.jpg binary
+*.pdf binary
+*.png binary
+*.zip binary
