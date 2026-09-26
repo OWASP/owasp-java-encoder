@@ -199,7 +199,7 @@ def prepare(args):
     for kind in ('jsp', 'jakarta', 'esapi', 'osgi-r6', 'osgi-r8', 'legacy-core'):
         run(args.maven, '-B', '-ntp', '-f', ROOT / 'compatibility/dependencies' / (kind + '.xml'),
             '-Dmaven.repo.local=' + str(args.repository.resolve()),
-            'org.apache.maven.plugins:maven-dependency-plugin:3.9.0:copy-dependencies',
+            'org.apache.maven.plugins:maven-dependency-plugin:3.11.0:copy-dependencies',
             '-DincludeScope=runtime', '-DoutputDirectory=' + str(out / 'dependencies' / kind))
     for kind, (artifact, explicit, automatic, package, main) in ARTIFACTS.items():
         deps = sorted((out / 'dependencies' / kind).glob('*.jar'))

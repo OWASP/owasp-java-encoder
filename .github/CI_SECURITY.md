@@ -55,7 +55,7 @@ snapshot API. It builds its own checkout without caches or imported artifacts.
 Separate correlators submit the normal reactor and the optional Jakarta profile.
 The pinned Maven submission action includes all resolved project scopes,
 including runtime, test and provided dependencies. Maven dependency plugin
-3.9.0 `resolve-plugins` separately resolves build/report plugins and their
+3.11.0 `resolve-plugins` separately resolves build/report plugins and their
 transitives; `scripts/build-dependency-snapshot.py` submits those edges as
 development dependencies. Graph reports and submission JSON are retained for
 inspection. Inspect representative ESAPI/AntiSamy HTTP transitives and Jakarta

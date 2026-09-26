@@ -80,7 +80,8 @@ Happy Encoding!
 Security
 --------
 Please report suspected vulnerabilities privately. See [SECURITY.md](SECURITY.md) for
-the reporting channels, supported versions, and scope.
+the reporting channels, supported versions, and scope. Verify downloads using the
+[public release keys](KEYS) and [signature/checksum guide](VERIFYING.md).
 
 Building
 --------

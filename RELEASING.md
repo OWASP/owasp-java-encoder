@@ -99,8 +99,21 @@ GPG plugin 3.2.8 enables `bestPractices` and does not accept passphrases in POMs
 command-line properties. Noninteractive signing must fail when the key/agent is
 unavailable; do not work around failure by skipping signatures for a production
 bundle. Run `clean verify -DperformRelease=true` first to test signing without
-deployment. For a local bundle only, use `clean deploy -DperformRelease=true
--DskipPublishing=true`; Central plugin 0.11.0 creates the ZIP and never uploads it.
+deployment. For a local bundle, run signed `clean verify` first, then:
+
+```sh
+python3 scripts/package-release.py --output /private/path/release-bundle.zip \
+  --gnupg-home /private/path/project-gnupg \
+  --fingerprint 1C5F632B86809F2F5DB25092BEA0075F94074A9B
+```
+
+The assembler verifies all seventeen signatures against that expected fingerprint,
+checks the signed POMs match the source POMs, excludes the optional WAR, generates
+four checksum types and refuses to overwrite an existing bundle. It never builds,
+signs or uploads. Do **not** use `skipPublishing=true` as a bundle-generation
+command: despite upstream documentation, 0.11.0 filters out every artifact before
+bundling. It also requires a `central` server settings entry even in that mode;
+the isolated validation used dummy values and confirmed no upload occurred.
 The publisher extension loads only in the signing profile. The current POM uses
 `autoPublish=false`: deployment stages the release and does not publish it.
 Inspect the deployment in Central Portal and resolve validation errors before
