@@ -40,7 +40,7 @@ import org.owasp.encoder.Encode;
 
 /**
  * A tag to perform XML Content Encoding.
- * This wraps the {@link org.owasp.encoder.Encode#forXmlAttribute(java.lang.String)}.
+ * This wraps the {@link org.owasp.encoder.Encode#forXmlContent(java.lang.String)}.
  *
  * @author Jeremy Long (jeremy.long@gmail.com)
  */
