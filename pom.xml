@@ -41,7 +41,7 @@
 
     <groupId>org.owasp.encoder</groupId>
     <artifactId>encoder-parent</artifactId>
-    <version>1.4.0</version>
+    <version>1.4.2-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>OWASP Java Encoder Project</name>
@@ -84,6 +84,7 @@
         <developerConnection>scm:git:git@github.com:owasp/owasp-java-encoder.git</developerConnection>
         <connection>scm:git:git@github.com:owasp/owasp-java-encoder.git</connection>
         <url>https://github.com/owasp/owasp-java-encoder</url>
+        <tag>HEAD</tag>
     </scm>
     <distributionManagement>
         <site>
