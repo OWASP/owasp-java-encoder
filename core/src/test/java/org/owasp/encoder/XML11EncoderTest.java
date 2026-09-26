@@ -35,7 +35,13 @@
 package org.owasp.encoder;
 
 import java.io.IOException;
+import java.io.StringReader;
 import java.io.StringWriter;
+
+import javax.xml.parsers.DocumentBuilderFactory;
+
+import org.w3c.dom.Element;
+import org.xml.sax.InputSource;
 
 import junit.framework.Test;
 import junit.framework.TestCase;
@@ -84,8 +90,10 @@ public class XML11EncoderTest extends TestCase {
                 .encode("lf-char", "\n", "\n")
                 .encode("cr-char", "\r", "\r")
                 
-                // NEL (0x85) is valid and unencoded in XML 1.1
-                .encode("nel-char", "\u0085", "\u0085")
+                // XML 1.1 normalizes NEL (0x85) and LS (0x2028) to LF, so they are encoded
+                .encode("nel-char", "&#x85;", "\u0085")
+                .encode("line-separator-char", "&#x2028;", "\u2028")
+                .encode("mixed-nel-ls", "a&#x85;b&#x2028;c", "a\u0085b\u2028c")
                 
                 // Combined test
                 .encode("mixed-control-chars", "&#x01;a\t&#x7f;b\nc", "\u0001a\t\u007Fb\nc");
@@ -95,7 +103,7 @@ public class XML11EncoderTest extends TestCase {
                 .valid("\t\r\n")
                 .valid(' ', Character.MAX_CODE_POINT)
                 .encoded(0x7f, 0x9f)
-                .valid("\u0085")
+                .encoded("\u2028")
                 .invalid(0x00, 0x00)
                 .invalid(Character.MIN_SURROGATE, Character.MAX_SURROGATE)
                 .invalid(0xfdd0, 0xfdef)
@@ -229,15 +237,11 @@ public class XML11EncoderTest extends TestCase {
     }
     
     /**
-     * Test that C1 control characters (except NEL) are encoded in XML 1.1.
+     * Test that DEL and all C1 control characters (including NEL) are encoded in XML 1.1.
      */
     public void testXML11C1ControlChars() {
         // Test DEL and C1 control characters
         for (int i = 0x7F; i <= 0x9F; i++) {
-            if (i == 0x85) {
-                // NEL should not be encoded
-                continue;
-            }
             char ch = (char) i;
             String input = "a" + ch + "b";
             String result = Encode.forXml11(input);
@@ -248,11 +252,75 @@ public class XML11EncoderTest extends TestCase {
     }
     
     /**
-     * Test that NEL (0x85) is not encoded in XML 1.1.
+     * Test that NEL (0x85) is encoded as a character reference in XML 1.1.
      */
     public void testXML11NEL() {
         String input = "a\u0085b";
-        String result = Encode.forXml11(input);
-        assertEquals("a\u0085b", result);
+        assertEquals("a&#x85;b", Encode.forXml11(input));
+        assertEquals("a&#x85;b", Encode.forXml11Content(input));
+        assertEquals("a&#x85;b", Encode.forXml11Attribute(input));
+    }
+
+    /**
+     * Test that LINE SEPARATOR (0x2028) is encoded as a character reference in XML 1.1,
+     * while PARAGRAPH SEPARATOR (0x2029) is passed through.
+     */
+    public void testXML11LineSeparator() {
+        String input = "a\u2028b\u2029c";
+        assertEquals("a&#x2028;b\u2029c", Encode.forXml11(input));
+        assertEquals("a&#x2028;b\u2029c", Encode.forXml11Content(input));
+        assertEquals("a&#x2028;b\u2029c", Encode.forXml11Attribute(input));
+    }
+
+    /**
+     * Test that XML 1.0 behavior for NEL and LS is unchanged (passed through).
+     */
+    public void testXML10NELAndLineSeparatorUnchanged() {
+        assertEquals("a\u0085b\u2028c", Encode.forXml("a\u0085b\u2028c"));
+    }
+
+    /**
+     * Verify that a real XML 1.1 parser preserves the referenced characters in
+     * content and both attribute quote styles, for String and Writer APIs.
+     */
+    public void testXML11ParserRoundTrip() throws Exception {
+        String input = "a\u0085b\u2028c\u2029d&<>\"'";
+        assertXML11RoundTrip(input, Encode.forXml11(input), Encode.forXml11(input));
+        assertXML11RoundTrip(input, Encode.forXml11Content(input), Encode.forXml11Attribute(input));
+
+        StringWriter general = new StringWriter();
+        StringWriter content = new StringWriter();
+        StringWriter attribute = new StringWriter();
+        Encode.forXml11(general, input);
+        Encode.forXml11Content(content, input);
+        Encode.forXml11Attribute(attribute, input);
+        assertXML11RoundTrip(input, general.toString(), general.toString());
+        assertXML11RoundTrip(input, content.toString(), attribute.toString());
+    }
+
+    private void assertXML11RoundTrip(String expected, String content, String attribute)
+            throws Exception {
+        String xml = "<?xml version=\"1.1\"?><root double=\"" + attribute
+            + "\" single='" + attribute + "'>" + content + "</root>";
+        Element root = DocumentBuilderFactory.newInstance().newDocumentBuilder()
+            .parse(new InputSource(new StringReader(xml))).getDocumentElement();
+        assertEquals("content", expected, root.getTextContent());
+        assertEquals("double-quoted attribute", expected, root.getAttribute("double"));
+        assertEquals("single-quoted attribute", expected, root.getAttribute("single"));
+    }
+
+    /**
+     * Test that maxEncodedLength allows 8 characters per input character for
+     * XML 1.1, and that the encoded output for LS (the longest reference,
+     * {@code &#x2028;}) fits within the value it returns.
+     */
+    public void testXML11MaxEncodedLength() throws Exception {
+        XMLEncoder encoder = new XMLEncoder(XMLEncoder.Mode.ALL, XMLEncoder.Version.XML_1_1);
+        assertEquals(8 * 3, encoder.maxEncodedLength(3));
+        String input = "\u2028\u2028\u2028";
+        java.io.StringWriter out = new java.io.StringWriter();
+        Encode.forXml11(out, input);
+        assertEquals("&#x2028;&#x2028;&#x2028;", out.toString());
+        assertTrue(out.toString().length() <= encoder.maxEncodedLength(input.length()));
     }
 }

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<taglib version="2.1" 
-        xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-jsptaglibrary_2_1.xsd" 
-        xmlns="http://java.sun.com/xml/ns/javaee" 
+<taglib version="3.0"
+        xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee https://jakarta.ee/xml/ns/jakartaee/web-jsptaglibrary_3_0.xsd"
+        xmlns="https://jakarta.ee/xml/ns/jakartaee"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
     <display-name>OWASP Java Encoder Project</display-name>
     <tlib-version>1.0</tlib-version>
@@ -9,13 +9,10 @@
     <uri>owasp.encoder.jakarta</uri>
     <tag>
         <description>
-            Encodes data for an XML CDATA section.  On the chance that the input
-            contains a terminating
-            &quot;]]&amp;gt;&quot;, it will be replaced by
-            &amp;quot;]]&amp;gt;]]&amp;lt;![CDATA[&amp;gt;&amp;quot;.
-            As with all XML contexts, characters that are invalid according to the
-            XML specification will be replaced by a space character.  Caller must
-            provide the CDATA section boundaries.
+            Encodes data for an XML CDATA section. Replaces a terminating "]]&gt;" with
+            "]]]]&gt;&lt;![CDATA[&gt;". Invalid XML 1.0 characters, U+007F, C1 controls other than
+            U+0085 (NEL), and Unicode noncharacters are replaced by a space. XML parsers normalize
+            line endings. The caller must supply the CDATA section boundaries.
         </description>
         <display-name>forCDATA</display-name>
         <name>forCDATA</name>
@@ -78,19 +75,11 @@
     </tag>
     <tag>
         <description>
-            Encodes for a JavaScript string.  It is safe for use in HTML
-            script attributes (such as onclick), script
-            blocks, JSON files, and JavaScript source.  The caller MUST
-            provide the surrounding quotation characters for the string.
-            Since this performs additional encoding so it can work in all
-            of the JavaScript contexts listed, it may be slightly less
-            efficient then using one of the methods targetted to a specific
-            JavaScript context: forJavaScriptAttribute,
-            forJavaScriptBlock, or forJavaScriptSource.
-
-            Unless you are interested in saving a few bytes of output or
-            are writing a framework on top of this library, it is recommend
-            that you use this method over the others.
+            Encodes a JavaScript string for HTML event attributes (such as onclick), HTML script
+            blocks, or standalone JavaScript source. Caller must supply single (') or double (")
+            quotation marks around the JavaScript string. Template literals (backticks) and JSON are
+            unsupported; use a JSON serializer for JSON. Do not use in javascript: or data: URLs,
+            where URL decoding introduces a separate parsing context.
         </description>
         <display-name>forJavaScript</display-name>
         <name>forJavaScript</name>
@@ -106,9 +95,10 @@
     </tag>
     <tag>
         <description>
-            Encodes for unquoted HTML attribute values. forHtml(String) or
-            forHtmlAttribute(String) should usually be preferred over this
-            method as quoted attributes are XHTML compliant.
+            Encodes for unquoted HTML attribute values. Prefer quoted attributes with
+            forHtmlAttribute. Empty input produces empty output, which cannot represent an unquoted
+            attribute value; a following attribute name may be consumed as the value even when
+            separated by a space.
         </description>
         <display-name>forHtmlUnquotedAttribute</display-name>
         <name>forHtmlUnquotedAttribute</name>
@@ -131,6 +121,7 @@
             particularly dangerous context to put untrusted content in, as for
             example a "javascript:" URL provided by a malicious user would be
             "properly" escaped, and still execute.
+        Deprecated: prefer java.net.URI when working with complete URIs and forUriComponent for individual inserted components. Validate the URL scheme before use and apply encoding for the enclosing output context.
         </description>
         <display-name>forUri</display-name>
         <name>forUri</name>
@@ -149,7 +140,7 @@
             Encodes for CSS URL contexts. The context must be surrounded by "url()".  It
             is safe for use in both style blocks and attributes in HTML. Note: this does
             not do any checking on the quality or safety of the URL itself.  The caller
-            should insure that the URL is safe for embedding (e.g. input validation) by
+            should ensure that the URL is safe for embedding (e.g. input validation) by
             other means.
         </description>
         <display-name>forCssUrl</display-name>
@@ -165,7 +156,12 @@
         </attribute>
     </tag>
     <tag>
-        <description>Encodes for HTML text attributes.</description>
+        <description>
+            Encodes for quoted HTML text attributes. The caller must supply the surrounding quotes.
+            For JavaScript strings in event attributes, use forJavaScript. For URL attributes,
+            validate the URL and its scheme, then encode the entire value with forHtmlAttribute; use
+            forUriComponent only for individual inserted URL components.
+        </description>
         <display-name>forHtmlAttribute</display-name>
         <name>forHtmlAttribute</name>
         <tag-class>org.owasp.encoder.tag.ForHtmlAttributeTag</tag-class>
@@ -196,10 +192,7 @@
     </tag>
     <tag>
         <description>
-            Encodes for HTML text content.  It does not escape
-            quotation characters and is thus unsafe for use with
-            HTML attributes.  Use either forHtml or forHtmlAttribute for those
-            methods.
+            Encodes XML and XHTML text content. Does not escape quotes and is unsafe for attribute values; use forXml or forXmlAttribute for those contexts.
         </description>
         <display-name>forXmlContent</display-name>
         <name>forXmlContent</name>
@@ -217,7 +210,7 @@
         <description>
             Performs percent-encoding for a component of a URI, such as a query
             parameter name or value, path or query-string.  In particular this
-            method insures that special characters in the component do not get
+            method ensures that special characters in the component do not get
             interpreted as part of another component.
         </description>
         <display-name>forUriComponent</display-name>
@@ -273,7 +266,13 @@
         <example>forHtmlContent(unsafeData)</example>
     </function>
     <function>
-        <description>Encodes for HTML text attributes.</description>
+        <description>
+            Encodes for quoted HTML text attributes. The caller must supply the surrounding quotes.
+            For JavaScript strings in event attributes, use forJavaScript. For URL attributes,
+            validate the URL and its scheme, then encode the entire value with forHtmlAttribute; use
+            forUriComponent only for individual inserted URL components.
+        </description>
+        <display-name>forHtmlAttribute</display-name>
         <name>forHtmlAttribute</name>
         <function-class>org.owasp.encoder.Encode</function-class>
         <function-signature>java.lang.String forHtmlAttribute(java.lang.String)</function-signature>
@@ -281,9 +280,10 @@
     </function>
     <function>
         <description>
-            Encodes for unquoted HTML attribute values. forHtml(String) or
-            forHtmlAttribute(String) should usually be preferred over this
-            method as quoted attributes are XHTML compliant.
+            Encodes for unquoted HTML attribute values. Prefer quoted attributes with
+            forHtmlAttribute. Empty input produces empty output, which cannot represent an unquoted
+            attribute value; a following attribute name may be consumed as the value even when
+            separated by a space.
         </description>
         <display-name>forHtmlUnquotedAttribute</display-name>
         <name>forHtmlUnquotedAttribute</name>
@@ -307,7 +307,7 @@
             Encodes for CSS URL contexts. The context must be surrounded by "url()".  It
             is safe for use in both style blocks and attributes in HTML. Note: this does
             not do any checking on the quality or safety of the URL itself.  The caller
-            should insure that the URL is safe for embedding (e.g. input validation) by
+            should ensure that the URL is safe for embedding (e.g. input validation) by
             other means.
         </description>
         <display-name>forCssUrl</display-name>
@@ -325,6 +325,7 @@
             particularly dangerous context to put untrusted content in, as for
             example a "javascript:" URL provided by a malicious user would be
             "properly" escaped, and still execute.
+        Deprecated: prefer java.net.URI when working with complete URIs and forUriComponent for individual inserted components. Validate the URL scheme before use and apply encoding for the enclosing output context.
         </description>
         <display-name>forUri</display-name>
         <name>forUri</name>
@@ -336,7 +337,7 @@
         <description>
             Performs percent-encoding for a component of a URI, such as a query
             parameter name or value, path or query-string.  In particular this
-            method insures that special characters in the component do not get
+            method ensures that special characters in the component do not get
             interpreted as part of another component.
         </description>
         <display-name>forUriComponent</display-name>
@@ -355,10 +356,7 @@
     </function>
     <function>
         <description>
-            Encodes for HTML text content.  It does not escape
-            quotation characters and is thus unsafe for use with
-            HTML attributes.  Use either forHtml or forHtmlAttribute for those
-            methods.
+            Encodes XML and XHTML text content. Does not escape quotes and is unsafe for attribute values; use forXml or forXmlAttribute for those contexts.
         </description>
         <display-name>forXmlContent</display-name>
         <name>forXmlContent</name>
@@ -376,13 +374,10 @@
     </function>
     <function>
         <description>
-            Encodes data for an XML CDATA section.  On the chance that the input
-            contains a terminating
-            &quot;]]&amp;gt;&quot;, it will be replaced by
-            &amp;quot;]]&amp;gt;]]&amp;lt;![CDATA[&amp;gt;&amp;quot;.
-            As with all XML contexts, characters that are invalid according to the
-            XML specification will be replaced by a space character.  Caller must
-            provide the CDATA section boundaries.
+            Encodes data for an XML CDATA section. Replaces a terminating "]]&gt;" with
+            "]]]]&gt;&lt;![CDATA[&gt;". Invalid XML 1.0 characters, U+007F, C1 controls other than
+            U+0085 (NEL), and Unicode noncharacters are replaced by a space. XML parsers normalize
+            line endings. The caller must supply the CDATA section boundaries.
         </description>
         <display-name>forCDATA</display-name>
         <name>forCDATA</name>
@@ -392,10 +387,11 @@
     </function>
     <function>
         <description>
-            Encodes for a JavaScript string.  It is safe for use in HTML
-            script attributes (such as onclick), script
-            blocks, JSON files, and JavaScript source.  The caller MUST
-            provide the surrounding quotation characters for the string.
+            Encodes a JavaScript string for HTML event attributes (such as onclick), HTML script
+            blocks, or standalone JavaScript source. Caller must supply single (') or double (")
+            quotation marks around the JavaScript string. Template literals (backticks) and JSON are
+            unsupported; use a JSON serializer for JSON. Do not use in javascript: or data: URLs,
+            where URL decoding introduces a separate parsing context.
         </description>
         <display-name>forJavaScript</display-name>
         <name>forJavaScript</name>

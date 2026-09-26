@@ -46,7 +46,7 @@ import java.util.Map;
  * of flags. Future version may optimize them into different classes.
  *
  * <p>
- * All encoders returned by the factory are thread-safe.</p>
+ * All encoders returned by the factory are shared, stateless, thread-safe singletons.</p>
  *
  * @author Jeff Ichnowski
  */
@@ -89,15 +89,18 @@ public final class Encoders {
      */
     public static final String XML_COMMENT = "xml-comment";
     /**
-     * Name of XML 1.1 general context.
+     * Name of {@linkplain Encode#forXml11(String) XML 1.1 general} context.
+     * @since 1.4.0
      */
     public static final String XML_11 = "xml-1.1";
     /**
-     * Name of XML 1.1 content context.
+     * Name of {@linkplain Encode#forXml11Content(String) XML 1.1 content} context.
+     * @since 1.4.0
      */
     public static final String XML_11_CONTENT = "xml-1.1-content";
     /**
-     * Name of XML 1.1 attribute context.
+     * Name of {@linkplain Encode#forXml11Attribute(String) XML 1.1 attribute} context.
+     * @since 1.4.0
      */
     public static final String XML_11_ATTRIBUTE = "xml-1.1-attribute";
     /**
@@ -258,8 +261,8 @@ public final class Encoders {
     }
 
     /**
-     * Returns a new instance of an Encoder for the specified context. The
-     * returned instance is thread-safe.
+     * Returns the shared stateless Encoder singleton for the specified context.
+     * The returned instance is thread-safe. Context names are case-sensitive.
      *
      * @param contextName the context name (one of the String constants defined
      * in this class)
