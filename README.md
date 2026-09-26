@@ -11,6 +11,12 @@ For more detailed documentation on the OWASP Java Encoder please visit https://o
 
 Start using the OWASP Java Encoders
 -----------------------------------
+**Maven Central publication is pending.** Version 1.4.1 is available as signed
+artifacts from the [GitHub security release](https://github.com/OWASP/owasp-java-encoder/releases/tag/v1.4.1).
+Until Central publication completes, download and verify those artifacts and
+install them in your local or organizational Maven repository; the dependency
+examples below require that installation. Maven Central 1.4.0 remains affected.
+
 You can download the core library from [Maven Central](https://central.sonatype.com/artifact/org.owasp.encoder/encoder).
 
 JSP tags and EL functions are also available from Maven Central:
@@ -24,21 +30,21 @@ The jars are also available in Central:
 <dependency>
     <groupId>org.owasp.encoder</groupId>
     <artifactId>encoder</artifactId>
-    <version>1.4.0</version>
+    <version>1.4.1</version>
 </dependency>
 
 <!-- using Servlet Spec 5 in the jakarta.servlet package use: -->
 <dependency>
     <groupId>org.owasp.encoder</groupId>
     <artifactId>encoder-jakarta-jsp</artifactId>
-    <version>1.4.0</version>
+    <version>1.4.1</version>
 </dependency>
 
 <!-- using the Legacy Servlet Spec in the javax.servlet package use: -->
 <dependency>
     <groupId>org.owasp.encoder</groupId>
     <artifactId>encoder-jsp</artifactId>
-    <version>1.4.0</version>
+    <version>1.4.1</version>
 </dependency>
 ```
 
@@ -137,11 +143,7 @@ Benchmarks (currently in need of improvement) can be run with:
 $ mvn verify -Pbenchmarks
 ```
 
-Releases are done via `central-publishing-maven-plugin`:
-
-```bash
-mvn clean deploy -DperformRelease=true
-```
+See [RELEASING.md](RELEASING.md) for signing, Maven Central publication, and release verification.
 
 When changing the version, update the root `pom.xml`, the `<parent>` version in each
 module POM, and `encoder.version` in `jakarta-test/pom.xml`. CI fails if
@@ -151,6 +153,12 @@ When publishing a release, also update the supported versions in `SECURITY.md`.
 
 News
 ----
+### 1.4.1 Security Release
+Upgrade all OWASP Java Encoder dependencies to 1.4.1. This release fixes three
+security issues in CSS string encoding and `EncodedWriter` buffer handling.
+See [the release notes](releases/1.4.1.md) for affected entry points,
+compatibility details, and verification instructions.
+
 ### 2025-11-17 - 1.4.0 Release
 The team is happy to announce that version 1.4.0 has been released!
 * feat: add XML 1.1 encoding support [#88](https://github.com/OWASP/owasp-java-encoder/pull/88).
