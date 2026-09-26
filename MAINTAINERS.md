@@ -112,8 +112,10 @@ Maven. Verify namespace permissions in the Portal before staging. Follow
 [RELEASING.md](RELEASING.md) for access recovery and Central's
 [organization access documentation](https://central.sonatype.org/publish/publish-portal-organizations/).
 
-Each publisher's staging rehearsal must validate a deployment with
-`autoPublish=false`, then drop it without publishing. Record the account, date,
+Each publisher's staging rehearsal must use a distinct, nonpublished rehearsal
+version and bundle, validate a deployment with `autoPublish=false`, then drop it
+without publishing. Never reuse the retained 1.4.1 bundle for a rehearsal or
+attempt to republish 1.4.1. Record the account, date,
 source commit, bundle checksum, deployment identifier, validation result, and
 confirmed drop, without recording credentials. A key-recovery drill or a
 successful local build does not establish this staging result.
@@ -144,8 +146,27 @@ returned HTTP 404 from Maven Central at this check. Retain the pending notices
 and the existing signed 1.4.1 bundle until publication is verified; do not rebuild
 or replace those artifacts or move their tag.
 
+### Batch 00 follow-up: 2026-09-25 (America/Los_Angeles)
+
+Jim confirmed initial key setup on this date. This confirms setup only; retrieval
+from his own vault, the isolated recovery drill, and a validated-and-dropped
+Central staging rehearsal remain unconfirmed. No new independent confirmation
+was received from Jeremy.
+
+The signed-in Central Portal account displayed `JIM MANICO`, **No Namespace(s)
+Found**, and a disabled **Publish Component** button. All five exact 1.4.1 POM
+URLs (the four libraries and parent) returned HTTP 404, and core metadata still
+listed 1.4.0. Publication and Jim's staging rehearsal remain blocked on namespace
+access; Jeremy's access remains unconfirmed. Continue the existing Support
+request. No new request or deployment was created.
+
+The retained public GitHub bundle, all artifact signatures, and signed checksum
+manifests were verified; see [batch 00 validation](releases/batch-00-validation.md).
+Verification of public artifacts is separate from private-key recovery and
+publisher access.
+
 Update this dated record only from each custodian's confirmation and actual
-publishing evidence. This documentation does not complete
-[#111](https://github.com/OWASP/owasp-java-encoder/issues/111) or
-[#95](https://github.com/OWASP/owasp-java-encoder/issues/95): independent vault
-recovery and publisher staging checks remain unconfirmed or blocked.
+publishing evidence. [#111](https://github.com/OWASP/owasp-java-encoder/issues/111)
+owns the remaining independent vault recovery, namespace access, publication,
+and staging checks. [#95](https://github.com/OWASP/owasp-java-encoder/issues/95)
+owns future release-tooling changes.

@@ -116,6 +116,16 @@ uploading. Keep an audit record of the exact uploaded bundle and its SHA-256.
    after its indexing delay.
 
 If staging fails, repair the cause and drop the failed staging deployment before
-retrying. Published Maven coordinates are immutable. If release tags are
+retrying. For the pending 1.4.1 delivery, correct access or upload problems and
+retry the retained exact bundle; do not rebuild or re-sign it to address a
+validation failure. Escalate a failure requiring different artifact bytes to
+the release coordinator. After publication, compare all four libraries' binary,
+source, and Javadoc JARs and all five POMs and their signatures from Central with
+the retained files and signed checksums. Only after that comparison succeeds,
+reconcile the Central-pending notices in README, SECURITY.md, release notes,
+the GitHub release, and the ESAPI consumer guidance. Check the OWASP project page
+and javadoc.io against the actual publication status as well.
+
+Published Maven coordinates are immutable. If release tags are
 protected, an incorrect tag requires a maintainer to resolve the protection and
 correction explicitly; never silently move an existing release tag.

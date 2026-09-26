@@ -22,18 +22,21 @@ Start using the OWASP Java Encoders
 -----------------------------------
 **Maven Central publication is pending.** Version 1.4.1 is available as signed
 artifacts from the [GitHub security release](https://github.com/OWASP/owasp-java-encoder/releases/tag/v1.4.1).
-Until Central publication completes, download and verify those artifacts and
+Until Central publication completes, [download and verify those artifacts](releases/1.4.1.md#verification) and
 install them in your local or organizational Maven repository; the dependency
 examples below require that installation. Maven Central 1.4.0 remains affected.
 
-You can download the core library from [Maven Central](https://central.sonatype.com/artifact/org.owasp.encoder/encoder).
+The core library's [Maven Central listing](https://central.sonatype.com/artifact/org.owasp.encoder/encoder)
+currently offers releases through 1.4.0.
 
-JSP tags and EL functions are also available from Maven Central:
+The JSP tag and EL function libraries have Central listings as well; their
+1.4.1 artifacts are available from the signed GitHub release while publication
+is pending:
 
 - [encoder-jakarta-jsp](https://central.sonatype.com/artifact/org.owasp.encoder/encoder-jakarta-jsp) - Jakarta Servlet 5.0+
 - [encoder-jsp](https://central.sonatype.com/artifact/org.owasp.encoder/encoder-jsp) - legacy `javax.servlet` API
 
-The jars are also available in Central:
+After installing the verified 1.4.1 artifacts, use these dependencies:
 
 ```xml
 <dependency>
@@ -180,6 +183,13 @@ compatibility details, and verification instructions.
 ### 2025-11-17 - 1.4.0 Release
 The team is happy to announce that version 1.4.0 has been released!
 * feat: add XML 1.1 encoding support [#88](https://github.com/OWASP/owasp-java-encoder/pull/88).
+
+**Consumer update (2026-09-25):** The `encoder-esapi:1.4.0` POM uses the ESAPI
+range `[2.5.1.0,3)`. Consumers temporarily remaining on 1.4.0 should apply the
+[ESAPI dependency-management pin](esapi/README.md#temporary-esapi-pin-for-140-consumers).
+That pin does not fix Java Encoder's security issues; upgrade all Java Encoder
+dependencies to the [signed 1.4.1 security release](releases/1.4.1.md).
+Central publication of 1.4.1 remains pending.
 
 ### 2024-08-20 - 1.3.1 Release
 The team is happy to announce that version 1.3.1 has been released!
