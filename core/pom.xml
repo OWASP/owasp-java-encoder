@@ -76,9 +76,6 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
-                <configuration>
-                    <skip>true</skip>
-                </configuration>
                 <executions>
                     <execution>
                         <id>reactor-jar</id>
@@ -86,9 +83,6 @@
                         <goals>
                             <goal>jar</goal>
                         </goals>
-                        <configuration>
-                            <skip>false</skip>
-                        </configuration>
                     </execution>
                     <!-- The main artifact is already created during process-classes. -->
                     <execution>
