@@ -41,6 +41,12 @@ import java.nio.charset.CoderResult;
 /**
  * EncodedWriter -- A writer that encodes all input for a specific context and writes the encoded output to another writer.
  *
+ * <p>This writer retains incomplete input between writes. Its write, flush,
+ * and close operations synchronize on the wrapped writer. Keep each logical
+ * encoding stream in its own EncodedWriter; synchronization does not prevent
+ * separate callers' content from being interleaved. Close the writer to finish
+ * pending input; flush alone does not mark the end of input.</p>
+ *
  * @author Jeff Ichnowski
  */
 public class EncodedWriter extends Writer {
@@ -90,6 +96,7 @@ public class EncodedWriter extends Writer {
      *
      * @param out the target for all writes
      * @param encoder the encoder to use
+     * @throws NullPointerException if out or encoder is null
      */
     public EncodedWriter(Writer out, Encoder encoder) {
         super(out);
@@ -115,7 +122,8 @@ public class EncodedWriter extends Writer {
      * </pre>
      *
      * @param out the target for all writes
-     * @param contextName the encoding context name.
+     * @param contextName the case-sensitive encoding context name.
+     * @throws NullPointerException if out or contextName is null
      * @throws UnsupportedContextException if the contextName is unrecognized or not supported.
      */
     public EncodedWriter(Writer out, String contextName) throws UnsupportedContextException {

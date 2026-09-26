@@ -109,7 +109,7 @@ class XMLEncoder extends Encoder {
         /**
          * XML 1.1 - control characters (except tab, lf, cr) are encoded as character references.
          * All chars [#x1-#x10FFFF] are allowed (excluding noncharacters).
-         * Restricted chars [#x1-#x8, #xB-#xC, #xE-#x1F, #x7F-#x9F] must be encoded.
+         * Restricted chars [#x1-#x8, #xB-#xC, #xE-#x1F, #x7F-#x84, #x86-#x9F] must be encoded.
          */
         XML_1_1
     }
