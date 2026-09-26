@@ -101,9 +101,6 @@ public class JavaScriptEncoderTest extends TestCase {
                     .encode("NUL", "\\x00", "\0")
                     .encode("Line Separator", "\\u2028", "\u2028")
                     .encode("Paragraph Separator", "\\u2029", "\u2029")
-                    .encode("DEL", "\\x7f", "\u007f")
-                    .encode("NEL", "\\x85", "\u0085")
-                    .encode("last C1 control", "\\x9f", "\u009f")
                     .encode("lone high surrogate", "\\ud800", "\ud800")
                     .encode("lone low surrogate", "\\udfff", "\udfff")
                     .encode("reversed pair", "\\udc00\\ud800", "\udc00\ud800")
@@ -118,7 +115,14 @@ public class JavaScriptEncoderTest extends TestCase {
                     .encode("template expression", "\\x24\\x7balert(1)}", "${alert(1)}")
                     .encode("template breakout", "hell\\x60;alert(1);\\x60o", "hell`;alert(1);`o")
                     .encode("abc", "abc")
-                    .encode("ABC", "ABC");
+                    .encode("ABC", "ABC")
+                    // DEL and the C1 controls are hex encoded in every mode
+                    .encode("DEL", "\\x7f", "\u007f")
+                    .encode("U+0080", "\\x80", "\u0080")
+                    .encode("NEL", "\\x85", "\u0085")
+                    .encode("CSI", "\\x9b", "\u009b")
+                    .encode("U+009F", "\\x9f", "\u009f")
+                    .encode("NEL in text", "a\\x85b", "a\u0085b");
 
                 if (asciiOnly == 0) {
                     builder
@@ -127,7 +131,7 @@ public class JavaScriptEncoderTest extends TestCase {
                         .encode("non-breaking space", "\u00a0", "\u00a0")
                         .encode("surrogate pair", "\ud83d\ude00", "\ud83d\ude00")
                         .valid(0xa0, Character.MAX_CODE_POINT)
-                        .encoded(0x7f, 0x9f)
+                        .encoded(0x7f, Unicode.MAX_C1_CTRL_CHAR)
                         .encoded(Character.MIN_SURROGATE, Character.MAX_SURROGATE)
                         .encoded("\u2028\u2029");
                 } else {

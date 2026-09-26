@@ -123,6 +123,7 @@ class JavaScriptEncoder extends Encoder {
         // '`', '$', and '{' are encoded in every mode for ordinary template
         // literal text. An unescaped '`' ends the literal; "${" starts an
         // expression even when '$' is trusted text before the encoded input.
+        // DEL is hex-encoded in every mode, like the C1 controls.
         _validMasks = new int[]{
             0,
             -1 & ~((1 << '\'') | (1 << '\"') | (1 << '$')),
@@ -164,7 +165,7 @@ class JavaScriptEncoder extends Encoder {
                 if ((validMasks[ch >>> 5] & (1 << ch)) == 0) {
                     return i;
                 }
-            } else if (_asciiOnly || ch <= 0x9f
+            } else if (_asciiOnly || ch <= Unicode.MAX_C1_CTRL_CHAR
                     || ch == Unicode.LINE_SEPARATOR || ch == Unicode.PARAGRAPH_SEPARATOR) {
                 return i;
             } else if (Character.isHighSurrogate(ch)) {
@@ -202,7 +203,7 @@ class JavaScriptEncoder extends Encoder {
                             break encoded;
                         }
                     } else {
-                        if (ch <= 0x9f || (_asciiOnly && ch <= 0xff)) {
+                        if (ch <= Unicode.MAX_C1_CTRL_CHAR || (_asciiOnly && ch <= 0xff)) {
                             break hexEncoded;
                         }
                         if (!_asciiOnly && Character.isHighSurrogate(ch)) {
