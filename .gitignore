@@ -1,5 +1,5 @@
-*/target/**
-/target/**
+# Maven build output in every module
+target/
 # Intellij project files
 *.iml
 *.ipr
@@ -14,12 +14,6 @@ maven-eclipse.xml
 # Netbeans configuration
 nb-configuration.xml
 */nbproject/*
-
-/jsp/target/
-/esapi/target/
-/target/
-/jakarta/target/
-/jakarta-test/target/
 
 # Python CI/compatibility tooling
 __pycache__/

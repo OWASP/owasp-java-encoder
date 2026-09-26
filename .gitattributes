@@ -1,0 +1,15 @@
+# Normalize text to LF in the repository and working tree.
+* text=auto eol=lf
+
+# Windows command scripts (for example a future Maven wrapper) need CRLF.
+*.cmd text eol=crlf
+*.bat text eol=crlf
+
+# Binary files: never convert or diff as text.
+*.jar binary
+*.class binary
+*.jpg binary
+*.jpeg binary
+*.png binary
+*.gif binary
+*.ico binary
