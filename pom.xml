@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="US-ASCII"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!--
 ~ Copyright (c) 2015 OWASP.
 ~ All rights reserved.
@@ -439,6 +439,28 @@
                 </configuration>
             </plugin>
             <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+                <version>3.6.2</version>
+                <executions>
+                    <execution>
+                        <id>module-descriptor-sources</id>
+                        <!-- After resource copying/compilation: source JARs only, never Java 8 compilation. -->
+                        <phase>prepare-package</phase>
+                        <goals><goal>add-resource</goal></goals>
+                        <configuration>
+                            <skipAddResourceIfMissing>true</skipAddResourceIfMissing>
+                            <resources>
+                                <resource>
+                                    <directory>${project.basedir}/src/main/java9</directory>
+                                    <targetPath>META-INF/versions/9</targetPath>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-source-plugin</artifactId>
                 <executions>
@@ -446,7 +468,7 @@
                         <id>attach-sources</id>
                         <phase>package</phase>
                         <goals>
-                            <goal>jar</goal>
+                            <goal>jar-no-fork</goal>
                         </goals>
                     </execution>
                 </executions>

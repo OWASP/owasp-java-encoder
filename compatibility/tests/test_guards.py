@@ -118,6 +118,22 @@ class ArtifactGuards(unittest.TestCase):
         self.rejected('jakarta', lambda entries: self.header(
             entries, 'Bundle-SymbolicName', lambda value: 'org.owasp.encoder.jakarta'))
 
+    def test_source_attachments(self):
+        for kind, jar in self.jars.items():
+            with self.subTest(artifact=kind):
+                consumers.source_metadata(kind, jar.with_name(jar.stem + '-sources.jar'))
+
+    def test_missing_source_descriptor(self):
+        original = self.jars['core'].with_name(self.jars['core'].stem + '-sources.jar')
+        with tempfile.TemporaryDirectory(prefix='encoder-source-guard-') as directory:
+            target = Path(directory) / original.name
+            with zipfile.ZipFile(original) as source, zipfile.ZipFile(target, 'w') as broken:
+                for name in source.namelist():
+                    if name != 'META-INF/versions/9/module-info.java':
+                        broken.writestr(name, source.read(name))
+            with self.assertRaises(KeyError):
+                consumers.source_metadata('core', target)
+
 
 if __name__ == '__main__':
     unittest.main()
