@@ -155,7 +155,9 @@ and dependency scopes. Exact encoded output is also observable behavior: adding
 escapes is not automatically patch-compatible. Changes need context/parser tests,
 an output-change note and migration guidance when required. Security fixes can
 correct unsafe behavior in a patch with explicit advisories; other compatibility
-breaks require a future-major decision, not just a version label.
+breaks require a future-major decision, not just a version label. See the
+[compatibility and scope decisions](docs/compatibility-decisions.md) for retained
+1.x contracts and the disposition of future proposals.
 
 ## Project, security and support
 
