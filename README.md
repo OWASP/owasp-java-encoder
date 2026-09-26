@@ -15,6 +15,9 @@ Project Leaders
 - [Jim Manico](https://github.com/jmanico)
 - [Jeremy Long](https://github.com/jeremylong)
 
+See [MAINTAINERS.md](MAINTAINERS.md) for responsibilities, signing-key custody,
+and recovery readiness.
+
 Start using the OWASP Java Encoders
 -----------------------------------
 **Maven Central publication is pending.** Version 1.4.1 is available as signed

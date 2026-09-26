@@ -1,6 +1,23 @@
 # Releasing OWASP Java Encoder
 
+## Release gate for 1.5
+
+Do not tag, publish, or announce a 1.5 release until **all open issues and all
+open pull requests have been handled**. Before considering release approval,
+inventory the full open backlog and record the outcome and supporting review
+or verification for every item. Completing a maintenance batch does not satisfy
+this gate on its own. Keep 1.5 development at `1.5.0-SNAPSHOT`; snapshot version
+changes and reviewed maintenance merges are not release approval.
+
+The pending Central publication of the already signed 1.4.1 release is separate:
+when access is available, publish the retained exact signed bundle and verify
+the published artifacts. Do not rebuild or replace 1.4.1 artifacts or move its tag.
+
 ## Publishing access and project identity
+
+See [MAINTAINERS.md](MAINTAINERS.md) for named maintainers, security contacts,
+signing-key custodians, independent recovery procedures, and the dated status
+of outstanding custody and publishing checks.
 
 Artifact signing and permission to publish Maven coordinates are separate.
 The release key is the dedicated **OWASP Java Encoder Release** key in `KEYS`;
@@ -18,12 +35,16 @@ Maven Central publishing access.
 - [Central signing requirements](https://central.sonatype.org/publish/requirements/gpg/)
 - [Portal bundle uploads](https://central.sonatype.org/publish/publish-portal-upload/)
 
-Keep the encrypted private key, passphrase, and revocation certificate in the
-project's secure credential store with a documented recovery custodian. Keep
+Jim Manico and Jeremy Long are each responsible for maintaining a complete
+recovery copy in their own vault and performing the
+[per-custodian recovery drill](MAINTAINERS.md#recovery-drill-for-each-custodian).
+Confirm each person's results independently; a local backup test does not
+establish either vault's recovery readiness or Central publishing access. Keep
 private key material and tokens outside the checkout and build logs. The public
 key and full fingerprint belong in `KEYS` and on a Central-supported keyserver.
-A rotation creates a new project key and updates that public record; it does not
-replace historical signatures or republish an existing Maven version.
+A rotation creates a new project key and updates that public record and both
+recovery copies; it does not replace historical signatures or republish an
+existing Maven version.
 
 ## Prepare and verify
 
