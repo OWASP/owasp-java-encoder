@@ -94,9 +94,13 @@ jobs:
         run: mvn -B -ntp -DskipTests install -pl core,jsp,esapi -am 2>&1 | tee build.log
       - name: Run unit tests and collect coverage with Java 8
         run: mvn -B -ntp -pl core,jsp,esapi jacoco:prepare-agent@prepare-agent surefire:test -Djvm="$JAVA_HOME_8_X64/bin/java" 2>&1 | tee java8-tests.log
-      - name: Require coverage from every tested module
+      - name: Confirm Java 8 execution and coverage in every tested module
         run: |
           for module in core jsp esapi; do
+            grep -q 'name="java.specification.version" value="1.8"' "$module"/target/surefire-reports/TEST-*.xml || {
+              echo "::error::Missing Java 8 Surefire report for $module"
+              exit 1
+            }
             test -s "$module/target/jacoco.exec" || {
               echo "::error::Missing Java 8 coverage for $module"
               exit 1
