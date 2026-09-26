@@ -1,4 +1,4 @@
-// Copyright (c) 2012 Jeff Ichnowski
+// Copyright (c) 2026 OWASP
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -34,26 +34,31 @@
 
 package org.owasp.encoder;
 
-/**
- * UnsupportedContextException -- thrown when the encoding context
- * specified is not known or supported.
- *
- * @author Jeff Ichnowski
- */
-public class UnsupportedContextException extends RuntimeException {
-    /**
-     * The value the JVM computed for every released version (1.2 through
-     * 1.4.0), declared explicitly so serialized instances stay compatible.
-     */
-    private static final long serialVersionUID = -1517019963198920181L;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.ObjectStreamClass;
+import junit.framework.TestCase;
 
-    /**
-     * Sole constructor.
-     *
-     * @param msg the exception message--includes the name of the
-     * unsupported context
-     */
-    public UnsupportedContextException(String msg) {
-        super(msg);
+/**
+ * UnsupportedContextException must stay serialization compatible with the
+ * released versions, which all used the JVM-computed serialVersionUID below.
+ */
+public class UnsupportedContextExceptionTest extends TestCase {
+
+    public void testSerialVersionUidMatchesReleasedVersions() {
+        assertEquals(-1517019963198920181L,
+            ObjectStreamClass.lookup(UnsupportedContextException.class).getSerialVersionUID());
+    }
+
+    public void testSerializationRoundTrip() throws Exception {
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        ObjectOutputStream out = new ObjectOutputStream(bytes);
+        out.writeObject(new UnsupportedContextException("no-such-context"));
+        out.close();
+        ObjectInputStream in = new ObjectInputStream(new ByteArrayInputStream(bytes.toByteArray()));
+        UnsupportedContextException copy = (UnsupportedContextException) in.readObject();
+        assertEquals("no-such-context", copy.getMessage());
     }
 }
