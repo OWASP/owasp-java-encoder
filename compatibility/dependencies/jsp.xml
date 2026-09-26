@@ -1,0 +1,5 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"><modelVersion>4.0.0</modelVersion><groupId>org.owasp.encoder.tests</groupId><artifactId>consumer-jsp</artifactId><version>1</version><dependencies>
+    <dependency><groupId>javax.servlet.jsp</groupId><artifactId>javax.servlet.jsp-api</artifactId><version>2.2.1</version></dependency>
+    <dependency><groupId>javax.el</groupId><artifactId>javax.el-api</artifactId><version>2.2.5</version></dependency>
+    <dependency><groupId>javax.servlet</groupId><artifactId>javax.servlet-api</artifactId><version>3.0.1</version></dependency>
+</dependencies></project>
