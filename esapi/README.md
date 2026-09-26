@@ -1,8 +1,61 @@
 # ESAPI adapter dependency policy
 
-`encoder-esapi` uses ESAPI 2.7.0.0 as its fixed default dependency. This is the
-latest stable ESAPI release; unlike the previous Maven range, it cannot silently
-select a release candidate when a new artifact is published.
+The ESAPI dependency depends on the `encoder-esapi` release you consume:
+
+| Adapter version | ESAPI dependency in its POM | Availability |
+| --- | --- | --- |
+| `1.4.0` | Maven range `[2.5.1.0,3)`; resolution can change and can select a release candidate | Maven Central; affected by Java Encoder's 1.4.1 security advisories |
+| `1.4.1` | Fixed default `2.7.0.0` | [Signed GitHub security release][encoder-release]; Central publication is pending |
+| `1.5.0-SNAPSHOT` | Fixed default `2.7.0.0` | Unreleased development; not a published release |
+
+The fixed dependency was introduced in 1.4.1. It does not change the POM already
+published for 1.4.0. As checked on 2026-09-25, upstream's [latest stable release][esapi-latest]
+and [security policy][esapi-security] identify ESAPI 2.7.0.0 as current and supported.
+Recheck those sources when choosing a version; adapter compatibility does not
+establish upstream security support.
+
+## Upgrade to 1.4.1
+
+Upgrade **all OWASP Java Encoder dependencies to 1.4.1**, including the core
+`encoder` if your application declares or manages it separately. While Central
+publication is pending, obtain the [signed 1.4.1 artifacts][encoder-release],
+follow the [verification and local installation instructions][encoder-verification],
+and install the retained POMs and JARs in your local or organizational Maven
+repository. Version 1.4.1 will not resolve from Central alone.
+
+```xml
+<dependency>
+    <groupId>org.owasp.encoder</groupId>
+    <artifactId>encoder-esapi</artifactId>
+    <version>1.4.1</version>
+</dependency>
+```
+
+## Temporary ESAPI pin for 1.4.0 consumers
+
+If you temporarily remain on `encoder-esapi:1.4.0`, add this to your application's
+POM (or merge it into its existing `dependencyManagement`) to replace the ESAPI
+range with a deterministic version:
+
+```xml
+<dependencyManagement>
+    <dependencies>
+        <dependency>
+            <groupId>org.owasp.esapi</groupId>
+            <artifactId>esapi</artifactId>
+            <version>2.7.0.0</version>
+        </dependency>
+    </dependencies>
+</dependencyManagement>
+```
+
+**Pinning ESAPI does not fix Java Encoder's security issues.** Version 1.4.0
+remains affected by [the three advisories fixed in 1.4.1][encoder-advisories].
+This pin only controls the ESAPI dependency; upgrade Java Encoder as well.
+Check the application's resolved graph with `mvn dependency:tree`, particularly
+if another dependency or BOM also manages ESAPI or the core encoder.
+
+## Tested adapter compatibility
 
 The supported compatibility range is the stable ESAPI releases from 2.5.1.0
 through 2.7.0.0, inclusive. CI builds and runs the adapter tests against every
@@ -14,9 +67,9 @@ stable release in that range:
 - 2.7.0.0
 
 This is an adapter compatibility statement, not an upstream security-support
-statement. The [ESAPI security policy][esapi-security] supports only 2.7.0.0
-and recommends upgrading from earlier versions. Production applications should
-use the default unless a tested dependency constraint prevents it.
+statement. At the check date above, the [ESAPI security policy][esapi-security]
+supports only 2.7.0.0 and recommends upgrading from earlier versions. Passing
+adapter tests on an older ESAPI version does not make it supported upstream.
 
 Maintainers can deliberately test another version without changing the POM:
 
@@ -25,8 +78,8 @@ mvn -pl esapi -am clean verify -Desapi.version=2.5.1.0
 ```
 
 Applications can select another tested version with normal Maven dependency
-management. The adapter's published POM still defaults deterministically to
-2.7.0.0.
+management. The signed 1.4.1 POM and current development POM default
+deterministically to 2.7.0.0; the Central 1.4.0 POM still uses the range above.
 
 ## Runtime and security notes
 
@@ -72,7 +125,11 @@ on the module path. This stable identity is the one used by the adapter's JPMS
 dependency declaration.
 
 [esapi-security]: https://github.com/ESAPI/esapi-java-legacy/security
+[esapi-latest]: https://github.com/ESAPI/esapi-java-legacy/releases/latest
 [esapi-release]: https://github.com/ESAPI/esapi-java-legacy/releases/tag/esapi-2.7.0.0
+[encoder-release]: https://github.com/OWASP/owasp-java-encoder/releases/tag/v1.4.1
+[encoder-verification]: ../releases/1.4.1.md#verification
+[encoder-advisories]: ../releases/1.4.1.md#security-fixes
 [GHSA-pvp8-3xj6-8c6x]: https://github.com/advisories/GHSA-pvp8-3xj6-8c6x
 [GHSA-j288-q9x7-2f5v]: https://github.com/advisories/GHSA-j288-q9x7-2f5v
 [GHSA-hjcp-jmpx-g3qm]: https://github.com/advisories/GHSA-hjcp-jmpx-g3qm
