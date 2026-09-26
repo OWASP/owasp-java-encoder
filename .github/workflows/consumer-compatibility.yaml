@@ -4,7 +4,13 @@ on:
   push:
     branches: [main]
   pull_request:
+  schedule:
+    - cron: '23 6 * * 1'
   workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
 
 permissions:
   contents: read
@@ -19,26 +25,31 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
-      - uses: actions/checkout@v7
-      - uses: actions/setup-java@v6
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Check versions and isolate Maven storage
+        run: |
+          python3 scripts/check-ci-version.py --ref "$GITHUB_REF"
+          echo "MAVEN_OPTS=-Dmaven.repo.local=$RUNNER_TEMP/m2" >> "$GITHUB_ENV"
+      - uses: actions/setup-java@de7274f081f381c8f8158605e0321c36c376e2e6 # v6.0.1
         with:
           distribution: temurin
           java-version: '17'
-          cache: maven
       - name: Verify libraries, Java 8 API signatures, and public API compatibility
         run: mvn -B -ntp clean verify 2>&1 | tee build.log
       - name: Prepare isolated packaged consumers
-        run: python3 compatibility/consumers.py prepare 2>&1 | tee prepare.log
+        run: python3 compatibility/consumers.py prepare --repository "$RUNNER_TEMP/m2" 2>&1 | tee prepare.log
       - name: Verify artifact guards reject broken packages
         run: python3 -m unittest discover -s compatibility/tests 2>&1 | tee guards.log
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
           name: packaged-consumers
           path: target/compatibility
           if-no-files-found: error
       - name: Preserve build diagnostics
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
           name: consumer-build-diagnostics
           path: |
@@ -57,12 +68,18 @@ jobs:
       matrix:
         java: ['8', '11', '17', '21', '25']
     steps:
-      - uses: actions/checkout@v7
-      - uses: actions/setup-java@v6
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Check versions and isolate Maven storage
+        run: |
+          python3 scripts/check-ci-version.py --ref "$GITHUB_REF"
+          echo "MAVEN_OPTS=-Dmaven.repo.local=$RUNNER_TEMP/m2" >> "$GITHUB_ENV"
+      - uses: actions/setup-java@de7274f081f381c8f8158605e0321c36c376e2e6 # v6.0.1
         with:
           distribution: temurin
           java-version: ${{ matrix.java }}
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
         with:
           name: packaged-consumers
           path: target/compatibility
@@ -71,7 +88,7 @@ jobs:
         run: python3 compatibility/consumers.py run --runtime ${{ matrix.java }} 2>&1 | tee runtime.log
       - name: Preserve runtime diagnostics
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
           name: consumer-java-${{ matrix.java }}-diagnostics
           path: runtime.log
@@ -82,14 +99,19 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
-      - uses: actions/checkout@v7
-      - uses: actions/setup-java@v6
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Check versions and isolate Maven storage
+        run: |
+          python3 scripts/check-ci-version.py --ref "$GITHUB_REF"
+          echo "MAVEN_OPTS=-Dmaven.repo.local=$RUNNER_TEMP/m2" >> "$GITHUB_ENV"
+      - uses: actions/setup-java@de7274f081f381c8f8158605e0321c36c376e2e6 # v6.0.1
         with:
           distribution: temurin
           java-version: |
             8
             17
-          cache: maven
       - name: Build with JDK 17
         run: mvn -B -ntp -DskipTests install -pl core,jsp,esapi -am 2>&1 | tee build.log
       - name: Run unit tests and collect coverage with Java 8
@@ -108,7 +130,7 @@ jobs:
           done
       - name: Preserve Java 8 unit-test diagnostics
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
           name: consumer-java-8-unit-test-diagnostics
           path: |
@@ -131,17 +153,22 @@ jobs:
       matrix:
         java: ['21', '25']
     steps:
-      - uses: actions/checkout@v7
-      - uses: actions/setup-java@v6
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Check versions and isolate Maven storage
+        run: |
+          python3 scripts/check-ci-version.py --ref "$GITHUB_REF"
+          echo "MAVEN_OPTS=-Dmaven.repo.local=$RUNNER_TEMP/m2" >> "$GITHUB_ENV"
+      - uses: actions/setup-java@de7274f081f381c8f8158605e0321c36c376e2e6 # v6.0.1
         with:
           distribution: temurin
           java-version: ${{ matrix.java }}
-          cache: maven
       - name: Verify libraries on a newer build JDK
         run: mvn -B -ntp clean verify 2>&1 | tee build.log
       - name: Preserve build diagnostics including compiler warnings
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
           name: advisory-build-${{ matrix.java }}-diagnostics
           path: |
@@ -149,3 +176,18 @@ jobs:
             **/target/surefire-reports/
             **/target/failsafe-reports/
             **/target/japicmp/
+
+  gate:
+    name: Packaged consumer gate
+    if: ${{ always() }}
+    needs: [prepare, runtime, java8-unit-tests]
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Require artifact preparation, every runtime and Java 8 unit tests
+        env:
+          NEEDS: ${{ toJSON(needs) }}
+        run: python3 scripts/check-ci-gate.py prepare runtime java8-unit-tests

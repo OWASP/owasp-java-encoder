@@ -20,3 +20,7 @@ nb-configuration.xml
 /target/
 /jakarta/target/
 /jakarta-test/target/
+
+# Python CI/compatibility tooling
+__pycache__/
+*.pyc

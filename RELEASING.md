@@ -54,6 +54,11 @@ existing Maven version.
 2. Apply reviewed security fixes privately until publication is ready.
 3. Set the version in the root POM, each library module's parent POM, and
    `encoder.version` in `jakarta-test/pom.xml`. Set the root SCM tag to `v<VERSION>`.
+   `python3 scripts/check-ci-version.py` requires `-SNAPSHOT` plus SCM `HEAD`
+   during development. The explicit non-snapshot version plus matching
+   `v<VERSION>` SCM tag is the intentional release-commit form; review these
+   changes together. This permits CI on the reviewed release PR/commit before
+   creating a tag. The guard is a consistency check, not release approval.
 4. Update README dependency examples, the security policy's supported versions,
    and the release notes. Include security advisories, compatibility changes,
    all Maven coordinates, signing fingerprint, and verification commands.
@@ -129,3 +134,28 @@ and javadoc.io against the actual publication status as well.
 Published Maven coordinates are immutable. If release tags are
 protected, an incorrect tag requires a maintainer to resolve the protection and
 correction explicitly; never silently move an existing release tag.
+
+## Maven storage and repository controls
+
+CI uses `verify` for ordinary builds, including `-PtestJakarta`; it does not need
+to install the reactor. The Java 8 test-JVM job deliberately installs libraries
+for its second Maven invocation, always in an isolated, uncached runner-temporary
+repository. Release builds use the same isolation. No workflow restores or saves
+Maven repositories, and packaged consumers use only artifacts from their own
+workflow run. See [CI/security operations](.github/CI_SECURITY.md).
+
+If an older local build installed a released encoder version, inspect only the
+affected `~/.m2/repository/org/owasp/encoder/<artifact>/<version>` directories.
+Look for local-install provenance in `_remote.repositories` (entries without a
+remote repository), compare POM/JAR hashes and signatures with the actual Central
+or retained signed release, and move uncertain version directories to a dated
+quarantine outside the repository. Re-resolve those coordinates using a fresh
+local repository. Do not erase the entire encoder repository: other versions,
+snapshots and the exact signed 1.4.1 artifacts may be intentional. Never replace
+or publish a release to repair local cache contamination.
+
+All Git tags are protected against update and deletion. GitHub commit-signature
+rules do not verify annotated tag signatures: run `git verify-tag v<VERSION>`
+and check the project key fingerprint separately. Repository recovery and the
+limited, audit-visible emergency PR review bypass are documented in
+[CI/security operations](.github/CI_SECURITY.md#repository-controls-and-recovery).
