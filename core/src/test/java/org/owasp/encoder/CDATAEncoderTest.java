@@ -53,6 +53,7 @@ public class CDATAEncoderTest extends TestCase {
             .encode("]]]]><![CDATA[>>", "]]>>")
             .encode("]]]]]", "]]]]]")
             .encode("<\"&\'>", "<\"&\'>") // valid in CDATA, not in XML
+            .encode("missing-low-surrogate", " x", "\ud800x")
 
             .invalid(0, 0x1f)
             .valid("\t\r\n")

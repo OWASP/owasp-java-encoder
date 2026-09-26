@@ -45,7 +45,7 @@ import junit.framework.TestSuite;
  */
 public class CSSEncoderTest extends TestCase {
     public static Test suite() {
-        TestSuite suite = new TestSuite();
+        TestSuite suite = new TestSuite(CSSEncoderTest.class);
 
         for (CSSEncoder.Mode mode : CSSEncoder.Mode.values()) {
             EncoderTestSuiteBuilder builder = new EncoderTestSuiteBuilder(new CSSEncoder(mode), "safe", "'")
@@ -55,6 +55,7 @@ public class CSSEncoderTest extends TestCase {
                 .encode("no-space-required-after-encode", "\\27x", "'x")
                 .encode("NUL", "\\0", "\0")
                 .encode("DEL", "\\7f", "\u007f")
+                .encode("missing-low-surrogate", "_x", "\ud800x")
 
                 .encoded(0, '\237')
                 .valid("!#$%")
@@ -65,6 +66,21 @@ public class CSSEncoderTest extends TestCase {
                 .encode("Line Separator", "\\2028", "\u2028")
                 .encode("Paragraph Separator", "\\2029", "\u2029")
                 .invalid(Character.MIN_SURROGATE, Character.MAX_SURROGATE);
+
+            for (char next : "aAfF \t\n\r\f".toCharArray()) {
+                String suffix;
+                if (next == ' ' && mode == CSSEncoder.Mode.STRING) {
+                    suffix = " ";
+                } else if (next <= ' ') {
+                    suffix = "\\" + Integer.toHexString(next);
+                } else {
+                    suffix = String.valueOf(next);
+                }
+                // A separator protects the escape from a hex digit, or from
+                // consuming whitespace that belongs to the original input.
+                builder.encode("escape-lookahead-U+" + Integer.toHexString(next),
+                    "\\27 " + suffix, "'" + next);
+            }
 
             switch (mode) {
             case STRING:
@@ -86,5 +102,22 @@ public class CSSEncoderTest extends TestCase {
         }
 
         return suite;
+    }
+
+    public void testEscapeLookaheadAcrossWrites() throws Exception {
+        for (CSSEncoder.Mode mode : CSSEncoder.Mode.values()) {
+            for (char next : "aAfF \t\n\r\f".toCharArray()) {
+                java.io.StringWriter out = new java.io.StringWriter();
+                EncodedWriter writer = new EncodedWriter(out, new CSSEncoder(mode));
+                writer.write("'");
+                writer.flush();
+                // flush must retain the pending quote until lookahead arrives.
+                assertEquals("", out.toString());
+                writer.write(next);
+                writer.close();
+                assertEquals(mode + " lookahead U+" + Integer.toHexString(next),
+                    Encode.encode(new CSSEncoder(mode), "'" + next), out.toString());
+            }
+        }
     }
 }

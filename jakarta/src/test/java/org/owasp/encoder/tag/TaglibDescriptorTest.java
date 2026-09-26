@@ -39,6 +39,9 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Arrays;
+import java.util.Set;
+import java.util.TreeSet;
 import javax.xml.parsers.DocumentBuilderFactory;
 import junit.framework.TestCase;
 import org.owasp.encoder.Encode;
@@ -61,12 +64,12 @@ public class TaglibDescriptorTest extends TestCase {
     /**
      * The tags and functions of one TLD, keyed by name.
      */
-    private static final class Taglib {
+    static final class Taglib {
         final Map<String, String> tagClasses = new LinkedHashMap<String, String>();
         final Map<String, String> functionSignatures = new LinkedHashMap<String, String>();
     }
 
-    private static Taglib load(String resource) throws Exception {
+    static Taglib load(String resource) throws Exception {
         InputStream in = TaglibDescriptorTest.class.getClassLoader().getResourceAsStream(resource);
         assertNotNull(resource, in);
         Document doc;
@@ -96,6 +99,29 @@ public class TaglibDescriptorTest extends TestCase {
             }
         }
         return taglib;
+    }
+
+    /**
+     * Java source generation is not a JSP context. XML 1.1 tags are tracked
+     * separately in issue #131. Deprecated forUri remains for compatibility;
+     * deprecation alone must not silently remove a deployed tag/function.
+     */
+    public void testAdvancedMatchesSupportedFacade() throws Exception {
+        Set<String> unsupported = new TreeSet<String>(Arrays.asList(
+            "forJava", "forXml11", "forXml11Content", "forXml11Attribute"));
+        Set<String> expected = new TreeSet<String>();
+        for (Method method : Encode.class.getMethods()) {
+            if (Modifier.isStatic(method.getModifiers()) && method.getName().startsWith("for")
+                    && method.getReturnType() == String.class
+                    && Arrays.equals(new Class<?>[] {String.class}, method.getParameterTypes())) {
+                expected.add(method.getName());
+            }
+        }
+        assertTrue("exclusions must name real facade methods", expected.containsAll(unsupported));
+        expected.removeAll(unsupported);
+        Taglib advanced = load(ADVANCED);
+        assertEquals("advanced tags", expected, advanced.tagClasses.keySet());
+        assertEquals("advanced functions", expected, advanced.functionSignatures.keySet());
     }
 
     /**
@@ -138,6 +164,10 @@ public class TaglibDescriptorTest extends TestCase {
                 Class<?> tagClass = Class.forName(tag.getValue());
                 assertTrue(resource + ": " + tag.getKey(),
                     EncodingTag.class.isAssignableFrom(tagClass));
+                assertEquals(resource + ": tag wired to the wrong context",
+                    "org.owasp.encoder.tag.F" + tag.getKey().substring(1) + "Tag", tagClass.getName());
+                assertFalse(resource + ": abstract tag", Modifier.isAbstract(tagClass.getModifiers()));
+                tagClass.getConstructor();
             }
             for (Map.Entry<String, String> function : taglib.functionSignatures.entrySet()) {
                 String name = function.getKey();
