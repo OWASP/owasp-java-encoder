@@ -143,7 +143,6 @@ The OWASP Java Encoder project is a multi-module Maven project:
 $ mvn package
 ```
 
-
 See [RELEASING.md](RELEASING.md) for signing, Maven Central publication, and release verification.
 
 When changing the version, update the root `pom.xml`, the `<parent>` version in each
