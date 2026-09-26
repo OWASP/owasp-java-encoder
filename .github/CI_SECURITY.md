@@ -87,14 +87,18 @@ endpoint tokens. Record changes and negative tests in issue #169.
 Use read-only default Actions tokens, no bot PR approvals, supported secret
 scanning/push protection, all-external-contributor run approval, and an allowlist
 of the exact action repositories/paths in [the action inventory](ACTION_PINS.md).
-Enable SHA enforcement after pins and the allowlist are ready. When adding a
+Enable SHA enforcement after pins and the allowlist are ready. Re-read both
+Actions endpoints afterward: updating the general permissions endpoint may reset
+`github_owned_allowed` to true; reapply the exact allowlist and test rejection of
+an unlisted GitHub-owned action as well as a mutable action tag. When adding a
 reviewed action, update the allowlist before merging the workflow. Old open PRs
 must refresh their workflows before rerunning under the SHA policy.
 
 Main requires both complete CI gates and successful CodeQL language jobs in a
 separate ruleset with no bypass. The review rule keeps one independent approval,
-dismisses stale approvals, and requires resolution of review threads. The
-verified `OWASP/owasp-java-encoder` team (Jim Manico and Jeremy Long) has only
+dismisses stale approvals, requires approval of the latest push, and requires
+resolution of review threads. The
+verified maintainers Jim Manico and Jeremy Long have only
 PR-based, audit-visible emergency **review** bypass; it cannot bypass required
 checks or directly push main. An emergency bypass is not independent approval.
 CODEOWNERS enforcement remains with #127's ownership validation; do not name

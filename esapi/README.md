@@ -191,7 +191,8 @@ override may be accepted after review of the affected feature's reachability,
 API/runtime compatibility, dependency convergence, and the complete adapter and
 packaged-consumer matrix. Commons Configuration 2.x and Commons Lang 3.x use
 different APIs/namespaces and cannot silently replace the legacy coordinates.
-Record the advisory, affected versions, scope, evidence, owner and recheck date
+The maintainer team owns this triage. Record the advisory, affected versions,
+scope, evidence, owner and recheck date
 for any exception; time-limit suppressions and reopen them when assumptions
 change. Recheck this disposition on the next ESAPI release or within 90 days.
 Do not close an alert simply because it is transitive or adapter tests pass.
