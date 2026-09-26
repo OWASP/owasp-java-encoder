@@ -42,8 +42,8 @@ import java.nio.charset.CoderResult;
  * encoder uses the minimal sequence of characters required to encode a
  * character (e.g. standard backslash escapes, such as "\n", "\\" , "\'", octal
  * escapes, and unicode escapes). This encoder does NOT check UTF-16 surrogate
- * pair sequences. The target output context supports mismatched UTF-16 pairs
- * (e.g. it will compile, run, etc... with them).
+ * pair sequences. Output containing unpaired surrogates is not guaranteed
+ * to compile as Java source.
  *
  * @author Jeff Ichnowski
  */

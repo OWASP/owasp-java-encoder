@@ -83,9 +83,8 @@ public class JSONWriterTest extends TestCase {
     }
 
     /**
-     * Regression test for the shared Writer path: a character the encoder
-     * leaves unread at the end of a 1,024-character batch must not be loaded
-     * again from the source string.  The leading "&lt;" makes the first
+     * A character the encoder leaves unread at the end of a 1,024-character
+     * batch must be encoded exactly once. The leading "&lt;" makes the first
      * batch start at offset 0, and every placement of the tested sequence
      * across the first two batch boundaries is compared with the String
      * result.

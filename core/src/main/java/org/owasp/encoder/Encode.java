@@ -40,7 +40,7 @@ import java.nio.CharBuffer;
 import java.nio.charset.CoderResult;
 
 /**
- * Encode -- fluent interface for contextual encoding.  Example usage in a JSP:
+ * Encode -- static methods for contextual encoding.  Example usage in a JSP:
  *
  * <pre>
  *     &lt;input value="&lt;%=Encode.forHtml(value)%&gt;" /&gt;
@@ -50,6 +50,16 @@ import java.nio.charset.CoderResult;
  * takes a {@code String} argument and returns the encoded version as a
  * {@code String}.  The second version writes the encoded version directly
  * to a {@code Writer}.</p>
+ *
+ * <p>A null input string is encoded as the four characters {@code null}.
+ * Writer overloads throw {@link NullPointerException} for a null output writer.
+ * These static methods may be called concurrently; callers are responsible for
+ * coordinating access to a shared output writer.</p>
+ *
+ * <p>For large inputs, prefer the Writer overloads or {@link EncodedWriter}.
+ * String overloads may allocate temporary storage for the maximum possible
+ * encoded length of the remaining input, even when the actual result is much
+ * shorter (up to nine output characters per input character for URI encoding).</p>
  *
  * <p>Please make sure to read and understand the context that the method encodes
  * for.  Encoding for the incorrect context will likely lead to exposing a
@@ -125,17 +135,19 @@ public final class Encode {
      * "}) as it shorter than the also valid {@code &quot;}.</li>
      *
      * <li>Carriage return (U+0D), line-feed (U+0A), horizontal tab
-     * (U+09) and space (U+20) are valid in quoted attributes and in
-     * block in an unescaped form.</li>
+     * (U+09) and space (U+20) pass through unescaped. <a href="https://www.w3.org/TR/REC-xml/#AVNormalize">XML parsers normalize
+     * line endings and attribute whitespace</a>, so these characters may not
+     * round-trip unchanged through XML parsing.</li>
      *
      * <li>Surrogate pairs are passed through only if valid.</li>
      *
-     * <li>Characters that are not <a
-     * href="http://www.w3.org/TR/REC-xml/#charsets">valid according
-     * to the XML specification</a> are replaced by a space character
-     * as they could lead to parsing errors.  In particular only {@code #x9
-     * | #xA | #xD | [#x20-#xD7FF] | [#xE000-#xFFFD] |
-     * [#x10000-#x10FFFF]} are considered valid.</li>
+     * <li>Characters outside the XML 1.0 character ranges {@code #x9 | #xA
+     * | #xD | [#x20-#xD7FF] | [#xE000-#xFFFD] | [#x10000-#x10FFFF]}
+     * are replaced by a space. The encoder also replaces U+007F, C1 controls
+     * U+0080-U+009F except U+0085 (NEL), and Unicode noncharacters
+     * U+FDD0-U+FDEF and every code point ending in FFFE or FFFF with a space.
+     * These additional replacements are the encoder's policy, even where
+     * XML 1.0 permits the character.</li>
      * </ul>
      *
      * @param input the data to encode
@@ -151,6 +163,7 @@ public final class Encode {
      *
      * @param out where to write encoded output
      * @param input the input string to encode
+     * @throws NullPointerException if out is null
      * @throws IOException if thrown by writer
      */
     public static void forHtml(Writer out, String input) throws IOException {
@@ -202,17 +215,19 @@ public final class Encode {
      * compatibility.</li>
      *
      * <li>Carriage return (U+0D), line-feed (U+0A), horizontal tab
-     * (U+09) and space (U+20) are valid in quoted attributes and in
-     * block in an unescaped form.</li>
+     * (U+09) and space (U+20) pass through unescaped. <a href="https://www.w3.org/TR/REC-xml/#AVNormalize">XML parsers normalize
+     * line endings and attribute whitespace</a>, so these characters may not
+     * round-trip unchanged through XML parsing.</li>
      *
      * <li>Surrogate pairs are passed through only if valid.</li>
      *
-     * <li>Characters that are not <a
-     * href="http://www.w3.org/TR/REC-xml/#charsets">valid according
-     * to the XML specification</a> are replaced by a space character
-     * as they could lead to parsing errors.  In particular only {@code #x9
-     * | #xA | #xD | [#x20-#xD7FF] | [#xE000-#xFFFD] |
-     * [#x10000-#x10FFFF]} are considered valid.</li>
+     * <li>Characters outside the XML 1.0 character ranges {@code #x9 | #xA
+     * | #xD | [#x20-#xD7FF] | [#xE000-#xFFFD] | [#x10000-#x10FFFF]}
+     * are replaced by a space. The encoder also replaces U+007F, C1 controls
+     * U+0080-U+009F except U+0085 (NEL), and Unicode noncharacters
+     * U+FDD0-U+FDEF and every code point ending in FFFE or FFFF with a space.
+     * These additional replacements are the encoder's policy, even where
+     * XML 1.0 permits the character.</li>
      * </ul>
      *
      * @param input the input to encode
@@ -228,6 +243,7 @@ public final class Encode {
      *
      * @param out where to write encoded output
      * @param input the input string to encode
+     * @throws NullPointerException if out is null
      * @throws IOException if thrown by writer
      */
     public static void forHtmlContent(Writer out, String input)
@@ -237,9 +253,11 @@ public final class Encode {
     }
 
     /**
-     * <p>This method encodes for HTML text attributes. Do not use for JavaScript event attributes or for attributes
-     * that are interpreted as a URL. Instead use {@link #forJavaScript(String)} and {@link #forUriComponent(String)}
-     * respectively for those.</p>
+     * <p>This method encodes for quoted HTML text attributes. For strings inside
+     * JavaScript event attributes, use {@link #forJavaScript(String)}. For a
+     * URL-valued attribute, first validate the URL and its scheme, then encode
+     * the entire value with this method. Use {@link #forUriComponent(String)}
+     * only for individual components inserted while constructing the URL.</p>
      *
      * <b>Example JSP Usage</b>
      * <pre>
@@ -289,17 +307,19 @@ public final class Encode {
      * "}) as it shorter than the also valid {@code &quot;}.</li>
      *
      * <li>Carriage return (U+0D), line-feed (U+0A), horizontal tab
-     * (U+09) and space (U+20) are valid in quoted attributes and in
-     * block in an unescaped form.</li>
+     * (U+09) and space (U+20) pass through unescaped. <a href="https://www.w3.org/TR/REC-xml/#AVNormalize">XML parsers normalize
+     * line endings and attribute whitespace</a>, so these characters may not
+     * round-trip unchanged through XML parsing.</li>
      *
      * <li>Surrogate pairs are passed through only if valid.</li>
      *
-     * <li>Characters that are not <a
-     * href="http://www.w3.org/TR/REC-xml/#charsets">valid according
-     * to the XML specification</a> are replaced by a space character
-     * as they could lead to parsing errors.  In particular only {@code #x9
-     * | #xA | #xD | [#x20-#xD7FF] | [#xE000-#xFFFD] |
-     * [#x10000-#x10FFFF]} are considered valid.</li>
+     * <li>Characters outside the XML 1.0 character ranges {@code #x9 | #xA
+     * | #xD | [#x20-#xD7FF] | [#xE000-#xFFFD] | [#x10000-#x10FFFF]}
+     * are replaced by a space. The encoder also replaces U+007F, C1 controls
+     * U+0080-U+009F except U+0085 (NEL), and Unicode noncharacters
+     * U+FDD0-U+FDEF and every code point ending in FFFE or FFFF with a space.
+     * These additional replacements are the encoder's policy, even where
+     * XML 1.0 permits the character.</li>
      * </ul>
      *
      * @param input the input to encode
@@ -315,6 +335,7 @@ public final class Encode {
      *
      * @param out where to write encoded output
      * @param input the input string to encode
+     * @throws NullPointerException if out is null
      * @throws IOException if thrown by writer
      */
     public static void forHtmlAttribute(Writer out, String input)
@@ -335,7 +356,10 @@ public final class Encode {
      * such context).  The caller should make sure that the attribute
      * value does not abut unsafe characters--and thus should usually
      * err on the side of including a space character after the
-     * value.</p>
+     * value. Empty input produces empty output, which cannot represent an
+     * unquoted attribute value: a following attribute name may be consumed as
+     * the value. A trailing space does not solve this. Use quoted attributes
+     * with {@link #forHtmlAttribute(String)} when the value can be empty.</p>
      *
      * <p>Use of this method is discouraged as quoted attributes are
      * generally more compatible and safer.  Also note, that no
@@ -396,12 +420,9 @@ public final class Encode {
      *         <td class="colFirst">{@code `}</td>
      *         <td class="colLast">{@code &#96;}</td></tr>
      *     <tr class="rowColor">
-     *         <td class="colFirst">{@code U+0085} (next line)</td>
-     *         <td class="colLast">{@code &#133;}</td></tr>
-     *     <tr class="altColor">
      *         <td class="colFirst">{@code U+2028} (line separator)</td>
      *         <td class="colLast">{@code &#8232;}</td></tr>
-     *     <tr class="rowColor">
+     *     <tr class="altColor">
      *         <td class="colFirst">{@code U+2029} (paragraph separator)</td>
      *         <td class="colLast">{@code &#8233;}</td></tr>
      *   </tbody>
@@ -417,7 +438,8 @@ public final class Encode {
      * {@code -}, {@code .}, {@code
      * [}, {@code \}, {@code ]},
      * {@code ^}, {@code _}, {@code
-     * }}.</li>
+     * }}, {@code :}, {@code ;}, {@code ?}, {@code @}, <code>{</code>,
+     * {@code |}, {@code ~}.</li>
      *
      * <li>Surrogate pairs are passed through only if valid.  Invalid
      * surrogate pairs are replaced by a hyphen (-).</li>
@@ -443,6 +465,7 @@ public final class Encode {
      *
      * @param out where to write encoded output
      * @param input the input string to encode
+     * @throws NullPointerException if out is null
      * @throws IOException if thrown by writer
      */
     public static void forHtmlUnquotedAttribute(Writer out, String input)
@@ -471,7 +494,7 @@ public final class Encode {
      *
      * <b>Example JSP Usage</b>
      * <pre>
-     *     &lt;div style="background: url('&lt;=Encode.forCssString(...)%&gt;');"&gt;
+     *     &lt;div style="background: url('&lt;%=Encode.forCssString(...)%&gt;');"&gt;
      *
      *     &lt;style type="text/css"&gt;
      *         background: url('&lt;%=Encode.forCssString(...)%&gt;');
@@ -490,7 +513,7 @@ public final class Encode {
      * {@code &},
      * {@code /},
      * {@code >},
-     * {@code U+007f},
+     * {@code U+007f} - {@code U+009f},
      * line separator ({@code U+2028}),
      * paragraph separator ({@code U+2029}).</li>
      *
@@ -513,7 +536,9 @@ public final class Encode {
      * <li>Surrogate pairs are passed through only if valid.  Invalid
      * surrogate pairs are replaced by an underscore (_).</li>
      *
-     * <li>Unicode "non-characters" are replaced by underscores (_).</li>
+     * <li>Unicode noncharacters are passed through unchanged. U+0000 is
+     * encoded as {@code \0}; <a href="https://www.w3.org/TR/css-syntax-3/#consume-escaped-code-point">CSS parsers
+     * interpret this escape as U+FFFD</a>, the replacement character.</li>
      *
      * </ul>
      *
@@ -531,6 +556,7 @@ public final class Encode {
      *
      * @param out where to write encoded output
      * @param input the input string to encode
+     * @throws NullPointerException if out is null
      * @throws IOException if thrown by writer
      */
     public static void forCssString(Writer out, String input)
@@ -543,15 +569,15 @@ public final class Encode {
      * Encodes for CSS URL contexts.  The context must be surrounded by {@code "url("}
      * and {@code ")"}.  It is safe for use in both style blocks and attributes in HTML.
      * Note: this does not do any checking on the quality or safety of the URL
-     * itself.  The caller should insure that the URL is safe for embedding
+     * itself.  The caller should ensure that the URL is safe for embedding
      * (e.g. input validation) by other means.
      *
      * <b>Example JSP Usage</b>
      * <pre>
-     *     &lt;div style="background:url(&lt;=Encode.forCssUrl(...)%&gt;);"&gt;
+     *     &lt;div style="background:url(&lt;%=Encode.forCssUrl(...)%&gt;);"&gt;
      *
      *     &lt;style type="text/css"&gt;
-     *         background: url('&lt;%=Encode.forCssUrl(...)%&gt;');
+     *         background: url(&lt;%=Encode.forCssUrl(...)%&gt;);
      *     &lt;/style&gt;
      * </pre>
      * <b>Encoding  Notes</b>
@@ -559,6 +585,7 @@ public final class Encode {
      *
      * <li>The following characters are encoded using hexadecimal
      * encodings: {@code U+0000} - {@code U+001f},
+     * space, {@code (}, {@code )},
      * {@code "},
      * {@code '},
      * {@code \},
@@ -566,7 +593,7 @@ public final class Encode {
      * {@code &},
      * {@code /},
      * {@code >},
-     * {@code U+007f},
+     * {@code U+007f} - {@code U+009f},
      * line separator ({@code U+2028}),
      * paragraph separator ({@code U+2029}).</li>
      *
@@ -589,7 +616,9 @@ public final class Encode {
      * <li>Surrogate pairs are passed through only if valid.  Invalid
      * surrogate pairs are replaced by an underscore (_).</li>
      *
-     * <li>Unicode "non-characters" are replaced by underscores (_).</li>
+     * <li>Unicode noncharacters are passed through unchanged. U+0000 is
+     * encoded as {@code \0}; <a href="https://www.w3.org/TR/css-syntax-3/#consume-escaped-code-point">CSS parsers
+     * interpret this escape as U+FFFD</a>, the replacement character.</li>
      *
      * </ul>
      *
@@ -606,6 +635,7 @@ public final class Encode {
      *
      * @param out where to write encoded output
      * @param input the input string to encode
+     * @throws NullPointerException if out is null
      * @throws IOException if thrown by writer
      */
     public static void forCssUrl(Writer out, String input)
@@ -671,6 +701,7 @@ public final class Encode {
      *
      * @param out where to write encoded output
      * @param input the input string to encode
+     * @throws NullPointerException if out is null
      * @throws IOException if thrown by writer
      *
      * @deprecated  There is never a need to encode a complete URI with this form of encoding.
@@ -684,7 +715,7 @@ public final class Encode {
     /**
      * Performs percent-encoding for a component of a URI, such as a query
      * parameter name or value, path or query-string.  In particular this
-     * method insures that special characters in the component do not get
+     * method ensures that special characters in the component do not get
      * interpreted as part of another component.
      *
      * <pre>
@@ -736,6 +767,7 @@ public final class Encode {
      *
      * @param out where to write encoded output
      * @param input the input string to encode
+     * @throws NullPointerException if out is null
      * @throws IOException if thrown by writer
      */
     public static void forUriComponent(Writer out, String input)
@@ -762,6 +794,7 @@ public final class Encode {
      *
      * @param out where to write encoded output
      * @param input the input string to encode
+     * @throws NullPointerException if out is null
      * @throws IOException if thrown by writer
      */
     public static void forXml(Writer out, String input)
@@ -789,6 +822,7 @@ public final class Encode {
      *
      * @param out where to write encoded output
      * @param input the input string to encode
+     * @throws NullPointerException if out is null
      * @throws IOException if thrown by writer
      */
     public static void forXmlContent(Writer out, String input)
@@ -816,6 +850,7 @@ public final class Encode {
      *
      * @param out where to write encoded output
      * @param input the input string to encode
+     * @throws NullPointerException if out is null
      * @throws IOException if thrown by writer
      */
     public static void forXmlAttribute(Writer out, String input)
@@ -834,7 +869,8 @@ public final class Encode {
      *
      * <p>The caller must provide the comment start and end sequences.</p>
      *
-     * <p>This method replaces all invalid XML characters with spaces,
+     * <p>This method replaces invalid XML 1.0 characters and the additional
+     * controls and noncharacters described by {@link #forHtml(String)} with spaces,
      * and replaces the "--" sequence (which is invalid in XML comments)
      * with "-~" (hyphen-tilde).  <b>This encoding behavior may change
      * in future releases.</b>  If the comments need to be decoded, the
@@ -860,6 +896,7 @@ public final class Encode {
      *
      * @param out where to write encoded output
      * @param input the input string to encode
+     * @throws NullPointerException if out is null
      * @throws IOException if thrown by writer
      */
     public static void forXmlComment(Writer out, String input)
@@ -872,13 +909,18 @@ public final class Encode {
      * Encoder for XML 1.1 contexts.  Similar to {@link #forXml(String)} but
      * follows the XML 1.1 specification which allows all control characters
      * (except null) to be encoded as character references.  This method encodes
-     * control characters in the ranges [#x1-#x8, #xB-#xC, #xE-#x1F, #x7F-#x9F]
+     * control characters in the ranges [#x1-#x8, #xB-#xC, #xE-#x1F, #x7F-#x84, #x86-#x9F]
      * as character references (e.g., {@code &#x01;}), while tab, line feed,
-     * and carriage return are passed through unencoded. This is safe for use
+     * and carriage return pass through unencoded, though XML parsing may
+     * normalize them. NEL ({@code U+0085})
+     * and line separator ({@code U+2028}) are also encoded, as {@code &#x85;}
+     * and {@code &#x2028;}, because an XML 1.1 processor would otherwise
+     * normalize them to a line feed.  This is safe for use
      * in both XML 1.1 content and attributes.
      *
      * @param input the input to encode
      * @return the encoded result
+     * @since 1.4.0
      */
     public static String forXml11(String input) {
         return encode(Encoders.XML_11_ENCODER, input);
@@ -890,7 +932,9 @@ public final class Encode {
      *
      * @param out where to write encoded output
      * @param input the input string to encode
+     * @throws NullPointerException if out is null
      * @throws IOException if thrown by writer
+     * @since 1.4.0
      */
     public static void forXml11(Writer out, String input)
         throws IOException
@@ -904,6 +948,7 @@ public final class Encode {
      *
      * @param input the input to encode
      * @return the encoded result
+     * @since 1.4.0
      */
     public static String forXml11Content(String input) {
         return encode(Encoders.XML_11_CONTENT_ENCODER, input);
@@ -915,7 +960,9 @@ public final class Encode {
      *
      * @param out where to write encoded output
      * @param input the input string to encode
+     * @throws NullPointerException if out is null
      * @throws IOException if thrown by writer
+     * @since 1.4.0
      */
     public static void forXml11Content(Writer out, String input)
         throws IOException
@@ -930,6 +977,7 @@ public final class Encode {
      *
      * @param input the input to encode
      * @return the encoded result
+     * @since 1.4.0
      */
     public static String forXml11Attribute(String input) {
         return encode(Encoders.XML_11_ATTRIBUTE_ENCODER, input);
@@ -941,7 +989,9 @@ public final class Encode {
      *
      * @param out where to write encoded output
      * @param input the input string to encode
+     * @throws NullPointerException if out is null
      * @throws IOException if thrown by writer
+     * @since 1.4.0
      */
     public static void forXml11Attribute(Writer out, String input)
         throws IOException
@@ -952,10 +1002,11 @@ public final class Encode {
     /**
      * Encodes data for an XML CDATA section.  On the chance that the input
      * contains a terminating {@code "]]>"}, it will be replaced by
-     * {@code "]]>]]<![CDATA[>"}.
-     * As with all XML contexts, characters that are invalid according to the
-     * XML specification will be replaced by a space character.   Caller must
-     * provide the CDATA section boundaries.
+     * {@code "]]]]><![CDATA[>"}.
+     * Invalid XML 1.0 characters and the additional controls and noncharacters
+     * described by {@link #forHtml(String)} are replaced by a space.
+     * XML parsers normalize line endings. The caller must provide the CDATA
+     * section boundaries.
      *
      * <pre>
      *     &lt;xml-data&gt;&lt;![CDATA[&lt;%=Encode.forCDATA(...)%&gt;]]&gt;&lt;/xml-data&gt;
@@ -974,6 +1025,7 @@ public final class Encode {
      *
      * @param out where to write encoded output
      * @param input the input string to encode
+     * @throws NullPointerException if out is null
      * @throws IOException if thrown by writer
      */
     public static void forCDATA(Writer out, String input)
@@ -985,7 +1037,8 @@ public final class Encode {
     /**
      * Encodes for a Java string.  This method will use "\b", "\t", "\r", "\f",
      * "\n", "\"", "\'", "\\", octal and unicode escapes.  Valid surrogate
-     * pairing is not checked.   The caller must provide the enclosing quotation
+     * pairing is not checked. Output containing unpaired surrogates is not
+     * guaranteed to compile as Java source. The caller must provide the enclosing quotation
      * characters.  This method is useful for when writing code generators and
      * outputting debug messages.
      *
@@ -1010,6 +1063,7 @@ public final class Encode {
      *
      * @param out where to write encoded output
      * @param input the input string to encode
+     * @throws NullPointerException if out is null
      * @throws IOException if thrown by writer
      */
     public static void forJava(Writer out, String input)
@@ -1021,8 +1075,8 @@ public final class Encode {
     /**
      * <p>Encodes for a JavaScript string.  It is safe for use in HTML
      * script attributes (such as {@code onclick}), script
-     * blocks, JSON files, and JavaScript source.  The caller MUST
-     * provide the surrounding quotation characters for the string.
+     * blocks, and JavaScript source.  The caller MUST
+     * provide surrounding single (') or double (") quotation marks for the string.
      * Since this performs additional encoding so it can work in all
      * of the JavaScript contexts listed, it may be slightly less
      * efficient than using one of the methods targeted to a specific
@@ -1114,8 +1168,23 @@ public final class Encode {
      *       <td class="colLast">Hexadecimal encoding is used for characters in this
      *       range that were not already mentioned in above.</td>
      *     </tr>
+     *     <tr class="rowColor">
+     *       <td class="colFirst">U+002D</td><td><code>-</code></td>
+     *       <td class="colLast"><code>\-</code></td>
+     *       <td class="colLast">Hyphen character</td>
+     *     </tr>
+     *     <tr class="altColor">
+     *       <td class="colFirst" colspan="2">U+2028, U+2029</td>
+     *       <td class="colLast"><code>&#92;u2028</code>, <code>&#92;u2029</code></td>
+     *       <td class="colLast">Line and paragraph separators</td>
+     *     </tr>
      *   </tbody>
      * </table>
+     *
+     * <p>This method is for single- or double-quoted JavaScript string literals,
+     * not template literals (backticks) or JSON. Use a JSON serializer for JSON.
+     * Do not use the result in {@code javascript:} or {@code data:} URLs;
+     * URL decoding introduces a separate parsing context.</p>
      *
      * @param input the input string to encode
      * @return the input encoded for JavaScript
@@ -1132,6 +1201,7 @@ public final class Encode {
      *
      * @param out where to write encoded output
      * @param input the input string to encode
+     * @throws NullPointerException if out is null
      * @throws IOException if thrown by writer
      */
     public static void forJavaScript(Writer out, String input)
@@ -1144,9 +1214,9 @@ public final class Encode {
      * <p>This method encodes for JavaScript strings contained within
      * HTML script attributes (such as {@code onclick}).  It is
      * NOT safe for use in script blocks.  The caller MUST provide the
-     * surrounding quotation characters.  This method performs the
+     * surrounding single (') or double (") quotation marks.  This method performs the
      * same encode as {@link #forJavaScript(String)} with the
-     * exception that <code>/</code> is not escaped.</p>
+     * exception that <code>/</code> and <code>-</code> are not escaped.</p>
      *
      * <p><strong>Unless you are interested in saving a few bytes of
      * output or are writing a framework on top of this library, it is
@@ -1157,6 +1227,11 @@ public final class Encode {
      * <pre>
      *    &lt;button onclick="alert('&lt;%=Encode.forJavaScriptAttribute(data)%&gt;');"&gt;
      * </pre>
+     *
+     * <p>This method is for single- or double-quoted JavaScript string literals,
+     * not template literals (backticks) or JSON. Use a JSON serializer for JSON.
+     * Do not use the result in {@code javascript:} or {@code data:} URLs;
+     * URL decoding introduces a separate parsing context.</p>
      *
      * @param input the input string to encode
      * @return the input encoded for JavaScript
@@ -1173,6 +1248,7 @@ public final class Encode {
      *
      * @param out where to write encoded output
      * @param input the input string to encode
+     * @throws NullPointerException if out is null
      * @throws IOException if thrown by writer
      */
     public static void forJavaScriptAttribute(Writer out, String input)
@@ -1185,7 +1261,7 @@ public final class Encode {
      * <p>This method encodes for JavaScript strings contained within
      * HTML script blocks.  It is NOT safe for use in script
      * attributes (such as <code>onclick</code>).  The caller must
-     * provide the surrounding quotation characters.  This method
+     * provide the surrounding single (') or double (") quotation marks.  This method
      * performs the same encode as {@link #forJavaScript(String)} with
      * the exception that <code>"</code> and <code>'</code> are
      * encoded as <code>\"</code> and <code>\'</code>
@@ -1203,6 +1279,11 @@ public final class Encode {
      *    &lt;/script&gt;
      * </pre>
      *
+     * <p>This method is for single- or double-quoted JavaScript string literals,
+     * not template literals (backticks) or JSON. Use a JSON serializer for JSON.
+     * Do not use the result in {@code javascript:} or {@code data:} URLs;
+     * URL decoding introduces a separate parsing context.</p>
+     *
      * @param input the input string to encode
      * @return the input encoded for JavaScript
      * @see #forJavaScript(String)
@@ -1218,6 +1299,7 @@ public final class Encode {
      *
      * @param out where to write encoded output
      * @param input the input string to encode
+     * @throws NullPointerException if out is null
      * @throws IOException if thrown by writer
      */
     public static void forJavaScriptBlock(Writer out, String input)
@@ -1228,11 +1310,11 @@ public final class Encode {
 
     /**
      * <p>This method encodes for JavaScript strings contained within
-     * a JavaScript or JSON file.  <strong>This method is NOT safe for
+     * a standalone JavaScript file.  <strong>This method is NOT safe for
      * use in ANY context embedded in HTML.</strong> The caller must
-     * provide the surrounding quotation characters.  This method
+     * provide the surrounding single (') or double (") quotation marks.  This method
      * performs the same encode as {@link #forJavaScript(String)} with
-     * the exception that <code>/</code> and <code>&amp;</code> are not
+     * the exception that <code>/</code>, <code>-</code>, and <code>&amp;</code> are not
      * escaped and <code>"</code> and <code>'</code> are encoded as
      * <code>\"</code> and <code>\'</code> respectively.</p>
      *
@@ -1248,13 +1330,10 @@ public final class Encode {
      *    var data = "&lt;%=Encode.forJavaScriptSource(data)%&gt;";
      * </pre>
      *
-     * This example is serving up JSON data (users of this use-case
-     * are encouraged to read up on "JSON Hijacking"):
-     * <pre>
-     *    &lt;%@page contentType="application/json; charset=UTF-8"%&gt;
-     *    &lt;% myapp.jsonHijackingPreventionMeasure(); %&gt;
-     *    {"data":"&lt;%=Encode.forJavaScriptSource(data)%&gt;"}
-     * </pre>
+     * <p>This method is for single- or double-quoted JavaScript string literals,
+     * not template literals (backticks) or JSON. Use a JSON serializer for JSON.
+     * Do not use the result in {@code javascript:} or {@code data:} URLs;
+     * URL decoding introduces a separate parsing context.</p>
      *
      * @param input the input string to encode
      * @return the input encoded for JavaScript
@@ -1272,6 +1351,7 @@ public final class Encode {
      *
      * @param out where to write encoded output
      * @param input the input string to encode
+     * @throws NullPointerException if out is null
      * @throws IOException if thrown by writer
      */
     public static void forJavaScriptSource(Writer out, String input)
@@ -1316,16 +1396,21 @@ public final class Encode {
      * <p>All <code>&#92;u</code> escapes use lowercase hexadecimal digits.
      * All other characters, including <code>/</code>, <code>'</code>
      * and non-ASCII characters, are passed through unchanged, so the
-     * output must be sent using a Unicode character encoding such as
-     * UTF-8.</p>
+     * output must be sent using UTF-8 when exchanged between systems, as
+     * required by RFC 8259.</p>
      *
      * <p><strong>This method is NOT an HTML encoder.</strong>  Do not use
      * it for HTML text content or HTML attribute values: HTML does not
      * decode JSON escapes, and in a double-quoted attribute the
      * <code>\"</code> this method produces still ends the value.  To put
-     * JSON in an HTML attribute, first encode each string value with this
-     * method and build the complete JSON text, then encode that complete
-     * attribute value with {@link #forHtmlAttribute(String)}.</p>
+     * JSON in an HTML attribute, first encode each string value and member
+     * name with this method and build the complete JSON text, then encode
+     * that complete attribute value with {@link #forHtmlAttribute(String)}.
+     * The attribute encoder's character replacement rules still apply.</p>
+     *
+     * <p>This method encodes only string contents. Prefer a JSON serializer
+     * for complete objects, arrays, numbers, booleans and null values. It is
+     * not an encoder for single-quoted JavaScript strings or template literals.</p>
      *
      * <p>A {@code null} input is encoded as the text <code>null</code>,
      * like the other methods of this class.  Because the caller
@@ -1358,6 +1443,7 @@ public final class Encode {
      * @return the input encoded for a JSON string literal
      * @see #forHtmlAttribute(String)
      * @see #forJavaScriptSource(String)
+     * @since 1.5.0
      */
     public static String forJson(String input) {
         return encode(Encoders.JSON_ENCODER, input);
@@ -1370,6 +1456,7 @@ public final class Encode {
      * @param out where to write encoded output
      * @param input the input string to encode
      * @throws IOException if thrown by writer
+     * @since 1.5.0
      */
     public static void forJson(Writer out, String input)
         throws IOException
@@ -1578,19 +1665,12 @@ public final class Encode {
                 final int batchSize = Math.min(remainingInput, _input.remaining());
                 str.getChars(j, j+batchSize, inputArray, startPosition);
 
-                // encode from the start of the buffer: any characters the
-                // encoder left unread in the previous batch were kept by
-                // compact() below, so only new characters are loaded.
-                _input.position(startPosition + batchSize);
-                _input.flip();
+                _input.limit(startPosition + batchSize);
 
-                j += batchSize;
-
-                final boolean endOfInput = j == n;
 
                 for (;;) {
                     CoderResult cr = encoder.encodeArrays(
-                        _input, _output, endOfInput);
+                        _input, _output, batchSize == remainingInput);
 
                     if (cr.isUnderflow()) {
                         // get next input batch
@@ -1602,7 +1682,9 @@ public final class Encode {
                     _output.clear();
                 }
 
-                if (endOfInput) {
+                j += _input.position() - startPosition;
+
+                if (j == n) {
                     // done.  flush remaining output buffer and return
                     out.write(outputArray, 0, _output.position());
                     return;

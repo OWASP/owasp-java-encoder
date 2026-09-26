@@ -90,6 +90,7 @@ public class TaglibDescriptorTest extends TestCase {
                     taglib.tagClasses.put(name, child(e, "tag-class")));
             } else if ("function".equals(e.getLocalName())) {
                 String name = child(e, "name");
+                assertEquals(resource + ": " + name, Encode.class.getName(), child(e, "function-class"));
                 assertNull(resource + ": duplicate function " + name,
                     taglib.functionSignatures.put(name, child(e, "function-signature")));
             }

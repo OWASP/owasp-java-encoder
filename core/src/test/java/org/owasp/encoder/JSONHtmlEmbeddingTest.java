@@ -40,6 +40,9 @@ import java.util.Locale;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
 
 /**
  * Checks the HTML uses documented on {@link Encode#forJson(String)}: JSON
@@ -60,6 +63,7 @@ public class JSONHtmlEmbeddingTest extends TestCase {
         "' onmouseover='alert(1)",
         "&quot;&#34;&amp;",
         "\\\"\u2028\u2029\ud800",
+        "\0\r\n\u0085\ud83d\ude00",
     };
 
     private final ObjectMapper _mapper = new ObjectMapper();
@@ -79,15 +83,20 @@ public class JSONHtmlEmbeddingTest extends TestCase {
     public void testScriptElement() throws IOException {
         for (String value : HOSTILE) {
             String open = "<script type=\"application/json\" id=\"data\">";
-            String page = open + json(value) + "</script>";
+            String page = open + json(value) + "</script><p id=after>after</p>";
 
             // The first end tag the HTML parser can see must be ours, and no
             // comment may start inside the element.
             String lower = page.toLowerCase(Locale.ROOT);
-            assertEquals(value, page.length() - "</script>".length(), lower.indexOf("</script"));
+            assertEquals(value, open.length() + json(value).length(), lower.indexOf("</script"));
             assertEquals(value, -1, page.indexOf("<!--"));
 
-            String content = page.substring(open.length(), page.length() - "</script>".length());
+            Document document = Jsoup.parse(page);
+            assertEquals(value, 1, document.select("script").size());
+            assertEquals(value, 0, document.select("img").size());
+            assertEquals(value, "after", document.getElementById("after").text());
+            String content = document.getElementById("data").data();
+            assertEquals(value, json(value), content);
             assertEquals(value, parseName(content));
         }
     }
@@ -102,23 +111,23 @@ public class JSONHtmlEmbeddingTest extends TestCase {
             assertEquals(value, -1, attribute.indexOf('\''));
             assertEquals(value, -1, attribute.indexOf('<'));
 
-            // The browser decodes the attribute back to the JSON text.
-            String decoded = decodeHtmlAttribute(attribute);
-            assertEquals(value, json, decoded);
-            assertEquals(value, parseName(decoded));
+            // Parse both attribute quote styles with an independent HTML parser.
+            for (String quote : new String[] {"\"", "'"}) {
+                Document document = Jsoup.parse("<div id=data data-config="
+                    + quote + attribute + quote + "></div>");
+                Element element = document.getElementById("data");
+                assertEquals(value, 1, document.body().childrenSize());
+                assertEquals(value, 2, element.attributesSize());
+                String decoded = element.attr("data-config");
+                assertEquals(value, json, decoded);
+                assertEquals(value, parseName(decoded));
+            }
         }
     }
 
-    /**
-     * Decodes the character references {@link Encode#forHtmlAttribute}
-     * produces.
-     */
-    private static String decodeHtmlAttribute(String attribute) {
-        return attribute
-            .replace("&#34;", "\"")
-            .replace("&#39;", "'")
-            .replace("&lt;", "<")
-            .replace("&gt;", ">")
-            .replace("&amp;", "&");
+    public void testHtmlAttributeReplacementRulesStillApply() throws IOException {
+        String attribute = Encode.forHtmlAttribute(json("\uffff"));
+        Document document = Jsoup.parse("<div id=data data-config='" + attribute + "'></div>");
+        assertEquals(" ", parseName(document.getElementById("data").attr("data-config")));
     }
 }

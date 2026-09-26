@@ -42,7 +42,7 @@
     <parent>
         <groupId>org.owasp.encoder</groupId>
         <artifactId>encoder-parent</artifactId>
-        <version>1.4.0</version>
+        <version>1.5.0-SNAPSHOT</version>
     </parent>
 
     <artifactId>encoder</artifactId>
@@ -75,18 +75,38 @@
             <version>2.22.3</version>
             <scope>test</scope>
         </dependency>
+        <!-- Parse the enclosing HTML independently of the JSON encoder. -->
+        <dependency>
+            <groupId>org.jsoup</groupId>
+            <artifactId>jsoup</artifactId>
+            <version>1.23.2</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <build>
         <plugins>
+            <!-- Make the multi-release JAR available to downstream reactor modules before they compile their JPMS descriptors. -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-surefire-plugin</artifactId>
-                <configuration>
-                    <excludes>
-                        <exclude>org/owasp/encoder/BenchmarkTest.java</exclude>
-                    </excludes>
-                </configuration>
+                <artifactId>maven-jar-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>reactor-jar</id>
+                        <phase>process-classes</phase>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                    <!-- The main artifact is already created during process-classes. -->
+                    <execution>
+                        <id>default-jar</id>
+                        <phase>none</phase>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -108,31 +128,4 @@
             </plugin>
         </plugins>
     </build>
-    <profiles>
-        <profile>
-            <id>benchmark</id>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-failsafe-plugin</artifactId>
-                        <configuration>
-                            <argLine>-Xmx1024m -XX:MaxPermSize=256m</argLine>
-                            <includes>
-                                <include>org/owasp/encoder/BenchmarkTest.java</include>
-                            </includes>
-                        </configuration>
-                        <executions>
-                            <execution>
-                                <goals>
-                                    <goal>integration-test</goal>
-                                    <goal>verify</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-    </profiles>
 </project>

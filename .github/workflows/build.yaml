@@ -32,6 +32,8 @@ jobs:
           exit 1
         fi
         echo "jakarta-test tests encoder-jakarta-jsp $tested from this build"
+    - name: Test clean reactor compilation
+      run: mvn -B -ntp clean test-compile
     - name: Run build
       run: mvn -B -ntp install -PtestJakarta
 

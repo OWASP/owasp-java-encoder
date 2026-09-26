@@ -35,6 +35,7 @@
 package org.owasp.encoder;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import junit.framework.Test;
@@ -58,6 +59,18 @@ public class JSONRoundTripTest extends TestCase {
 
     public static Test suite() {
         return new TestSuite(JSONRoundTripTest.class);
+    }
+
+    public void testJavaScriptEscapesAreNotJson() throws IOException {
+        for (String encoded : new String[] {Encode.forJavaScriptSource("'"),
+                Encode.forJavaScriptSource("\0"), Encode.forJavaScript("\"&")}) {
+            try {
+                _mapper.readValue(("\"" + encoded + "\"").getBytes(UTF_8), String.class);
+                fail("JavaScript output must not be mistaken for JSON: " + encoded);
+            } catch (JsonProcessingException expected) {
+                // RFC 8259 does not allow JavaScript's apostrophe or hex escapes.
+            }
+        }
     }
 
     /**

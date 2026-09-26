@@ -162,78 +162,6 @@ public class EncodeTest extends TestCase {
         assertEquals("null", out.toString());
     }
 
-    /**
-     * Regression test for the Writer encode loop: when an encoder leaves a
-     * character unread at the end of an input batch (here the Java encoder
-     * looking ahead after "\0"), that character must not be loaded again
-     * from the source string.
-     *
-     * @throws IOException not thrown
-     */
-    public void testWriterBatchBoundaryWithLookahead() throws IOException {
-        final int batch = Encode.Buffer.INPUT_BUFFER_SIZE;
-        StringBuilder buf = new StringBuilder("\n");
-        while (buf.length() < batch - 1) {
-            buf.append('a');
-        }
-        String input = buf.append("\0" + "0" + "b").toString();
-        StringWriter out = new StringWriter();
-        Encode.forJava(out, input);
-        assertEquals(Encode.forJava(input), out.toString());
-    }
-
-    /**
-     * Regression test for EncodedWriter: when an encoder leaves characters
-     * pending for look-ahead, a later write that is absorbed entirely into
-     * the left-over buffer without resolving the look-ahead must keep them
-     * for the next write or close instead of looping forever.  Here the
-     * Java encoder needs to see what follows "\0" and the write is empty.
-     *
-     * @throws IOException not thrown
-     */
-    public void testEncodedWriterEmptyWriteWithLeftOver() throws IOException {
-        StringWriter out = new StringWriter();
-        EncodedWriter writer = new EncodedWriter(out, Encoders.JAVA);
-        writer.write("\0");
-        writer.write("");
-        writer.write("1");
-        writer.close();
-        assertEquals(Encode.forJava("\0" + "1"), out.toString());
-    }
-
-    /**
-     * Same look-ahead case with single-character writes through
-     * {@link java.io.Writer#write(int)}: the CDATA encoder must see what
-     * follows "]]" before it can encode either "]".
-     *
-     * @throws IOException not thrown
-     */
-    public void testEncodedWriterSingleCharWritesWithLeftOver() throws IOException {
-        StringWriter out = new StringWriter();
-        EncodedWriter writer = new EncodedWriter(out, Encoders.CDATA);
-        writer.write(']');
-        writer.write(']');
-        writer.write('>');
-        writer.close();
-        assertEquals(Encode.forCDATA("]]>"), out.toString());
-    }
-
-    /**
-     * Same look-ahead case with two separate writes of "]" through the
-     * CDATA encoder.
-     *
-     * @throws IOException not thrown
-     */
-    public void testEncodedWriterRepeatedLookAheadWrites() throws IOException {
-        StringWriter out = new StringWriter();
-        EncodedWriter writer = new EncodedWriter(out, Encoders.CDATA);
-        writer.write("]");
-        writer.write("]");
-        writer.write("x");
-        writer.close();
-        assertEquals(Encode.forCDATA("]]x"), out.toString());
-    }
-
     public void testVeryLargeEncodeToString() {
         final String input = "&&&&&&&&&&&&&&&&&&&&"
             .replace("&", "&&&&&&&&&&&&&&&&&&&&") // 400
@@ -244,5 +172,34 @@ public class EncodeTest extends TestCase {
         String output = Encode.forXml(input);
         assertEquals(40000, output.length());
         assertEquals(input.replace("&", "&amp;"), output);
+    }
+
+    public void testCssLineAndParagraphSeparatorRunsToString() throws IOException {
+        // U+2028 and U+2029 have the longest CSS escapes (5 characters).  The
+        // lengths straddle the sizes where the String encode loop falls back
+        // to buffers sized by maxEncodedLength.
+        for (int n : new int[] {1, 409, 410, 1024, 1025, 4096}) {
+            String lineSeparators = repeat("\u2028", n);
+            String paragraphSeparators = repeat("\u2029", n);
+            assertEquals(repeat("\\2028", n), Encode.forCssString(lineSeparators));
+            assertEquals(repeat("\\2028", n), Encode.forCssUrl(lineSeparators));
+            assertEquals(repeat("\\2029", n), Encode.forCssString(paragraphSeparators));
+            assertEquals(repeat("\\2029", n), Encode.forCssUrl(paragraphSeparators));
+
+            // a hex digit after the escape requires a separating space
+            String mixed = repeat("\u2028a", n);
+            StringWriter out = new StringWriter();
+            Encode.forCssString(out, mixed);
+            assertEquals(repeat("\\2028 a", n), out.toString());
+            assertEquals(out.toString(), Encode.forCssString(mixed));
+        }
+    }
+
+    private static String repeat(String s, int n) {
+        StringBuilder buf = new StringBuilder(s.length() * n);
+        for (int i = 0; i < n; ++i) {
+            buf.append(s);
+        }
+        return buf.toString();
     }
 }

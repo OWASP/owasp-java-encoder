@@ -41,6 +41,12 @@ import java.nio.charset.CoderResult;
 /**
  * EncodedWriter -- A writer that encodes all input for a specific context and writes the encoded output to another writer.
  *
+ * <p>This writer retains incomplete input between writes. Its write, flush,
+ * and close operations synchronize on the wrapped writer. Keep each logical
+ * encoding stream in its own EncodedWriter; synchronization does not prevent
+ * separate callers' content from being interleaved. Close the writer to finish
+ * pending input; flush alone does not mark the end of input.</p>
+ *
  * @author Jeff Ichnowski
  */
 public class EncodedWriter extends Writer {
@@ -90,6 +96,7 @@ public class EncodedWriter extends Writer {
      *
      * @param out the target for all writes
      * @param encoder the encoder to use
+     * @throws NullPointerException if out or encoder is null
      */
     public EncodedWriter(Writer out, Encoder encoder) {
         super(out);
@@ -115,7 +122,8 @@ public class EncodedWriter extends Writer {
      * </pre>
      *
      * @param out the target for all writes
-     * @param contextName the encoding context name.
+     * @param contextName the case-sensitive encoding context name.
+     * @throws NullPointerException if out or contextName is null
      * @throws UnsupportedContextException if the contextName is unrecognized or not supported.
      */
     public EncodedWriter(Writer out, String contextName) throws UnsupportedContextException {
@@ -162,7 +170,8 @@ public class EncodedWriter extends Writer {
 
     /**
      * Flushes the left-over buffer. Characters from the input buffer are used to add more data to the _leftOverBuffer in order to
-     * make the flush happen.
+     * make the flush happen. If the input runs out before the encoder can consume the left-over characters, they are kept for the
+     * next write (or close).
      *
      * @param input the next input to encode, or null if at end of file.
      * @throws IOException from the underlying writer.
@@ -172,7 +181,7 @@ public class EncodedWriter extends Writer {
             return;
         }
 
-        // _leftOverBuffer is in "put" mode at the top of each iteration.
+        // _leftOverBuffer is in write mode (position = number of pending characters) on entry and at the top of each iteration.
         for (;;) {
             if (input != null && input.hasRemaining()) {
                 _leftOverBuffer.put(input.get());
@@ -180,19 +189,15 @@ public class EncodedWriter extends Writer {
 
             _leftOverBuffer.flip();
             CoderResult cr = _encoder.encode(_leftOverBuffer, _buffer, input == null);
-            boolean done = !_leftOverBuffer.hasRemaining();
+            // compact() returns the buffer to write mode, keeping only the characters the encoder did not consume.
             _leftOverBuffer.compact();
 
             if (cr.isOverflow()) {
                 flushBufferToWriter();
-            } else if (done) {
+            } else if (_leftOverBuffer.position() == 0) {
                 break;
             } else if (input == null || !input.hasRemaining()) {
-                // the encoder still needs more input to resolve its
-                // look-ahead, and this write has been absorbed entirely
-                // (e.g. an empty write, a single character, or a second
-                // "]" for CDATA).  Keep the left over characters for the
-                // next write or close.
+                // The encoder needs more input than this write provided.
                 return;
             }
         }
