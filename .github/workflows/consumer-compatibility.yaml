@@ -46,6 +46,7 @@ jobs:
         with:
           name: packaged-consumers
           path: target/compatibility
+          archive: true
           if-no-files-found: error
       - name: Preserve build diagnostics
         if: always()
@@ -85,6 +86,8 @@ jobs:
         with:
           name: packaged-consumers
           path: target/compatibility
+          skip-decompress: false
+          digest-mismatch: error
       # No Maven, compilation, reactor classes, or test dependencies in this job.
       - name: Execute original packaged JARs
         run: python3 compatibility/consumers.py run --runtime ${{ matrix.java }} 2>&1 | tee runtime.log
