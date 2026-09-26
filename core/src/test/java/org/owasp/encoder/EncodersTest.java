@@ -40,6 +40,7 @@ import junit.framework.TestSuite;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
+import java.io.StringWriter;
 
 /**
  * EncodersTest -- Tests for the Encoders class.
@@ -47,6 +48,50 @@ import java.lang.reflect.Modifier;
  * @author Jeff Ichnowski
  */
 public class EncodersTest extends TestCase {
+
+    public void testConcreteContextMappings() {
+        for (EncoderContexts context : EncoderContexts.ALL) {
+            Encoder actual = Encoders.forName(context.name);
+            assertEquals(context.name, context.encoder.getClass(), actual.getClass());
+            assertSame(context.name + " singleton", actual, Encoders.forName(context.name));
+            // Compare against an independently constructed encoder so a facade and
+            // registry wired to the same wrong singleton cannot agree accidentally.
+            assertEquals(context.name, Encode.encode(context.encoder, EncoderContexts.probe()),
+                Encode.encode(actual, EncoderContexts.probe()));
+            if (actual instanceof XMLEncoder || actual instanceof JavaScriptEncoder
+                    || actual instanceof CSSEncoder || actual instanceof URIEncoder) {
+                assertEquals(context.name + " mode/version", context.encoder.toString(), actual.toString());
+            }
+        }
+    }
+
+    public void testNullContext() {
+        try {
+            Encoders.forName(null);
+            fail("null context accepted");
+        } catch (NullPointerException expected) {
+            // Required by the factory contract.
+        }
+    }
+
+    public void testUnknownAndCaseSensitiveContexts() {
+        for (String name : new String[] {"nope", "", "HTML"}) {
+            try {
+                Encoders.forName(name);
+                fail("unknown context accepted: " + name);
+            } catch (UnsupportedContextException expected) {
+                assertEquals(name, expected.getMessage());
+            }
+        }
+    }
+
+    public void testWriterByContextName() throws Exception {
+        StringWriter out = new StringWriter();
+        EncodedWriter writer = new EncodedWriter(out, "html");
+        writer.write("<&\"'>");
+        writer.close();
+        assertEquals("&lt;&amp;&#34;&#39;&gt;", out.toString());
+    }
 
     public static Test suite() throws Exception {
         return new TestSuite(EncodersTest.class);

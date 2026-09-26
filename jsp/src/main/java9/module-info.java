@@ -1,6 +1,6 @@
 module owasp.encoder.jsp {
-    requires owasp.encoder;
     requires transitive javax.servlet.jsp.api;
+    requires owasp.encoder;
 
     exports org.owasp.encoder.tag;
 }

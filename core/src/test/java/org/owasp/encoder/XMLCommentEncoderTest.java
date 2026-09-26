@@ -48,6 +48,7 @@ public class XMLCommentEncoderTest extends TestCase {
             XMLCommentEncoderTest.class, new XMLCommentEncoder(), "(safe)", "--")
             .encode("a - b", "a - b")
             .encode("<\"&\'>", "<\"&\'>") // valid in comments, not in XML
+            .encode("missing-low-surrogate", " x", "\ud800x")
 
             .invalid(0, 0x1f)
             .valid("\t\r\n")

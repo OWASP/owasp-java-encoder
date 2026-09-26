@@ -38,9 +38,8 @@ import java.nio.CharBuffer;
 import java.nio.charset.CoderResult;
 
 /**
- * ChainedEncoder -- An encoder that chains together two encoders in
- * order.  This is included as an example, but not actually exposed or
- * used as it requires an internal buffer making it not thread-safe.
+ * ChainedEncoder -- A test fixture that chains together two encoders in
+ * order. Its internal buffer makes it unsuitable for shared production use.
  * Sequences of 3 or more encodings require chaining together chained
  * encoders.
  *
@@ -56,9 +55,7 @@ class ChainedEncoder extends Encoder {
      * The buffer used to store the output of the first encoder before
      * sending as input to the second encoder.
      */
-    // TODO: because of this buffer, the ChainedEncoder is the only stateful
-    // encoder.  This needs to be removed somehow, or state control APIs need
-    // to be added (E.g. reset/flush)
+    // Each test must own its instance; this fixture is not thread-safe.
     final CharBuffer _buffer = CharBuffer.allocate(1024);
 
     /**

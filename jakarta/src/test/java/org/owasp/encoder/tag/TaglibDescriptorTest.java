@@ -37,8 +37,13 @@ package org.owasp.encoder.tag;
 import java.io.InputStream;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Arrays;
+import java.util.Set;
+import java.util.TreeSet;
 import javax.xml.parsers.DocumentBuilderFactory;
 import junit.framework.TestCase;
 import org.owasp.encoder.Encode;
@@ -61,12 +66,12 @@ public class TaglibDescriptorTest extends TestCase {
     /**
      * The tags and functions of one TLD, keyed by name.
      */
-    private static final class Taglib {
+    static final class Taglib {
         final Map<String, String> tagClasses = new LinkedHashMap<String, String>();
         final Map<String, String> functionSignatures = new LinkedHashMap<String, String>();
     }
 
-    private static Taglib load(String resource) throws Exception {
+    static Taglib load(String resource) throws Exception {
         InputStream in = TaglibDescriptorTest.class.getClassLoader().getResourceAsStream(resource);
         assertNotNull(resource, in);
         Document doc;
@@ -86,6 +91,7 @@ public class TaglibDescriptorTest extends TestCase {
             Element e = (Element) n;
             if ("tag".equals(e.getLocalName())) {
                 String name = child(e, "name");
+                assertTagInvocationContract(resource + ": " + name, e);
                 assertNull(resource + ": duplicate tag " + name,
                     taglib.tagClasses.put(name, child(e, "tag-class")));
             } else if ("function".equals(e.getLocalName())) {
@@ -99,17 +105,57 @@ public class TaglibDescriptorTest extends TestCase {
     }
 
     /**
-     * Returns the trimmed text of the first direct child element with the
-     * given local name.
+     * Java source generation is not a JSP context. XML 1.1 tags are tracked
+     * separately in issue #131. Deprecated forUri remains for compatibility;
+     * deprecation alone must not silently remove a deployed tag/function.
      */
-    private static String child(Element parent, String localName) {
-        for (Node n = parent.getFirstChild(); n != null; n = n.getNextSibling()) {
-            if (n instanceof Element && localName.equals(n.getLocalName())) {
-                return n.getTextContent().trim();
+    public void testAdvancedMatchesSupportedFacade() throws Exception {
+        Set<String> unsupported = new TreeSet<String>(Arrays.asList(
+            "forJava", "forXml11", "forXml11Content", "forXml11Attribute"));
+        Set<String> expected = new TreeSet<String>();
+        for (Method method : Encode.class.getMethods()) {
+            if (Modifier.isStatic(method.getModifiers()) && method.getName().startsWith("for")
+                    && method.getReturnType() == String.class
+                    && Arrays.equals(new Class<?>[] {String.class}, method.getParameterTypes())) {
+                expected.add(method.getName());
             }
         }
-        fail("missing <" + localName + ">");
-        return null;
+        assertTrue("exclusions must name real facade methods", expected.containsAll(unsupported));
+        expected.removeAll(unsupported);
+        Taglib advanced = load(ADVANCED);
+        assertEquals("advanced tags", expected, advanced.tagClasses.keySet());
+        assertEquals("advanced functions", expected, advanced.functionSignatures.keySet());
+    }
+
+    /** Tags accept a required String value, including runtime EL expressions. */
+    private static void assertTagInvocationContract(String context, Element tag) {
+        assertEquals(context + " body-content", "empty", child(tag, "body-content"));
+        List<Element> attributes = children(tag, "attribute");
+        assertEquals(context + " attribute count", 1, attributes.size());
+        Element value = attributes.get(0);
+        assertEquals(context + " attribute name", "value", child(value, "name"));
+        assertEquals(context + " value required", "true", child(value, "required"));
+        assertEquals(context + " value rtexprvalue", "true", child(value, "rtexprvalue"));
+        assertEquals(context + " value type", "java.lang.String", child(value, "type"));
+    }
+
+    /** Returns the direct child elements with the given local name. */
+    private static List<Element> children(Element parent, String localName) {
+        List<Element> children = new ArrayList<Element>();
+        for (Node n = parent.getFirstChild(); n != null; n = n.getNextSibling()) {
+            if (n instanceof Element && localName.equals(n.getLocalName())) {
+                children.add((Element) n);
+            }
+        }
+        return children;
+    }
+
+    /** Returns the trimmed text of a required, non-duplicated direct child. */
+    private static String child(Element parent, String localName) {
+        List<Element> children = children(parent, localName);
+        assertEquals(parent.getLocalName() + " must contain exactly one <" + localName + ">",
+            1, children.size());
+        return children.get(0).getTextContent().trim();
     }
 
     private static void assertExposesForJson(String resource) throws Exception {
@@ -138,6 +184,10 @@ public class TaglibDescriptorTest extends TestCase {
                 Class<?> tagClass = Class.forName(tag.getValue());
                 assertTrue(resource + ": " + tag.getKey(),
                     EncodingTag.class.isAssignableFrom(tagClass));
+                assertEquals(resource + ": tag wired to the wrong context",
+                    "org.owasp.encoder.tag.F" + tag.getKey().substring(1) + "Tag", tagClass.getName());
+                assertFalse(resource + ": abstract tag", Modifier.isAbstract(tagClass.getModifiers()));
+                tagClass.getConstructor();
             }
             for (Map.Entry<String, String> function : taglib.functionSignatures.entrySet()) {
                 String name = function.getKey();
@@ -159,6 +209,14 @@ public class TaglibDescriptorTest extends TestCase {
     public void testBasicIsSubsetOfAdvanced() throws Exception {
         Taglib basic = load(BASIC);
         Taglib advanced = load(ADVANCED);
+        // The basic descriptor is a published surface too. A declaration
+        // removed from both modules would still satisfy subset parity.
+        Set<String> expectedBasic = new TreeSet<String>(Arrays.asList(
+            "forCDATA", "forCssString", "forCssUrl", "forHtml", "forHtmlAttribute",
+            "forHtmlContent", "forHtmlUnquotedAttribute", "forJavaScript", "forJson",
+            "forUri", "forUriComponent", "forXml", "forXmlAttribute", "forXmlContent"));
+        assertEquals("basic tags", expectedBasic, basic.tagClasses.keySet());
+        assertEquals("basic functions", expectedBasic, basic.functionSignatures.keySet());
         for (Map.Entry<String, String> tag : basic.tagClasses.entrySet()) {
             assertEquals(tag.getKey(), tag.getValue(), advanced.tagClasses.get(tag.getKey()));
         }

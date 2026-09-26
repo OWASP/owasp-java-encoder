@@ -102,23 +102,4 @@ class ASCIIBits {
         return this;
     }
 
-    /**
-     * Sets a range of characters to 0s in the masks.
-     *
-     * @param min the minimum (inclusive).
-     * @param max the maximum (inclusive).
-     * @return {@code this}
-     */
-    ASCIIBits clear(char min, char max) {
-        // There are faster bit-twiddling tricks to accomplish the same
-        // thing as below.  Minor optimization for later.
-        int i=min;
-        for (int n = Math.min(max,63) ; i<=n ; ++i) {
-            _lowerMask &= ~(1L << i);
-        }
-        for ( ; i<=max ; ++i) {
-            _upperMask &= ~(1L << i);
-        }
-        return this;
-    }
 }

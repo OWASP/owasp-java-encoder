@@ -43,6 +43,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 /** Checks the two independently published module identities of the packaged JAR. */
@@ -55,6 +56,14 @@ public class ModuleMetadataIT {
         try (JarFile jar = new JarFile(artifact())) {
             assertEquals("org.owasp.encoder",
                     jar.getManifest().getMainAttributes().getValue("Automatic-Module-Name"));
+        }
+    }
+
+    @Test
+    public void excludesTestOnlyEncoder() throws Exception {
+        try (JarFile jar = new JarFile(artifact())) {
+            assertNull("ChainedEncoder is a stateful test fixture, not a shipped encoder",
+                jar.getEntry("org/owasp/encoder/ChainedEncoder.class"));
         }
     }
 
