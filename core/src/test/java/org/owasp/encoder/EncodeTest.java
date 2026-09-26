@@ -146,6 +146,22 @@ public class EncodeTest extends TestCase {
         assertEquals(input.replace("&", "&amp;"), output);
     }
 
+    public void testForJson() throws IOException {
+        assertEquals("\\u003c/script\\u003e", Encode.forJson("</script>"));
+        StringWriter out = new StringWriter();
+        Encode.forJson(out, "</script>");
+        assertEquals("\\u003c/script\\u003e", out.toString());
+    }
+
+    public void testForJsonNull() throws IOException {
+        // null becomes the text null, so "<%=Encode.forJson(null)%>" is the
+        // JSON string "null"
+        assertEquals("null", Encode.forJson(null));
+        StringWriter out = new StringWriter();
+        Encode.forJson(out, null);
+        assertEquals("null", out.toString());
+    }
+
     public void testVeryLargeEncodeToString() {
         final String input = "&&&&&&&&&&&&&&&&&&&&"
             .replace("&", "&&&&&&&&&&&&&&&&&&&&") // 400
