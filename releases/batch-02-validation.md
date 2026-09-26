@@ -32,6 +32,14 @@ release tags, library algorithms or dependency versions were changed.
   correlators. Default-branch delivery and final SBOM verification are recorded
   in #169 after merge; an arbitrary number of alerts is not an acceptance gate.
 
+The first live default-branch run exposed GitHub's cross-detector manifest
+precedence: build-only submissions hid runtime dependencies for the same POM.
+The follow-up uses one detector with four separate correlators, which GitHub
+merges, preserving the real source POM paths and all runtime/test/build scopes.
+Final SBOM and follow-up delivery evidence are recorded in #169. A transient
+Dependabot security-update attempt during the initial incomplete graph reported
+`dependency_not_found`; no alert was manually dismissed or suppressed.
+
 All **26 checks** passed on the initial PR head, including the two new gates,
 all ten ESAPI versions, every packaged runtime, Java 8 unit tests, the browser
 build, three CodeQL analyses and both advisory build probes:
