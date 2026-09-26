@@ -38,11 +38,12 @@ security fix may require revisiting a decision above.
 
 ## Older PR #176
 
-Its GPG 3.2.8, Central 0.11.0, Boot 4.1.1 and optional-app API modernization were
-already delivered by #180/#185; #187 supplied the reviewed publisher-plugin
-mitigations. Site is deliberately disabled with an explicit lifecycle version;
-Doxia/Reflow and dormant FindBugs/PMD/JXR/versions-report tooling were retired in
-#185, so their old update proposals are obsolete. The remaining Felix change is
+Its GPG 3.2.8, Central 0.11.0, versions-maven-plugin 2.22.0, Boot 4.1.1 and
+optional-app API modernization were already delivered by #180/#185; #187 supplied
+the reviewed publisher-plugin mitigations. Site is deliberately disabled with an
+explicit lifecycle version. Doxia/Reflow and dormant project-info/FindBugs/PMD/JXR
+report tooling were retired in #185, so their old update proposals are obsolete.
+The versions plugin pin remains; only its old reporting execution was retired. The remaining Felix change is
 accepted above, and the library API proposals have explicit dispositions above.
 Close #176 as superseded, without restoring removed tooling or bypassing its
 failed tests. Replace #188's mixed group with the focused accepted change and this
