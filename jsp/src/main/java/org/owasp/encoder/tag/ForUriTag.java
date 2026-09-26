@@ -43,7 +43,12 @@ import org.owasp.encoder.Encode;
  * This wraps the {@link org.owasp.encoder.Encode#forUri(java.lang.String)}.
  *
  * @author Jeremy Long (jeremy.long@gmail.com)
+ * @deprecated Use {@link ForUriComponentTag} for each untrusted value
+ * inserted into a URL.  See
+ * {@link org.owasp.encoder.Encode#forUri(java.lang.String)} for how to handle
+ * an entire untrusted URL.  Retained for compatibility in all 1.x releases.
  */
+@Deprecated
 public class ForUriTag extends EncodingTag {
     @Override
     public void doTag() throws JspException, IOException {

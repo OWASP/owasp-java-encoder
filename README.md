@@ -145,6 +145,32 @@ TagLib
 | encoder-jakarta-jsp | &lt;%@taglib prefix="e" uri="owasp.encoder.jakarta"%&gt;                                      |
 | encoder-jsp         | &lt;%@taglib prefix="e" uri="https://www.owasp.org/index.php/OWASP_Java_Encoder_Project"%&gt; |
 
+Migrating from forUri
+---------------------
+
+`Encode.forUri`, the `uri` context (`Encoders.URI`), `ForUriTag`, and the `forUri`
+tag and EL function are deprecated. Percent-encoding a complete URI does not make an
+untrusted URI safe: `forUri("javascript:alert(1)")` is returned unchanged. It also
+always encodes `%`, so an already percent-encoded URI is double-encoded.
+
+- For an untrusted value inserted into a URL (a path segment, a query parameter name
+  or value, or a fragment), use `forUriComponent`:
+
+  ```jsp
+  <a href="/search?q=<%=Encode.forUriComponent(query)%>&amp;page=1">
+  ```
+
+- For an entire untrusted URL, parse it with `java.net.URI`, allow-list its scheme
+  (for example `http` and `https`, rejecting a missing scheme unless relative URLs are
+  intended), and then encode the whole value for the enclosing context:
+
+  ```jsp
+  <a href="<%=Encode.forHtmlAttribute(validatedUri.toString())%>">
+  ```
+
+`forUri` is retained for compatibility in all 1.x releases. Whether 2.0 removes it is
+tracked in [#142](https://github.com/OWASP/owasp-java-encoder/issues/142).
+
 Development
 -----------
 
@@ -170,6 +196,7 @@ Development builds use `1.5.0-SNAPSHOT`; this is not a published release.
 * feat: all four `forJavaScript*` methods encode dollar sign (`$`) as `\x24`, backtick as `\x60`, and opening brace (`{`) as `\x7b` [#129](https://github.com/OWASP/owasp-java-encoder/issues/129). Escaping `{` prevents input after a trusted `$` from completing `${...}`. Encoded output now supports literal text in ordinary (untagged) template literals as well as single- and double-quoted strings. This changes the encoded output while preserving its decoded JavaScript string value. Tagged templates (including `String.raw`), `${...}` expression bodies, JSON, and script URLs are unsupported; each method's HTML context restrictions still apply.
 * fix: all four `forJavaScript*` methods escape unpaired UTF-16 surrogates as `\uXXXX`, preserving their JavaScript string values through UTF-8 serialization [#135](https://github.com/OWASP/owasp-java-encoder/issues/135), and escape DEL/C1 controls (U+007F to U+009F) as `\xNN` [#163](https://github.com/OWASP/owasp-java-encoder/issues/163). Valid surrogate pairs and other non-ASCII text remain unescaped except U+2028/U+2029. These are output-fidelity changes; NEL was already ordinary JavaScript string data.
 * feat: add `Encode.forJson` String/Writer methods, the `json` encoder context, and `forJson` tags and EL functions in both JSP and Jakarta tag libraries [#145](https://github.com/OWASP/owasp-java-encoder/issues/145). The caller supplies double quotes. Output uses RFC 8259 string escapes and also escapes HTML script delimiters. Java `null` becomes the text `null` (the JSON string `"null"` when quoted); unpaired surrogates use Unicode escapes and may not interoperate with every JSON consumer. Prefer a serializer for complete JSON documents. The ESAPI adapter retains its existing JSON delegation and null behavior.
+* deprecation: `Encoders.URI` and both `ForUriTag` classes are now deprecated like `Encode.forUri`, whose Javadoc now says what to use instead; the `forUri` TLD descriptions warn about double encoding, the adapter builds show deprecation call sites, and the README has a [forUri migration section](#migrating-from-foruri) [#130](https://github.com/OWASP/owasp-java-encoder/issues/130).
 * fix: `forHtmlUnquotedAttribute` now replaces U+0085 (NEL) with a hyphen like the other C1 control characters, instead of emitting `&#133;`, which HTML5 parsers decode as U+2026 [#136](https://github.com/OWASP/owasp-java-encoder/issues/136).
 * fix: the XML 1.1 encoders (`forXml11`, `forXml11Content`, `forXml11Attribute`) now encode U+0085 (NEL) as `&#x85;` and U+2028 (line separator) as `&#x2028;`, so they are not normalized to a line feed [#136](https://github.com/OWASP/owasp-java-encoder/issues/136).
 * maintenance: clarify output-context contracts and expand XML 1.1 tests, fix clean reactor compilation, and remove the obsolete benchmark profile.

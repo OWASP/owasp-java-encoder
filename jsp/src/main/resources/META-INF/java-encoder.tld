@@ -157,7 +157,7 @@
 			particularly dangerous context to put untrusted content in, as for
 			example a "javascript:" URL provided by a malicious user would be
 			"properly" escaped, and still execute.
-        Deprecated: prefer java.net.URI when working with complete URIs and forUriComponent for individual inserted components. Validate the URL scheme before use and apply encoding for the enclosing output context.
+        Deprecated: prefer java.net.URI when working with complete URIs and forUriComponent for individual inserted components. Validate the URL scheme before use and apply encoding for the enclosing output context. Always encodes %, so never apply it to an already percent-encoded URI.
         </description>
         <display-name>forUri</display-name>
         <name>forUri</name>
@@ -361,7 +361,7 @@
 			particularly dangerous context to put untrusted content in, as for
 			example a "javascript:" URL provided by a malicious user would be
 			"properly" escaped, and still execute.
-        Deprecated: prefer java.net.URI when working with complete URIs and forUriComponent for individual inserted components. Validate the URL scheme before use and apply encoding for the enclosing output context.
+        Deprecated: prefer java.net.URI when working with complete URIs and forUriComponent for individual inserted components. Validate the URL scheme before use and apply encoding for the enclosing output context. Always encodes %, so never apply it to an already percent-encoded URI.
         </description>
         <display-name>forUri</display-name>
         <name>forUri</name>

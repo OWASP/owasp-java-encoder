@@ -1,4 +1,4 @@
-// Copyright (c) 2012 Jeff Ichnowski
+// Copyright (c) 2026 OWASP
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -34,24 +34,16 @@
 
 package org.owasp.encoder.tag;
 
-import java.io.IOException;
-import jakarta.servlet.jsp.JspException;
-import org.owasp.encoder.Encode;
+import junit.framework.TestCase;
 
 /**
- * A tag to perform percent-encoding of a URL according to RFC 3986.
- * This wraps the {@link org.owasp.encoder.Encode#forUri(java.lang.String)}.
- *
- * @author Jeremy Long (jeremy.long@gmail.com)
- * @deprecated Use {@link ForUriComponentTag} for each untrusted value
- * inserted into a URL.  See
- * {@link org.owasp.encoder.Encode#forUri(java.lang.String)} for how to handle
- * an entire untrusted URL.  Retained for compatibility in all 1.x releases.
+ * ForUriTag is deprecated like Encode.forUri, and its replacement is not.
  */
-@Deprecated
-public class ForUriTag extends EncodingTag {
-    @Override
-    public void doTag() throws JspException, IOException {
-        Encode.forUri(getJspContext().getOut(), _value);
+public class ForUriTagDeprecationTest extends TestCase {
+
+    @SuppressWarnings("deprecation") // the test inspects the deprecated tag
+    public void testForUriTagIsDeprecated() {
+        assertTrue(ForUriTag.class.isAnnotationPresent(Deprecated.class));
+        assertFalse(ForUriComponentTag.class.isAnnotationPresent(Deprecated.class));
     }
 }
