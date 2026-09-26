@@ -47,6 +47,7 @@
 
     <artifactId>encoder-jakarta-jsp</artifactId>
     <packaging>jar</packaging>
+    <url>https://owasp.org/projects/java-encoder</url>
 
     <name>Jakarta JSP Encoder</name>
     <description>

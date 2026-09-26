@@ -1,0 +1,30 @@
+name: Ordinary bug report
+description: Report a reproducible non-security bug.
+title: "Bug: "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        **Suspected vulnerability? Stop and use [SECURITY.md](https://github.com/OWASP/owasp-java-encoder/security/policy).**
+        This form is public. Do not include attack proofs, credentials, personal data or private URLs.
+  - type: input
+    id: environment
+    attributes:
+      label: Artifact, version and runtime
+      description: Include JDK and container/framework versions when relevant.
+    validations:
+      required: true
+  - type: textarea
+    id: behavior
+    attributes:
+      label: Expected and actual behavior
+      description: Name the method/tag and parser context; use harmless placeholder data.
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Minimal non-sensitive reproduction
+      description: Include commands or a small example, and relevant sanitized diagnostics.
+    validations:
+      required: true

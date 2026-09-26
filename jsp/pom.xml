@@ -47,6 +47,7 @@
 
     <artifactId>encoder-jsp</artifactId>
     <packaging>jar</packaging>
+    <url>https://owasp.org/projects/java-encoder</url>
 
     <name>JSP Encoder</name>
     <description>

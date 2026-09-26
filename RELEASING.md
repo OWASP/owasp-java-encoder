@@ -64,7 +64,10 @@ existing Maven version.
    creating a tag. The guard is a consistency check, not release approval.
 4. Update README dependency examples, the security policy's supported versions,
    and the release notes. Include security advisories, compatibility changes,
-   all Maven coordinates, signing fingerprint, and verification commands.
+   all Maven coordinates, signing fingerprint, and verification commands. Start
+   from [the release-notes template](releases/TEMPLATE.md); move only merged changes
+   from CHANGELOG's Unreleased section. Preserve historical notes/assets and any
+   pending-publication notice until exact Central artifacts have been verified.
 5. Record a reviewed `project.build.outputTimestamp` (UTC timestamp of the
    prepared release sources) in the release POM. Never use build wall-clock time.
    Set `TZ=UTC`, `LC_ALL=C`, `LANG=C`, and
@@ -77,7 +80,12 @@ existing Maven version.
    -Dmaven.repo.local=<fresh-cache> verify -PtestJakarta`.
 6. Commit the release files before tagging. Verify the four binary JARs, their
    source and Javadoc JARs, and five POMs. The optional `jakarta-test` WAR is not a
-   published component.
+   published component. Inspect all four generated manifests and effective parent/
+   module POMs: current organization/maintainer IDs, project URL, Bundle-Vendor and
+   Bundle-DocURL, preserved original-author attribution, and unchanged published
+   JPMS/automatic/OSGi identities and dependency scopes. Metadata edits affect
+   artifact bytes, so repeat the final clean-build payload comparison after them.
+   Do not retrofit metadata into already signed releases.
 
 ## Sign and stage
 

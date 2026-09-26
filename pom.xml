@@ -46,10 +46,9 @@
 
     <name>OWASP Java Encoder Project</name>
     <description>
-        The OWASP Encoders package is a collection of high-performance low-overhead
-        contextual encoders, that when utilized correctly, is an effective tool in
-        preventing Web Application security vulnerabilities such as Cross-Site
-        Scripting.
+        Contextual output encoding for Java 8 and later. The core has no runtime
+        dependencies; optional JSP, Jakarta and ESAPI adapters integrate it with
+        their respective APIs. Select an encoder for the destination parser context.
     </description>
 
     <modules>
@@ -59,11 +58,11 @@
         <module>esapi</module>
     </modules>
 
-    <url>https://owasp.org/www-project-java-encoder/</url>
+    <url>https://owasp.org/projects/java-encoder</url>
     <inceptionYear>2011</inceptionYear>
     <organization>
-        <name>OWASP (Open Web-Application Security Project)</name>
-        <url>https://www.owasp.org/</url>
+        <name>OWASP Foundation</name>
+        <url>https://owasp.org/</url>
     </organization>
 
     <licenses>
@@ -75,45 +74,43 @@
     </licenses>
 
     <scm>
-        <developerConnection>scm:git:git@github.com:owasp/owasp-java-encoder.git</developerConnection>
-        <connection>scm:git:git@github.com:owasp/owasp-java-encoder.git</connection>
-        <url>https://github.com/owasp/owasp-java-encoder</url>
+        <developerConnection>scm:git:git@github.com:OWASP/owasp-java-encoder.git</developerConnection>
+        <connection>scm:git:https://github.com/OWASP/owasp-java-encoder.git</connection>
+        <url>https://github.com/OWASP/owasp-java-encoder</url>
         <tag>HEAD</tag>
     </scm>
 
     <issueManagement>
         <system>github</system>
-        <url>https://github.com/owasp/owasp-java-encoder/issues</url>
+        <url>https://github.com/OWASP/owasp-java-encoder/issues</url>
     </issueManagement>
 
     <developers>
         <developer>
-            <name>Jeff Ichnowski</name>
-            <roles>
-                <role>Project Owner</role>
-                <role>Architect</role>
-                <role>Developer</role>
-            </roles>
-        </developer>
-        <developer>
+            <id>jmanico</id>
             <name>Jim Manico</name>
-            <organization>OWASP</organization>
-            <organizationUrl>https://www.owasp.org/</organizationUrl>
-            <roles>
-                <role>Architect</role>
-                <role>Developer</role>
-            </roles>
+            <email>jim@owasp.org</email>
+            <url>https://github.com/jmanico</url>
+            <organization>OWASP Foundation</organization>
+            <organizationUrl>https://owasp.org/</organizationUrl>
+            <roles><role>Project Leader</role><role>Maintainer</role></roles>
         </developer>
         <developer>
+            <id>jeremylong</id>
             <name>Jeremy Long</name>
             <email>jeremy.long@owasp.org</email>
-            <organization>OWASP</organization>
-            <organizationUrl>https://www.owasp.org/</organizationUrl>
-            <roles>
-                <role>developer</role>
-            </roles>
+            <url>https://github.com/jeremylong</url>
+            <organization>OWASP Foundation</organization>
+            <organizationUrl>https://owasp.org/</organizationUrl>
+            <roles><role>Project Leader</role><role>Maintainer</role></roles>
         </developer>
     </developers>
+    <contributors>
+        <contributor>
+            <name>Jeff Ichnowski</name>
+            <roles><role>Original Author</role><role>Architect</role><role>Developer</role></roles>
+        </contributor>
+    </contributors>
 
     <properties>
         <!-- Reviewed source timestamp; update with the release commit, not wall-clock build time. -->
@@ -456,6 +453,8 @@
                                 <Export-Package>!META-INF.versions.*,*</Export-Package>
                                 <!-- Frozen published identity; do not derive it from the artifactId. -->
                                 <Bundle-SymbolicName>${osgi.symbolic.name}</Bundle-SymbolicName>
+                                <Bundle-Vendor>${project.organization.name}</Bundle-Vendor>
+                                <Bundle-DocURL>${project.url}</Bundle-DocURL>
                                 <!-- Dependencies are excluded from bnd's analysis, so version ranges
                                      for imported packages must be stated explicitly per module. -->
                                 <Import-Package>${osgi.import.package}</Import-Package>

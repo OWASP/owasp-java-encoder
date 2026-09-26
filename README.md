@@ -1,42 +1,37 @@
-OWASP Java Encoder Project
-==========================
+# OWASP Java Encoder
 
-![Build Status](https://github.com/OWASP/owasp-java-encoder/actions/workflows/build.yaml/badge.svg?branch=main) [![License](https://img.shields.io/badge/License-BSD%203--Clause-blue.svg)](https://opensource.org/licenses/BSD-3-Clause) [![javadoc](https://javadoc.io/badge2/org.owasp.encoder/encoder/javadoc.svg)](https://javadoc.io/doc/org.owasp.encoder/encoder)
+![Build status](https://github.com/OWASP/owasp-java-encoder/actions/workflows/build.yaml/badge.svg?branch=main)
+[![BSD 3-Clause](https://img.shields.io/badge/License-BSD%203--Clause-blue.svg)](LICENSE)
 
-Contextual Output Encoding is a computer programming technique necessary to stop
-Cross-Site Scripting. This project is a Java 8+ simple-to-use drop-in high-performance
-encoder class with little baggage.
+Contextual output encoding for Java 8+. Choose an encoder for the parser context
+receiving untrusted text: HTML, JavaScript, CSS, XML or a URL component. The core
+has no runtime dependencies; optional JSP, Jakarta and ESAPI adapters have their
+own dependency graphs. Encoding is one part of [XSS prevention][xss], alongside
+safe templates, URL validation and other application controls.
 
-For more detailed documentation on the OWASP Java Encoder please visit https://owasp.org/www-project-java-encoder/.
+**Upgrade all Java Encoder artifacts to 1.4.1. Versions through 1.4.0 are affected
+by the [security issues fixed in 1.4.1](releases/1.4.1.md#security-fixes).**
+Maven Central publication is still pending (checked 2026-09-26); the signed
+[GitHub 1.4.1 release][release] is available. Download, [verify](VERIFYING.md) and
+[install its retained artifacts](releases/1.4.1.md#verification) in your local or
+organizational Maven repository. Central alone cannot resolve 1.4.1. Do not use
+Central's affected 1.4.0 just because it is the latest version shown there.
 
-Project Leaders
----------------
+`main` is **unreleased 1.5.0-SNAPSHOT**. Its JSON API, JavaScript template support,
+XML 1.1 tag bindings and ESAPI URL change are described below with version labels;
+they are not features of the signed 1.4.1 release. See [CHANGELOG.md](CHANGELOG.md).
 
-- [Jim Manico](https://github.com/jmanico)
-- [Jeremy Long](https://github.com/jeremylong)
+## Start using the OWASP Java Encoders
 
-See [MAINTAINERS.md](MAINTAINERS.md) for responsibilities, signing-key custody,
-and recovery readiness.
+After installing the verified 1.4.1 artifacts, select the dependency you need.
+All four use group ID `org.owasp.encoder` and version `1.4.1`:
 
-Start using the OWASP Java Encoders
------------------------------------
-**Maven Central publication is pending.** Version 1.4.1 is available as signed
-artifacts from the [GitHub security release](https://github.com/OWASP/owasp-java-encoder/releases/tag/v1.4.1).
-Until Central publication completes, [download and verify those artifacts](releases/1.4.1.md#verification) and
-install them in your local or organizational Maven repository; the dependency
-examples below require that installation. Maven Central 1.4.0 remains affected.
-
-The core library's [Maven Central listing](https://central.sonatype.com/artifact/org.owasp.encoder/encoder)
-currently offers releases through 1.4.0.
-
-The JSP tag and EL function libraries have Central listings as well; their
-1.4.1 artifacts are available from the signed GitHub release while publication
-is pending:
-
-- [encoder-jakarta-jsp](https://central.sonatype.com/artifact/org.owasp.encoder/encoder-jakarta-jsp) - Jakarta Servlet 5.0+
-- [encoder-jsp](https://central.sonatype.com/artifact/org.owasp.encoder/encoder-jsp) - legacy `javax.servlet` API
-
-After installing the verified 1.4.1 artifacts, use these dependencies:
+| Artifact ID | Purpose and runtime dependencies |
+| --- | --- |
+| `encoder` | Core String/Writer API; no runtime dependencies |
+| `encoder-jsp` | Legacy `javax` JSP tags/EL functions; core plus container-provided JSP API |
+| `encoder-jakarta-jsp` | Jakarta JSP tags/EL functions; core plus container-provided Jakarta JSP API |
+| `encoder-esapi` | ESAPI `Encoder` adapter; core and ESAPI 2.7.0.0 with its transitive dependencies |
 
 ```xml
 <dependency>
@@ -44,253 +39,138 @@ After installing the verified 1.4.1 artifacts, use these dependencies:
     <artifactId>encoder</artifactId>
     <version>1.4.1</version>
 </dependency>
-
-<!-- using Servlet Spec 5 in the jakarta.servlet package use: -->
-<dependency>
-    <groupId>org.owasp.encoder</groupId>
-    <artifactId>encoder-jakarta-jsp</artifactId>
-    <version>1.4.1</version>
-</dependency>
-
-<!-- using the Legacy Servlet Spec in the javax.servlet package use: -->
-<dependency>
-    <groupId>org.owasp.encoder</groupId>
-    <artifactId>encoder-jsp</artifactId>
-    <version>1.4.1</version>
-</dependency>
 ```
 
-Quick Overview
---------------
-The OWASP Java Encoder library is intended for quick contextual encoding with very little
-overhead, either in performance or usage. To get started, add the `encoder` dependency shown
-above and import `org.owasp.encoder.Encode`.
-
-Example usage:
+Replace `encoder` with one adapter artifact ID when needed; each adapter brings
+in core. Keep separately managed core/adapter versions aligned. Use **one** of the
+javax or Jakarta taglib JARs: they share `org.owasp.encoder.tag` and must not coexist
+on the same classpath or module path. See [ESAPI dependency and migration
+policy](esapi/README.md), [runtime matrix](compatibility/README.md), and
+[dependency/license inventory](docs/dependencies.md). Development snapshots are
+not security releases or a substitute for the signed 1.4.1 artifacts.
 
 ```java
-PrintWriter out = ...;
-out.println("<textarea>" + Encode.forHtml(userData) + "</textarea>");
+import org.owasp.encoder.Encode;
+
+out.write("<p>");
+Encode.forHtmlContent(out, userText); // Writer overload; no intermediate String
+out.write("</p>");
 ```
 
-Please look at the javadoc for Encode to see the variety of contexts for which you can encode.
+The equivalent String call is `Encode.forHtmlContent(userText)`. Callers supply
+trusted surrounding syntax and attribute quotes. Encode raw data once, at the
+output boundary; account for any escaping your template engine already performs.
 
-Happy Encoding!
+## Choose the output context
 
-Security
---------
-Please report suspected vulnerabilities privately. See [SECURITY.md](SECURITY.md) for
-the reporting channels, supported versions, and scope. Verify downloads using the
-[public release keys](KEYS) and [signature/checksum guide](VERIFYING.md).
+| Destination | API and limits |
+| --- | --- |
+| HTML text, including textarea content | `forHtmlContent`; `forHtml` also covers quoted ordinary text attributes |
+| Quoted HTML text attribute | `forHtmlAttribute`; not an event-handler expression or URL validator |
+| One raw URL component | `forUriComponent`; assemble with trusted delimiters, validate the URL, then encode for the enclosing HTML attribute |
+| JavaScript string | `forJavaScript`; supply single/double quotes. Ordinary untagged template literal text requires **1.5**. Never use in tagged templates, expression bodies, JSON or script URLs |
+| JSON string content | `forJson` (**1.5**); supply double quotes. Prefer a serializer for a complete document |
+| Quoted CSS string / CSS `url(...)` value | `forCssString` / `forCssUrl`; validate URLs and obey the method's surrounding-context rules |
+| XML 1.0 text / quoted attribute | `forXmlContent` / `forXmlAttribute`; `forXml` covers both |
+| XML 1.1 text / quoted attribute | `forXml11Content` / `forXml11Attribute` (core **1.4+**); requires an XML 1.1 document/parser, not HTML |
+| XML CDATA / comment | `forCDATA` / `forXmlComment`; not HTML comments |
+| Java source string literal | `forJava`; caller supplies quotes; unpaired surrogates may not compile |
 
-Building
---------
+Every listed facade method has String and Writer overloads. The
+[context guide](docs/contexts.md) explains nesting, null/Unicode behavior,
+JavaScript variants, template boundaries, JSON and unsafe contexts. The
+[Java/JSP examples](docs/usage.md) show complete surrounding syntax.
 
-Use JDK 17 to build, package, and test the project. The 1.x libraries retain a
-Java 8 API and bytecode baseline (`--release 8`); test applications and servlet
-containers can require newer Java versions. Packaged consumers run in CI on Java
-8, 11, 17, 21, and 25. See [runtime support and compatibility checks](compatibility/README.md)
-for per-artifact requirements, fixture scope, and advisory newer-JDK builds.
-If a future javac removes `--release 8`, a runtime baseline change requires a
-future-major-version decision; it does not change the 1.x baseline. Simply run:
+Encoding does not sanitize HTML, validate input/URLs, serialize JSON documents,
+perform SQL parameterization, or decode/canonicalize data. Use an HTML sanitizer
+when markup must be allowed; use parameterized queries for SQL. See the
+[OWASP Java security-library guide][java-libraries] for these distinct roles.
 
-```shell
-./mvnw verify
+## Taglib
+
+Taglib URIs are **identifiers**, not URLs that must open in a browser:
+
+| Adapter | Basic identifier | Advanced identifier |
+| --- | --- | --- |
+| Jakarta | `owasp.encoder.jakarta` | `owasp.encoder.jakarta.advanced` |
+| javax JSP | `https://www.owasp.org/index.php/OWASP_Java_Encoder_Project` | Same identifier with `#advanced` appended |
+
+```jsp
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" isELIgnored="false" %>
+<%@ taglib prefix="e" uri="owasp.encoder.jakarta" %>
+<p>${e:forHtmlContent(param.message)}</p>
 ```
 
-To validate that the Jakarta JSP tags and EL functions work correctly, run the integration test:
+Use the javax identifier for a javax container. Tags use an empty body and a
+required `value` attribute, for example `<e:forHtmlContent value="${param.message}" />`.
+See [bindings and EL evaluation](docs/usage.md#tag-bindings-and-el-evaluation) for
+basic versus advanced methods and version-sensitive deployment settings. In 1.5,
+advanced taglibs expose every `Encode.forX(String)` context except `forJava`;
+Java source generation is not a JSP context. XML 1.1 bindings are new in 1.5.
 
-```shell
-./mvnw verify -PtestJakarta
+## Migrating from forUri
+
+`Encode.forUri` is deprecated in the released API. **Unreleased 1.5** extends
+that deprecation to `Encoders.URI`, both `ForUriTag` classes and the `forUri`
+tag/function documentation. All of these entry points are retained through 1.x. Encoding a whole URI does not validate it:
+`forUri("javascript:alert(1)")` returns it unchanged. Existing `%` signs are encoded
+again. Use `forUriComponent` for one raw parameter name/value, path segment or
+fragment; validate complete URLs separately, then use `forHtmlAttribute` when
+placing one in a quoted HTML attribute. Parsing with `java.net.URI` alone does
+not establish safety. See the [worked URL example](docs/usage.md#urls).
+
+The ESAPI adapter's `encodeForURL` changes in **unreleased 1.5** to component
+encoding, escaping delimiters and literal `+`, with `%20` spaces. Earlier adapter
+releases preserve whole-URI delimiters. Its existing null and malformed-Unicode
+policies remain. Read the [adapter migration guide](esapi/README.md#url-encoding-migration-in-15-unreleased)
+before upgrading. Removing the legacy API needs a separately reviewed future-major
+decision; deprecation is not a removal schedule.
+
+## Java 9+ module names and OSGi
+
+Use the [published module names and OSGi ranges](compatibility/README.md#published-identities-and-development-import-ranges)
+and [runnable JPMS example](docs/usage.md#java-modules). Explicit multi-release
+module names intentionally differ from historical automatic names. Do not rename
+dependency JARs used for automatic modules. CI exercises original packaged JARs
+on Java 8/11/17/21/25, classpath, JPMS and Felix R6/R8; this does not certify every
+container or downstream dependency combination.
+
+## Building and contributing
+
+Build with JDK 17 and the committed wrapper (Maven 3.9.16); use `mvnw.cmd` on Windows:
+
+```sh
+./mvnw clean verify
+./mvnw clean verify -PtestJakarta  # optional locally; requires Docker
 ```
 
-The integration test requires a running Docker-compatible container runtime.
+Normal verify includes the Docker-free JSP engines. The browser/WAR suite remains
+required in CI. See [BUILDING.md](BUILDING.md) for style/coverage policy,
+[CONTRIBUTING.md](CONTRIBUTING.md) for review and diagnostic commands, and
+[RELEASING.md](RELEASING.md) for the distinct release gates. There is no benchmark
+or Maven Site publishing profile.
 
-Java 9+ Module Names
---------------------
+The 1.x line preserves Java 8 library APIs/bytecode, published API/module identities
+and dependency scopes. Exact encoded output is also observable behavior: adding
+escapes is not automatically patch-compatible. Changes need context/parser tests,
+an output-change note and migration guidance when required. Security fixes can
+correct unsafe behavior in a patch with explicit advisories; other compatibility
+breaks require a future-major decision, not just a version label.
 
-| JAR                 | Explicit JPMS Module  | Automatic-Module-Name     |
-|---------------------|-----------------------|--------------------------|
-| encoder             | owasp.encoder         | org.owasp.encoder        |
-| encoder-jakarta-jsp  | owasp.encoder.jakarta | org.owasp.encoder.jakarta |
-| encoder-jsp          | owasp.encoder.jsp     | org.owasp.encoder.jsp     |
-| encoder-esapi        | owasp.encoder.esapi   | org.owasp.encoder.esapi   |
+## Project, security and support
 
-The multi-release descriptors define the explicit Java 9+ module names. The
-manifest names intentionally retain their historical values for consumers that
-disable multi-release support or otherwise use automatic-module discovery.
+Leaders: [Jim Manico](https://github.com/jmanico) and
+[Jeremy Long](https://github.com/jeremylong); original author: Jeff Ichnowski.
+See [MAINTAINERS.md](MAINTAINERS.md) and the [OWASP project page][project].
+The separate OWASP website can lag this repository's release status.
 
-The adapter modules also require their public API dependency on the module path:
+Report suspected vulnerabilities **privately** through [SECURITY.md](SECURITY.md).
+Verify downloads with [KEYS](KEYS) and [VERIFYING.md](VERIFYING.md).
+The project uses the [BSD 3-Clause license](LICENSE) and the
+[OWASP Code of Conduct](CODE_OF_CONDUCT.md). [Funding](CONTRIBUTING.md#funding)
+links distinguish maintainer support from OWASP Foundation donations.
 
-| Adapter module            | Required dependency module | Supported Maven artifact                              |
-|---------------------------|----------------------------|-------------------------------------------------------|
-| `owasp.encoder.jsp`       | `javax.servlet.jsp.api`    | `javax.servlet.jsp:javax.servlet.jsp-api:2.2.1`       |
-| `owasp.encoder.jakarta`   | `jakarta.servlet.jsp`      | `jakarta.servlet.jsp:jakarta.servlet.jsp-api:3.0.0`   |
-| `owasp.encoder.esapi`     | `esapi`                    | `org.owasp.esapi:esapi:2.7.0.0`                       |
-
-These dependencies are transitive in the module descriptors because their types
-appear in the adapters' public APIs. The JSP and ESAPI dependencies are automatic
-modules; use the original Maven artifact filenames so Java derives the module
-names shown above. Servlet containers continue to provide the JSP APIs at runtime,
-and classpath-based applications are unaffected.
-
-The ESAPI adapter's fixed dependency and tested compatibility policy are
-documented in [esapi/README.md](esapi/README.md).
-
-
-OSGi Bundles
-------------
-
-| JAR                 | Bundle-SymbolicName             | Export-Package           | Imports `org.owasp.encoder` | Imports API packages                                        |
-|---------------------|---------------------------------|--------------------------|-----------------------------|-------------------------------------------------------------|
-| encoder             | `org.owasp.encoder`             | `org.owasp.encoder`      | (none)                      | (none)                                                      |
-| encoder-jsp         | `org.owasp.encoder.jsp`         | `org.owasp.encoder.tag`  | `[1.5,2)`                   | `javax.servlet.jsp`, `javax.servlet.jsp.tagext`: `[2.0,3)`   |
-| encoder-jakarta-jsp | `org.owasp.encoder.jakarta-jsp` | `org.owasp.encoder.tag`  | `[1.5,2)`                   | `jakarta.servlet.jsp`, `jakarta.servlet.jsp.tagext`: `[3.0,4)` |
-| encoder-esapi       | `org.owasp.encoder.esapi`       | `org.owasp.encoder.esapi`| `[1.4.1,2)`                 | `org.owasp.esapi.*`: unversioned                            |
-
-The symbolic names are fixed; note that the Jakarta bundle's differs from its
-`Automatic-Module-Name`. Core exports `org.owasp.encoder` at its release version.
-The JSP and Jakarta tags require core 1.5 because they call `Encode.forJson`; the
-ESAPI adapter only calls older methods, so its floor is the oldest supported core,
-the 1.4.1 security release. Jakarta Pages 4 is not in the accepted range until
-compatibility with it has been verified. ESAPI publishes no OSGi metadata: OSGi
-users must wrap ESAPI and its dependencies as bundles themselves. The project's
-tests supply the ESAPI packages from the framework host, which is not a statement
-that upstream ESAPI supports OSGi.
-
-TagLib
---------------------
-
-| Lib                 | TagLib                                                                                        |
-|---------------------|-----------------------------------------------------------------------------------------------|
-| encoder-jakarta-jsp | &lt;%@taglib prefix="e" uri="owasp.encoder.jakarta"%&gt;                                      |
-| encoder-jsp         | &lt;%@taglib prefix="e" uri="https://www.owasp.org/index.php/OWASP_Java_Encoder_Project"%&gt; |
-
-Every `Encode.forX(String)` context has a tag and an EL function in the advanced
-taglib, except `forJava`: Java source generation is not a JSP output context.
-
-Migrating from forUri
----------------------
-
-`Encode.forUri`, the `uri` context (`Encoders.URI`), `ForUriTag`, and the `forUri`
-tag and EL function are deprecated. Percent-encoding a complete URI does not make an
-untrusted URI safe: `forUri("javascript:alert(1)")` is returned unchanged. It also
-always encodes `%`, so an already percent-encoded URI is double-encoded.
-
-- For an untrusted value inserted into a URL (a path segment, a query parameter name
-  or value, or a fragment), use `forUriComponent`:
-
-  ```jsp
-  <a href="/search?q=<%=Encode.forUriComponent(query)%>&amp;page=1">
-  ```
-
-- For an entire untrusted URL, parse it with `java.net.URI`, allow-list its scheme
-  (for example `http` and `https`, rejecting a missing scheme unless relative URLs are
-  intended), enforce application-specific restrictions on its destination and
-  path, and then encode the whole value for the enclosing context. Parsing alone
-  does not establish safety:
-
-  ```jsp
-  <a href="<%=Encode.forHtmlAttribute(validatedUri.toString())%>">
-  ```
-
-`forUri` is retained for compatibility in all 1.x releases. Whether 2.0 removes it is
-tracked in [#142](https://github.com/OWASP/owasp-java-encoder/issues/142).
-
-The ESAPI adapter's `encodeForURL` changes separately in unreleased 1.5: it now
-uses `forUriComponent`, escaping URL delimiters while retaining `%20` for spaces.
-Pass raw component data, not a complete or already encoded URL. See the
-[adapter migration and context contracts](esapi/README.md#url-encoding-migration-in-15-unreleased)
-for differences from earlier adapter releases and ESAPI's reference form encoder.
-
-Development
------------
-
-The OWASP Java Encoder project is a multi-module Maven project:
-
-```bash
-$ ./mvnw verify
-```
-
-See [RELEASING.md](RELEASING.md) for signing, Maven Central publication, and release verification.
-
-When changing the version, update the root `pom.xml`, the `<parent>` version in each
-module POM, and `encoder.version` in `jakarta-test/pom.xml`. CI fails if
-`jakarta-test` would test a different `encoder-jakarta-jsp` version than the one being built.
-When publishing a release, also update the supported versions in `SECURITY.md`.
-
-
-News
-----
-### Unreleased - 1.5.0
-Development builds use `1.5.0-SNAPSHOT`; this is not a published release.
-
-* fix: the ESAPI adapter's `encodeForURL` now encodes individual URL components with UTF-8, including reserved delimiters and literal `+`, instead of preserving whole-URI delimiters. Spaces remain `%20`, null remains the string `"null"`, and unpaired surrogates remain `-`. See the [migration guide](esapi/README.md#url-encoding-migration-in-15-unreleased) for output changes, form-encoding differences, and the retained quoted HTML/CSS/JavaScript contracts [#100](https://github.com/OWASP/owasp-java-encoder/issues/100).
-* feat: all four `forJavaScript*` methods encode dollar sign (`$`) as `\x24`, backtick as `\x60`, and opening brace (`{`) as `\x7b` [#129](https://github.com/OWASP/owasp-java-encoder/issues/129). Escaping `{` prevents input after a trusted `$` from completing `${...}`. Encoded output now supports literal text in ordinary (untagged) template literals as well as single- and double-quoted strings. This changes the encoded output while preserving its decoded JavaScript string value. Tagged templates (including `String.raw`), `${...}` expression bodies, JSON, and script URLs are unsupported; each method's HTML context restrictions still apply.
-* fix: all four `forJavaScript*` methods escape unpaired UTF-16 surrogates as `\uXXXX`, preserving their JavaScript string values through UTF-8 serialization [#135](https://github.com/OWASP/owasp-java-encoder/issues/135), and escape DEL/C1 controls (U+007F to U+009F) as `\xNN` [#163](https://github.com/OWASP/owasp-java-encoder/issues/163). Valid surrogate pairs and other non-ASCII text remain unescaped except U+2028/U+2029. These are output-fidelity changes; NEL was already ordinary JavaScript string data.
-* feat: add `Encode.forJson` String/Writer methods, the `json` encoder context, and `forJson` tags and EL functions in both JSP and Jakarta tag libraries [#145](https://github.com/OWASP/owasp-java-encoder/issues/145). The caller supplies double quotes. Output uses RFC 8259 string escapes and also escapes HTML script delimiters. Java `null` becomes the text `null` (the JSON string `"null"` when quoted); unpaired surrogates use Unicode escapes and may not interoperate with every JSON consumer. Prefer a serializer for complete JSON documents. The ESAPI adapter retains its existing JSON delegation and null behavior.
-* feat: add `forXml11`, `forXml11Content` and `forXml11Attribute` tags and EL functions to the advanced JSP and Jakarta taglibs, and `forXml11` to the basic taglibs [#131](https://github.com/OWASP/owasp-java-encoder/issues/131).
-* deprecation: `Encoders.URI` and both `ForUriTag` classes are now deprecated like `Encode.forUri`, whose Javadoc now says what to use instead; the `forUri` TLD descriptions warn about double encoding, the adapter builds show deprecation call sites, and the README has a [forUri migration section](#migrating-from-foruri) [#130](https://github.com/OWASP/owasp-java-encoder/issues/130).
-* fix: the JSP, Jakarta and ESAPI bundles now declare the core versions they need (`[1.5,2)` for the tags, which call `Encode.forJson`; `[1.4.1,2)` for ESAPI) and the JSP API ranges they support, instead of unversioned imports that could wire to an older core and fail when a tag ran. Bundle symbolic names are now declared explicitly and unchanged [#137](https://github.com/OWASP/owasp-java-encoder/issues/137).
-* fix: `forHtmlUnquotedAttribute` now replaces U+0085 (NEL) with a hyphen like the other C1 control characters, instead of emitting `&#133;`, which HTML5 parsers decode as U+2026 [#136](https://github.com/OWASP/owasp-java-encoder/issues/136).
-* fix: the XML 1.1 encoders (`forXml11`, `forXml11Content`, `forXml11Attribute`) now encode U+0085 (NEL) as `&#x85;` and U+2028 (line separator) as `&#x2028;`, so they are not normalized to a line feed [#136](https://github.com/OWASP/owasp-java-encoder/issues/136).
-* maintenance: clarify output-context contracts and expand XML 1.1 tests, fix clean reactor compilation, and remove the obsolete benchmark profile.
-
-### 1.4.1 Security Release
-Upgrade all OWASP Java Encoder dependencies to 1.4.1. This release fixes three
-security issues in CSS string encoding and `EncodedWriter` buffer handling.
-See [the release notes](releases/1.4.1.md) for affected entry points,
-compatibility details, and verification instructions.
-
-### 2025-11-17 - 1.4.0 Release
-The team is happy to announce that version 1.4.0 has been released!
-* feat: add XML 1.1 encoding support [#88](https://github.com/OWASP/owasp-java-encoder/pull/88).
-
-**Consumer update (2026-09-25):** The `encoder-esapi:1.4.0` POM uses the ESAPI
-range `[2.5.1.0,3)`. Consumers temporarily remaining on 1.4.0 should apply the
-[ESAPI dependency-management pin](esapi/README.md#temporary-esapi-pin-for-140-consumers).
-That pin does not fix Java Encoder's security issues; upgrade all Java Encoder
-dependencies to the [signed 1.4.1 security release](releases/1.4.1.md).
-Central publication of 1.4.1 remains pending.
-
-### 2024-08-20 - 1.3.1 Release
-The team is happy to announce that version 1.3.1 has been released!
-* fix: add OSGi related entries in the MANIFEST.MF file [#82](https://github.com/OWASP/owasp-java-encoder/pull/82).
-* fix: java.lang.NoSuchMethodError when running on Java 8 [#80](https://github.com/OWASP/owasp-java-encoder/pull/80).
-
-### 2024-08-02 - 1.3.0 Release
-The team is happy to announce that version 1.3.0 has been released!
-* Minimum JDK Requirement is now Java 8
-  - Requires Java 17 to build due to test case dependencies.
-* Adds Java 9 Module name via Multi-Release Jars [#77](https://github.com/OWASP/owasp-java-encoder/pull/77).
-* Fixed compilation errors with the ESAPI Thunk [#76](https://github.com/OWASP/owasp-java-encoder/pull/76).
-* Adds support for Servlet Spec 5 using the `jakarta.servlet.*` [#75](https://github.com/OWASP/owasp-java-encoder/pull/75).
-  - taglib : &lt;%@taglib prefix="e" uri="owasp.encoder.jakarta"%&gt;
-
-### 2020-11-08 - 1.2.3 Release
-The team is happy to announce that version 1.2.3 has been released! 
-* Update to  make the manifest OSGi-compliant [#39](https://github.com/OWASP/owasp-java-encoder/pull/39).
-* Update to support ESAPI 2.2 and later [#37](https://github.com/OWASP/owasp-java-encoder/pull/37).
-
-### 2018-09-14 - 1.2.2 Release
-The team is happy to announce that version 1.2.2 has been released! 
-* This is a minor release fixing documentation and licensing issues.
-
-### 2017-02-19 - 1.2.1 Release
-The team is happy to announce that version 1.2.1 has been released! 
-* The CDATA Encoder was modified so that it does not emit intermediate characters between adjacent CDATA sections.
-* The documentation on [gh-pages](https://owasp.github.io/owasp-java-encoder/) has been improved.
-
-### 2015-04-12 - 1.2 Release on GitHub
-OWASP Java Encoder has been moved to GitHub. Version 1.2 was also released!
-
-### 2014-03-31 - Documentation updated
-Please visit https://owasp.org/www-project-java-encoder/ to see detailed documentation and examples for each API.
-
-### 2014-01-30 - Version 1.1.1 released
-We're happy to announce that version 1.1.1 has been released. Along with an important bug fix, we added ESAPI integration to replace the legacy ESAPI encoders with the OWASP Java Encoder.
-
-### 2013-02-14 - Version 1.1 released
-We're happy to announce that version 1.1 has been released. Along with a few minor encoding enhancements, we improved performance, and added a JSP tag and function library.
-
-Build policy, wrapper provenance, source checks, and coverage are documented in [BUILDING.md](BUILDING.md). The migrated [Java/JSP examples](docs/usage.md) preserve the former Maven Site usage guide.
+[xss]: https://cheatsheetseries.owasp.org/cheatsheets/Cross_Site_Scripting_Prevention_Cheat_Sheet.html
+[java-libraries]: https://devguide.owasp.org/en/05-implementation/03-secure-libraries/04-java-secure-libs/
+[project]: https://owasp.org/projects/java-encoder
+[release]: https://github.com/OWASP/owasp-java-encoder/releases/tag/v1.4.1

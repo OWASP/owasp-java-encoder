@@ -1,0 +1,22 @@
+name: Scoped feature proposal
+description: Describe a use case and compatibility tradeoffs before implementing it.
+title: "Proposal: "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Read the [context guide](https://github.com/OWASP/owasp-java-encoder/blob/main/docs/contexts.md) first. A proposal is not implementation approval. Report suspected vulnerabilities privately through SECURITY.md.
+  - type: textarea
+    id: use-case
+    attributes:
+      label: Use case and existing alternatives
+      description: Explain the parser context and why current APIs or standard libraries do not meet the need.
+    validations:
+      required: true
+  - type: textarea
+    id: compatibility
+    attributes:
+      label: Scope and compatibility
+      description: Identify public API, exact-output, Unicode/null, runtime and dependency effects. No implementation is required for triage.
+    validations:
+      required: true
