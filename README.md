@@ -24,21 +24,21 @@ The jars are also available in Central:
 <dependency>
     <groupId>org.owasp.encoder</groupId>
     <artifactId>encoder</artifactId>
-    <version>1.4.0</version>
+    <version>1.4.1</version>
 </dependency>
 
 <!-- using Servlet Spec 5 in the jakarta.servlet package use: -->
 <dependency>
     <groupId>org.owasp.encoder</groupId>
     <artifactId>encoder-jakarta-jsp</artifactId>
-    <version>1.4.0</version>
+    <version>1.4.1</version>
 </dependency>
 
 <!-- using the Legacy Servlet Spec in the javax.servlet package use: -->
 <dependency>
     <groupId>org.owasp.encoder</groupId>
     <artifactId>encoder-jsp</artifactId>
-    <version>1.4.0</version>
+    <version>1.4.1</version>
 </dependency>
 ```
 
@@ -137,11 +137,7 @@ Benchmarks (currently in need of improvement) can be run with:
 $ mvn verify -Pbenchmarks
 ```
 
-Releases are done via `central-publishing-maven-plugin`:
-
-```bash
-mvn clean deploy -DperformRelease=true
-```
+See [RELEASING.md](RELEASING.md) for signing, Maven Central publication, and release verification.
 
 When changing the version, update the root `pom.xml`, the `<parent>` version in each
 module POM, and `encoder.version` in `jakarta-test/pom.xml`. CI fails if
@@ -151,6 +147,12 @@ When publishing a release, also update the supported versions in `SECURITY.md`.
 
 News
 ----
+### 1.4.1 Security Release
+Upgrade all OWASP Java Encoder dependencies to 1.4.1. This release fixes three
+security issues in CSS string encoding and `EncodedWriter` buffer handling.
+See [the release notes](releases/1.4.1.md) for affected entry points,
+compatibility details, and verification instructions.
+
 ### 2025-11-17 - 1.4.0 Release
 The team is happy to announce that version 1.4.0 has been released!
 * feat: add XML 1.1 encoding support [#88](https://github.com/OWASP/owasp-java-encoder/pull/88).

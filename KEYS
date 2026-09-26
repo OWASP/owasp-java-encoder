@@ -1,0 +1,43 @@
+OWASP Java Encoder release signing keys
+======================================
+
+Project release key for version 1.4.1 and subsequent releases until rotation:
+Identity: OWASP Java Encoder Release <jim@owasp.org>
+Fingerprint: 1C5F632B86809F2F5DB25092BEA0075F94074A9B
+Algorithm: RSA 4096, signing/certification, two-year validity
+
+This dedicated project key replaces the personal release key used for 1.3.0,
+1.3.1, and 1.4.0 (259A55407DD6C00299E6607EFFDE55BE73A2D1ED).
+Historical artifacts and signatures remain unchanged. This file contains only
+public key material. The private key is not stored in the repository.
+
+-----BEGIN PGP PUBLIC KEY BLOCK-----
+
+mQINBGq3IMkBEADeoF94dZvP+tfgKoMkZOQ50uLtTSX5NRkduVxb6+KGXiS14Meo
+7uVImx8Twg/vN7L8JVJ+Ws1C2gr+fjGb5fCQ/svx4xVHDlPyXokLObZh+k3DFcjw
+nX0hL4V8S9zazzu+uQA9WD+c1BS492F7DWs51F1wW7FcgFe6tjRAodvES2+llXLh
+lFG5k/cgE0qJ3GG/XASqvnSejrhnyL6ic+DAwFThEpppsrN32inai1WGMBIHICC+
+ZA1V6Cc7cY9PcyU0RzG8jSXTNTlyMpoZC0jL0wf6SerVZLebRgnKkrFFAFI7zjid
+Cbx9tA7i1mBTa6hnh0eUcdejBL6WF/Rq75qLHNElhqwwYZ7gsMTSfglxZii/tH3G
+IHNWSJRXkoHXBkBgcb7cBWjKje3MQw9Czq7UMGB9Li56vdLC1mvz9bfDsRuyJmVu
+zDsjlDXr+41Gcq2BARssMS+vCSPtHXzC9GIScRwbo92DMmp2tieol2QNPOWIuC32
+hxvtjQhtSwKmui8USPxY7KA/oyXMBCmGUQhXHfKmQ/w610XALaF4qA4QxyKHEOQp
+GQ9Eq6ViyeAQGTkCi64B2207919EvaFrxDluYJT8n6299ndr5MwYoEwENh+ShNDU
+lmqmWMZsB5RSyfR5Ty3xtAKuqz8C9mAXZnpdBERZBEK0dOwuuitkP0QH+wARAQAB
+tCpPV0FTUCBKYXZhIEVuY29kZXIgUmVsZWFzZSA8amltQG93YXNwLm9yZz6JAnME
+EwEIAF0WIQQcX2MrhoCfL12yUJK+oAdflAdKmwUCarcgyRsUgAAAAAAEAA5tYW51
+MiwyLjUrMS4xMiwwLDMCGwMFCQPCZwAFCwkIBwICIgIGFQoJCAsCBBYCAwECHgcC
+F4AACgkQvqAHX5QHSps3wBAAuEAAYTB9VHLJyPRCin52/rd8suso1RcdQFxx8sNq
+Qc94dzVlRVy5iFaB52qTm/IsZ5iPB3fWYUXV2gsMC3aqpF+NsWEankS4JJBySwiQ
+UW4TG6/aqGY9h62861oTcyjgK0HKrY/jbkMAo9dayMgX1JcdXJc16TDDwUcZ7Nx4
+iUSL+kdzpwOsxeCQoGvFDPSPH2sPuWfbXZ4Kn8bTn5hMwgZaidSTrD5cF10/Itlr
+hfXvhmPsQ1f/RtMrNF7/6ytmHyfKWTNGLfoXptOXgahKpEYZk4qir/Om/VPTd5cp
+ebQ6w0XKs6pAbmn8ymBFMXkA2rKqoHtKyzcS8Yxtvx4YpIJlY9QGM8IAFCp/QAsu
+09u/IVYe9ix3DnKXZ0Xf93hZoD5VgCSItMNpRU0muFmpAp4os8qfuZKzhkAxWDPG
+ZD2XiK/lSAnU7oPjXNNMvFsG9ukprBKW8q5qZ3db6G/HVnBSUUEh3goMhEqudKPa
+KZChxEYPLzrqngnJH2l9JnmyKl959EUX5lZzTDmBTQ96XG9WM8bMZsdWPaDxNM1c
+YZUsmUxY9gjoxhN2KvVKQmNTDoKhHXTanp/mi+Zp9/vNa5MvAVyxHjk+G4+svVjy
+4pXcqT7VjM+GOZvpcnMgr5tz36RdXsKhHbTK7FiJpqGv2rbmjeAo+YqOpctXil72
+Bvk=
+=Huuu
+-----END PGP PUBLIC KEY BLOCK-----
