@@ -1455,6 +1455,7 @@ public final class Encode {
      *
      * @param out where to write encoded output
      * @param input the input string to encode
+     * @throws NullPointerException if out is null
      * @throws IOException if thrown by writer
      * @since 1.5.0
      */
