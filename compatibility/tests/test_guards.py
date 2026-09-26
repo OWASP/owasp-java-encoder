@@ -39,6 +39,11 @@ class ArtifactGuards(unittest.TestCase):
             entries[name] = entries[name].replace(b'Multi-Release: true', b'Multi-Release: false')
         self.rejected('core', mutate)
 
+    def test_original_packages_pass(self):
+        for kind, jar in self.jars.items():
+            with self.subTest(artifact=kind):
+                consumers.metadata(kind, jar, self.jars['core'])
+
     def test_osgi_execution_requirement(self):
         def mutate(entries):
             name = 'META-INF/MANIFEST.MF'
@@ -47,6 +52,9 @@ class ArtifactGuards(unittest.TestCase):
 
     def test_missing_descriptor(self):
         self.rejected('core', lambda entries: entries.pop('META-INF/versions/9/module-info.class'))
+
+    def test_extra_versioned_resource(self):
+        self.rejected('core', lambda entries: entries.update({'META-INF/versions/9/extra.properties': b'unexpected=true'}))
 
     def test_java9_base_class(self):
         def mutate(entries):
@@ -78,6 +86,12 @@ class ArtifactGuards(unittest.TestCase):
                 ET.SubElement(dependency, ns + key).text = value
             entries[name] = ET.tostring(pom)
         self.rejected('core', mutate)
+
+    def test_changed_provided_api_scope(self):
+        def mutate(entries):
+            name = 'META-INF/maven/org.owasp.encoder/encoder-jsp/pom.xml'
+            entries[name] = entries[name].replace(b'<scope>provided</scope>', b'<scope>test</scope>')
+        self.rejected('jsp', mutate)
 
 
 if __name__ == '__main__':

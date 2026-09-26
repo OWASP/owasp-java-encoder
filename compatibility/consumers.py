@@ -75,6 +75,8 @@ def metadata(kind, jar, core):
         assert 'META-INF/versions/9/module-info.class' in names
         assert 'module-info.class' not in names
         for name in names:
+            if name.startswith('META-INF/versions/') and not name.endswith('/'):
+                assert name == 'META-INF/versions/9/module-info.class', name
             if name.endswith('.class'):
                 data = archive.read(name)
                 major = struct.unpack('>H', data[6:8])[0]
@@ -105,17 +107,25 @@ def metadata(kind, jar, core):
         pom = ET.fromstring(archive.read('META-INF/maven/org.owasp.encoder/' + artifact + '/pom.xml'))
         ns = {'p': 'http://maven.apache.org/POM/4.0.0'}
         version = pom.findtext('p:parent/p:version', namespaces=ns)
+        assert pom.findtext('p:artifactId', namespaces=ns) == artifact, artifact
         assert jar.name == artifact + '-' + version + '.jar', jar
         assert attrs['Bundle-Version'] == version.replace('-SNAPSHOT', '.SNAPSHOT'), attrs
         runtime_dependencies = set()
+        provided_dependencies = set()
         for dep in pom.findall('p:dependencies/p:dependency', ns):
             group = dep.findtext('p:groupId', namespaces=ns)
             scope = dep.findtext('p:scope', default='compile', namespaces=ns)
+            coordinate = (group, dep.findtext('p:artifactId', namespaces=ns))
             if scope in ('compile', 'runtime'):
-                runtime_dependencies.add((group, dep.findtext('p:artifactId', namespaces=ns)))
+                runtime_dependencies.add(coordinate)
+                assert dep.findtext('p:optional', default='false', namespaces=ns) == 'false', coordinate
+            if scope == 'provided': provided_dependencies.add(coordinate)
         expected_dependencies = set() if kind == 'core' else {('org.owasp.encoder', 'encoder')}
         if kind == 'esapi': expected_dependencies.add(('org.owasp.esapi', 'esapi'))
         assert runtime_dependencies == expected_dependencies, (kind, runtime_dependencies)
+        expected_provided = {'jsp': {('javax.servlet.jsp', 'javax.servlet.jsp-api')},
+                             'jakarta': {('jakarta.servlet.jsp', 'jakarta.servlet.jsp-api')}}.get(kind, set())
+        assert provided_dependencies == expected_provided, (kind, provided_dependencies)
     print('Metadata passed:', jar.name)
 
 
