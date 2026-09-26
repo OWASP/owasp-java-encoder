@@ -155,6 +155,41 @@
     <build>
         <pluginManagement>
             <plugins>
+                <!-- Forked JSP engines use plugin-only dependencies, never the library test classpath. -->
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-antrun-plugin</artifactId>
+                    <version>3.2.0</version>
+                    <executions>
+                        <execution>
+                            <id>packaged-jsp-engine</id>
+                            <phase>verify</phase>
+                            <goals><goal>run</goal></goals>
+                            <configuration>
+                                <skip>${skipTests}</skip>
+                                <target>
+                                    <mkdir dir="${project.build.directory}/jsp-engine/classes"/>
+                                    <javac srcdir="${project.basedir}/../compatibility/jsp-engine/src"
+                                           destdir="${project.build.directory}/jsp-engine/classes"
+                                           release="17" encoding="UTF-8" includeantruntime="false">
+                                        <classpath refid="maven.plugin.classpath"/>
+                                    </javac>
+                                    <java classname="fixture.JspEngineTest" fork="true" failonerror="true" timeout="180000">
+                                        <classpath>
+                                            <path refid="maven.plugin.classpath"/>
+                                            <pathelement location="${project.build.directory}/jsp-engine/classes"/>
+                                        </classpath>
+                                        <jvmarg value="-Duser.language=en"/>
+                                        <jvmarg value="-Duser.country=US"/>
+                                        <arg value="${project.basedir}/../core/target/encoder-${project.version}.jar"/>
+                                        <arg value="${project.build.directory}/${project.build.finalName}.jar"/>
+                                        <arg value="${project.build.directory}/jsp-engine"/>
+                                    </java>
+                                </target>
+                            </configuration>
+                        </execution>
+                    </executions>
+                </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-compiler-plugin</artifactId>

@@ -56,6 +56,7 @@ jobs:
             *.log
             **/target/surefire-reports/
             **/target/failsafe-reports/
+            **/target/jsp-engine/
             **/target/japicmp/
 
   runtime:
@@ -175,6 +176,7 @@ jobs:
             build.log
             **/target/surefire-reports/
             **/target/failsafe-reports/
+            **/target/jsp-engine/
             **/target/japicmp/
 
   gate:
