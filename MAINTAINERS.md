@@ -74,9 +74,12 @@ testing the original local backup does not test either person's vault copy.
    or logs. Do not sign a release artifact or tag for this drill.
 4. Import only the public `KEYS` into the verification home and verify the
    detached signature with both filenames specified explicitly. Require a
-   successful verification and compare the full signer fingerprint in the
-   `VALIDSIG` status line with the expected project key. A trust warning in a
-   fresh keyring does not replace this fingerprint check.
+   successful verification and compare the full `primary-key-fpr` argument
+   (after `sig-class`) in the OpenPGP `VALIDSIG` status line with the expected
+   project key. The first fingerprint identifies the signing key or subkey;
+   it equals the primary fingerprint when the primary key signs. See the
+   [GnuPG status specification](https://github.com/gpg/gnupg/blob/master/doc/DETAILS#validsig-args).
+   A trust warning in a fresh keyring does not replace this fingerprint check.
 5. Record the result and remove the temporary recovered files and both temporary
    keyrings after stopping their GnuPG agents. Preserve the vault copies.
 
