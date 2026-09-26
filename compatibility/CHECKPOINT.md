@@ -16,7 +16,8 @@ progress, not a completed CI change and not ready for PR review or merge.
 
 The authorized workflow for every PR remains Astra implementation -> Sol review
 and fixes -> Astra review of fixes and exact-head CI verification -> merge. Do not
-merge this checkpoint. No PR has been opened for #91 and nothing has been pushed.
+merge this checkpoint. No PR has been opened for #91. The clearly marked WIP
+branch is pushed to origin so the checkpoint survives temporary-directory cleanup.
 
 ## Added so far
 
