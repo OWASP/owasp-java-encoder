@@ -61,6 +61,14 @@ development dependencies. Graph reports and submission JSON are retained for
 inspection. Inspect representative ESAPI/AntiSamy HTTP transitives and Jakarta
 Spring/Tomcat dependencies in the resulting graph; alert counts are not gates.
 
+All four submissions use detector `encoder-maven-build-graph` with distinct,
+stable correlators. Keep the action's detector inputs synchronized with the
+Python build snapshot: GitHub [merges correlators from the same detector](https://docs.github.com/en/code-security/concepts/supply-chain-security/dependency-graph-data#prioritization),
+but selects between different detectors for a POM. Different detectors can hide
+runtime dependencies behind build-only results despite successful submissions.
+Check the final SBOM after both matrix jobs finish, including runtime versions
+and development dependencies together, not just the snapshot API status.
+
 Dependabot checks all library POMs, the parent and optional app weekly, with
 separate Maven and SHA-pinned Actions groups and grouped Maven security updates.
 Normal review and complete CI apply to automated PRs; no automatic merging is

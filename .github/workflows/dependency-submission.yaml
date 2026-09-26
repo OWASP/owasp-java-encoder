@@ -49,6 +49,12 @@ jobs:
           # Package in the same invocation so the optional app resolves reactor JARs.
           maven-args: -B -ntp ${{ matrix.profile }} -DskipTests package
           correlator: encoder-${{ matrix.graph }}
+          # Match build-dependency-snapshot.py: GitHub merges correlators from one
+          # detector, but selects between different detectors for the same POM.
+          # Separate detectors would hide runtime dependencies behind build ones.
+          detector-name: encoder-maven-build-graph
+          detector-version: '1.0.0'
+          detector-url: https://github.com/OWASP/owasp-java-encoder
       - name: Resolve build plugins and their dependencies
         env:
           PROFILE: ${{ matrix.profile }}
