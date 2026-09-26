@@ -147,7 +147,15 @@ public final class Encoders {
     public static final String JSON = "json";
     /**
      * Name of {@linkplain Encode#forUri(String) URI} context.
+     *
+     * @deprecated Encoding a complete URI does not make an untrusted URI
+     * safe.  Use {@link #URI_COMPONENT} for each untrusted value inserted
+     * into a URL, or validate an entire URL with {@link java.net.URI} and an
+     * allow-listed scheme before encoding it for the enclosing context.  See
+     * {@link Encode#forUri(String)}.  Retained for compatibility in all 1.x
+     * releases.
      */
+    @Deprecated
     public static final String URI = "uri";
     /**
      * Name of {@linkplain Encode#forUriComponent(String) URI component}
@@ -273,6 +281,9 @@ public final class Encoders {
     /**
      * Returns the shared stateless Encoder singleton for the specified context.
      * The returned instance is thread-safe. Context names are case-sensitive.
+     *
+     * <p>The deprecated {@code "uri"} context ({@link #URI}) is still
+     * recognized for compatibility.</p>
      *
      * @param contextName the context name (one of the String constants defined
      * in this class)

@@ -90,6 +90,10 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <!-- Name the call sites of deprecated core APIs such as Encode.forUri. -->
+                    <showDeprecation>true</showDeprecation>
+                </configuration>
                 <executions>
                     <execution>
                         <id>compile-module-path-test-support</id>

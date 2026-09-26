@@ -690,6 +690,16 @@ public final class Encode {
      *
      * @param input the input to encode
      * @return the encoded result
+     * @deprecated Encoding a complete URI does not make an untrusted URI
+     * safe.  Encode each untrusted value inserted into a URL with
+     * {@link #forUriComponent(String)} instead.  To use an entire untrusted
+     * URL, parse it with {@link java.net.URI}, allow-list its scheme (for
+     * example {@code http} and {@code https}), and then encode it for the
+     * enclosing output context, for example with
+     * {@link #forHtmlAttribute(String)}.  This method always encodes
+     * {@code %}, so never apply it to a URI that is already percent-encoded.
+     * It is retained for compatibility in all 1.x releases; removal in 2.0 is
+     * under consideration.
      */
     @Deprecated public static String forUri(String input) {
         return encode(Encoders.URI_ENCODER, input);
@@ -704,7 +714,7 @@ public final class Encode {
      * @throws NullPointerException if out is null
      * @throws IOException if thrown by writer
      *
-     * @deprecated  There is never a need to encode a complete URI with this form of encoding.
+     * @deprecated See {@link #forUri(String)} for what to use instead.
      */
     @Deprecated public static void forUri(Writer out, String input)
         throws IOException
@@ -735,9 +745,9 @@ public final class Encode {
      * <b>Encoding Notes</b>
      * <ul>
      *
-     *   <li>Unlike {@link #forUri(String)} this method is safe to be
-     *   used in most containing contexts, including: HTML/XML, CSS,
-     *   and JavaScript contexts.</li>
+     *   <li>The output contains only unreserved characters and
+     *   {@code %xx} escapes, so it is safe to be used in most containing
+     *   contexts, including: HTML/XML, CSS, and JavaScript contexts.</li>
      *
      *   <li>URL encoding is an encoding for bytes, not unicode.  The
      *   input string is thus first encoded as a sequence of UTF-8

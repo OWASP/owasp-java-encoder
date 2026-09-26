@@ -116,6 +116,20 @@ public class EncodersTest extends TestCase {
         assertTrue(count > 0);
     }
 
+    /**
+     * The "uri" context is deprecated everywhere Encode.forUri is, but stays
+     * usable for compatibility.
+     */
+    public void testUriContextIsDeprecatedButRetained() throws Exception {
+        assertTrue(Encoders.class.getField("URI").isAnnotationPresent(Deprecated.class));
+        assertTrue(Encode.class.getMethod("forUri", String.class)
+            .isAnnotationPresent(Deprecated.class));
+        assertTrue(Encode.class.getMethod("forUri", java.io.Writer.class, String.class)
+            .isAnnotationPresent(Deprecated.class));
+        assertFalse(Encoders.class.getField("URI_COMPONENT").isAnnotationPresent(Deprecated.class));
+        assertSame(Encoders.URI_ENCODER, Encoders.forName("uri"));
+    }
+
     public void testJsonContext() throws Exception {
         assertEquals("json", Encoders.JSON);
         Encoder encoder = Encoders.forName(Encoders.JSON);
