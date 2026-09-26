@@ -22,6 +22,10 @@ TLD_URIS = {
     "main/resources/META-INF/java-encoder-advanced.tld": (
         "https://www.owasp.org/index.php/OWASP_Java_Encoder_Project#advanced", "owasp.encoder.jakarta.advanced"),
 }
+TLD_SHORT_NAMES = {
+    "main/resources/META-INF/java-encoder.tld": ("java-encoder", "e"),
+    "main/resources/META-INF/java-encoder-advanced.tld": ("java-encoder", "java-encoder"),
+}
 CONSUMERS = "test/modules/owasp.encoder.jsp.consumer/"
 
 
@@ -34,6 +38,17 @@ def target_path(path):
 
 def descriptor(text, path, translate):
     root = ET.fromstring(text)
+    namespace = JAVAX_XML if translate else JAKARTA_XML
+    family = "jsp" if translate else "jakarta"
+    index = 0 if translate else 1
+    # Pin the published identities before normalization: coordinated edits to
+    # both families must not silently redefine a user's taglib URI or metadata.
+    for name, expected in (("uri", TLD_URIS[path][index]),
+                           ("short-name", TLD_SHORT_NAMES[path][index])):
+        elements = root.findall("{" + namespace + "}" + name)
+        if len(elements) != 1 or (elements[0].text or "").strip() != expected:
+            raise ValueError("{}/src/{}: expected exactly one <{}> with value {!r}".format(
+                family, path, name, expected))
     if translate:
         for element in root.iter():
             element.tag = element.tag.replace("{" + JAVAX_XML + "}", "{" + JAKARTA_XML + "}")
@@ -43,15 +58,8 @@ def descriptor(text, path, translate):
         schema = "{http://www.w3.org/2001/XMLSchema-instance}schemaLocation"
         if root.get(schema) == JAVAX_XML + " " + JAVAX_XML + "/web-jsptaglibrary_2_1.xsd":
             root.set(schema, JAKARTA_XML + " " + JAKARTA_XML + "/web-jsptaglibrary_3_0.xsd")
-        uri = root.find("{" + JAKARTA_XML + "}uri")
-        before, after = TLD_URIS[path]
-        if uri is not None and uri.text == before:
-            uri.text = after
-        # This metadata difference has shipped since Jakarta support was added.
-        if path == "main/resources/META-INF/java-encoder.tld":
-            short_name = root.find("{" + JAKARTA_XML + "}short-name")
-            if short_name is not None and short_name.text == "java-encoder":
-                short_name.text = "e"
+        root.find("{" + JAKARTA_XML + "}uri").text = TLD_URIS[path][1]
+        root.find("{" + JAKARTA_XML + "}short-name").text = TLD_SHORT_NAMES[path][1]
 
     def canonical(element):
         return (element.tag, sorted(element.attrib.items()), " ".join((element.text or "").split()),
@@ -97,8 +105,12 @@ def main():
         expected = (jsp / path).read_text(encoding="utf-8")
         actual = (jakarta / target).read_text(encoding="utf-8")
         if path in TLD_URIS:
-            expected = descriptor(expected, path, True)
-            actual = descriptor(actual, path, False)
+            try:
+                expected = descriptor(expected, path, True)
+                actual = descriptor(actual, path, False)
+            except (ValueError, ET.ParseError) as error:
+                errors.append(str(error))
+                continue
         else:
             expected = translated(expected, path)
         if expected != actual:
