@@ -58,6 +58,15 @@
         <!-- Override with -Desapi.version to verify another supported ESAPI release. -->
         <esapi.version>2.7.0.0</esapi.version>
         <jigsaw.module.name>org.owasp.encoder.esapi</jigsaw.module.name>
+        <osgi.symbolic.name>org.owasp.encoder.esapi</osgi.symbolic.name>
+        <!-- Every core method this adapter calls predates 1.4, so the floor is the
+             oldest supported core: 1.4.1, the security release (SECURITY.md).
+             ESAPI publishes no OSGi metadata; consumers wrap it, so its packages
+             stay unversioned. -->
+        <osgi.import.package>
+            org.owasp.encoder;version="[1.4.1,2)",
+            *
+        </osgi.import.package>
     </properties>
 
     <dependencies>
