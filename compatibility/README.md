@@ -21,12 +21,12 @@ This smoke matrix is not certification of every container, ESAPI operation, or
 transitive dependency on every JDK. The separate ESAPI version matrix tests the
 adapter's broader supported ESAPI range.
 
-The Java 8 proof here is packaged consumer execution across all four artifacts,
-including Jakarta with Java 8-compatible APIs. A second Surefire/JaCoCo run of
-reactor unit tests on Java 8 is not included. That proposed additional coverage
-would not test packaging or isolated dependency resolution, while adding another
-build/toolchain configuration to maintain. Full unit tests and JaCoCo coverage
-continue in JDK 17 CI; the Java 8 leg makes no unit-test coverage claim.
+The Java 8 proof includes packaged consumer execution across all four artifacts,
+including Jakarta with Java 8-compatible APIs. A separate CI job builds on JDK 17,
+then forks the core, JSP, and ESAPI unit tests on Temurin 8 and requires a JaCoCo
+execution-data file from each module. The Java 8 unit job does not run the
+packaged/module-path integration tests or the Jakarta test suite; those remain on
+JDK 17. The isolated packaged consumer job covers those four artifacts on Java 8.
 
 ## What runs
 

@@ -76,6 +76,47 @@ jobs:
           name: consumer-java-${{ matrix.java }}-diagnostics
           path: runtime.log
 
+  java8-unit-tests:
+    name: Core, JSP, and ESAPI unit tests on Java 8
+    needs: prepare
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-java@v6
+        with:
+          distribution: temurin
+          java-version: |
+            8
+            17
+          cache: maven
+      - name: Build with JDK 17
+        run: mvn -B -ntp -DskipTests install -pl core,jsp,esapi -am 2>&1 | tee build.log
+      - name: Run unit tests and collect coverage with Java 8
+        run: mvn -B -ntp -pl core,jsp,esapi jacoco:prepare-agent@prepare-agent surefire:test -Djvm="$JAVA_HOME_8_X64/bin/java" 2>&1 | tee java8-tests.log
+      - name: Require coverage from every tested module
+        run: |
+          for module in core jsp esapi; do
+            test -s "$module/target/jacoco.exec" || {
+              echo "::error::Missing Java 8 coverage for $module"
+              exit 1
+            }
+          done
+      - name: Preserve Java 8 unit-test diagnostics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: consumer-java-8-unit-test-diagnostics
+          path: |
+            build.log
+            java8-tests.log
+            core/target/surefire-reports/
+            jsp/target/surefire-reports/
+            esapi/target/surefire-reports/
+            core/target/jacoco.exec
+            jsp/target/jacoco.exec
+            esapi/target/jacoco.exec
+
   forward-build:
     name: Advisory build on JDK ${{ matrix.java }}
     runs-on: ubuntu-latest
