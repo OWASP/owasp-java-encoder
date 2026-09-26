@@ -20,8 +20,9 @@ public final class ESAPIInitializationProbe {
 
     public static void main(String[] args) throws Exception {
         ClassLoader loader = ESAPIInitializationProbe.class.getClassLoader();
-        for (String resource : new String[] {"ESAPI.properties", ".esapi/ESAPI.properties",
-                "esapi/ESAPI.properties"}) {
+        for (String resource : new String[] {"ESAPI.properties", "resourceDirectory/ESAPI.properties",
+                ".esapi/ESAPI.properties", "esapi/ESAPI.properties",
+                "resources/ESAPI.properties", "src/main/resources/ESAPI.properties"}) {
             assertNull("Configuration leaked onto the probe classpath: " + resource,
                     loader.getResource(resource));
         }
@@ -65,10 +66,11 @@ public final class ESAPIInitializationProbe {
         assertEquals("<", encoder.canonicalize("&lt;", true, true));
         assertNull(encoder.encodeForJSON(null));
         assertNull(encoder.decodeFromJSON(null));
-        assertEquals(DefaultEncoder.getInstance().encodeForJSON("a\"b"),
+        Encoder reference = DefaultEncoder.getInstance();
+        assertEquals(reference.encodeForJSON("a\"b"),
                 encoder.encodeForJSON("a\"b"));
         assertEquals("a\"b", encoder.decodeFromJSON("a\\\"b"));
-        assertSame(DefaultEncoder.getInstance(), DefaultEncoder.getInstance());
+        assertSame(reference, DefaultEncoder.getInstance());
         assertSame(encoder, ESAPI.encoder());
         assertBackedMethods(encoder);
         assertSingletonSerialization(encoder);
