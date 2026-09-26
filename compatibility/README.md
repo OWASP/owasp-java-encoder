@@ -132,3 +132,59 @@ requires its Java 9 descriptor at `META-INF/versions/9/module-info.java`, plus a
 Javadoc index in every documentation attachment. Descriptor sources are added
 only after compilation/resource copying; Java 8 compiler inputs and the binary
 multi-release layout remain unchanged.
+
+## Published identities and development import ranges
+
+The tables below describe the current **1.5 development** artifacts. The names
+are historical identities preserved in 1.x; the OSGi import floors reflect the
+new 1.5 calls and must not be projected onto older published JARs.
+
+### Java 9+ module names
+
+| JAR                 | Explicit JPMS Module  | Automatic-Module-Name     |
+|---------------------|-----------------------|--------------------------|
+| encoder             | owasp.encoder         | org.owasp.encoder        |
+| encoder-jakarta-jsp  | owasp.encoder.jakarta | org.owasp.encoder.jakarta |
+| encoder-jsp          | owasp.encoder.jsp     | org.owasp.encoder.jsp     |
+| encoder-esapi        | owasp.encoder.esapi   | org.owasp.encoder.esapi   |
+
+The multi-release descriptors define the explicit Java 9+ module names. The
+manifest names intentionally retain their historical values for consumers that
+disable multi-release support or otherwise use automatic-module discovery.
+
+The adapter modules also require their public API dependency on the module path:
+
+| Adapter module            | Required dependency module | Supported Maven artifact                              |
+|---------------------------|----------------------------|-------------------------------------------------------|
+| `owasp.encoder.jsp`       | `javax.servlet.jsp.api`    | `javax.servlet.jsp:javax.servlet.jsp-api:2.2.1`       |
+| `owasp.encoder.jakarta`   | `jakarta.servlet.jsp`      | `jakarta.servlet.jsp:jakarta.servlet.jsp-api:3.0.0`   |
+| `owasp.encoder.esapi`     | `esapi`                    | `org.owasp.esapi:esapi:2.7.0.0`                       |
+
+These dependencies are transitive in the module descriptors because their types
+appear in the adapters' public APIs. The JSP and ESAPI dependencies are automatic
+modules; use the original Maven artifact filenames so Java derives the module
+names shown above. Servlet containers continue to provide the JSP APIs at runtime,
+and classpath-based applications are unaffected.
+
+The ESAPI adapter's fixed dependency and tested compatibility policy are
+documented in [esapi/README.md](../esapi/README.md).
+
+
+### OSGi bundles
+
+| JAR                 | Bundle-SymbolicName             | Export-Package           | Imports `org.owasp.encoder` | Imports API packages                                        |
+|---------------------|---------------------------------|--------------------------|-----------------------------|-------------------------------------------------------------|
+| encoder             | `org.owasp.encoder`             | `org.owasp.encoder`      | (none)                      | (none)                                                      |
+| encoder-jsp         | `org.owasp.encoder.jsp`         | `org.owasp.encoder.tag`  | `[1.5,2)`                   | `javax.servlet.jsp`, `javax.servlet.jsp.tagext`: `[2.0,3)`   |
+| encoder-jakarta-jsp | `org.owasp.encoder.jakarta-jsp` | `org.owasp.encoder.tag`  | `[1.5,2)`                   | `jakarta.servlet.jsp`, `jakarta.servlet.jsp.tagext`: `[3.0,4)` |
+| encoder-esapi       | `org.owasp.encoder.esapi`       | `org.owasp.encoder.esapi`| `[1.4.1,2)`                 | `org.owasp.esapi.*`: unversioned                            |
+
+The symbolic names are fixed; note that the Jakarta bundle's differs from its
+`Automatic-Module-Name`. Core exports `org.owasp.encoder` at its release version.
+The JSP and Jakarta tags require core 1.5 because they call `Encode.forJson`; the
+ESAPI adapter only calls older methods, so its floor is the oldest supported core,
+the 1.4.1 security release. Jakarta Pages 4 is not in the accepted range until
+compatibility with it has been verified. ESAPI publishes no OSGi metadata: OSGi
+users must wrap ESAPI and its dependencies as bundles themselves. The project's
+tests supply the ESAPI packages from the framework host, which is not a statement
+that upstream ESAPI supports OSGi.

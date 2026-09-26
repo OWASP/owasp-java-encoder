@@ -47,6 +47,7 @@
 
     <artifactId>encoder-esapi</artifactId>
     <packaging>jar</packaging>
+    <url>https://owasp.org/projects/java-encoder</url>
 
     <name>ESAPI Thunk</name>
     <description>

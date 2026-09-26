@@ -1,0 +1,8 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Report a suspected vulnerability privately
+    url: https://github.com/OWASP/owasp-java-encoder/security/policy
+    about: Do not put vulnerability details or proofs in public issues or pull requests.
+  - name: Read the output-context guide
+    url: https://github.com/OWASP/owasp-java-encoder/blob/main/docs/contexts.md
+    about: Choose an encoder for the parser receiving the value.
