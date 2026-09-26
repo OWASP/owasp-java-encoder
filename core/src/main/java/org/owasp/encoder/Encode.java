@@ -1076,7 +1076,8 @@ public final class Encode {
      * <p>Encodes for a JavaScript string.  It is safe for use in HTML
      * script attributes (such as {@code onclick}), script
      * blocks, and JavaScript source.  The caller MUST
-     * provide surrounding single (') or double (") quotation marks for the string.
+     * provide surrounding single (') or double (") quotation marks, or backticks
+     * (`) for an ordinary (untagged) template literal.
      * Since this performs additional encoding so it can work in all
      * of the JavaScript contexts listed, it may be slightly less
      * efficient than using one of the methods targeted to a specific
@@ -1138,11 +1139,17 @@ public final class Encode {
      *       "\&amp;quot;".)</td>
      *     </tr>
      *     <tr class="altColor">
+     *       <td class="colFirst">U+0024</td><td><code>$</code></td>
+     *       <td class="colLast"><code>\x24</code></td>
+     *       <td class="colLast">Dollar sign.  Encoded so that <code>${</code>
+     *       cannot start an expression inside a template literal.</td>
+     *     </tr>
+     *     <tr class="rowColor">
      *       <td class="colFirst">U+0026</td><td><code>&amp;</code></td>
      *       <td class="colLast"><code>\x26</code></td>
      *       <td class="colLast">Ampersand character</td>
      *     </tr>
-     *     <tr class="rowColor">
+     *     <tr class="altColor">
      *       <td class="colFirst">U+0027</td><td><code>'</code></td>
      *       <td class="colLast"><code>\x27</code></td>
      *       <td class="colLast">The encoding <code>\'</code> is not used here because
@@ -1150,39 +1157,70 @@ public final class Encode {
      *       attributes, it would also be correct to use
      *       "\&amp;#39;".)</td>
      *     </tr>
-     *     <tr class="altColor">
+     *     <tr class="rowColor">
      *       <td class="colFirst">U+002F</td><td><code>/</code></td>
      *       <td class="colLast"><code>\/</code></td>
      *       <td class="colLast">This encoding is used to avoid an input sequence
      *       "&lt;/" from prematurely terminating a &lt;/script&gt;
      *       block.</td>
      *     </tr>
-     *     <tr class="rowColor">
+     *     <tr class="altColor">
      *       <td class="colFirst">U+005C</td><td><code>\</code></td>
      *       <td class="colLast"><code>\\</code></td>
      *       <td class="colLast"></td>
      *     </tr>
+     *     <tr class="rowColor">
+     *       <td class="colFirst">U+0060</td><td><code>`</code></td>
+     *       <td class="colLast"><code>\x60</code></td>
+     *       <td class="colLast">Backtick.  Encoded so that it cannot end a
+     *       template literal.</td>
+     *     </tr>
      *     <tr class="altColor">
+     *       <td class="colFirst">U+007B</td><td><code>{</code></td>
+     *       <td class="colLast"><code>\x7b</code></td>
+     *       <td class="colLast">Opening brace. Encoded so that input after a
+     *       trusted dollar sign cannot start a template expression.</td>
+     *     </tr>
+     *     <tr class="rowColor">
      *       <td class="colFirst" colspan="2">U+0000&nbsp;to&nbsp;U+001F</td>
      *       <td class="colLast"><code>\x##</code></td>
      *       <td class="colLast">Hexadecimal encoding is used for characters in this
      *       range that were not already mentioned in above.</td>
      *     </tr>
-     *     <tr class="rowColor">
+     *     <tr class="altColor">
      *       <td class="colFirst">U+002D</td><td><code>-</code></td>
      *       <td class="colLast"><code>\-</code></td>
      *       <td class="colLast">Hyphen character</td>
      *     </tr>
-     *     <tr class="altColor">
+     *     <tr class="rowColor">
      *       <td class="colFirst" colspan="2">U+2028, U+2029</td>
      *       <td class="colLast"><code>&#92;u2028</code>, <code>&#92;u2029</code></td>
      *       <td class="colLast">Line and paragraph separators</td>
      *     </tr>
+     *     <tr class="altColor">
+     *       <td class="colFirst" colspan="2">U+007F&nbsp;to&nbsp;U+009F</td>
+     *       <td class="colLast"><code>\x##</code></td>
+     *       <td class="colLast">DEL and C1 controls, including U+0085 (NEL).</td>
+     *     </tr>
+     *     <tr class="rowColor">
+     *       <td class="colFirst" colspan="2">Unpaired UTF-16 surrogates</td>
+     *       <td class="colLast"><code>&#92;u####</code></td>
+     *       <td class="colLast">Preserves each unpaired code unit through charset
+     *       conversion. Valid surrogate pairs remain unescaped.</td>
+     *     </tr>
      *   </tbody>
      * </table>
      *
-     * <p>This method is for single- or double-quoted JavaScript string literals,
-     * not template literals (backticks) or JSON. Use a JSON serializer for JSON.
+     * <p>In an ordinary template literal, insert the encoded output into the
+     * literal text, not into a <code>${...}</code> expression. Backtick and dollar
+     * sign are encoded as <code>\x60</code> and <code>\x24</code>, preventing
+     * termination of the literal or interpolation of input as code. Opening
+     * brace is encoded as <code>\x7b</code> so input after a trusted dollar
+     * sign cannot complete <code>${...}</code>. These escapes
+     * preserve the string value in single-quoted, double-quoted, and ordinary
+     * template literals. Tagged templates (including {@code String.raw}) are not
+     * supported: tags can observe raw escapes or interpret the text in another
+     * language. This is not a JSON encoder; use a JSON serializer for JSON.
      * Do not use the result in {@code javascript:} or {@code data:} URLs;
      * URL decoding introduces a separate parsing context.</p>
      *
@@ -1214,9 +1252,12 @@ public final class Encode {
      * <p>This method encodes for JavaScript strings contained within
      * HTML script attributes (such as {@code onclick}).  It is
      * NOT safe for use in script blocks.  The caller MUST provide the
-     * surrounding single (') or double (") quotation marks.  This method performs the
+     * surrounding single (') or double (") quotation marks, or backticks (`) for
+     * an ordinary (untagged) template literal. This method performs the
      * same encode as {@link #forJavaScript(String)} with the
      * exception that <code>/</code> and <code>-</code> are not escaped.</p>
+     * <p>DEL and C1 controls (U+007F to U+009F) are hex-escaped. Unpaired UTF-16
+     * surrogates use Unicode escapes; valid surrogate pairs remain unescaped.</p>
      *
      * <p><strong>Unless you are interested in saving a few bytes of
      * output or are writing a framework on top of this library, it is
@@ -1228,8 +1269,10 @@ public final class Encode {
      *    &lt;button onclick="alert('&lt;%=Encode.forJavaScriptAttribute(data)%&gt;');"&gt;
      * </pre>
      *
-     * <p>This method is for single- or double-quoted JavaScript string literals,
-     * not template literals (backticks) or JSON. Use a JSON serializer for JSON.
+     * <p>For ordinary template literals, insert the result into literal text,
+     * not a <code>${...}</code> expression. Tagged templates (including
+     * {@code String.raw}) are not supported; see {@link #forJavaScript(String)}.
+     * This is not a JSON encoder; use a JSON serializer for JSON.
      * Do not use the result in {@code javascript:} or {@code data:} URLs;
      * URL decoding introduces a separate parsing context.</p>
      *
@@ -1261,11 +1304,14 @@ public final class Encode {
      * <p>This method encodes for JavaScript strings contained within
      * HTML script blocks.  It is NOT safe for use in script
      * attributes (such as <code>onclick</code>).  The caller must
-     * provide the surrounding single (') or double (") quotation marks.  This method
+     * provide surrounding single (') or double (") quotation marks, or backticks
+     * (`) for an ordinary (untagged) template literal. This method
      * performs the same encode as {@link #forJavaScript(String)} with
      * the exception that <code>"</code> and <code>'</code> are
      * encoded as <code>\"</code> and <code>\'</code>
      * respectively.</p>
+     * <p>DEL and C1 controls (U+007F to U+009F) are hex-escaped. Unpaired UTF-16
+     * surrogates use Unicode escapes; valid surrogate pairs remain unescaped.</p>
      *
      * <p><strong>Unless you are interested in saving a few bytes of
      * output or are writing a framework on top of this library, it is
@@ -1279,8 +1325,10 @@ public final class Encode {
      *    &lt;/script&gt;
      * </pre>
      *
-     * <p>This method is for single- or double-quoted JavaScript string literals,
-     * not template literals (backticks) or JSON. Use a JSON serializer for JSON.
+     * <p>For ordinary template literals, insert the result into literal text,
+     * not a <code>${...}</code> expression. Tagged templates (including
+     * {@code String.raw}) are not supported; see {@link #forJavaScript(String)}.
+     * This is not a JSON encoder; use a JSON serializer for JSON.
      * Do not use the result in {@code javascript:} or {@code data:} URLs;
      * URL decoding introduces a separate parsing context.</p>
      *
@@ -1312,11 +1360,14 @@ public final class Encode {
      * <p>This method encodes for JavaScript strings contained within
      * a standalone JavaScript file.  <strong>This method is NOT safe for
      * use in ANY context embedded in HTML.</strong> The caller must
-     * provide the surrounding single (') or double (") quotation marks.  This method
+     * provide surrounding single (') or double (") quotation marks, or backticks
+     * (`) for an ordinary (untagged) template literal. This method
      * performs the same encode as {@link #forJavaScript(String)} with
      * the exception that <code>/</code>, <code>-</code>, and <code>&amp;</code> are not
      * escaped and <code>"</code> and <code>'</code> are encoded as
      * <code>\"</code> and <code>\'</code> respectively.</p>
+     * <p>DEL and C1 controls (U+007F to U+009F) are hex-escaped. Unpaired UTF-16
+     * surrogates use Unicode escapes; valid surrogate pairs remain unescaped.</p>
      *
      * <p><strong>Unless you are interested in saving a few bytes of
      * output or are writing a framework on top of this library, it is
@@ -1330,8 +1381,10 @@ public final class Encode {
      *    var data = "&lt;%=Encode.forJavaScriptSource(data)%&gt;";
      * </pre>
      *
-     * <p>This method is for single- or double-quoted JavaScript string literals,
-     * not template literals (backticks) or JSON. Use a JSON serializer for JSON.
+     * <p>For ordinary template literals, insert the result into literal text,
+     * not a <code>${...}</code> expression. Tagged templates (including
+     * {@code String.raw}) are not supported; see {@link #forJavaScript(String)}.
+     * This is not a JSON encoder; use a JSON serializer for JSON.
      * Do not use the result in {@code javascript:} or {@code data:} URLs;
      * URL decoding introduces a separate parsing context.</p>
      *

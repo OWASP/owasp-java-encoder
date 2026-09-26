@@ -57,9 +57,11 @@ import org.owasp.esapi.reference.DefaultEncoder;
  * here have the contextual contracts described below.</p>
  *
  * <p>The adapter's {@code encodeForCSS} encodes only quoted CSS strings, and
- * {@code encodeForJavaScript} encodes only single- or double-quoted JavaScript
- * strings, not JSON, template literals, or script URLs. Its
- * {@code encodeForURL} delegates to deprecated {@link Encode#forUri(String)}:
+ * {@code encodeForJavaScript} encodes single- or double-quoted JavaScript
+ * strings and literal text in ordinary (untagged) template literals, not JSON,
+ * tagged templates (including {@code String.raw}), or script URLs. It escapes
+ * DEL/C1 controls and unpaired UTF-16 surrogates while preserving valid pairs.
+ * Its {@code encodeForURL} delegates to deprecated {@link Encode#forUri(String)}:
  * it preserves URI delimiters such as {@code &amp; = / ? #} and therefore is
  * not a URL-component or form encoder. For an inserted component, use
  * {@link Encode#forUriComponent(String)}. Validate complete URLs and their
@@ -126,6 +128,9 @@ public final class ESAPIEncoder {
      * that the OWASP Java Encoders implement (see class documentation).
      * Though not a requirement of the ESAPI Encoder API, the returned value
      * is also serializable.
+     * Obtaining the instance and using OWASP Java Encoder-backed methods does
+     * not load ESAPI configuration. Delegated methods resolve ESAPI's reference
+     * encoder when called and require its configuration to be available.
      *
      * @return An encoder implementation that uses the OWASP Java Encoders
      * for most of the common encoding methods.
@@ -137,8 +142,9 @@ public final class ESAPIEncoder {
     /**
      * This is the private singleton that implements the ESAPI Encoder shim.
      * It is implemented as a single-value enum to get all the "free" singleton
-     * properties associated with enums--such as serialization, and on-demand
-     * initialization.
+     * properties associated with enums, including serialization and thread-safe
+     * initialization. Initializing this enum does not initialize ESAPI's
+     * reference encoder.
      *
      * <p>The implementation is intentionally private to avoid any API baggage.
      * The instance should be obtained using
@@ -151,33 +157,36 @@ public final class ESAPIEncoder {
         INSTANCE;
 
         /**
-         * The reference encoder from ESAPI.  Any ESAPI method without an
-         * OWASP Java Encoder equivalent is delegated to this instance.
+         * Resolves ESAPI's reference encoder for each delegated call. ESAPI
+         * caches the successful singleton itself. Keeping this call out of
+         * class initialization allows a failed configuration load to be retried.
          */
-        private final Encoder _referenceEncoder = DefaultEncoder.getInstance();
+        private static Encoder reference() {
+            return DefaultEncoder.getInstance();
+        }
 
         /** {@inheritDoc} */
         @Override
         public String canonicalize(String s) {
-            return _referenceEncoder.canonicalize(s);
+            return reference().canonicalize(s);
         }
 
         /** {@inheritDoc} */
         @Override
         public String canonicalize(String s, boolean strict) {
-            return _referenceEncoder.canonicalize(s, strict);
+            return reference().canonicalize(s, strict);
         }
 
         /** {@inheritDoc} */
         @Override
         public String canonicalize(String s, boolean restrictMultiple, boolean restrictMixed) {
-            return _referenceEncoder.canonicalize(s, restrictMultiple, restrictMixed);
+            return reference().canonicalize(s, restrictMultiple, restrictMixed);
         }
 
         /** {@inheritDoc} */
         @Override
         public String getCanonicalizedURI(URI dirtyUri) {
-            return _referenceEncoder.getCanonicalizedURI(dirtyUri);
+            return reference().getCanonicalizedURI(dirtyUri);
         }
 
         /**
@@ -198,7 +207,7 @@ public final class ESAPIEncoder {
         /** {@inheritDoc} */
         @Override
         public String decodeForHTML(String s) {
-            return _referenceEncoder.decodeForHTML(s);
+            return reference().decodeForHTML(s);
         }
 
         /** {@inheritDoc} */
@@ -208,8 +217,11 @@ public final class ESAPIEncoder {
         }
 
         /**
-         * Encodes a single- or double-quoted JavaScript string using
-         * {@link Encode#forJavaScript(String)}. Not for JSON, template literals, or script URLs.
+         * Encodes a single- or double-quoted JavaScript string or literal text in an
+         * ordinary (untagged) template literal using {@link Encode#forJavaScript(String)}.
+         * Not for JSON, tagged templates (including {@code String.raw}), or script URLs.
+         * DEL/C1 controls and unpaired UTF-16 surrogates are escaped; valid pairs
+         * remain unescaped.
          */
         @Override
         public String encodeForJavaScript(String s) {
@@ -219,43 +231,43 @@ public final class ESAPIEncoder {
         /** {@inheritDoc} */
         @Override
         public String encodeForVBScript(String s) {
-            return _referenceEncoder.encodeForVBScript(s);
+            return reference().encodeForVBScript(s);
         }
 
         /** {@inheritDoc} */
         @Override
         public String encodeForSQL(Codec codec, String s) {
-            return _referenceEncoder.encodeForSQL(codec, s);
+            return reference().encodeForSQL(codec, s);
         }
 
         /** {@inheritDoc} */
         @Override
         public String encodeForOS(Codec codec, String s) {
-            return _referenceEncoder.encodeForOS(codec, s);
+            return reference().encodeForOS(codec, s);
         }
 
         /** {@inheritDoc} */
         @Override
         public String encodeForLDAP(String s) {
-            return _referenceEncoder.encodeForLDAP(s);
+            return reference().encodeForLDAP(s);
         }
 
         /** {@inheritDoc} */
         @Override
         public String encodeForLDAP(String s, boolean b) {
-            return _referenceEncoder.encodeForLDAP(s, b);
+            return reference().encodeForLDAP(s, b);
         }
 
         /** {@inheritDoc} */
         @Override
         public String encodeForDN(String s) {
-            return _referenceEncoder.encodeForDN(s);
+            return reference().encodeForDN(s);
         }
 
         /** {@inheritDoc} */
         @Override
         public String encodeForXPath(String s) {
-            return _referenceEncoder.encodeForXPath(s);
+            return reference().encodeForXPath(s);
         }
 
         /** {@inheritDoc} */
@@ -283,19 +295,19 @@ public final class ESAPIEncoder {
         /** {@inheritDoc} */
         @Override
         public String decodeFromURL(String s) throws EncodingException {
-            return _referenceEncoder.decodeFromURL(s);
+            return reference().decodeFromURL(s);
         }
 
         /** {@inheritDoc} */
         @Override
         public String encodeForBase64(byte[] bytes, boolean wrap) {
-            return _referenceEncoder.encodeForBase64(bytes, wrap);
+            return reference().encodeForBase64(bytes, wrap);
         }
 
         /** {@inheritDoc} */
         @Override
         public byte[] decodeFromBase64(String s) throws IOException {
-            return _referenceEncoder.decodeFromBase64(s);
+            return reference().decodeFromBase64(s);
         }
 
         /**
@@ -303,7 +315,7 @@ public final class ESAPIEncoder {
          */
         @Override
         public String encodeForJSON(String s) {
-            return _referenceEncoder.encodeForJSON(s);
+            return reference().encodeForJSON(s);
         }
 
         /**
@@ -311,7 +323,7 @@ public final class ESAPIEncoder {
          */
         @Override
         public String decodeFromJSON(String s) {
-            return _referenceEncoder.decodeFromJSON(s);
+            return reference().decodeFromJSON(s);
         }
 
     }

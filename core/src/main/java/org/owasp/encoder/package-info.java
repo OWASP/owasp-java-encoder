@@ -44,7 +44,9 @@
  * validate URLs and their schemes before encoding URL-valued attributes</td></tr>
  * <tr><td>Inserted URI component</td><td>{@link org.owasp.encoder.Encode#forUriComponent(String)}</td></tr>
  * <tr><td>JavaScript string</td><td>{@link org.owasp.encoder.Encode#forJavaScript(String)};
- * single or double quotes, not template literals, JSON, or script URLs</td></tr>
+ * single or double quotes, or literal text in ordinary (untagged) template literals;
+ * not tagged templates, JSON, or script URLs. DEL/C1 controls and unpaired
+ * UTF-16 surrogates are escaped; valid surrogate pairs remain unescaped</td></tr>
  * <tr><td>JSON string</td><td>{@link org.owasp.encoder.Encode#forJson(String)};
  * caller supplies double quotes; supports JSON documents and HTML script data blocks</td></tr>
  * <tr><td>CSS string / unquoted url(...)</td><td>{@link org.owasp.encoder.Encode#forCssString(String)} /
