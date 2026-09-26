@@ -82,8 +82,13 @@ the reporting channels, supported versions, and scope.
 Building
 --------
 
-Due to test cases for the `encoder-jakarta-jsp` project Java 17 is required to package and test
-the project. Simply run:
+Use JDK 17 to build, package, and test the project. The 1.x libraries retain a
+Java 8 API and bytecode baseline (`--release 8`); test applications and servlet
+containers can require newer Java versions. Packaged consumers run in CI on Java
+8, 11, 17, 21, and 25. See [runtime support and compatibility checks](compatibility/README.md)
+for per-artifact requirements, fixture scope, and advisory newer-JDK builds.
+If a future javac removes `--release 8`, a runtime baseline change requires a
+future-major-version decision; it does not change the 1.x baseline. Simply run:
 
 ```shell
 mvn package
