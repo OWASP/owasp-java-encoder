@@ -77,6 +77,7 @@
             quotation marks around the JavaScript string. Template literals (backticks) and JSON are
             unsupported; use a JSON serializer for JSON. Do not use in javascript: or data: URLs,
             where URL decoding introduces a separate parsing context.
+            U+007F and the C1 controls U+0080 to U+009F are hex encoded, e.g. U+0085 as \x85.
         </description>
         <display-name>forJavaScript</display-name>
         <name>forJavaScript</name>
@@ -98,6 +99,7 @@
             JavaScript string. Template literals (backticks) and JSON are unsupported; use a JSON
             serializer for JSON. Do not use in javascript: or data: URLs, where URL decoding
             introduces a separate parsing context.
+            U+007F and the C1 controls U+0080 to U+009F are hex encoded, e.g. U+0085 as \x85.
         </description>
         <display-name>forJavaScriptAttribute</display-name>
         <name>forJavaScriptAttribute</name>
@@ -119,6 +121,7 @@
             the JavaScript string. Template literals (backticks) and JSON are unsupported; use a
             JSON serializer for JSON. Do not use in javascript: or data: URLs, where URL decoding
             introduces a separate parsing context.
+            U+007F and the C1 controls U+0080 to U+009F are hex encoded, e.g. U+0085 as \x85.
         </description>
         <display-name>forJavaScriptBlock</display-name>
         <name>forJavaScriptBlock</name>
@@ -141,6 +144,7 @@
             Template literals (backticks) and JSON are unsupported; use a JSON serializer for JSON.
             Do not use in javascript: or data: URLs, where URL decoding introduces a separate
             parsing context.
+            U+007F and the C1 controls U+0080 to U+009F are hex encoded, e.g. U+0085 as \x85.
         </description>
         <display-name>forJavaScriptSource</display-name>
         <name>forJavaScriptSource</name>
@@ -520,6 +524,7 @@
             quotation marks around the JavaScript string. Template literals (backticks) and JSON are
             unsupported; use a JSON serializer for JSON. Do not use in javascript: or data: URLs,
             where URL decoding introduces a separate parsing context.
+            U+007F and the C1 controls U+0080 to U+009F are hex encoded, e.g. U+0085 as \x85.
         </description>
         <display-name>forJavaScript</display-name>
         <name>forJavaScript</name>
@@ -535,6 +540,7 @@
             JavaScript string. Template literals (backticks) and JSON are unsupported; use a JSON
             serializer for JSON. Do not use in javascript: or data: URLs, where URL decoding
             introduces a separate parsing context.
+            U+007F and the C1 controls U+0080 to U+009F are hex encoded, e.g. U+0085 as \x85.
         </description>
         <display-name>forJavaScriptAttribute</display-name>
         <name>forJavaScriptAttribute</name>
@@ -550,6 +556,7 @@
             the JavaScript string. Template literals (backticks) and JSON are unsupported; use a
             JSON serializer for JSON. Do not use in javascript: or data: URLs, where URL decoding
             introduces a separate parsing context.
+            U+007F and the C1 controls U+0080 to U+009F are hex encoded, e.g. U+0085 as \x85.
         </description>
         <display-name>forJavaScriptBlock</display-name>
         <name>forJavaScriptBlock</name>
@@ -566,6 +573,7 @@
             Template literals (backticks) and JSON are unsupported; use a JSON serializer for JSON.
             Do not use in javascript: or data: URLs, where URL decoding introduces a separate
             parsing context.
+            U+007F and the C1 controls U+0080 to U+009F are hex encoded, e.g. U+0085 as \x85.
         </description>
         <display-name>forJavaScriptSource</display-name>
         <name>forJavaScriptSource</name>

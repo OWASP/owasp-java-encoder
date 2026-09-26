@@ -1174,6 +1174,13 @@ public final class Encode {
      *       <td class="colLast">Hyphen character</td>
      *     </tr>
      *     <tr class="altColor">
+     *       <td class="colFirst" colspan="2">U+007F&nbsp;to&nbsp;U+009F</td>
+     *       <td class="colLast"><code>\x##</code></td>
+     *       <td class="colLast">DEL and the C1 control characters, including
+     *       U+0085 (next line), are hexadecimal encoded so they never appear
+     *       raw in the output.</td>
+     *     </tr>
+     *     <tr class="rowColor">
      *       <td class="colFirst" colspan="2">U+2028, U+2029</td>
      *       <td class="colLast"><code>&#92;u2028</code>, <code>&#92;u2029</code></td>
      *       <td class="colLast">Line and paragraph separators</td>
@@ -1217,6 +1224,10 @@ public final class Encode {
      * surrounding single (') or double (") quotation marks.  This method performs the
      * same encode as {@link #forJavaScript(String)} with the
      * exception that <code>/</code> and <code>-</code> are not escaped.</p>
+     *
+     * <p>Like {@link #forJavaScript(String)}, this method hex encodes
+     * U+007F and the C1 control characters U+0080 to U+009F, for example
+     * U+0085 as <code>\x85</code>.</p>
      *
      * <p><strong>Unless you are interested in saving a few bytes of
      * output or are writing a framework on top of this library, it is
@@ -1266,6 +1277,10 @@ public final class Encode {
      * the exception that <code>"</code> and <code>'</code> are
      * encoded as <code>\"</code> and <code>\'</code>
      * respectively.</p>
+     *
+     * <p>Like {@link #forJavaScript(String)}, this method hex encodes
+     * U+007F and the C1 control characters U+0080 to U+009F, for example
+     * U+0085 as <code>\x85</code>.</p>
      *
      * <p><strong>Unless you are interested in saving a few bytes of
      * output or are writing a framework on top of this library, it is
@@ -1317,6 +1332,10 @@ public final class Encode {
      * the exception that <code>/</code>, <code>-</code>, and <code>&amp;</code> are not
      * escaped and <code>"</code> and <code>'</code> are encoded as
      * <code>\"</code> and <code>\'</code> respectively.</p>
+     *
+     * <p>Like {@link #forJavaScript(String)}, this method hex encodes
+     * U+007F and the C1 control characters U+0080 to U+009F, for example
+     * U+0085 as <code>\x85</code>.</p>
      *
      * <p><strong>Unless you are interested in saving a few bytes of
      * output or are writing a framework on top of this library, it is

@@ -100,13 +100,22 @@ public class JavaScriptEncoderTest extends TestCase {
                     .encode("Line Separator", "\\u2028", "\u2028")
                     .encode("Paragraph Separator", "\\u2029", "\u2029")
                     .encode("abc", "abc")
-                    .encode("ABC", "ABC");
+                    .encode("ABC", "ABC")
+                    // DEL and the C1 controls are hex encoded in every mode
+                    .encode("DEL", "\\x7f", "\u007f")
+                    .encode("U+0080", "\\x80", "\u0080")
+                    .encode("NEL", "\\x85", "\u0085")
+                    .encode("CSI", "\\x9b", "\u009b")
+                    .encode("U+009F", "\\x9f", "\u009f")
+                    .encode("NEL in text", "a\\x85b", "a\u0085b");
 
                 if (asciiOnly == 0) {
                     builder
                         .encode("unicode", "\u1234", "\u1234")
                         .encode("high-ascii", "\u00ff", "\u00ff")
-                        .valid(0x7f, Character.MAX_CODE_POINT)
+                        .encode("NBSP", "\u00a0", "\u00a0")
+                        .valid(0xa0, Character.MAX_CODE_POINT)
+                        .encoded(0x7f, Unicode.MAX_C1_CTRL_CHAR)
                         .encoded("\u2028\u2029");
                 } else {
                     builder

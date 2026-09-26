@@ -123,7 +123,8 @@ class JavaScriptEncoder extends Encoder {
             0,
             -1 & ~((1 << '\'') | (1 << '\"')),
             -1 & ~((1 << '\\')),
-            asciiOnly ? ~(1 << Unicode.DEL) : -1,};
+            // DEL is hex encoded in every mode, like the C1 controls
+            ~(1 << Unicode.DEL),};
 
         if (mode == Mode.BLOCK || mode == Mode.HTML) {
             // in <script> blocks, we need to prevent the browser from seeing
@@ -160,7 +161,8 @@ class JavaScriptEncoder extends Encoder {
                 if ((validMasks[ch >>> 5] & (1 << ch)) == 0) {
                     return i;
                 }
-            } else if (_asciiOnly || ch == Unicode.LINE_SEPARATOR || ch == Unicode.PARAGRAPH_SEPARATOR) {
+            } else if (_asciiOnly || ch <= Unicode.MAX_C1_CTRL_CHAR
+                    || ch == Unicode.LINE_SEPARATOR || ch == Unicode.PARAGRAPH_SEPARATOR) {
                 return i;
             }
         }
@@ -189,7 +191,8 @@ class JavaScriptEncoder extends Encoder {
                         if ((validMasks[ch >>> 5] & (1 << ch)) == 0) {
                             break encoded;
                         }
-                    } else if (_asciiOnly || ch == Unicode.LINE_SEPARATOR || ch == Unicode.PARAGRAPH_SEPARATOR) {
+                    } else if (_asciiOnly || ch <= Unicode.MAX_C1_CTRL_CHAR
+                        || ch == Unicode.LINE_SEPARATOR || ch == Unicode.PARAGRAPH_SEPARATOR) {
                         if (ch <= 0xff) {
                             break hexEncoded;
                         }
