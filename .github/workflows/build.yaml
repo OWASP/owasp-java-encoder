@@ -66,6 +66,7 @@ jobs:
           **/target/surefire-reports/
           **/target/failsafe-reports/
           **/target/jsp-engine/
+          jakarta-test/target/packaged-war.log
 
   esapi-compatibility:
     name: ESAPI ${{ matrix.esapi-version }}
