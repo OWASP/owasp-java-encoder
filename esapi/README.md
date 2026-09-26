@@ -30,6 +30,14 @@ management. The adapter's published POM still defaults deterministically to
 
 ## Runtime and security notes
 
+`ESAPIEncoder.getInstance()` and its OWASP Java Encoder-backed methods do not
+load ESAPI configuration. Delegated operations resolve ESAPI's reference encoder
+on each call, so a missing `ESAPI.properties` causes an ESAPI configuration
+exception for that operation and can be retried after configuration becomes
+available in the same JVM. ESAPI retains responsibility for caching its reference
+encoder. Obtaining the adapter through `ESAPI.encoder()` still requires ESAPI
+configuration to select the implementation.
+
 The ESAPI dependency remains a compile dependency because its `Encoder` type is
 part of the adapter's public API. Its transitive dependencies are therefore also
 available to applications. The ESAPI module enforces dependency convergence for
