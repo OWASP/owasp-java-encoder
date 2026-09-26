@@ -58,8 +58,8 @@
     </tag>
     <tag>
         <description>
-            Encodes for XML 1.1 attribute content. Control characters are encoded as for
-            forXml11. Use only in XML 1.1 documents.
+            Encodes for XML 1.1 attribute content. Encodes control characters the same way
+            as forXml11. Use only in XML 1.1 documents.
         </description>
         <display-name>forXml11Attribute</display-name>
         <name>forXml11Attribute</name>
@@ -391,8 +391,8 @@
     <tag>
         <description>
             Encodes XML 1.1 text content. Does not escape quotes and is unsafe for attribute
-            values; use forXml11 or forXml11Attribute for those contexts. Control characters are
-            encoded as for forXml11. Use only in XML 1.1 documents.
+            values; use forXml11 or forXml11Attribute for those contexts. Encodes control
+            characters the same way as forXml11. Use only in XML 1.1 documents.
         </description>
         <display-name>forXml11Content</display-name>
         <name>forXml11Content</name>
@@ -582,8 +582,8 @@
     <function>
         <description>
             Encodes XML 1.1 text content. Does not escape quotes and is unsafe for attribute
-            values; use forXml11 or forXml11Attribute for those contexts. Control characters are
-            encoded as for forXml11. Use only in XML 1.1 documents.
+            values; use forXml11 or forXml11Attribute for those contexts. Encodes control
+            characters the same way as forXml11. Use only in XML 1.1 documents.
         </description>
         <display-name>forXml11Content</display-name>
         <name>forXml11Content</name>
@@ -601,8 +601,8 @@
     </function>
     <function>
         <description>
-            Encodes for XML 1.1 attribute content. Control characters are encoded as for
-            forXml11. Use only in XML 1.1 documents.
+            Encodes for XML 1.1 attribute content. Encodes control characters the same way
+            as forXml11. Use only in XML 1.1 documents.
         </description>
         <display-name>forXml11Attribute</display-name>
         <name>forXml11Attribute</name>
