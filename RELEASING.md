@@ -213,3 +213,12 @@ exercises the overridden plugin. This is not an audit of every plugin dependency
 or a claim that the live Central HTTP path has been tested. Namespace access and
 a validated-then-dropped rehearsal remain tracked by #111. `autoPublish=false`
 stays mandatory. The optional WAR is excluded and its install/deploy goals skip.
+
+
+The signing plugin also pins `bcpg-jdk18on`, `bcprov-jdk18on`, and
+`bcutil-jdk18on` to 1.86; both release plugins pin Plexus Utils to the compatible
+3.6.2 line. The full resolved signing/publishing closure was checked after
+these additions, separately from application/runtime dependencies. Validation
+covers both the default GnuPG signer and the optional Bouncy Castle signer with
+a disposable local key; the project release key and preferred GnuPG path remain
+unchanged. See the batch 04 validation record for dated results.
