@@ -102,7 +102,9 @@ Java Encoder does not perform input validation, HTML sanitization, URL authoriza
 SQL parameterization, canonicalization or decoding. Its JSON and JavaScript
 support does not change those boundaries. The [OWASP Java library guide][libraries]
 describes encoding and sanitization as separate controls; no comparative speed or
-security ranking is implied.
+security ranking is implied. Base64url is transport encoding; see the
+[scope decision and JDK example](compatibility-decisions.md#base64url-disposition-149)
+for its separate protocol and canonicalization requirements.
 
 [xss]: https://cheatsheetseries.owasp.org/cheatsheets/Cross_Site_Scripting_Prevention_Cheat_Sheet.html
 [libraries]: https://devguide.owasp.org/en/05-implementation/03-secure-libraries/04-java-secure-libs/

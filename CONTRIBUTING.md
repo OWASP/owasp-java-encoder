@@ -46,7 +46,9 @@ null/Unicode changes, affected parser contexts and migration examples. Add behav
 or parser regression tests for a contract change, including Writer boundaries where
 relevant. Keep javax/Jakarta sources and packaged TLDs in parity. Public API,
 bytecode, module/bundle identities and dependency scope changes need explicit review.
-Update the Unreleased changelog only for changes being delivered, not open proposals.
+Update the Unreleased changelog only for changes being delivered, not open proposals. Read the
+[compatibility and scope decisions](docs/compatibility-decisions.md) before proposing
+a new API or a compatibility break.
 
 The current rules require one approval, dismiss stale approvals after changes,
 require approval of the latest push and resolved conversations, and require the
