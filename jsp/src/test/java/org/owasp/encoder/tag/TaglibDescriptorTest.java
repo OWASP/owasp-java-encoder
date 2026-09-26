@@ -105,13 +105,13 @@ public class TaglibDescriptorTest extends TestCase {
     }
 
     /**
-     * Java source generation is not a JSP context. XML 1.1 tags are tracked
-     * separately in issue #131. Deprecated forUri remains for compatibility;
-     * deprecation alone must not silently remove a deployed tag/function.
+     * Java source generation is not a JSP context, so forJava is the only
+     * facade method without a tag and function. Deprecated forUri remains for
+     * compatibility; deprecation alone must not silently remove a deployed
+     * tag/function.
      */
     public void testAdvancedMatchesSupportedFacade() throws Exception {
-        Set<String> unsupported = new TreeSet<String>(Arrays.asList(
-            "forJava", "forXml11", "forXml11Content", "forXml11Attribute"));
+        Set<String> unsupported = new TreeSet<String>(Arrays.asList("forJava"));
         Set<String> expected = new TreeSet<String>();
         for (Method method : Encode.class.getMethods()) {
             if (Modifier.isStatic(method.getModifiers()) && method.getName().startsWith("for")
@@ -214,7 +214,7 @@ public class TaglibDescriptorTest extends TestCase {
         Set<String> expectedBasic = new TreeSet<String>(Arrays.asList(
             "forCDATA", "forCssString", "forCssUrl", "forHtml", "forHtmlAttribute",
             "forHtmlContent", "forHtmlUnquotedAttribute", "forJavaScript", "forJson",
-            "forUri", "forUriComponent", "forXml", "forXmlAttribute", "forXmlContent"));
+            "forUri", "forUriComponent", "forXml", "forXml11", "forXmlAttribute", "forXmlContent"));
         assertEquals("basic tags", expectedBasic, basic.tagClasses.keySet());
         assertEquals("basic functions", expectedBasic, basic.functionSignatures.keySet());
         for (Map.Entry<String, String> tag : basic.tagClasses.entrySet()) {

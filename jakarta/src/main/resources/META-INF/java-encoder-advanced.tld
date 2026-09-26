@@ -57,10 +57,48 @@
         </attribute>
     </tag>
     <tag>
+        <description>
+            Encodes for XML 1.1 attribute content. Control characters are encoded as for
+            forXml11. Use only in XML 1.1 documents.
+        </description>
+        <display-name>forXml11Attribute</display-name>
+        <name>forXml11Attribute</name>
+        <tag-class>org.owasp.encoder.tag.ForXml11AttributeTag</tag-class>
+        <body-content>empty</body-content>
+        <attribute>
+            <description>value to be written out</description>
+            <name>value</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>java.lang.String</type>
+        </attribute>
+    </tag>
+    <tag>
         <description>Encodes for XML and XHTML.</description>
         <display-name>forXml</display-name>
         <name>forXml</name>
         <tag-class>org.owasp.encoder.tag.ForXmlTag</tag-class>
+        <body-content>empty</body-content>
+        <attribute>
+            <description>value to be written out</description>
+            <name>value</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>java.lang.String</type>
+        </attribute>
+    </tag>
+    <tag>
+        <description>
+            Encodes for XML 1.1 text content and attributes. Like forXml, but the control
+            characters XML 1.1 allows only as character references (U+0001 to U+0008, U+000B,
+            U+000C, U+000E to U+001F and U+007F to U+009F) are written as references such as
+            &amp;#x01;, and NEL (U+0085) and U+2028 are written as &amp;#x85; and &amp;#x2028; so an
+            XML 1.1 processor does not normalize them to a line feed. Use only in XML 1.1
+            documents: XML 1.0 does not allow these character references.
+        </description>
+        <display-name>forXml11</display-name>
+        <name>forXml11</name>
+        <tag-class>org.owasp.encoder.tag.ForXml11Tag</tag-class>
         <body-content>empty</body-content>
         <attribute>
             <description>value to be written out</description>
@@ -352,6 +390,24 @@
     </tag>
     <tag>
         <description>
+            Encodes XML 1.1 text content. Does not escape quotes and is unsafe for attribute
+            values; use forXml11 or forXml11Attribute for those contexts. Control characters are
+            encoded as for forXml11. Use only in XML 1.1 documents.
+        </description>
+        <display-name>forXml11Content</display-name>
+        <name>forXml11Content</name>
+        <tag-class>org.owasp.encoder.tag.ForXml11ContentTag</tag-class>
+        <body-content>empty</body-content>
+        <attribute>
+            <description>value to be written out</description>
+            <name>value</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>java.lang.String</type>
+        </attribute>
+    </tag>
+    <tag>
+        <description>
 			Performs percent-encoding for a component of a URI, such as a query
 			parameter name or value, path or query-string.  In particular this
 			method ensures that special characters in the component do not get
@@ -500,6 +556,21 @@
     </function>
     <function>
         <description>
+            Encodes for XML 1.1 text content and attributes. Like forXml, but the control
+            characters XML 1.1 allows only as character references (U+0001 to U+0008, U+000B,
+            U+000C, U+000E to U+001F and U+007F to U+009F) are written as references such as
+            &amp;#x01;, and NEL (U+0085) and U+2028 are written as &amp;#x85; and &amp;#x2028; so an
+            XML 1.1 processor does not normalize them to a line feed. Use only in XML 1.1
+            documents: XML 1.0 does not allow these character references.
+        </description>
+        <display-name>forXml11</display-name>
+        <name>forXml11</name>
+        <function-class>org.owasp.encoder.Encode</function-class>
+        <function-signature>java.lang.String forXml11(java.lang.String)</function-signature>
+        <example>forXml11(unsafeData)</example>
+    </function>
+    <function>
+        <description>
             Encodes XML and XHTML text content. Does not escape quotes and is unsafe for attribute values; use forXml or forXmlAttribute for those contexts.
         </description>
         <display-name>forXmlContent</display-name>
@@ -509,12 +580,35 @@
         <example>forXmlContent(unsafeData)</example>
     </function>
     <function>
+        <description>
+            Encodes XML 1.1 text content. Does not escape quotes and is unsafe for attribute
+            values; use forXml11 or forXml11Attribute for those contexts. Control characters are
+            encoded as for forXml11. Use only in XML 1.1 documents.
+        </description>
+        <display-name>forXml11Content</display-name>
+        <name>forXml11Content</name>
+        <function-class>org.owasp.encoder.Encode</function-class>
+        <function-signature>java.lang.String forXml11Content(java.lang.String)</function-signature>
+        <example>forXml11Content(unsafeData)</example>
+    </function>
+    <function>
         <description>Encodes for XML and XHTML attribute content.</description>
         <display-name>forXmlAttribute</display-name>
         <name>forXmlAttribute</name>
         <function-class>org.owasp.encoder.Encode</function-class>
         <function-signature>java.lang.String forXmlAttribute(java.lang.String)</function-signature>
         <example>forXmlAttribute(unsafeData)</example>
+    </function>
+    <function>
+        <description>
+            Encodes for XML 1.1 attribute content. Control characters are encoded as for
+            forXml11. Use only in XML 1.1 documents.
+        </description>
+        <display-name>forXml11Attribute</display-name>
+        <name>forXml11Attribute</name>
+        <function-class>org.owasp.encoder.Encode</function-class>
+        <function-signature>java.lang.String forXml11Attribute(java.lang.String)</function-signature>
+        <example>forXml11Attribute(unsafeData)</example>
     </function>
     <function>
         <description>
