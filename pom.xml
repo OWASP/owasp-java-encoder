@@ -274,6 +274,11 @@
                             <type>jar</type>
                         </dependency>
                     </oldVersion>
+                    <newVersion>
+                        <file>
+                            <path>${project.build.directory}/${project.build.finalName}.jar</path>
+                        </file>
+                    </newVersion>
                     <parameter>
                         <onlyModified>true</onlyModified>
                         <breakBuildOnBinaryIncompatibleModifications>true</breakBuildOnBinaryIncompatibleModifications>
