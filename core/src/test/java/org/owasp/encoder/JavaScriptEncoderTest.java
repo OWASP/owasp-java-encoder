@@ -55,7 +55,7 @@ public class JavaScriptEncoderTest extends TestCase {
                 EncoderTestSuiteBuilder builder = new EncoderTestSuiteBuilder(new JavaScriptEncoder(mode, asciiOnly==1), "(safe)", "(\\)")
                     .encoded(0, 0x1f)
                     .valid(' ', '~')
-                    .encoded("\\\'\"`$");
+                    .encoded("\\\'\"`${");
 
                 switch (mode) {
                 case SOURCE:
@@ -103,11 +103,13 @@ public class JavaScriptEncoderTest extends TestCase {
                     .encode("Paragraph Separator", "\\u2029", "\u2029")
                     .encode("backtick", "\\x60", "`")
                     .encode("dollar", "\\x24", "$")
-                    .encode("template start", "\\x24{", "${")
+                    .encode("opening brace", "\\x7b", "{")
+                    .encode("template start", "\\x24\\x7b", "${")
+                    .encode("trusted dollar boundary", "\\x7bexecuted=true}", "{executed=true}")
                     .encode("trailing dollar", "end\\x24", "end$")
-                    .encode("escaped-looking interpolation", "\\\\\\x24{value}", "\\${value}")
+                    .encode("escaped-looking interpolation", "\\\\\\x24\\x7bvalue}", "\\${value}")
                     .encode("escaped-looking backtick", "\\\\\\x60", "\\`")
-                    .encode("template expression", "\\x24{alert(1)}", "${alert(1)}")
+                    .encode("template expression", "\\x24\\x7balert(1)}", "${alert(1)}")
                     .encode("template breakout", "hell\\x60;alert(1);\\x60o", "hell`;alert(1);`o")
                     .encode("abc", "abc")
                     .encode("ABC", "ABC");
@@ -136,7 +138,7 @@ public class JavaScriptEncoderTest extends TestCase {
 
     public void testTemplateCharactersThroughPublicFacadesAndRegistry() throws Exception {
         String input = "price=$5;`${value}`;\\${escaped}";
-        String expected = "price=\\x245;\\x60\\x24{value}\\x60;\\\\\\x24{escaped}";
+        String expected = "price=\\x245;\\x60\\x24\\x7bvalue}\\x60;\\\\\\x24\\x7bescaped}";
         String[] methods = {"forJavaScript", "forJavaScriptAttribute",
             "forJavaScriptBlock", "forJavaScriptSource"};
         String[] contexts = {Encoders.JAVASCRIPT, Encoders.JAVASCRIPT_ATTRIBUTE,
@@ -148,6 +150,8 @@ public class JavaScriptEncoderTest extends TestCase {
             Encode.class.getMethod(methods[i], Writer.class, String.class).invoke(null, out, input);
             assertEquals(methods[i], expected, out.toString());
             assertEquals(contexts[i], expected, Encode.encode(Encoders.forName(contexts[i]), input));
+            assertEquals(methods[i], "\\x7bexecuted=true}",
+                Encode.class.getMethod(methods[i], String.class).invoke(null, "{executed=true}"));
         }
     }
 
@@ -162,7 +166,7 @@ public class JavaScriptEncoderTest extends TestCase {
         }
         for (int i = 0; i < Encode.Buffer.OUTPUT_BUFFER_SIZE; i++) {
             input.append("${`}");
-            expected.append("\\x24{\\x60}");
+            expected.append("\\x24\\x7b\\x60}");
         }
         String[] methods = {"forJavaScript", "forJavaScriptAttribute",
             "forJavaScriptBlock", "forJavaScriptSource"};

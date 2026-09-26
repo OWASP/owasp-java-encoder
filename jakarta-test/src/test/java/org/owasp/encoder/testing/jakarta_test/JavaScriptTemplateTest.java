@@ -22,7 +22,7 @@ class JavaScriptTemplateTest {
         Encode::forJavaScript, Encode::forJavaScriptAttribute,
         Encode::forJavaScriptBlock, Encode::forJavaScriptSource);
     private static final String[] INPUTS = {
-        "", "plain", "$", "`", "${", "${executed=true}",
+        "", "plain", "$", "`", "{executed=true}", "${", "${executed=true}",
         "hell`;executed=true;value=`o", "\\${executed=true}", "\\`", "end$",
         "'\"\\\r\n\t\b\f\u0000\u000b\u2028\u2029",
         "\u00e9\u0085\u1234\ud83d\ude00",
@@ -40,6 +40,17 @@ class JavaScriptTemplateTest {
             container = new BrowserWebDriverContainer<>().withCapabilities(options);
             container.start();
             browser = new RemoteWebDriver(container.getSeleniumAddress(), options);
+        }
+    }
+
+    @Test
+    void inputCannotCompleteInterpolationAfterTrustedDollar() {
+        String input = "{executed=true}";
+        for (int mode = 0; mode < ENCODERS.size(); mode++) {
+            String encoded = ENCODERS.get(mode).apply(input);
+            assertEquals(Arrays.asList("$" + input, false), evaluate(
+                "var executed=false;var value=`$" + encoded
+                + "`;return [value,executed];"), "mode=" + mode);
         }
     }
 

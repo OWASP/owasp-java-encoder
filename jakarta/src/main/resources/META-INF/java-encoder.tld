@@ -79,7 +79,9 @@
             blocks, or standalone JavaScript source.
             Caller must supply single (') or double (") quotation marks, or backticks (`)
             for an ordinary (untagged) template literal. Insert encoded output into literal text,
-            not a ${...} expression. Dollar sign ($) and backtick are encoded as \x24 and \x60.
+            not a ${...} expression. Dollar sign ($), backtick, and opening brace ({) are encoded
+            as \x24, \x60, and \x7b. Escaping { also prevents input after a trusted $ from
+            completing ${...}.
             Tagged templates (including String.raw) are unsupported: tags can observe raw escapes
             or interpret another language. This is not a JSON encoder; use a JSON serializer for
             JSON. Do not use in javascript: or data: URLs, where URL decoding introduces a separate
@@ -395,7 +397,9 @@
             blocks, or standalone JavaScript source.
             Caller must supply single (') or double (") quotation marks, or backticks (`)
             for an ordinary (untagged) template literal. Insert encoded output into literal text,
-            not a ${...} expression. Dollar sign ($) and backtick are encoded as \x24 and \x60.
+            not a ${...} expression. Dollar sign ($), backtick, and opening brace ({) are encoded
+            as \x24, \x60, and \x7b. Escaping { also prevents input after a trusted $ from
+            completing ${...}.
             Tagged templates (including String.raw) are unsupported: tags can observe raw escapes
             or interpret another language. This is not a JSON encoder; use a JSON serializer for
             JSON. Do not use in javascript: or data: URLs, where URL decoding introduces a separate

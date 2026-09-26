@@ -154,7 +154,7 @@ When publishing a release, also update the supported versions in `SECURITY.md`.
 News
 ----
 ### Unreleased - 1.5.0
-* feat: all four `forJavaScript*` methods encode dollar sign (`$`) as `\x24` and backtick as `\x60` [#129](https://github.com/OWASP/owasp-java-encoder/issues/129). Encoded output now supports literal text in ordinary (untagged) template literals as well as single- and double-quoted strings. This changes the encoded output while preserving its decoded JavaScript string value. Tagged templates (including `String.raw`), `${...}` expression bodies, JSON, and script URLs are unsupported; each method's HTML context restrictions still apply.
+* feat: all four `forJavaScript*` methods encode dollar sign (`$`) as `\x24`, backtick as `\x60`, and opening brace (`{`) as `\x7b` [#129](https://github.com/OWASP/owasp-java-encoder/issues/129). Escaping `{` prevents input after a trusted `$` from completing `${...}`. Encoded output now supports literal text in ordinary (untagged) template literals as well as single- and double-quoted strings. This changes the encoded output while preserving its decoded JavaScript string value. Tagged templates (including `String.raw`), `${...}` expression bodies, JSON, and script URLs are unsupported; each method's HTML context restrictions still apply.
 
 ### Unreleased - 1.4.2
 * fix: `forHtmlUnquotedAttribute` now replaces U+0085 (NEL) with a hyphen like the other C1 control characters, instead of emitting `&#133;`, which HTML5 parsers decode as U+2026 [#136](https://github.com/OWASP/owasp-java-encoder/issues/136).

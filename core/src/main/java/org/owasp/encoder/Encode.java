@@ -1176,17 +1176,23 @@ public final class Encode {
      *       template literal.</td>
      *     </tr>
      *     <tr class="altColor">
+     *       <td class="colFirst">U+007B</td><td><code>{</code></td>
+     *       <td class="colLast"><code>\x7b</code></td>
+     *       <td class="colLast">Opening brace. Encoded so that input after a
+     *       trusted dollar sign cannot start a template expression.</td>
+     *     </tr>
+     *     <tr class="rowColor">
      *       <td class="colFirst" colspan="2">U+0000&nbsp;to&nbsp;U+001F</td>
      *       <td class="colLast"><code>\x##</code></td>
      *       <td class="colLast">Hexadecimal encoding is used for characters in this
      *       range that were not already mentioned in above.</td>
      *     </tr>
-     *     <tr class="rowColor">
+     *     <tr class="altColor">
      *       <td class="colFirst">U+002D</td><td><code>-</code></td>
      *       <td class="colLast"><code>\-</code></td>
      *       <td class="colLast">Hyphen character</td>
      *     </tr>
-     *     <tr class="altColor">
+     *     <tr class="rowColor">
      *       <td class="colFirst" colspan="2">U+2028, U+2029</td>
      *       <td class="colLast"><code>&#92;u2028</code>, <code>&#92;u2029</code></td>
      *       <td class="colLast">Line and paragraph separators</td>
@@ -1197,7 +1203,9 @@ public final class Encode {
      * <p>In an ordinary template literal, insert the encoded output into the
      * literal text, not into a <code>${...}</code> expression. Backtick and dollar
      * sign are encoded as <code>\x60</code> and <code>\x24</code>, preventing
-     * termination of the literal or interpolation of input as code. These escapes
+     * termination of the literal or interpolation of input as code. Opening
+     * brace is encoded as <code>\x7b</code> so input after a trusted dollar
+     * sign cannot complete <code>${...}</code>. These escapes
      * preserve the string value in single-quoted, double-quoted, and ordinary
      * template literals. Tagged templates (including {@code String.raw}) are not
      * supported: tags can observe raw escapes or interpret the text in another
