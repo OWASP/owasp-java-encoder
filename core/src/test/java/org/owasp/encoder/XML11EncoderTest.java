@@ -35,7 +35,13 @@
 package org.owasp.encoder;
 
 import java.io.IOException;
+import java.io.StringReader;
 import java.io.StringWriter;
+
+import javax.xml.parsers.DocumentBuilderFactory;
+
+import org.w3c.dom.Element;
+import org.xml.sax.InputSource;
 
 import junit.framework.Test;
 import junit.framework.TestCase;
@@ -271,6 +277,36 @@ public class XML11EncoderTest extends TestCase {
      */
     public void testXML10NELAndLineSeparatorUnchanged() {
         assertEquals("a\u0085b\u2028c", Encode.forXml("a\u0085b\u2028c"));
+    }
+
+    /**
+     * Verify that a real XML 1.1 parser preserves the referenced characters in
+     * content and both attribute quote styles, for String and Writer APIs.
+     */
+    public void testXML11ParserRoundTrip() throws Exception {
+        String input = "a\u0085b\u2028c\u2029d&<>\"'";
+        assertXML11RoundTrip(input, Encode.forXml11(input), Encode.forXml11(input));
+        assertXML11RoundTrip(input, Encode.forXml11Content(input), Encode.forXml11Attribute(input));
+
+        StringWriter general = new StringWriter();
+        StringWriter content = new StringWriter();
+        StringWriter attribute = new StringWriter();
+        Encode.forXml11(general, input);
+        Encode.forXml11Content(content, input);
+        Encode.forXml11Attribute(attribute, input);
+        assertXML11RoundTrip(input, general.toString(), general.toString());
+        assertXML11RoundTrip(input, content.toString(), attribute.toString());
+    }
+
+    private void assertXML11RoundTrip(String expected, String content, String attribute)
+            throws Exception {
+        String xml = "<?xml version=\"1.1\"?><root double=\"" + attribute
+            + "\" single='" + attribute + "'>" + content + "</root>";
+        Element root = DocumentBuilderFactory.newInstance().newDocumentBuilder()
+            .parse(new InputSource(new StringReader(xml))).getDocumentElement();
+        assertEquals("content", expected, root.getTextContent());
+        assertEquals("double-quoted attribute", expected, root.getAttribute("double"));
+        assertEquals("single-quoted attribute", expected, root.getAttribute("single"));
     }
 
     /**
