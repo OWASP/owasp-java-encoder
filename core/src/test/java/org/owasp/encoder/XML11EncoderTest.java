@@ -34,6 +34,9 @@
 
 package org.owasp.encoder;
 
+import java.io.IOException;
+import java.io.StringWriter;
+
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
@@ -50,7 +53,7 @@ public class XML11EncoderTest extends TestCase {
     }
     
     public static Test suite() {
-        TestSuite suite = new TestSuite();
+        TestSuite suite = new TestSuite(XML11EncoderTest.class);
         for (XMLEncoder.Mode mode : XMLEncoder.Mode.values()) {
             XMLEncoder encoder = new XMLEncoder(mode, XMLEncoder.Version.XML_1_1);
             EncoderTestSuiteBuilder builder = new EncoderTestSuiteBuilder(encoder, "-safe-", "-&-")
@@ -89,8 +92,13 @@ public class XML11EncoderTest extends TestCase {
                 // Combined test
                 .encode("mixed-control-chars", "&#x01;a\t&#x7f;b\nc", "\u0001a\t\u007Fb\nc");
 
-            // Invalid characters: null, non-characters, surrogates should be replaced
-            builder.invalid(0x00, 0x00)
+            // Define the complete partition before generating the range sweeps.
+            builder.encoded(0x01, 0x1f)
+                .valid("\t\r\n")
+                .valid(' ', Character.MAX_CODE_POINT)
+                .encoded(0x7f, 0x9f)
+                .encoded("\u2028")
+                .invalid(0x00, 0x00)
                 .invalid(Character.MIN_SURROGATE, Character.MAX_SURROGATE)
                 .invalid(0xfdd0, 0xfdef)
                 .invalid(0xfffe, 0xffff)
@@ -110,9 +118,6 @@ public class XML11EncoderTest extends TestCase {
                 .invalid(0xefffe, 0xeffff)
                 .invalid(0xffffe, 0xfffff)
                 .invalid(0x10fffe, 0x10ffff);
-            
-            // Mark all characters as valid (they're allowed in XML 1.1, even if they get encoded)
-            builder.valid(0x01, Character.MAX_CODE_POINT);
 
             switch (mode) {
             case ALL:
@@ -160,6 +165,7 @@ public class XML11EncoderTest extends TestCase {
             }
 
             suite.addTest(builder
+                .validSuite()
                 .invalidSuite(XMLEncoder.INVALID_CHARACTER_REPLACEMENT)
                 .encodedSuite()
                 .build());
@@ -171,21 +177,31 @@ public class XML11EncoderTest extends TestCase {
      * Test that the public API methods work correctly for XML 1.1.
      */
     public void testXML11PublicAPI() {
-        String input = "test\u0001\u0002&<>";
-        
-        // Test forXml11
-        String result = Encode.forXml11(input);
-        assertEquals("test&#x01;&#x02;&amp;&lt;&gt;", result);
-        
-        // Test forXml11Content
-        result = Encode.forXml11Content(input);
-        assertEquals("test&#x01;&#x02;&amp;&lt;&gt;", result);
-        
-        // Test forXml11Attribute
-        result = Encode.forXml11Attribute(input);
-        assertEquals("test&#x01;&#x02;&amp;&lt;>", result);
+        String input = "test\u0001\u0002&<>\"'";
+
+        assertEquals("test&#x01;&#x02;&amp;&lt;&gt;&#34;&#39;", Encode.forXml11(input));
+        assertEquals("test&#x01;&#x02;&amp;&lt;&gt;\"'", Encode.forXml11Content(input));
+        assertEquals("test&#x01;&#x02;&amp;&lt;>&#34;&#39;", Encode.forXml11Attribute(input));
     }
-    
+
+    /**
+     * Test all XML 1.1 Writer overloads with mode-specific escaping.
+     */
+    public void testXML11PublicAPIWriter() throws IOException {
+        String input = "test\u0001\u0002&<>\"'";
+        StringWriter writer = new StringWriter();
+        Encode.forXml11(writer, input);
+        assertEquals("test&#x01;&#x02;&amp;&lt;&gt;&#34;&#39;", writer.toString());
+
+        writer = new StringWriter();
+        Encode.forXml11Content(writer, input);
+        assertEquals("test&#x01;&#x02;&amp;&lt;&gt;\"'", writer.toString());
+
+        writer = new StringWriter();
+        Encode.forXml11Attribute(writer, input);
+        assertEquals("test&#x01;&#x02;&amp;&lt;>&#34;&#39;", writer.toString());
+    }
+
     /**
      * Test that tab, lf, and cr are not encoded in XML 1.1.
      */

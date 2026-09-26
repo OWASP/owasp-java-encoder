@@ -1,5 +1,5 @@
 OWASP Java Encoder Project
-==========================
+===================
 
 ![Build Status](https://github.com/OWASP/owasp-java-encoder/actions/workflows/build.yaml/badge.svg?branch=main) [![License](https://img.shields.io/badge/License-BSD%203--Clause-blue.svg)](https://opensource.org/licenses/BSD-3-Clause) [![javadoc](https://javadoc.io/badge2/org.owasp.encoder/encoder/javadoc.svg)](https://javadoc.io/doc/org.owasp.encoder/encoder)
 
@@ -9,8 +9,20 @@ encoder class with little baggage.
 
 For more detailed documentation on the OWASP Java Encoder please visit https://owasp.org/www-project-java-encoder/.
 
+Project Leaders
+---------------
+
+- [Jim Manico](https://github.com/jmanico)
+- [Jeremy Long](https://github.com/jeremylong)
+
 Start using the OWASP Java Encoders
 -----------------------------------
+**Maven Central publication is pending.** Version 1.4.1 is available as signed
+artifacts from the [GitHub security release](https://github.com/OWASP/owasp-java-encoder/releases/tag/v1.4.1).
+Until Central publication completes, download and verify those artifacts and
+install them in your local or organizational Maven repository; the dependency
+examples below require that installation. Maven Central 1.4.0 remains affected.
+
 You can download the core library from [Maven Central](https://central.sonatype.com/artifact/org.owasp.encoder/encoder).
 
 JSP tags and EL functions are also available from Maven Central:
@@ -24,21 +36,21 @@ The jars are also available in Central:
 <dependency>
     <groupId>org.owasp.encoder</groupId>
     <artifactId>encoder</artifactId>
-    <version>1.4.0</version>
+    <version>1.4.1</version>
 </dependency>
 
 <!-- using Servlet Spec 5 in the jakarta.servlet package use: -->
 <dependency>
     <groupId>org.owasp.encoder</groupId>
     <artifactId>encoder-jakarta-jsp</artifactId>
-    <version>1.4.0</version>
+    <version>1.4.1</version>
 </dependency>
 
 <!-- using the Legacy Servlet Spec in the javax.servlet package use: -->
 <dependency>
     <groupId>org.owasp.encoder</groupId>
     <artifactId>encoder-jsp</artifactId>
-    <version>1.4.0</version>
+    <version>1.4.1</version>
 </dependency>
 ```
 
@@ -137,11 +149,7 @@ Benchmarks (currently in need of improvement) can be run with:
 $ mvn verify -Pbenchmarks
 ```
 
-Releases are done via `central-publishing-maven-plugin`:
-
-```bash
-mvn clean deploy -DperformRelease=true
-```
+See [RELEASING.md](RELEASING.md) for signing, Maven Central publication, and release verification.
 
 When changing the version, update the root `pom.xml`, the `<parent>` version in each
 module POM, and `encoder.version` in `jakarta-test/pom.xml`. CI fails if
@@ -151,9 +159,15 @@ When publishing a release, also update the supported versions in `SECURITY.md`.
 
 News
 ----
-### Unreleased - 1.5.0
+### Unreleased - 1.4.2
 * fix: `forHtmlUnquotedAttribute` now replaces U+0085 (NEL) with a hyphen like the other C1 control characters, instead of emitting `&#133;`, which HTML5 parsers decode as U+2026 [#136](https://github.com/OWASP/owasp-java-encoder/issues/136).
 * fix: the XML 1.1 encoders (`forXml11`, `forXml11Content`, `forXml11Attribute`) now encode U+0085 (NEL) as `&#x85;` and U+2028 (line separator) as `&#x2028;`, so they are not normalized to a line feed [#136](https://github.com/OWASP/owasp-java-encoder/issues/136).
+
+### 1.4.1 Security Release
+Upgrade all OWASP Java Encoder dependencies to 1.4.1. This release fixes three
+security issues in CSS string encoding and `EncodedWriter` buffer handling.
+See [the release notes](releases/1.4.1.md) for affected entry points,
+compatibility details, and verification instructions.
 
 ### 2025-11-17 - 1.4.0 Release
 The team is happy to announce that version 1.4.0 has been released!

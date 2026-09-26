@@ -49,8 +49,14 @@ class CSSEncoder extends Encoder {
     /** Number of bits in a {@code long}. */
     static final int LONG_BITS = 64;
 
-    /** Length of hex encoding with trailing space {@code "\## "}. */
-    static final int HEX_ENCODED_LENGTH = 4;
+    /**
+     * Maximum encoded length of a single input character.  The longest
+     * escapes are {@code "\2028"} and {@code "\2029"} (5 characters).  The
+     * space that may follow an escape is only written before a hex digit or
+     * whitespace character, which itself encodes to at most 3 characters, so
+     * charging that space to the following character stays within this bound.
+     */
+    static final int MAX_ENCODED_CHAR_LENGTH = 5;
 
     /**
      * Encoding mode of operation--specified the set of characters that
@@ -144,7 +150,7 @@ class CSSEncoder extends Encoder {
 
     @Override
     protected int maxEncodedLength(int n) {
-        return HEX_ENCODED_LENGTH * n;
+        return MAX_ENCODED_CHAR_LENGTH * n;
     }
 
     @Override
