@@ -100,6 +100,37 @@
     </tag>
     <tag>
         <description>
+			Encodes for the contents of a JSON string literal (RFC 8259).  The
+			caller MUST provide the surrounding double quotation marks.  Safe for
+			JSON string values in a JSON document or in an HTML script element,
+			including script type="application/json".  " and \ are encoded as \"
+			and \\, control characters as \b, \t, \n, \f, \r or \u00xx, and
+			&lt;, &gt;, &amp;, U+2028, U+2029 and unpaired surrogates as \uxxxx
+			with lowercase hex digits.  Valid surrogate pairs and all other
+			characters are passed through unchanged.  This is NOT an HTML encoder:
+			do not use it for HTML text content or attribute values.  For JSON in
+			an HTML attribute, encode the string values and member names with forJson,
+			then encode the complete attribute value with forHtmlAttribute; its
+			character replacement rules still apply. Use UTF-8 for exchanged JSON.
+			Unpaired surrogate escapes may not interoperate with every consumer.
+			Prefer a serializer for complete JSON documents. A null value is
+			written as the text null, which becomes the JSON string "null" inside
+			the caller's quotation marks.
+        </description>
+        <display-name>forJson</display-name>
+        <name>forJson</name>
+        <tag-class>org.owasp.encoder.tag.ForJsonTag</tag-class>
+        <body-content>empty</body-content>
+        <attribute>
+            <description>value to be written out</description>
+            <name>value</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>java.lang.String</type>
+        </attribute>
+    </tag>
+    <tag>
+        <description>
             Encodes for unquoted HTML attribute values. Prefer quoted attributes with
             forHtmlAttribute. Empty input produces empty output, which cannot represent an unquoted
             attribute value; a following attribute name may be consumed as the value even when
@@ -411,5 +442,30 @@
         <function-class>org.owasp.encoder.Encode</function-class>
         <function-signature>java.lang.String forJavaScript(java.lang.String)</function-signature>
         <example>forJavaScript(unsafeData)</example>
+    </function>
+    <function>
+        <description>
+			Encodes for the contents of a JSON string literal (RFC 8259).  The
+			caller MUST provide the surrounding double quotation marks.  Safe for
+			JSON string values in a JSON document or in an HTML script element,
+			including script type="application/json".  " and \ are encoded as \"
+			and \\, control characters as \b, \t, \n, \f, \r or \u00xx, and
+			&lt;, &gt;, &amp;, U+2028, U+2029 and unpaired surrogates as \uxxxx
+			with lowercase hex digits.  Valid surrogate pairs and all other
+			characters are passed through unchanged.  This is NOT an HTML encoder:
+			do not use it for HTML text content or attribute values.  For JSON in
+			an HTML attribute, encode the string values and member names with forJson,
+			then encode the complete attribute value with forHtmlAttribute; its
+			character replacement rules still apply. Use UTF-8 for exchanged JSON.
+			Unpaired surrogate escapes may not interoperate with every consumer.
+			Prefer a serializer for complete JSON documents. A null value is
+			written as the text null, which becomes the JSON string "null" inside
+			the caller's quotation marks.
+        </description>
+        <display-name>forJson</display-name>
+        <name>forJson</name>
+        <function-class>org.owasp.encoder.Encode</function-class>
+        <function-signature>java.lang.String forJson(java.lang.String)</function-signature>
+        <example>forJson(unsafeData)</example>
     </function>
 </taglib>

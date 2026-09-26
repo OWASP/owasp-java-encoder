@@ -68,9 +68,9 @@ import org.owasp.esapi.reference.DefaultEncoder;
  * {@link Encode#forUriComponent(String)}. Validate complete URLs and their
  * schemes, then encode for the enclosing output context.</p>
  *
- * <p>For clarity, the reason the OWASP Java Encoders do not include some
- * of the ESAPI library is that the Encoders library is specifically focused
- * on <i>encoding</i>, and thus does not include:</p>
+ * <p>The following methods delegate to ESAPI. Most are outside the scope of
+ * contextual output encoding; JSON encoding retains the reference behavior
+ * for compatibility, including its {@code null} result for {@code null} input:</p>
  *
  * <ul>
  *     <li>Input validation/normalization methods:
@@ -86,7 +86,8 @@ import org.owasp.esapi.reference.DefaultEncoder;
  *     <li>JSON encoding and decoding:
  *     {@link org.owasp.esapi.Encoder#encodeForJSON(String)},
  *     {@link org.owasp.esapi.Encoder#decodeFromJSON(String)}.
- *     These delegate to ESAPI; the JavaScript encoder is not a JSON encoder.</li>
+ *     For the core library's JSON string context, use {@link Encode#forJson(String)}
+ *     directly; its escaping and null contract differ from ESAPI's.</li>
  *
  *     <li>Binary-to-text/text-to-binary:
  *     {@link org.owasp.esapi.Encoder#encodeForBase64(byte[], boolean)},

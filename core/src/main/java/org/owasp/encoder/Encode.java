@@ -1413,6 +1413,111 @@ public final class Encode {
         encode(Encoders.JAVASCRIPT_SOURCE_ENCODER, out, input);
     }
 
+    /**
+     * <p>Encodes for the contents of a JSON string literal (RFC 8259).
+     * The caller must provide the surrounding double quotation marks.
+     * The result is safe to use as a JSON string value:</p>
+     *
+     * <ul>
+     * <li>in a JSON document, such as an <code>application/json</code>
+     * response, and</li>
+     * <li>in JSON inside an HTML <code>&lt;script&gt;</code> element,
+     * including <code>&lt;script type="application/json"&gt;</code>,
+     * because the output never contains <code>&lt;</code>,
+     * <code>&gt;</code> or <code>&amp;</code>.</li>
+     * </ul>
+     *
+     * <p>The encoding is:</p>
+     *
+     * <ul>
+     * <li><code>"</code> and <code>\</code> are encoded as
+     * <code>\"</code> and <code>\\</code>.</li>
+     * <li>The control characters U+0000 to U+001F are encoded as
+     * <code>\b</code>, <code>\t</code>, <code>\n</code>,
+     * <code>\f</code>, <code>\r</code> or <code>&#92;u00xx</code>.</li>
+     * <li><code>&lt;</code>, <code>&gt;</code> and <code>&amp;</code>
+     * are encoded as <code>&#92;u003c</code>, <code>&#92;u003e</code> and
+     * <code>&#92;u0026</code>, so the output cannot close or comment out an
+     * enclosing HTML <code>&lt;script&gt;</code> element.</li>
+     * <li>U+2028 and U+2029 are encoded as <code>&#92;u2028</code> and
+     * <code>&#92;u2029</code>.</li>
+     * <li>Unpaired surrogates are encoded as <code>&#92;ud800</code> to
+     * <code>&#92;udfff</code>.  Valid surrogate pairs are passed through
+     * unchanged.</li>
+     * </ul>
+     *
+     * <p>All <code>&#92;u</code> escapes use lowercase hexadecimal digits.
+     * All other characters, including <code>/</code>, <code>'</code>
+     * and non-ASCII characters, are passed through unchanged, so the
+     * output must be sent using UTF-8 when exchanged between systems, as
+     * required by RFC 8259.</p>
+     *
+     * <p><strong>This method is NOT an HTML encoder.</strong>  Do not use
+     * it for HTML text content or HTML attribute values: HTML does not
+     * decode JSON escapes, and in a double-quoted attribute the
+     * <code>\"</code> this method produces still ends the value.  To put
+     * JSON in an HTML attribute, first encode each string value and member
+     * name with this method and build the complete JSON text, then encode
+     * that complete attribute value with {@link #forHtmlAttribute(String)}.
+     * The attribute encoder's character replacement rules still apply.</p>
+     *
+     * <p>This method encodes only string contents. Prefer a JSON serializer
+     * for complete objects, arrays, numbers, booleans and null values. It is
+     * not an encoder for single-quoted JavaScript strings or template literals.</p>
+     *
+     * <p>A {@code null} input is encoded as the text <code>null</code>,
+     * like the other methods of this class.  Because the caller
+     * provides the quotation marks, the resulting JSON value is the
+     * string <code>"null"</code>, not the JSON literal
+     * <code>null</code>.  Callers that need a JSON <code>null</code>
+     * must handle that case before encoding.</p>
+     *
+     * <p>An unpaired surrogate escape such as <code>&#92;ud800</code> is
+     * valid JSON under RFC 8259, but it does not represent a Unicode
+     * character.  JSON containing one may not be interoperable with
+     * every consumer: some parsers reject it or replace it.</p>
+     *
+     * <b>Example JSP Usage:</b>
+     * <pre>
+     *    &lt;%@page contentType="application/json; charset=UTF-8"%&gt;
+     *    {"name":"&lt;%=Encode.forJson(name)%&gt;"}
+     * </pre>
+     *
+     * <pre>
+     *    &lt;script type="application/json" id="data"&gt;{"name":"&lt;%=Encode.forJson(name)%&gt;"}&lt;/script&gt;
+     * </pre>
+     *
+     * <pre>
+     *    &lt;% String json = "{\"name\":\"" + Encode.forJson(name) + "\"}"; %&gt;
+     *    &lt;div data-config="&lt;%=Encode.forHtmlAttribute(json)%&gt;"&gt;&lt;/div&gt;
+     * </pre>
+     *
+     * @param input the input string to encode
+     * @return the input encoded for a JSON string literal
+     * @see #forHtmlAttribute(String)
+     * @see #forJavaScriptSource(String)
+     * @since 1.5.0
+     */
+    public static String forJson(String input) {
+        return encode(Encoders.JSON_ENCODER, input);
+    }
+
+    /**
+     * See {@link #forJson(String)} for description of encoding.  This
+     * version writes directly to a Writer without an intervening string.
+     *
+     * @param out where to write encoded output
+     * @param input the input string to encode
+     * @throws NullPointerException if out is null
+     * @throws IOException if thrown by writer
+     * @since 1.5.0
+     */
+    public static void forJson(Writer out, String input)
+        throws IOException
+    {
+        encode(Encoders.JSON_ENCODER, out, input);
+    }
+
     // Additional?
     // MySQL
     // PostreSQL

@@ -141,6 +141,11 @@ public final class Encoders {
      */
     public static final String JAVASCRIPT_SOURCE = "javascript-source";
     /**
+     * Name of {@linkplain Encode#forJson(String) JSON string} context.
+     * @since 1.5.0
+     */
+    public static final String JSON = "json";
+    /**
      * Name of {@linkplain Encode#forUri(String) URI} context.
      */
     public static final String URI = "uri";
@@ -235,6 +240,11 @@ public final class Encoders {
      */
     static final JavaEncoder JAVA_ENCODER
             = map(JAVA, new JavaEncoder());
+    /**
+     * Encoder for JSON strings.
+     */
+    static final JSONEncoder JSON_ENCODER
+            = map(JSON, new JSONEncoder());
     /**
      * Encoder for CSS strings.
      */

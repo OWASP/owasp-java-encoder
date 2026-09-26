@@ -47,6 +47,8 @@
  * single or double quotes, or literal text in ordinary (untagged) template literals;
  * not tagged templates, JSON, or script URLs. DEL/C1 controls and unpaired
  * UTF-16 surrogates are escaped; valid surrogate pairs remain unescaped</td></tr>
+ * <tr><td>JSON string</td><td>{@link org.owasp.encoder.Encode#forJson(String)};
+ * caller supplies double quotes; supports JSON documents and HTML script data blocks</td></tr>
  * <tr><td>CSS string / unquoted url(...)</td><td>{@link org.owasp.encoder.Encode#forCssString(String)} /
  * {@link org.owasp.encoder.Encode#forCssUrl(String)}; validate URLs separately</td></tr>
  * <tr><td>XML 1.0 text / quoted attribute</td><td>{@link org.owasp.encoder.Encode#forXmlContent(String)} /
@@ -59,7 +61,7 @@
  * output with unpaired surrogates is not guaranteed to compile</td></tr>
  * </table>
  *
- * <p>Use a JSON serializer for JSON. Encoding does not validate a URL, make
+ * <p>Use a JSON serializer for complete JSON documents. Encoding does not validate a URL, make
  * arbitrary executable code safe, or sanitize HTML markup. See each method's
  * documentation for character handling and context restrictions.</p>
  *
