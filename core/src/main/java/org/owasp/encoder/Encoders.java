@@ -150,8 +150,9 @@ public final class Encoders {
      *
      * @deprecated Encoding a complete URI does not make an untrusted URI
      * safe.  Use {@link #URI_COMPONENT} for each untrusted value inserted
-     * into a URL, or validate an entire URL with {@link java.net.URI} and an
-     * allow-listed scheme before encoding it for the enclosing context.  See
+     * into a URL. For a complete URL, parse with {@link java.net.URI} and enforce
+     * application rules, including allowed schemes, before encoding it for the
+     * enclosing context. Parsing alone does not establish safety. See
      * {@link Encode#forUri(String)}.  Retained for compatibility in all 1.x
      * releases.
      */

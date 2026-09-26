@@ -667,9 +667,10 @@ public final class Encode {
      *   <li>The single-quote character({@code '}) <b>is not encoded</b>.</li>
      *
      *   <li>This encoding is not intended to be used standalone.  The
-     *   output should be encoded to the target context.  For example:
+     *   output still requires application-level URL validation and encoding
+     *   for the target context. Prefer using a validated URL directly:
      *   {@code <a
-     *   href="<%=Encode.forHtmlAttribute(Encode.forUri(uri))%>">...</a>}.
+     *   href="<%=Encode.forHtmlAttribute(validatedUri.toString())%>">...</a>}.
      *   (Note, the single-quote character ({@code '}) is not
      *   encoded.)</li>
      *
@@ -694,9 +695,11 @@ public final class Encode {
      * safe.  Encode each untrusted value inserted into a URL with
      * {@link #forUriComponent(String)} instead.  To use an entire untrusted
      * URL, parse it with {@link java.net.URI}, allow-list its scheme (for
-     * example {@code http} and {@code https}), and then encode it for the
+     * example {@code http} and {@code https}), enforce any other application
+     * restrictions, and then encode it for the
      * enclosing output context, for example with
-     * {@link #forHtmlAttribute(String)}.  This method always encodes
+     * {@link #forHtmlAttribute(String)}. Parsing alone does not establish safety.
+     * This method always encodes
      * {@code %}, so never apply it to a URI that is already percent-encoded.
      * It is retained for compatibility in all 1.x releases; removal in 2.0 is
      * under consideration.
@@ -724,7 +727,7 @@ public final class Encode {
 
     /**
      * Performs percent-encoding for a component of a URI, such as a query
-     * parameter name or value, path or query-string.  In particular this
+     * parameter name or value, path segment, or fragment. In particular this
      * method ensures that special characters in the component do not get
      * interpreted as part of another component.
      *
@@ -745,9 +748,13 @@ public final class Encode {
      * <b>Encoding Notes</b>
      * <ul>
      *
-     *   <li>The output contains only unreserved characters and
-     *   {@code %xx} escapes, so it is safe to be used in most containing
-     *   contexts, including: HTML/XML, CSS, and JavaScript contexts.</li>
+     *   <li>The output contains only unreserved characters and {@code %xx}
+     *   escapes. Assemble the URL from trusted structure and encoded raw
+     *   components, validate it for its intended use, then encode the complete
+     *   value for the enclosing context (for example,
+     *   {@link #forHtmlAttribute(String)} for a quoted HTML attribute).
+     *   Component encoding does not validate a URL or make arbitrary CSS or
+     *   JavaScript code safe.</li>
      *
      *   <li>URL encoding is an encoding for bytes, not unicode.  The
      *   input string is thus first encoded as a sequence of UTF-8

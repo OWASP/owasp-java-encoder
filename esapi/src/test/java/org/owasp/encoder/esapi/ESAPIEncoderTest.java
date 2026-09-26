@@ -111,7 +111,7 @@ public class ESAPIEncoderTest extends TestCase {
         assertEquals(Encode.forJavaScript(input), encoder.encodeForJavaScript(input));
         assertEquals(Encode.forXml(input), encoder.encodeForXML(input));
         assertEquals(Encode.forXmlAttribute(input), encoder.encodeForXMLAttribute(input));
-        assertEquals(Encode.forUri(input), encoder.encodeForURL(input));
+        assertEquals(Encode.forUriComponent(input), encoder.encodeForURL(input));
     }
 
     public void testDelegatedTextMethods() throws Exception {

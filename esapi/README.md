@@ -81,6 +81,63 @@ Applications can select another tested version with normal Maven dependency
 management. The signed 1.4.1 POM and current development POM default
 deterministically to 2.7.0.0; the Central 1.4.0 POM still uses the range above.
 
+## URL encoding migration in 1.5 (unreleased)
+
+Starting with `1.5.0-SNAPSHOT`, `ESAPIEncoder.getInstance().encodeForURL(value)`
+uses `Encode.forUriComponent` to encode **one raw URL component** with UTF-8.
+Earlier adapter releases, including signed 1.4.1, use deprecated `Encode.forUri`
+and leave delimiters such as `& = / ? # +` unchanged. For example:
+
+| Raw input | Adapter through 1.4.1 | Adapter 1.5 | ESAPI reference with UTF-8 |
+| --- | --- | --- | --- |
+| `a b+c&admin=true` | `a%20b+c&admin=true` | `a%20b%2Bc%26admin%3Dtrue` | `a+b%2Bc%26admin%3Dtrue` |
+| `~*` | `~*` | `~%2A` | `%7E*` |
+| `%20` | `%2520` | `%2520` | `%2520` |
+| Java `null` | String `"null"` | String `"null"` | Java `null` |
+| Unpaired UTF-16 surrogate | `-` | `-` | `%3F` (replacement `?`) |
+
+The adapter deliberately uses RFC 3986 component encoding with `%20` for spaces,
+preserving its existing space, null, and malformed-Unicode policies. ESAPI's
+[reference implementation][esapi-url-reference] uses form encoding with `+` for
+spaces and the configured `Encryptor.CharacterEncoding`. Both escape URL
+delimiters, but their output is not interchangeable for byte comparisons or
+request signatures. Use `java.net.URLEncoder.encode(value, "UTF-8")` if a
+protocol requires form encoding. The adapter still declares `EncodingException`
+and does not read ESAPI configuration for this operation.
+
+Encode each raw parameter name/value or path segment once, then assemble the
+URL using trusted delimiters. Validate the final URL against application rules,
+including allowed schemes and any destination/path restrictions. Component
+encoding does not prevent every application-specific path issue (for example,
+`.` and `..` are unreserved). URI parsing alone is not a safety check. For a
+quoted HTML URL attribute, encode the assembled, validated URL with
+`Encode.forHtmlAttribute`. See the [shared migration guidance](../README.md#migrating-from-foruri).
+
+Callers that passed complete URLs must change that call pattern before adopting
+1.5: component encoding escapes the scheme colon, slashes, and other structural
+delimiters. Already percent-encoded input is encoded again. Existing core,
+registry, JSP, and Jakarta `forUri` entry points retain their behavior throughout
+1.x; only this adapter delegate changes. This is unreleased 1.5 behavior, not a
+change to the retained 1.4.1 artifacts.
+
+## Supported output contexts
+
+The adapter intentionally preserves these contexts rather than matching every
+escape emitted by ESAPI's reference implementation:
+
+| Method | Supported context and caller responsibility |
+| --- | --- |
+| `encodeForHTMLAttribute` | A quoted HTML text attribute. Supply single or double quotes. HTML escaping alone does not make event-handler code or an unvalidated URL safe. |
+| `encodeForCSS` | A quoted CSS string using `Encode.forCssString`; not arbitrary unquoted CSS values or expressions. |
+| `encodeForJavaScript` | A single/double-quoted string or literal text in an ordinary untagged template, using `Encode.forJavaScript`. Not JSON, tagged templates (including `String.raw`), `${...}` expression bodies, arbitrary unquoted code, or script URLs. |
+| `encodeForURL` (1.5) | One raw URL component; assemble and validate the URL, then encode for its enclosing context. |
+
+More escaping does not make arbitrary unquoted JavaScript or CSS safe. The CSS
+size fix, JavaScript template-boundary and Unicode handling, JSON delegation,
+lazy reference lookup, and ESAPI's default disablement of unsafe SQL encoding
+remain intact. Parser and contract tests run against the stable ESAPI matrix
+listed above; that matrix remains separate from upstream security support.
+
 ## Runtime and security notes
 
 `ESAPIEncoder.getInstance()` and its OWASP Java Encoder-backed methods do not
@@ -127,6 +184,7 @@ dependency declaration.
 [esapi-security]: https://github.com/ESAPI/esapi-java-legacy/security
 [esapi-latest]: https://github.com/ESAPI/esapi-java-legacy/releases/latest
 [esapi-release]: https://github.com/ESAPI/esapi-java-legacy/releases/tag/esapi-2.7.0.0
+[esapi-url-reference]: https://github.com/ESAPI/esapi-java-legacy/blob/esapi-2.7.0.0/src/main/java/org/owasp/esapi/reference/DefaultEncoder.java#L506-L516
 [encoder-release]: https://github.com/OWASP/owasp-java-encoder/releases/tag/v1.4.1
 [encoder-verification]: ../releases/1.4.1.md#verification
 [encoder-advisories]: ../releases/1.4.1.md#security-fixes

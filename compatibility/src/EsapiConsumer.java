@@ -39,5 +39,12 @@ public final class EsapiConsumer {
         Checks.origin(org.owasp.encoder.esapi.ESAPIEncoder.class);
         org.owasp.esapi.Encoder encoder = org.owasp.encoder.esapi.ESAPIEncoder.getInstance();
         Checks.encoded(encoder.encodeForHTML("A&B<"));
+        if (!"a%20b%2Bc%26admin%3Dtrue%2F%23".equals(
+                encoder.encodeForURL("a b+c&admin=true/#"))) {
+            throw new AssertionError("URL component delimiters were not encoded");
+        }
+        if (!"null".equals(encoder.encodeForURL(null))) {
+            throw new AssertionError("URL null contract changed");
+        }
     }
 }

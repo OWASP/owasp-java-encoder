@@ -138,6 +138,21 @@ public class EncodersTest extends TestCase {
         assertNotSame(Encoders.JAVASCRIPT_SOURCE_ENCODER, encoder);
     }
 
+    @SuppressWarnings("deprecation") // Retained 1.x output is part of the contract.
+    public void testLegacyUriOutputIsUnchangedAcrossEntryPoints() throws Exception {
+        String input = "https://example.test/a b?q=a+b&next=%20#fragment";
+        String expected = "https://example.test/a%20b?q=a+b&next=%2520#fragment";
+        assertEquals(expected, Encode.forUri(input));
+        StringWriter direct = new StringWriter();
+        Encode.forUri(direct, input);
+        assertEquals(expected, direct.toString());
+        StringWriter registered = new StringWriter();
+        EncodedWriter writer = new EncodedWriter(registered, "uri");
+        writer.write(input);
+        writer.close();
+        assertEquals(expected, registered.toString());
+    }
+
     public void testXML11Names() {
         assertXML11Encoder("xml-1.1", XMLEncoder.Mode.ALL,
             "&#x01;&amp;&lt;&gt;&#34;&#39;");
