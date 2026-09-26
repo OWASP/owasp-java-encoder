@@ -71,6 +71,14 @@ public class EncodersTest extends TestCase {
         assertTrue(count > 0);
     }
 
+    public void testJsonContext() throws Exception {
+        assertEquals("json", Encoders.JSON);
+        Encoder encoder = Encoders.forName(Encoders.JSON);
+        assertSame(Encoders.JSON_ENCODER, encoder);
+        assertTrue(encoder instanceof JSONEncoder);
+        assertNotSame(Encoders.JAVASCRIPT_SOURCE_ENCODER, encoder);
+    }
+
     public void testXML11Names() {
         assertXML11Encoder("xml-1.1", XMLEncoder.Mode.ALL,
             "&#x01;&amp;&lt;&gt;&#34;&#39;");

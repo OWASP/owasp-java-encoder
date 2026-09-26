@@ -87,7 +87,8 @@ uploading. Keep an audit record of the exact uploaded bundle and its SHA-256.
 4. Set the fixed versions in the security advisories and publish the advisories
    in coordination with the available release. Do not announce a Central version
    that has not actually published.
-5. Set main to the next development version (`1.4.2-SNAPSHOT` after 1.4.1), update
+5. Set main to the next development version (currently `1.5.0-SNAPSHOT` for the
+   new JSON API), update
    `jakarta-test` accordingly, and reset the SCM tag to `HEAD`. README examples
    and the supported-version table continue to refer to the published release.
 6. Verify GitHub CI on main, update the OWASP project page, and check javadoc.io
