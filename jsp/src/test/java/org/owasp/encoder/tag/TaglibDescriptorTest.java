@@ -189,6 +189,14 @@ public class TaglibDescriptorTest extends TestCase {
     public void testBasicIsSubsetOfAdvanced() throws Exception {
         Taglib basic = load(BASIC);
         Taglib advanced = load(ADVANCED);
+        // The basic descriptor is a published surface too. A declaration
+        // removed from both modules would still satisfy subset parity.
+        Set<String> expectedBasic = new TreeSet<String>(Arrays.asList(
+            "forCDATA", "forCssString", "forCssUrl", "forHtml", "forHtmlAttribute",
+            "forHtmlContent", "forHtmlUnquotedAttribute", "forJavaScript", "forJson",
+            "forUri", "forUriComponent", "forXml", "forXmlAttribute", "forXmlContent"));
+        assertEquals("basic tags", expectedBasic, basic.tagClasses.keySet());
+        assertEquals("basic functions", expectedBasic, basic.functionSignatures.keySet());
         for (Map.Entry<String, String> tag : basic.tagClasses.entrySet()) {
             assertEquals(tag.getKey(), tag.getValue(), advanced.tagClasses.get(tag.getKey()));
         }
