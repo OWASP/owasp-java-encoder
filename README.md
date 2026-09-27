@@ -11,11 +11,10 @@ safe templates, URL validation and other application controls.
 
 **Upgrade all Java Encoder artifacts to 1.4.1. Versions through 1.4.0 are affected
 by the [security issues fixed in 1.4.1](releases/1.4.1.md#security-fixes).**
-Maven Central publication is still pending (checked 2026-09-26); the signed
-[GitHub 1.4.1 release][release] is available. Download, [verify](VERIFYING.md) and
-[install its retained artifacts](releases/1.4.1.md#verification) in your local or
-organizational Maven repository. Central alone cannot resolve 1.4.1. Do not use
-Central's affected 1.4.0 just because it is the latest version shown there.
+Version 1.4.1 is available from [Maven Central](https://repo.maven.apache.org/maven2/org/owasp/encoder/)
+and the signed [GitHub release][release]. All published artifacts and signatures
+[match the retained release](releases/1.4.1-central-publication.md). See
+[VERIFYING.md](VERIFYING.md) for verification instructions.
 
 `main` is **unreleased 1.5.0-SNAPSHOT**. Its JSON API, JavaScript template support,
 XML 1.1 tag bindings and ESAPI URL change are described below with version labels;
@@ -23,7 +22,7 @@ they are not features of the signed 1.4.1 release. See [CHANGELOG.md](CHANGELOG.
 
 ## Start using the OWASP Java Encoders
 
-After installing the verified 1.4.1 artifacts, select the dependency you need.
+Select the dependency you need; Maven resolves version 1.4.1 from Central.
 All four use group ID `org.owasp.encoder` and version `1.4.1`:
 
 | Artifact ID | Purpose and runtime dependencies |

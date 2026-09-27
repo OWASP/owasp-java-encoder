@@ -7,7 +7,8 @@ the fingerprint before use. Never import private key material to verify a releas
 
 For 1.4.1 and later releases until a documented rotation, the expected project key
 is `1C5F632B86809F2F5DB25092BEA0075F94074A9B`. The [1.4.1 release instructions](releases/1.4.1.md#verification)
-cover its signed GitHub assets while Central publication remains pending.
+cover its signed GitHub assets. The [Central publication verification](releases/1.4.1-central-publication.md)
+confirms that Central serves the same artifacts and signatures.
 
 ## Fresh public-only keyring
 

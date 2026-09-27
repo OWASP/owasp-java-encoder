@@ -4,7 +4,7 @@ Released entries are grounded in the linked immutable tags, GitHub release notes
 and retained README announcements. Dates below are GitHub publication dates in
 UTC where a release record exists; older announcement/tag dates are labeled.
 An open proposal is not a release. Historical tags, assets and signatures remain
-unchanged. [1.4.1 publication is pending on Central](releases/1.4.1.md).
+unchanged. [1.4.1 is also available from Central](releases/1.4.1-central-publication.md).
 
 ## Unreleased — 1.5.0
 
@@ -50,8 +50,10 @@ records PRs, tests and dispositions; it is not approval to publish 1.5.
 
 [Signed GitHub release](https://github.com/OWASP/owasp-java-encoder/releases/tag/v1.4.1)
 ([tag created 2026-09-25 in America/Los_Angeles](https://github.com/OWASP/owasp-java-encoder/tree/v1.4.1)).
-**Central publication remains pending. Upgrade all four Java Encoder artifacts;
+**Available from Maven Central. Upgrade all four Java Encoder artifacts;
 versions through 1.4.0 are affected.**
+Central publication was verified on 2026-09-27 UTC (2026-09-26 in
+America/Los_Angeles); [all artifacts and signatures match the retained release](releases/1.4.1-central-publication.md).
 
 - Fix `EncodedWriter` context corruption during buffer overflow
   ([GHSA-57jg-769q-93vh](https://github.com/OWASP/owasp-java-encoder/security/advisories/GHSA-57jg-769q-93vh)).
@@ -132,4 +134,6 @@ between `Version 1.2.3` and `v...`, and 1.4.1 identifies itself as a security
 release. Keep those titles, dates and original text: they are unambiguous, and
 backfilling older entries would require inventing publication timestamps. This
 changelog supplies consistent navigation without rewriting history. Preserve
-1.4.0's dated upgrade supplement and 1.4.1's security/pending-publication notice.
+1.4.0's dated upgrade supplement and 1.4.1's security notice. The 1.4.1
+pending-publication notice was replaced after Central publication and exact
+artifact verification on 2026-09-27 UTC.

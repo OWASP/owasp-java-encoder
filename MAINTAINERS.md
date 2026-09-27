@@ -170,3 +170,16 @@ publishing evidence. [#111](https://github.com/OWASP/owasp-java-encoder/issues/1
 owns the remaining independent vault recovery, namespace access, publication,
 and staging checks. [#95](https://github.com/OWASP/owasp-java-encoder/issues/95)
 owns future release-tooling changes.
+
+### Central publication follow-up: 2026-09-26 (America/Los_Angeles)
+
+Jim's signed-in Portal account now shows the verified `org.owasp.encoder`
+namespace in the Owasp organization. The exact retained signed 1.4.1 bundle was
+validated and published as deployment `ce91e36f-756c-489f-bbea-3629b728ad28`.
+All 17 POM/JAR files and their 17 signatures downloaded from Central matched
+the retained release byte for byte. See the [publication record](releases/1.4.1-central-publication.md).
+
+This supersedes the earlier namespace-access and pending-publication status
+for Jim and 1.4.1. The independent vault imports/recovery drills, Jeremy's
+current access, and both distinct validated-and-dropped staging rehearsals
+remain unconfirmed. Keep #111 open for those remaining checks.

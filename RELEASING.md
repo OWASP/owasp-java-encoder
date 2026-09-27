@@ -9,9 +9,9 @@ or verification for every item. Completing a maintenance batch does not satisfy
 this gate on its own. Keep 1.5 development at `1.5.0-SNAPSHOT`; snapshot version
 changes and reviewed maintenance merges are not release approval.
 
-The pending Central publication of the already signed 1.4.1 release is separate:
-when access is available, publish the retained exact signed bundle and verify
-the published artifacts. Do not rebuild or replace 1.4.1 artifacts or move its tag.
+The signed 1.4.1 release has been [published to Central and verified](releases/1.4.1-central-publication.md).
+That publication is separate from the 1.5 release gate. Do not rebuild or replace
+1.4.1 artifacts, republish its coordinates, or move its tag.
 
 ## Publishing access and project identity
 
@@ -158,9 +158,9 @@ uploading. Keep an audit record of the exact uploaded bundle and its SHA-256.
    after its indexing delay.
 
 If staging fails, repair the cause and drop the failed staging deployment before
-retrying. For the pending 1.4.1 delivery, correct access or upload problems and
-retry the retained exact bundle; do not rebuild or re-sign it to address a
-validation failure. Escalate a failure requiring different artifact bytes to
+retrying. For a retained signed release awaiting delivery, correct access or
+upload problems and retry the exact bundle; do not rebuild or re-sign it to
+address a validation failure. Escalate a failure requiring different artifact bytes to
 the release coordinator. After publication, compare all four libraries' binary,
 source, and Javadoc JARs and all five POMs and their signatures from Central with
 the retained files and signed checksums. Only after that comparison succeeds,
@@ -218,8 +218,9 @@ annotations 2.22, HttpClient 5.6.4 and HttpCore/httpcore5-h2 5.4.4. The upstream
 0.11.0 dependency versions matched current OSV advisories; these six reviewed
 replacement coordinates did not on 2026-09-26. Local signed bundle validation
 exercises the overridden plugin. This is not an audit of every plugin dependency
-or a claim that the live Central HTTP path has been tested. Namespace access and
-a validated-then-dropped rehearsal remain tracked by #111. `autoPublish=false`
+or a claim that the plugin's live Central HTTP path has been tested. Jim's Portal
+namespace access and exact 1.4.1 publication are now [verified](releases/1.4.1-central-publication.md);
+a validated-then-dropped rehearsal and Jeremy's access remain tracked by #111. `autoPublish=false`
 stays mandatory. The optional WAR is excluded and its install/deploy goals skip.
 
 

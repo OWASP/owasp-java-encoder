@@ -5,7 +5,7 @@ The ESAPI dependency depends on the `encoder-esapi` release you consume:
 | Adapter version | ESAPI dependency in its POM | Availability |
 | --- | --- | --- |
 | `1.4.0` | Maven range `[2.5.1.0,3)`; resolution can change and can select a release candidate | Maven Central; affected by Java Encoder's 1.4.1 security advisories |
-| `1.4.1` | Fixed default `2.7.0.0` | [Signed GitHub security release][encoder-release]; Central publication is pending |
+| `1.4.1` | Fixed default `2.7.0.0` | Maven Central and [signed GitHub security release][encoder-release] |
 | `1.5.0-SNAPSHOT` | Fixed default `2.7.0.0` | Unreleased development; not a published release |
 
 The fixed dependency was introduced in 1.4.1. It does not change the POM already
@@ -17,11 +17,10 @@ establish upstream security support.
 ## Upgrade to 1.4.1
 
 Upgrade **all OWASP Java Encoder dependencies to 1.4.1**, including the core
-`encoder` if your application declares or manages it separately. While Central
-publication is pending, obtain the [signed 1.4.1 artifacts][encoder-release],
-follow the [verification and local installation instructions][encoder-verification],
-and install the retained POMs and JARs in your local or organizational Maven
-repository. Version 1.4.1 will not resolve from Central alone.
+`encoder` if your application declares or manages it separately. Version 1.4.1
+resolves from Maven Central. The [signed GitHub artifacts][encoder-release]
+remain available with [verification instructions][encoder-verification].
+All Central artifacts and signatures [match the retained release](../releases/1.4.1-central-publication.md).
 
 ```xml
 <dependency>
