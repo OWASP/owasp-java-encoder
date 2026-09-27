@@ -219,9 +219,11 @@ annotations 2.22, HttpClient 5.6.4 and HttpCore/httpcore5-h2 5.4.4. The upstream
 replacement coordinates did not on 2026-09-26. Local signed bundle validation
 exercises the overridden plugin. This is not an audit of every plugin dependency
 or a claim that the plugin's live Central HTTP path has been tested. Jim's Portal
-namespace access and exact 1.4.1 publication are now [verified](releases/1.4.1-central-publication.md);
-a validated-then-dropped rehearsal and Jeremy's access remain tracked by #111. `autoPublish=false`
-stays mandatory. The optional WAR is excluded and its install/deploy goals skip.
+namespace access and exact 1.4.1 publication are now [verified](releases/1.4.1-central-publication.md).
+Jim reported both publishers' namespace checks and separate validated-then-dropped
+rehearsals complete on 2026-09-26; see [the dated maintainer record](MAINTAINERS.md#central-publication-follow-up-2026-09-26-americalos_angeles).
+`autoPublish=false` stays mandatory. The optional WAR is excluded and its
+install/deploy goals skip.
 
 
 The signing plugin also pins `bcpg-jdk18on`, `bcprov-jdk18on`, and

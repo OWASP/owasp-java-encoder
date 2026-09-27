@@ -180,6 +180,21 @@ All 17 POM/JAR files and their 17 signatures downloaded from Central matched
 the retained release byte for byte. See the [publication record](releases/1.4.1-central-publication.md).
 
 This supersedes the earlier namespace-access and pending-publication status
-for Jim and 1.4.1. The independent vault imports/recovery drills, Jeremy's
-current access, and both distinct validated-and-dropped staging rehearsals
-remain unconfirmed. Keep #111 open for those remaining checks.
+for Jim and 1.4.1.
+
+Jim also confirmed on 2026-09-26 (America/Los_Angeles) that he and Jeremy both
+completed the independent vault-recovery drills, namespace-access checks, and
+separate validated-and-dropped Central staging rehearsals that day. This is
+maintainer-reported completion; the individual private recovery records and
+rehearsal deployment IDs were not supplied or independently inspected in this
+publication session. Keep those operational records in each custodian's vault.
+
+| Custodian | Independent vault-recovery drill | Namespace access | Separate validated-and-dropped rehearsal |
+| --- | --- | --- | --- |
+| Jim Manico | Completed 2026-09-26, reported by Jim | Verified directly by 1.4.1 publication | Completed 2026-09-26, reported by Jim |
+| Jeremy Long | Completed 2026-09-26, reported by Jim | Confirmed 2026-09-26, reported by Jim | Completed 2026-09-26, reported by Jim |
+
+Together with the publication verification and reconciled consumer notices,
+this records completion of #111 on the stated evidence. The earlier dated
+records remain as history. Future recovery drills and release rehearsals still
+follow the procedures above; the 1.5 release gate remains unchanged.
