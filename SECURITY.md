@@ -2,8 +2,9 @@
 
 ## Supported Versions
 
-**Maven Central publication is pending.** Version 1.4.1 is available as signed
-artifacts from the [GitHub security release](https://github.com/OWASP/owasp-java-encoder/releases/tag/v1.4.1).
+Version **1.4.1** is available from [Maven Central](https://repo.maven.apache.org/maven2/org/owasp/encoder/)
+and as signed artifacts from the [GitHub security release](https://github.com/OWASP/owasp-java-encoder/releases/tag/v1.4.1).
+The Central artifacts and signatures [match the retained release](releases/1.4.1-central-publication.md).
 
 Only the latest 1.x release receives security fixes. Fixes ship in a new release;
 older release lines are not patched.
