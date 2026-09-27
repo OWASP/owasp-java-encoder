@@ -3,13 +3,14 @@
 The core `encoder` has **no runtime dependencies**. `encoder-jsp` and
 `encoder-jakarta-jsp` depend on core and declare their matching JSP API as
 `provided`; the container supplies it. `encoder-esapi` has compile dependencies
-on core and ESAPI 2.7.0.0, including ESAPI's transitive graph. None of these
-third-party classes is shaded into the four Encoder JARs. The optional Boot/WAR
+on core, ESAPI 2.7.0.0, and patched HTTP Components, including ESAPI's other
+transitives. None of these third-party classes is shaded into the four Encoder
+JARs. The optional Boot/WAR
 fixture, test engines and build plugins are development tooling, not published
 library runtime dependencies. Review the [live dependency graph](https://github.com/OWASP/owasp-java-encoder/network/dependencies)
 for those separate scopes and [ESAPI advisory triage](../esapi/README.md#dependency-security-triage).
 
-## Consumer dependency inventory — 2026-09-26
+## Consumer dependency inventory — 2026-09-27
 
 Generated from dependency-plugin 3.11.0's resolved reactor `dependency:tree`
 JSON for current `1.5.0-SNAPSHOT`. Includes compile/runtime and provided scopes,
@@ -42,9 +43,9 @@ security support or advisory status. This inventory does not rewrite published
 | `javax.servlet.jsp:javax.servlet.jsp-api:2.2.1` | jsp: provided | CDDL + GPLv2 with classpath exception | [POM](https://repo.maven.apache.org/maven2/javax/servlet/jsp/javax.servlet.jsp-api/2.2.1/javax.servlet.jsp-api-2.2.1.pom) |
 | `org.apache-extras.beanshell:bsh:2.0b6` | esapi: compile | Apache License, Version 2.0 | [POM](https://repo.maven.apache.org/maven2/org/apache-extras/beanshell/bsh/2.0b6/bsh-2.0b6.pom) |
 | `org.apache.commons:commons-collections4:4.5.0-M2` | esapi: compile | Apache-2.0 | [POM](https://repo.maven.apache.org/maven2/org/apache/apache/32/apache-32.pom) |
-| `org.apache.httpcomponents.client5:httpclient5:5.4.4` | esapi: compile | Apache License, Version 2.0 | [POM](https://repo.maven.apache.org/maven2/org/apache/apache/27/apache-27.pom) |
-| `org.apache.httpcomponents.core5:httpcore5:5.3.4` | esapi: compile | Apache License, Version 2.0 | [POM](https://repo.maven.apache.org/maven2/org/apache/apache/27/apache-27.pom) |
-| `org.apache.httpcomponents.core5:httpcore5-h2:5.3.4` | esapi: compile | Apache License, Version 2.0 | [POM](https://repo.maven.apache.org/maven2/org/apache/apache/27/apache-27.pom) |
+| `org.apache.httpcomponents.client5:httpclient5:5.6.4` | esapi: compile | Apache License, Version 2.0 | [POM](https://repo.maven.apache.org/maven2/org/apache/apache/27/apache-27.pom) |
+| `org.apache.httpcomponents.core5:httpcore5:5.4.4` | esapi: compile | Apache License, Version 2.0 | [POM](https://repo.maven.apache.org/maven2/org/apache/apache/27/apache-27.pom) |
+| `org.apache.httpcomponents.core5:httpcore5-h2:5.4.4` | esapi: compile | Apache License, Version 2.0 | [POM](https://repo.maven.apache.org/maven2/org/apache/apache/27/apache-27.pom) |
 | `org.apache.xmlgraphics:batik-constants:1.19` | esapi: compile | The Apache Software License, Version 2.0 | [POM](https://repo.maven.apache.org/maven2/org/apache/xmlgraphics/batik/1.19/batik-1.19.pom) |
 | `org.apache.xmlgraphics:batik-css:1.19` | esapi: compile | The Apache Software License, Version 2.0 | [POM](https://repo.maven.apache.org/maven2/org/apache/xmlgraphics/batik/1.19/batik-1.19.pom) |
 | `org.apache.xmlgraphics:batik-i18n:1.19` | esapi: compile | The Apache Software License, Version 2.0 | [POM](https://repo.maven.apache.org/maven2/org/apache/xmlgraphics/batik/1.19/batik-1.19.pom) |

@@ -40,6 +40,24 @@ are already merged 1.5 features; they are not deferred or rejected by this recor
 Tagged templates, arbitrary executable expressions and complete JSON serialization
 remain outside those contracts.
 
+## 1.5 parser-boundary output migration
+
+The 1.5 security correction keeps the existing trusted-prefix/encoded-value/
+trusted-suffix composition contract. Applications do not need a new stateful
+API, but three outputs change compared with 1.4.1:
+
+| Context | 1.5 behavior | Compatibility consequence |
+| --- | --- | --- |
+| HTML script JavaScript (`forJavaScript`, `forJavaScriptBlock`) | Escapes every character that can contribute to a case-insensitive `</script` end tag, its delimiter, `<!--` or `-->`; hyphen uses `\x2d` | JavaScript string values are preserved, but common letters and spaces can change encoded bytes. Attribute-only and standalone-source modes retain their narrower rules. |
+| XML CDATA | Represents every `]` and `>` with a close/character-data/reopen spelling | Parsed XML text is preserved, apart from documented XML normalization/replacement. Output can expand 13× and parser event boundaries can change. |
+| XML comment | Replaces every hyphen with `~` | Prevents cross-fragment `--` and `-->`; comment text is deliberately lossy. |
+
+The trusted fragments must already be valid for the selected parser context.
+Migration review must cover byte snapshots, signatures, cache keys and any code
+that consumes XML events rather than the parsed text value. Large CDATA values
+should use a Writer facade or `EncodedWriter`; String facades retain the complete
+result but grow according to actual output rather than reserving the 13× bound.
+
 ## Base64url disposition (#149)
 
 **Reject adding a Base64Url class, `Encode.forBase64Url`, or tag/EL bindings to this

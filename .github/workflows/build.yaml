@@ -28,6 +28,7 @@ jobs:
     - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       with:
         persist-credentials: false
+        fetch-depth: 0
     - name: Check versions and isolate Maven storage
       run: |
         python3 scripts/check-ci-version.py --ref "$GITHUB_REF"
@@ -43,6 +44,8 @@ jobs:
       run: python3 -m unittest discover -s scripts/tests
     - name: Verify clean reactor including the required Docker/browser test
       run: ./mvnw -B -ntp clean verify -PtestJakarta 2>&1 | tee build.log
+    - name: Check published modules' effective SCM metadata
+      run: python3 scripts/check-effective-pom-scm.py
     - name: Confirm the Jakarta application contains this reactor's exact JAR
       run: |
         python3 - <<'PY'

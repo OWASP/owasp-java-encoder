@@ -6,10 +6,12 @@
     <uri>https://www.owasp.org/index.php/OWASP_Java_Encoder_Project</uri>
     <tag>
         <description>
-            Encodes data for an XML CDATA section. Replaces a terminating "]]&gt;" with
-            "]]]]&gt;&lt;![CDATA[&gt;". Invalid XML 1.0 characters, U+007F, C1 controls other than
-            U+0085 (NEL), and Unicode noncharacters are replaced by a space. XML parsers normalize
-            line endings. The caller must supply the CDATA section boundaries.
+            Encodes data for an XML CDATA section. Represents every "]" and "&gt;" with
+            close/reopen sequences, preserving parsed character data and preventing encoded text
+            from completing a terminator supplied partly by adjacent trusted text. Invalid XML 1.0
+            characters, U+007F, C1 controls other than U+0085 (NEL), and Unicode noncharacters are
+            replaced by a space. XML parsers normalize line endings. The caller must supply the
+            CDATA section boundaries.
         </description>
         <display-name>forCDATA</display-name>
         <name>forCDATA</name>
@@ -94,7 +96,9 @@
     <tag>
         <description>
             Encodes a JavaScript string for HTML event attributes (such as onclick), HTML script
-            blocks, or standalone JavaScript source.
+            blocks, or standalone JavaScript source. In HTML script blocks, additional hex
+            escapes prevent encoded fragments from completing &lt;/script, &lt;!--, or --&gt;
+            tokens across trusted boundaries; hyphen uses \x2d.
             Caller must supply single (') or double (") quotation marks, or backticks (`)
             for an ordinary (untagged) template literal. Insert encoded output into literal text,
             not a ${...} expression. Dollar sign ($), backtick, and opening brace ({) are encoded
@@ -446,10 +450,12 @@
     </function>
     <function>
         <description>
-            Encodes data for an XML CDATA section. Replaces a terminating "]]&gt;" with
-            "]]]]&gt;&lt;![CDATA[&gt;". Invalid XML 1.0 characters, U+007F, C1 controls other than
-            U+0085 (NEL), and Unicode noncharacters are replaced by a space. XML parsers normalize
-            line endings. The caller must supply the CDATA section boundaries.
+            Encodes data for an XML CDATA section. Represents every "]" and "&gt;" with
+            close/reopen sequences, preserving parsed character data and preventing encoded text
+            from completing a terminator supplied partly by adjacent trusted text. Invalid XML 1.0
+            characters, U+007F, C1 controls other than U+0085 (NEL), and Unicode noncharacters are
+            replaced by a space. XML parsers normalize line endings. The caller must supply the
+            CDATA section boundaries.
         </description>
         <display-name>forCDATA</display-name>
         <name>forCDATA</name>
@@ -460,7 +466,9 @@
     <function>
         <description>
             Encodes a JavaScript string for HTML event attributes (such as onclick), HTML script
-            blocks, or standalone JavaScript source.
+            blocks, or standalone JavaScript source. In HTML script blocks, additional hex
+            escapes prevent encoded fragments from completing &lt;/script, &lt;!--, or --&gt;
+            tokens across trusted boundaries; hyphen uses \x2d.
             Caller must supply single (') or double (") quotation marks, or backticks (`)
             for an ordinary (untagged) template literal. Insert encoded output into literal text,
             not a ${...} expression. Dollar sign ($), backtick, and opening brace ({) are encoded

@@ -37,17 +37,17 @@ import java.nio.CharBuffer;
 import java.nio.charset.CoderResult;
 
 /**
- * XMLCommentEncoder -- Encodes for the XML/HTML comment context. The sequence "--" is not allowed in comments, and must be
- * removed/replaced. We also must be careful of trailing hyphens at end of input, as they could combine with the external comment
- * ending sequence "-->" to become "--->", which is also invalid. As with all XML-based context, invalid XML characters are not
- * allowed.
+ * XMLCommentEncoder -- Encodes for the XML comment context. The sequence
+ * "--" is not allowed in XML comments. Every input hyphen is replaced so it
+ * cannot combine with a hyphen in adjacent trusted literal text. As with all
+ * XML-based contexts, invalid XML characters are not allowed.
  *
  * @author Jeff Ichnowski
  */
 class XMLCommentEncoder extends Encoder {
 
     /**
-     * This is the character used to replace a hyphen when a sequence of hypens is encountered.
+     * This is the character used to replace every input hyphen.
      */
     static final char HYPHEN_REPLACEMENT = '~';
 
@@ -75,15 +75,7 @@ class XMLCommentEncoder extends Encoder {
             char ch = input.charAt(i);
             if (ch <= Unicode.MAX_ASCII) {
                 if (ch == '-') {
-                    if (i + 1 < n) {
-                        if (input.charAt(i + 1) == '-') {
-                            return i;
-//                        } else {
-//                            // valid
-                        }
-                    } else {
-                        return i;
-                    }
+                    return i;
                 } else if (ch < ' ' && ch != '\n' && ch != '\r' && ch != '\t') {
                     return i;
 //                } else {
@@ -130,31 +122,12 @@ class XMLCommentEncoder extends Encoder {
             char ch = in[i];
             if (ch <= Unicode.MAX_ASCII) {
                 if (ch == '-') {
-                    if (i + 1 < n) {
-                        if (in[i + 1] == '-') {
-                            if (j + 1 >= m) {
-                                return overflow(input, i, output, j);
-                            }
-                            out[j++] = '-';
-                            out[j++] = HYPHEN_REPLACEMENT;
-                            ++i;
-                        } else {
-                            if (j >= m) {
-                                return overflow(input, i, output, j);
-                            }
-                            out[j++] = '-';
-                        }
-                    } else if (endOfInput) {
-                        if (j >= m) {
-                            return overflow(input, i, output, j);
-                        }
-                        out[j++] = HYPHEN_REPLACEMENT;
-                    } else {
-                        // saw '-' at the end of the buffer, but this is not
-                        // end of input, we need to see the next character
-                        // before deciding what to do.
-                        break;
+                    if (j >= m) {
+                        return overflow(input, i, output, j);
                     }
+                    // Replacing every hyphen prevents a trusted trailing
+                    // hyphen from combining with the start of this input.
+                    out[j++] = HYPHEN_REPLACEMENT;
                 } else if (ch > ' ' || ch == '\n' || ch == '\r' || ch == '\t') {
                     if (j >= m) {
                         return overflow(input, i, output, j);

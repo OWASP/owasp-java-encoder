@@ -6,10 +6,10 @@ The ESAPI dependency depends on the `encoder-esapi` release you consume:
 | --- | --- | --- |
 | `1.4.0` | Maven range `[2.5.1.0,3)`; resolution can change and can select a release candidate | Maven Central; affected by Java Encoder's 1.4.1 security advisories |
 | `1.4.1` | Fixed default `2.7.0.0` | Maven Central and [signed GitHub security release][encoder-release] |
-| `1.5.0-SNAPSHOT` | Fixed default `2.7.0.0` | Unreleased development; not a published release |
+| `1.5.0-SNAPSHOT` | Fixed default `2.7.0.0`, plus patched HTTP Components compile dependencies | Unreleased development; not a published release |
 
 The fixed dependency was introduced in 1.4.1. It does not change the POM already
-published for 1.4.0. As checked on 2026-09-25, upstream's [latest stable release][esapi-latest]
+published for 1.4.0. As checked on 2026-09-27, upstream's [latest stable release][esapi-latest]
 and [security policy][esapi-security] identify ESAPI 2.7.0.0 as current and supported.
 Recheck those sources when choosing a version; adapter compatibility does not
 establish upstream security support.
@@ -149,14 +149,19 @@ configuration to select the implementation.
 
 The ESAPI dependency remains a compile dependency because its `Encoder` type is
 part of the adapter's public API. Its transitive dependencies are therefore also
-available to applications. The ESAPI module enforces dependency convergence for
-this graph, but applications should continue to scan their complete resolved
-graph because their other dependencies may change Maven conflict resolution.
+available to applications. The unreleased 1.5 POM additionally declares
+`httpclient5:5.6.4`, `httpcore5:5.4.4`, and `httpcore5-h2:5.4.4` as direct compile
+dependencies. These stable versions replace AntiSamy 1.7.8's older HTTP
+transitives in a standalone Maven consumer. Dependency management aligns the
+adapter's own graph for convergence; management alone did not carry those
+versions into a consumer's graph. Applications should scan their complete
+resolved graph because their own dependencies or BOMs can change resolution.
 
 The [ESAPI 2.7.0.0 release][esapi-release] addresses CVE-2025-5878 and updates
 transitive dependencies for CVE-2025-48976 and CVE-2025-48734. Its upstream POM
 intentionally depends on the milestone `commons-collections4` 4.5.0-M2; this
-adapter does not override ESAPI's tested graph.
+adapter retains that selection. The targeted HTTP overrides do not change the
+ESAPI or AntiSamy release.
 
 ### Dependency security triage
 
@@ -164,37 +169,42 @@ The resolved dependency submissions and [Dependabot alerts][dependency-alerts]
 are the ongoing inventory, including transitive runtime/test dependencies and
 build plugins. Review the actual version, path and execution scope of each new
 alert; the fact that ESAPI introduces a dependency is not a dismissal reason.
-On 2026-09-26 UTC, Maven Central still had 2.7.0.0 as the newest stable ESAPI
-release (2.7.0.1-RC1 was a prerelease). The default graph includes these findings:
+As checked on 2026-09-27, ESAPI 2.7.0.0 remained the newest stable upstream
+release (2.7.0.1-RC1 was a prerelease). The resolved compile graph still has two
+findings, both introduced through `encoder-esapi -> esapi:2.7.0.0`:
 
-- Commons Configuration 1.10: [GHSA-pvp8-3xj6-8c6x][]; no patched 1.x release
-- Commons Lang 2.6: [GHSA-j288-q9x7-2f5v][]; no patched 2.x release
-- HttpClient 5.4.4: [GHSA-hjcp-jmpx-g3qm][]; patched in 5.6.3
-- HttpCore and HttpCore H2 5.3.4: [GHSA-hf6x-8p5f-cgmf][] and
-  [GHSA-v3jc-474w-2wm6][]; patched in 5.4.3
+- `commons-configuration:commons-configuration:1.10` (compile):
+  [GHSA-pvp8-3xj6-8c6x][]. The trigger is loading untrusted configuration or
+  attacker-controlled usage patterns, which can consume excessive resources.
+  Delegated ESAPI calls can initialize reference configuration; keep it trusted.
+  There is no patched 1.x release.
+- `commons-lang:commons-lang:2.6` (compile): [GHSA-j288-q9x7-2f5v][]. The
+  trigger is a very long attacker-controlled class name passed to
+  `ClassUtils.getClass`, which can cause uncontrolled recursion. There is no
+  patched 2.x release.
 
-The Commons Configuration finding concerns resource use while loading untrusted
-configuration; delegated ESAPI calls initialize reference configuration, so keep
-that configuration trusted. Commons Lang's finding concerns attacker-controlled
-class names passed to `ClassUtils.getClass`. HttpClient's finding concerns classic
-HTTP response decoding and connection release; HttpCore's findings concern HTTP/1
-header parsing and HTTP/2 HPACK decoding. The adapter's Java Encoder-backed
-methods perform string encoding without these HTTP or configuration operations.
-Delegated methods and applications using other ESAPI/AntiSamy features have a
-different scope, so this is not a blanket application reachability conclusion.
+The adapter's Java Encoder-backed methods perform string encoding without
+these configuration or class-lookup operations. Delegated methods and
+applications using ESAPI's other features require their own reachability
+assessment. Commons Configuration 2.x and Commons Lang 3.x use different
+coordinates/APIs and cannot silently replace these legacy dependencies.
 
-Disposition: retain these findings for upstream/application assessment; no
-blanket suppression or untested POM override is applied. Prefer a stable upstream
-ESAPI release with a tested fixed graph. If it is unavailable, a mitigation or
-override may be accepted after review of the affected feature's reachability,
-API/runtime compatibility, dependency convergence, and the complete adapter and
-packaged-consumer matrix. Commons Configuration 2.x and Commons Lang 3.x use
-different APIs/namespaces and cannot silently replace the legacy coordinates.
-The maintainer team owns this triage. Record the advisory, affected versions,
-scope, evidence, owner and recheck date
-for any exception; time-limit suppressions and reopen them when assumptions
-change. Recheck this disposition on the next ESAPI release or within 90 days.
-Do not close an alert simply because it is transitive or adapter tests pass.
+The previous HTTP findings are absent from the 1.5 consumer compile graph:
+`httpclient5:5.6.4` is beyond the patch for [GHSA-hjcp-jmpx-g3qm][], and
+`httpcore5:5.4.4` / `httpcore5-h2:5.4.4` are beyond the patches for
+[GHSA-hf6x-8p5f-cgmf][] / [GHSA-v3jc-474w-2wm6][]. These advisories concern
+classic HTTP response decoding and connection release, HTTP/1 header parsing,
+and HTTP/2 HPACK decoding respectively. They remain relevant to older adapter
+releases or applications that independently resolve affected HTTP versions.
+
+Residual disposition, owner: the OWASP Java Encoder maintainer team retains
+the two Commons findings for upstream/application assessment, without
+suppression. Recheck by **2026-12-26** (90 days from this review) or at the next
+stable ESAPI release, whichever comes first. Review any new upstream fix for
+API/runtime compatibility, dependency convergence, adapter tests, and packaged
+consumers before changing the graph. Record the advisory, resolved path and
+scope, trigger, evidence, owner, and recheck date for any application exception.
+Do not close an alert solely because it is transitive or adapter tests pass.
 
 ESAPI 2.7 disables `encodeForSQL` by default. The adapter preserves that safer
 behavior; use parameterized queries instead of enabling the legacy method.

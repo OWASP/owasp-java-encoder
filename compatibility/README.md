@@ -11,7 +11,7 @@ and OSGi consumers. Java 9+ legs additionally run explicit and automatic modules
 | `encoder` | Java 8 | No runtime dependencies |
 | `encoder-jsp` | Java 8 | JSP 2.2.1, Servlet 3.0.1, EL 2.2.5 (`javax`) |
 | `encoder-jakarta-jsp` | Java 8 with compatible container APIs | JSP 3.0.0, Servlet 5.0.0, EL 4.0.0 (`jakarta`) |
-| `encoder-esapi` | Java 8 with compatible ESAPI dependencies | ESAPI 2.7.0.0 and its runtime dependencies |
+| `encoder-esapi` | Java 8 with compatible ESAPI dependencies | ESAPI 2.7.0.0, HttpClient 5.6.4, HttpCore/Core H2 5.4.4, and remaining runtime dependencies |
 
 The Jakarta fixture deliberately uses Servlet 5.0, whose minimum Java SE version
 is 8 ([specification](https://jakarta.ee/specifications/servlet/5.0/)). Newer servlet
@@ -84,11 +84,11 @@ fail these guards.
 During ordinary `./mvnw verify`, Animal Sniffer checks each library against the Java 8
 API signature. This catches linkage such as Java 9's covariant `CharBuffer.flip()`
 even when bytecode still has class version 52. japicmp checks public/protected API
-binary and source compatibility against **1.4.0**, the latest available Central
-release when this guard was added; update the pinned baseline only after a newer
-release is available there. Missing types are not broadly ignored: dependencies
-are resolved so inherited API changes remain visible. Both checks run in existing
-`build.yaml` jobs because those jobs reach the `verify` phase.
+binary and source compatibility against **1.4.1**, the immutable release immediately
+preceding 1.5.0. Update the pinned baseline for the next development version. Missing
+types are not broadly ignored: dependencies are resolved so inherited API changes
+remain visible. Both checks run in existing `build.yaml` jobs because those jobs
+reach the `verify` phase.
 
 There are no API exclusions today. A future intentional tag-package move requires
 an explicit compatibility decision. If approved, add narrowly scoped japicmp

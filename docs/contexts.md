@@ -35,6 +35,9 @@ pending input. Use the facade Writer overload when encoding one String directly.
   parser. Some XML 1.1 control-character references (such as `&#x01;`) are invalid
   in XML 1.0; do not use XML encoders for HTML.
   `forCDATA` and `forXmlComment` implement XML 1.0 contexts; supply their delimiters.
+  To remain safe next to trusted literal text, CDATA represents every `]` and
+  `>` with close/reopen sequences, and XML comments replace every input hyphen
+  with `~`.
   Invalid-character replacement and XML line-ending normalization can change data.
 - Java source: `forJava` encodes string-literal content for a code generator,
   not JavaScript or JSON. Supply Java quotes; malformed surrogate input is not
@@ -65,6 +68,24 @@ In 1.5, DEL/C1 controls use hex escapes and unpaired UTF-16 surrogates use Unico
 escapes, preserving JavaScript string values through UTF-8 output. Valid surrogate
 pairs remain intact. This does not promise that every downstream system accepts
 unpaired surrogates.
+
+The general and block encoders also escape every ASCII character that can form
+part of a case-insensitive `</script` end tag or the `<!--` and `-->` script
+tokens. This keeps any nonempty encoded substring from completing a delimiter
+supplied partly by adjacent trusted literal string text. The additional output
+changes include space, `!`, hyphen (`\x2d`), `<`, `>`, slash, and both cases of
+the letters in `script`. JavaScript interprets these spellings as the original
+string value, but byte-for-byte output, snapshots, signatures and cache keys can
+change. `forJavaScriptAttribute` and `forJavaScriptSource` do not apply the HTML
+raw-text rule because their output is not for an HTML script element.
+
+CDATA has the same fragment-composition guarantee for `]]>` and preserves the
+XML parser's text value, subject to the existing invalid-character replacement
+and line-ending normalization policies. Its output can expand to thirteen
+characters for each input `]` or `>` and may be reported as multiple CDATA/text
+events. XML-comment encoding is deliberately lossy: every input hyphen becomes
+`~`. Trusted text on either side must itself be legal in the selected context;
+the guarantee prevents the encoded fragment from completing a parser token.
 
 ## JSON string content — new in 1.5
 

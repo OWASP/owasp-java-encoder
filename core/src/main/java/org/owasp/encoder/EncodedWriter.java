@@ -92,6 +92,11 @@ public class EncodedWriter extends Writer {
     private CharBuffer _leftOverBuffer;
 
     /**
+     * Whether this writer has been closed.
+     */
+    private boolean _closed;
+
+    /**
      * Creates an EncodedWriter that uses the specified encoder to encode all input before sending it to the wrapped writer.
      *
      * @param out the target for all writes
@@ -133,6 +138,14 @@ public class EncodedWriter extends Writer {
     @Override
     public void write(char[] cbuf, int off, int len) throws IOException {
         synchronized (lock) {
+            ensureOpen();
+            if (cbuf == null) {
+                throw new NullPointerException("cbuf must not be null");
+            }
+            if (off < 0 || len < 0 || off > cbuf.length - len) {
+                throw new IndexOutOfBoundsException();
+            }
+
             CharBuffer input = CharBuffer.wrap(cbuf);
             input.limit(off + len).position(off);
 
@@ -206,9 +219,21 @@ public class EncodedWriter extends Writer {
         _leftOverBuffer.clear();
     }
 
+    /**
+     * Ensures this writer has not been closed.
+     *
+     * @throws IOException if this writer is closed.
+     */
+    private void ensureOpen() throws IOException {
+        if (_closed) {
+            throw new IOException("Writer is closed");
+        }
+    }
+
     @Override
     public void flush() throws IOException {
         synchronized (lock) {
+            ensureOpen();
             flushBufferToWriter();
             _out.flush();
         }
@@ -217,9 +242,14 @@ public class EncodedWriter extends Writer {
     @Override
     public void close() throws IOException {
         synchronized (lock) {
-            flushLeftOver(null);
-            flushBufferToWriter();
-            _out.close();
+            if (_closed) {
+                return;
+            }
+            _closed = true;
+            try (Writer ignored = _out) {
+                flushLeftOver(null);
+                flushBufferToWriter();
+            }
         }
     }
 }

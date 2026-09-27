@@ -178,6 +178,25 @@ public class ESAPIContextTest extends TestCase {
         String encoded = encoder.encodeForJavaScript(input);
         assertEquals("\\x24\\x7bvalue}\\x60\\x7f\\x85\\ud800|\\udfff|\ud83d\ude00", encoded);
         assertEquals(encoded, new String(encoded.getBytes(StandardCharsets.UTF_8), StandardCharsets.UTF_8));
-        assertEquals("\\x7bexecuted=true}", encoder.encodeForJavaScript("{executed=true}"));
+        assertEquals("\\x7bexe\\x63u\\x74ed=\\x74\\x72ue}",
+            encoder.encodeForJavaScript("{executed=true}"));
+    }
+
+    public void testJavaScriptCannotCloseHtmlScriptAcrossAdapterBoundary() {
+        String token = "</ScRiPt >";
+        for (int start = 0; start < token.length(); start++) {
+            for (int end = start + 1; end <= token.length(); end++) {
+                String html = "<script>var value=\"" + token.substring(0, start)
+                    + encoder.encodeForJavaScript(token.substring(start, end))
+                    + token.substring(end) + "<img id=pwn src=x>\";</script>";
+                Document parsed = Jsoup.parse(html);
+                assertEquals(start + ":" + end, 0, parsed.select("img#pwn").size());
+                assertEquals(start + ":" + end, 1, parsed.select("script").size());
+            }
+        }
+
+        Document raw = Jsoup.parse("<script>var value=\"" + token
+            + "<img id=pwn src=x>\";</script>");
+        assertEquals("raw boundary negative control", 1, raw.select("img#pwn").size());
     }
 }

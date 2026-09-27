@@ -36,6 +36,7 @@ package org.owasp.encoder;
 
 import java.io.IOException;
 import java.io.StringWriter;
+import java.io.Writer;
 import java.nio.CharBuffer;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -102,6 +103,199 @@ public class EncodedWriterTest {
         htmlWriter.write("\uDE00");
         htmlWriter.close();
         assertEquals("x\uD83D\uDE00", html.toString());
+    }
+
+    @Test
+    public void closeIsIdempotentAndClosedOperationsFail() throws IOException {
+        StrictWriter out = new StrictWriter();
+        final EncodedWriter writer = new EncodedWriter(out, Encoders.HTML);
+        writer.write("a\uD83D");
+        writer.close();
+        assertEquals("a ", out.toString());
+        assertEquals(1, out.closeCount);
+
+        writer.close();
+        assertEquals(1, out.closeCount);
+        assertIOException(new IOAction() {
+            @Override
+            public void run() throws IOException {
+                writer.write('z');
+            }
+        });
+        assertIOException(new IOAction() {
+            @Override
+            public void run() throws IOException {
+                writer.write(new char[0], 0, 0);
+            }
+        });
+        assertIOException(new IOAction() {
+            @Override
+            public void run() throws IOException {
+                writer.write(new char[] {'z'});
+            }
+        });
+        assertIOException(new IOAction() {
+            @Override
+            public void run() throws IOException {
+                writer.write("z");
+            }
+        });
+        assertIOException(new IOAction() {
+            @Override
+            public void run() throws IOException {
+                writer.write("z", 0, 1);
+            }
+        });
+        assertIOException(new IOAction() {
+            @Override
+            public void run() throws IOException {
+                writer.append('z');
+            }
+        });
+        assertIOException(new IOAction() {
+            @Override
+            public void run() throws IOException {
+                writer.append("z");
+            }
+        });
+        assertIOException(new IOAction() {
+            @Override
+            public void run() throws IOException {
+                writer.append("xyz", 1, 2);
+            }
+        });
+        assertIOException(new IOAction() {
+            @Override
+            public void run() throws IOException {
+                writer.flush();
+            }
+        });
+    }
+
+    @Test
+    public void closeStillClosesDelegateWhenFinalWriteFails() throws IOException {
+        FailingWriter out = new FailingWriter(true, false);
+        EncodedWriter writer = new EncodedWriter(out, Encoders.HTML);
+        writer.write('<');
+
+        try {
+            writer.close();
+            fail("close should propagate the final write failure");
+        } catch (IOException expected) {
+            assertEquals("write failed", expected.getMessage());
+        }
+        assertEquals(1, out.closeCount);
+
+        writer.close();
+        assertEquals(1, out.closeCount);
+    }
+
+    @Test
+    public void closePreservesSuppressedDelegateFailure() throws IOException {
+        FailingWriter out = new FailingWriter(true, true);
+        EncodedWriter writer = new EncodedWriter(out, Encoders.HTML);
+        writer.write('<');
+
+        try {
+            writer.close();
+            fail("close should propagate the final write failure");
+        } catch (IOException expected) {
+            assertEquals("write failed", expected.getMessage());
+            assertEquals(1, expected.getSuppressed().length);
+            assertEquals("close failed", expected.getSuppressed()[0].getMessage());
+        }
+        assertEquals(1, out.closeCount);
+    }
+
+    @Test
+    public void closePropagatesDelegateCloseFailureAndBecomesIdempotent()
+            throws IOException {
+        FailingWriter out = new FailingWriter(false, true);
+        EncodedWriter writer = new EncodedWriter(out, Encoders.HTML);
+        writer.write('a');
+
+        try {
+            writer.close();
+            fail("close should propagate the delegate close failure");
+        } catch (IOException expected) {
+            assertEquals("close failed", expected.getMessage());
+            assertEquals(0, expected.getSuppressed().length);
+        }
+        assertEquals(1, out.closeCount);
+        writer.close();
+        assertEquals(1, out.closeCount);
+    }
+
+    @Test
+    public void flushDoesNotFinalizePendingInput() throws IOException {
+        StringWriter out = new StringWriter();
+        EncodedWriter writer = new EncodedWriter(out, Encoders.HTML);
+        writer.write("x\uD83D");
+        writer.flush();
+        assertEquals("x", out.toString());
+        writer.write("\uDE00");
+        writer.close();
+        assertEquals("x\uD83D\uDE00", out.toString());
+    }
+
+    @Test
+    public void invalidWriteRangesThrowIndexOutOfBoundsException() throws IOException {
+        StringWriter out = new StringWriter();
+        final EncodedWriter writer = new EncodedWriter(out, Encoders.HTML);
+        final char[] chars = {'a'};
+
+        try {
+            writer.write((char[]) null, 0, 0);
+            fail("expected NullPointerException");
+        } catch (NullPointerException expected) {
+            // Expected.
+        }
+        assertIndexOutOfBounds(new IOAction() {
+            @Override
+            public void run() throws IOException {
+                writer.write(chars, -1, 1);
+            }
+        });
+        assertIndexOutOfBounds(new IOAction() {
+            @Override
+            public void run() throws IOException {
+                writer.write(chars, 0, -1);
+            }
+        });
+        assertIndexOutOfBounds(new IOAction() {
+            @Override
+            public void run() throws IOException {
+                writer.write(chars, 1, 1);
+            }
+        });
+        assertIndexOutOfBounds(new IOAction() {
+            @Override
+            public void run() throws IOException {
+                writer.write(chars, Integer.MAX_VALUE, 1);
+            }
+        });
+        assertIndexOutOfBounds(new IOAction() {
+            @Override
+            public void run() throws IOException {
+                writer.write(chars, 1, Integer.MAX_VALUE);
+            }
+        });
+        assertIndexOutOfBounds(new IOAction() {
+            @Override
+            public void run() throws IOException {
+                writer.write(chars, Integer.MAX_VALUE, Integer.MAX_VALUE);
+            }
+        });
+        assertIndexOutOfBounds(new IOAction() {
+            @Override
+            public void run() throws IOException {
+                writer.write(chars, chars.length + 1, 0);
+            }
+        });
+
+        writer.write(chars, chars.length, 0);
+        writer.close();
+        assertEquals("", out.toString());
     }
 
     @Test(timeout = 60000)
@@ -183,5 +377,94 @@ public class EncodedWriterTest {
         char[] chars = new char[n];
         Arrays.fill(chars, ch);
         return new String(chars);
+    }
+
+    private static void assertIOException(IOAction action) {
+        try {
+            action.run();
+            fail("expected IOException");
+        } catch (IOException expected) {
+            // Expected.
+        }
+    }
+
+    private static void assertIndexOutOfBounds(IOAction action) throws IOException {
+        try {
+            action.run();
+            fail("expected IndexOutOfBoundsException");
+        } catch (IndexOutOfBoundsException expected) {
+            // Expected.
+        }
+    }
+
+    private interface IOAction {
+        void run() throws IOException;
+    }
+
+    private static final class StrictWriter extends Writer {
+
+        private final StringBuilder output = new StringBuilder();
+        private boolean closed;
+        private int closeCount;
+
+        @Override
+        public void write(char[] cbuf, int off, int len) throws IOException {
+            ensureOpen();
+            output.append(cbuf, off, len);
+        }
+
+        @Override
+        public void flush() throws IOException {
+            ensureOpen();
+        }
+
+        @Override
+        public void close() {
+            closed = true;
+            ++closeCount;
+        }
+
+        @Override
+        public String toString() {
+            return output.toString();
+        }
+
+        private void ensureOpen() throws IOException {
+            if (closed) {
+                throw new IOException("strict writer closed");
+            }
+        }
+    }
+
+    private static final class FailingWriter extends Writer {
+
+        private final boolean failWrite;
+        private final boolean failClose;
+        private int closeCount;
+
+        FailingWriter(boolean failWrite, boolean failClose) {
+            this.failWrite = failWrite;
+            this.failClose = failClose;
+        }
+
+        @Override
+        public void write(char[] cbuf, int off, int len) throws IOException {
+            if (failWrite) {
+                throw new IOException("write failed");
+            }
+        }
+
+        @Override
+        public void flush() {
+            // Nothing to do.
+        }
+
+        @Override
+        public void close() throws IOException {
+            ++closeCount;
+            if (failClose) {
+                throw new IOException("close failed");
+            }
+        }
     }
 }

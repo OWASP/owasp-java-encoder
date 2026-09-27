@@ -44,6 +44,30 @@ class ArtifactGuards(unittest.TestCase):
             with self.subTest(artifact=kind):
                 consumers.metadata(kind, jar, self.jars['core'])
 
+    def test_esapi_consumer_graph_matches_published_pom(self):
+        published = consumers.metadata('esapi', self.jars['esapi'], self.jars['core'])
+        fixture = consumers.dependency_versions(
+            ET.parse(ROOT / 'compatibility/dependencies/esapi.xml').getroot(),
+            'p:dependencies/p:dependency')
+        consumers.validate_esapi_http_versions(published, fixture)
+
+        stale = dict(fixture)
+        stale[('org.apache.httpcomponents.client5', 'httpclient5')] = '5.6.2'
+        with self.assertRaises(AssertionError):
+            consumers.validate_esapi_http_versions(published, stale)
+
+    def test_esapi_direct_http_version_cannot_override_management(self):
+        def mutate(entries):
+            name = 'META-INF/maven/org.owasp.encoder/encoder-esapi/pom.xml'
+            pom = ET.fromstring(entries[name])
+            ns = '{http://maven.apache.org/POM/4.0.0}'
+            for dependency in pom.findall(ns + 'dependencies/' + ns + 'dependency'):
+                if dependency.findtext(ns + 'artifactId') == 'httpclient5':
+                    ET.SubElement(dependency, ns + 'version').text = '5.6.2'
+                    break
+            entries[name] = ET.tostring(pom)
+        self.rejected('esapi', mutate)
+
     def test_osgi_execution_requirement(self):
         def mutate(entries):
             name = 'META-INF/MANIFEST.MF'

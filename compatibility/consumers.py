@@ -15,6 +15,7 @@ import zipfile
 
 ROOT = Path(__file__).resolve().parents[1]
 SOURCE = ROOT / 'compatibility' / 'src'
+POM_NS = {'p': 'http://maven.apache.org/POM/4.0.0'}
 ARTIFACTS = {
     'core': ('encoder', 'owasp.encoder', 'org.owasp.encoder', 'org.owasp.encoder', 'CoreConsumer'),
     'jsp': ('encoder-jsp', 'owasp.encoder.jsp', 'org.owasp.encoder.jsp', 'org.owasp.encoder.tag', 'TagConsumer'),
@@ -41,6 +42,12 @@ IMPORT_RANGES = {
               'org.owasp.esapi.errors': None, 'org.owasp.esapi.reference': None},
 }
 
+ESAPI_HTTP_MINIMUMS = {
+    ('org.apache.httpcomponents.client5', 'httpclient5'): (5, 6, 3),
+    ('org.apache.httpcomponents.core5', 'httpcore5'): (5, 4, 3),
+    ('org.apache.httpcomponents.core5', 'httpcore5-h2'): (5, 4, 3),
+}
+
 
 def run(*args, **kwargs):
     print('+', ' '.join(map(str, args)), flush=True)
@@ -58,6 +65,38 @@ def digest(file):
 def clauses(value):
     # OSGi version ranges may contain a comma inside a quoted attribute.
     return re.split(r',(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)', value) if value else []
+
+
+def dependency_versions(pom, path):
+    """Read literal versions for the HTTP dependencies at a POM path."""
+    versions = {}
+    for dependency in pom.findall(path, POM_NS):
+        coordinate = (dependency.findtext('p:groupId', namespaces=POM_NS),
+                      dependency.findtext('p:artifactId', namespaces=POM_NS))
+        if coordinate in ESAPI_HTTP_MINIMUMS:
+            version = dependency.findtext('p:version', namespaces=POM_NS)
+            assert version and '${' not in version, (coordinate, version)
+            versions[coordinate] = version
+    assert set(versions) == set(ESAPI_HTTP_MINIMUMS), versions
+    return versions
+
+
+def validate_esapi_http_versions(published, fixture=None):
+    """Keep consumer evidence aligned with the published, patched graph."""
+    if fixture is not None:
+        assert fixture == published, ('ESAPI consumer fixture differs from published POM',
+                                      fixture, published)
+    for coordinate, minimum in ESAPI_HTTP_MINIMUMS.items():
+        version = published[coordinate]
+        assert re.match(r'^\d+(?:\.\d+)*$', version), (coordinate, version)
+        actual = tuple(int(part) for part in version.split('.'))
+        assert actual[0] == minimum[0] and actual >= minimum, (
+            coordinate, version, 'minimum supported', '.'.join(map(str, minimum)))
+
+
+def esapi_http_jars(versions):
+    return {coordinate[1] + '-' + version + '.jar'
+            for coordinate, version in versions.items()}
 
 
 def manifest(jar):
@@ -87,6 +126,7 @@ def metadata(kind, jar, core):
         actual_ranges[name] = versions[0] if versions else None
     assert actual_ranges == IMPORT_RANGES[kind], (kind, imports)
     assert not any(x.startswith('java.') for x in imports), imports
+    http_versions = None
     with zipfile.ZipFile(jar) as archive, zipfile.ZipFile(core) as core_archive:
         names = archive.namelist()
         assert len(names) == len(set(names)), (jar, 'duplicate ZIP entries')
@@ -123,28 +163,46 @@ def metadata(kind, jar, core):
                 resource = name.replace('.', '/') + '.class'
                 assert resource in names or resource in core_archive.namelist(), (tld, name)
         pom = ET.fromstring(archive.read('META-INF/maven/org.owasp.encoder/' + artifact + '/pom.xml'))
-        ns = {'p': 'http://maven.apache.org/POM/4.0.0'}
-        version = pom.findtext('p:parent/p:version', namespaces=ns)
-        assert pom.findtext('p:artifactId', namespaces=ns) == artifact, artifact
+        version = pom.findtext('p:parent/p:version', namespaces=POM_NS)
+        assert pom.findtext('p:artifactId', namespaces=POM_NS) == artifact, artifact
         assert jar.name == artifact + '-' + version + '.jar', jar
         assert attrs['Bundle-Version'] == version.replace('-SNAPSHOT', '.SNAPSHOT'), attrs
         runtime_dependencies = set()
         provided_dependencies = set()
-        for dep in pom.findall('p:dependencies/p:dependency', ns):
-            group = dep.findtext('p:groupId', namespaces=ns)
-            scope = dep.findtext('p:scope', default='compile', namespaces=ns)
-            coordinate = (group, dep.findtext('p:artifactId', namespaces=ns))
+        direct_http_versions = {}
+        for dep in pom.findall('p:dependencies/p:dependency', POM_NS):
+            group = dep.findtext('p:groupId', namespaces=POM_NS)
+            scope = dep.findtext('p:scope', default='compile', namespaces=POM_NS)
+            coordinate = (group, dep.findtext('p:artifactId', namespaces=POM_NS))
+            if coordinate in ESAPI_HTTP_MINIMUMS:
+                direct_http_versions[coordinate] = dep.findtext(
+                    'p:version', namespaces=POM_NS)
             if scope in ('compile', 'runtime'):
                 runtime_dependencies.add(coordinate)
-                assert dep.findtext('p:optional', default='false', namespaces=ns) == 'false', coordinate
+                assert dep.findtext('p:optional', default='false', namespaces=POM_NS) == 'false', coordinate
             if scope == 'provided': provided_dependencies.add(coordinate)
         expected_dependencies = set() if kind == 'core' else {('org.owasp.encoder', 'encoder')}
-        if kind == 'esapi': expected_dependencies.add(('org.owasp.esapi', 'esapi'))
+        if kind == 'esapi':
+            expected_dependencies.update({
+                ('org.owasp.esapi', 'esapi'),
+                ('org.apache.httpcomponents.client5', 'httpclient5'),
+                ('org.apache.httpcomponents.core5', 'httpcore5'),
+                ('org.apache.httpcomponents.core5', 'httpcore5-h2'),
+            })
+            http_versions = dependency_versions(
+                pom, 'p:dependencyManagement/p:dependencies/p:dependency')
+            validate_esapi_http_versions(http_versions)
+            assert set(direct_http_versions) == set(ESAPI_HTTP_MINIMUMS), direct_http_versions
+            for coordinate, direct_version in direct_http_versions.items():
+                assert direct_version is None or direct_version == http_versions[coordinate], (
+                    coordinate, 'direct version overrides dependency management', direct_version,
+                    http_versions[coordinate])
         assert runtime_dependencies == expected_dependencies, (kind, runtime_dependencies)
         expected_provided = {'jsp': {('javax.servlet.jsp', 'javax.servlet.jsp-api')},
                              'jakarta': {('jakarta.servlet.jsp', 'jakarta.servlet.jsp-api')}}.get(kind, set())
         assert provided_dependencies == expected_provided, (kind, provided_dependencies)
     print('Metadata passed:', jar.name)
+    return http_versions
 
 
 def source_metadata(kind, source_jar):
@@ -167,10 +225,9 @@ def prepare(args):
         raise ValueError('Preparation requires an empty directory; run ./mvnw clean verify or choose a new --directory: ' + str(out))
     out.mkdir(parents=True, exist_ok=True)
     shutil.copytree(ROOT / 'compatibility/config', out / 'config', dirs_exist_ok=True)
-    ns = {'p': 'http://maven.apache.org/POM/4.0.0'}
     parent = ET.parse(ROOT / 'pom.xml')
-    for dep in parent.findall('p:dependencies/p:dependency', ns):
-        assert dep.findtext('p:scope', namespaces=ns) == 'test', ET.tostring(dep)
+    for dep in parent.findall('p:dependencies/p:dependency', POM_NS):
+        assert dep.findtext('p:scope', namespaces=POM_NS) == 'test', ET.tostring(dep)
     jars = {}
     for kind, (artifact, *_) in ARTIFACTS.items():
         candidates = [p for p in (ROOT / kind / 'target').glob(artifact + '-*.jar')
@@ -183,7 +240,16 @@ def prepare(args):
         source_metadata(kind, candidates[0].with_name(candidates[0].stem + '-sources.jar'))
         with zipfile.ZipFile(candidates[0].with_name(candidates[0].stem + '-javadoc.jar')) as docs:
             assert 'index.html' in docs.namelist(), ('missing Javadoc index', kind)
-    for kind, jar in jars.items(): metadata(kind, jar, jars['core'])
+    published_http = None
+    for kind, jar in jars.items():
+        result = metadata(kind, jar, jars['core'])
+        if kind == 'esapi':
+            published_http = result
+    fixture_http = dependency_versions(
+        ET.parse(ROOT / 'compatibility/dependencies/esapi.xml').getroot(),
+        'p:dependencies/p:dependency')
+    validate_esapi_http_versions(published_http, fixture_http)
+    expected_http_jars = esapi_http_jars(published_http)
     run('javac', '--release', '9', '-d', out / 'metadata', SOURCE / 'ModuleMetadata.java')
     run('java', '-cp', out / 'metadata', 'consumer.ModuleMetadata', *jars.values())
     # javac's module discovery does not honor the runtime multi-release property.
@@ -203,6 +269,10 @@ def prepare(args):
             '-DincludeScope=runtime', '-DoutputDirectory=' + str(out / 'dependencies' / kind))
     for kind, (artifact, explicit, automatic, package, main) in ARTIFACTS.items():
         deps = sorted((out / 'dependencies' / kind).glob('*.jar'))
+        if kind == 'esapi':
+            actual_http = {item.name for item in deps
+                           if item.name.startswith(('httpclient5-', 'httpcore5-'))}
+            assert actual_http == expected_http_jars, actual_http
         artifacts = [jars['core']] + ([jars[kind]] if kind != 'core' else [])
         src = out / 'sources' / kind
         src.mkdir(parents=True, exist_ok=True)
