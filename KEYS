@@ -74,6 +74,100 @@ These keys are archival, not authorized for new releases. See VERIFYING.md for
 observed version mapping, expiry and source authentication. The current project
 key above remains unchanged.
 
+Versions: 1.1
+Fingerprint: 37D880CD406BAD34CA2A8DD61845EF37A3B6533A
+Authentication record: Jim Manico, retrospective exact-fingerprint authentication, 2026-09-26; see releases/historical-key-authentication.md
+Historical verification only; expired certificate, not authorized for new releases.
+
+-----BEGIN PGP PUBLIC KEY BLOCK-----
+
+mQGiBFCi/CIRBADETL2sotRoEJ9AGJ8t7CilrL/UnY5YH64rjRPUFr1wgH6RQlh/
+gCvyh2lrkPYQiKUvpxNK3WnC9IELPsVR6klFiR35G6WX+hCz3cjns1HsmxQ2+KGx
+H1DSMKvzEko12skrlRF/2DOReb8qrG4d+rcW3efFDK69axgWiUIynMlOAwCg+bj3
+BJ0e3Je1C5VoSftUoBP8PdMD/ArO7Fg4cBh956ttVvLWmyq0JCoOqoOY51IrvIGq
+ue7eYcUcoi6Cb4bKO/FbYTFsJ3BF9pfIRh0Fzutq/Z3CBhkwZUoMNNpGvQfO6aEz
+AFy/5Ga5wmzWyVzd3rG+IgI9ZG+V0jEkZG7SOvEFh6ovKrcE1S7NHP75OOBd8/y9
+YKTlBACpai6AMaYdT8CT7ORTL2yuukx1Ud0GogoAyxhiecfIz7e8jtOtcOyaF9e0
+cTQ5jPOJFxM6ayo0+HjTcGIExgBpIPMrRjGiDxABogc/1PXcsKhEjb/IXL/cFJyB
+2+m8a90Nfp+BsTfaM8ecJ9BzhGcOHWcxShyhCnc8O+WjH2tMYrQjSmVyZW15IExv
+bmcgPGplcmVteS5sb25nQGdtYWlsLmNvbT6IZQQTEQIAJQUCUKL8IgIbAwUJAeEz
+gAYLCQgHAwIEFQIIAwMWAgECHgECF4AACgkQGEXvN6O2Uzp1hwCg5NLgju3nWSc5
+vQfzbbcTMm2okSIAnjZejzmqZbZdX/MSuc1PIsMpLiVO
+=JC0V
+-----END PGP PUBLIC KEY BLOCK-----
+
+Versions: 1.1.1
+Fingerprint: AD0C981AEE36D3880512E28F5AD6F7C8740E3CF2
+Authentication record: Jim Manico, retrospective exact-fingerprint authentication, 2026-09-26; see releases/historical-key-authentication.md
+Historical verification only; expired certificate, not authorized for new releases.
+
+-----BEGIN PGP PUBLIC KEY BLOCK-----
+
+mQENBFKHhtkBCACbIO7v+Qlc9hojh9czoQlkrfxuArR6qB0bEyX06r+hInDCyG8L
+P2RxiNSSpxM0LmE0+uCZvHnh7gKEfBAc6qa66Awulz3uBI3zHSenIHWynd9NhicY
++LaFrRmL83cvcgxzFNCwsbg1CPyE51aEEy5IMvjz6m/ZclTJhFH3sFy/bhQgYHsP
+OdY7mSQ4M5L6wKvtAmXsT9OJpzelOprSa1S7rj5UrzHA/wfl9F3R8DQNU2A7eEXv
+vOpBQ7NqOoChcVP1QBLS4/ukmUGHBTXi1hcAu7UZC5vbaq4ApMzOM9j0PLSGXvSU
+gyib8H2oLM1dURmn/Agez8IdwvGtK0amDHARABEBAAG0I0plcmVteSBMb25nIDxq
+ZXJlbXkubG9uZ0BnbWFpbC5jb20+iQE+BBMBAgAoBQJSh4bZAhsDBQkB4TOABgsJ
+CAcDAgYVCAIJCgsEFgIDAQIeAQIXgAAKCRBa1vfIdA488rBVB/952SypkONVnvJx
+fQ1rFEPDRGRWX4ElUmhomUxmUJaI0eUa+NL3hTwCrTxtb/HWVDh73pdiaaCTzdBP
+9Oco3Nqn1ooCsRl4pv/maIJiM8Fo4q43QzrpWfXyKpO4Cj/vMKnlmZjKpJzlZCSo
+TJYxfJcPihS+LYgf2qK0u+i8Gy1Zp9nwn6st2/bFerH4i+PoLqsLOlcPcN7zZF0L
+1V3kndi3alX0DsuqZ8eqVYRoIgVO6FnfnnPZub0xXZruQ4yLu7uRbIzoxgTMu1mE
+2LysciAmByR19Tg1NP0DfbeY0mhZZzMJgmXtgvGFY8004LIRS3A+NT4fezlUiVMN
+4OzbVVpV
+=HEeP
+-----END PGP PUBLIC KEY BLOCK-----
+
+Versions: 1.2
+Fingerprint: C82AF58D3985677F9D575CEC9BC190E3DA071BD4
+Authentication record: Jim Manico, retrospective exact-fingerprint authentication, 2026-09-26; see releases/historical-key-authentication.md
+Historical verification only; expired certificate, not authorized for new releases.
+
+-----BEGIN PGP PUBLIC KEY BLOCK-----
+
+mQENBFT1lyYBCADSHA1nMrkID9RWgJfiimLforeFYEEq3pliZpNrvMJVAdlruJP+
+DWyOy3EpxYa8eszbG92Btl4TlG2vtkH5zsv3vpwBKDShLds3+hTNAX9mXTSovJYP
+iquLISkCrZ3BwY9ezKGTG2AsmJy8Uogy1TSnk9qJqO/fUHU00MO2YpkVAu7j6Cjo
+Jgygy5T6Z35uQJIfmppcuTcfAbG82umcy+FjqftPGhO/hyh0KUQR3H6ovbuogPB4
+l8STH9ZA31JOYe46+HP6KJHWaIK/YM7DMKDBuSI6kzFQnUatO6yv88d2zNys3J2L
+shGeZEh652FLUBJ5rmpMAIMJPzAREggnJNuFABEBAAG0I0plcmVteSBMb25nIDxq
+ZXJlbXkubG9uZ0Bvd2FzcC5vcmc+iQE+BBMBAgAoAhsDBgsJCAcDAgYVCAIJCgsE
+FgIDAQIeAQIXgAUCVtsARwUJA8acoQAKCRCbwZDj2gcb1JQpCAC1lpzyq3X7lLWx
+wuhqeKgK9IzLxlnV7iek/XbWXaVwGwEhoOYpq7xzuGWNkpjvNCWJ9fXyIYDU4+tF
+S9ssINrl0Acw3aDkt6/AkM7g4aC0OegHR6tNZV6YZYUnhhQwJQO+SwZ3+JfkPpB8
+oznZ0lo7QUVPcUjAV6/JABAwyZSnvNnlYGzIIGCFWrLnRREBd83UiqErZDZAm1W0
+qljqFJJaZUWm5jJ/GxKFBrFYW57s4W3Ih6PrS1TOpfX0LcsZJRMyirQ32VwOWmNF
+l/3QUkepAbTyLesxHfLjqAbwekgC8AMs1dXE6RTHRbaIrHCn3ezGxKFZmn045+0R
+4cW16KiG
+=adbD
+-----END PGP PUBLIC KEY BLOCK-----
+
+Versions: 1.2.1
+Fingerprint: 33F28D32BAB335D03EC5DAD6F7EBA8ECD6F22BFE
+Authentication record: Jeremy Long's public GitHub GPG-key record 213069; see releases/historical-key-authentication.md
+Historical verification only; expired certificate, not authorized for new releases.
+
+-----BEGIN PGP PUBLIC KEY BLOCK-----
+
+mQENBFcb4OEBCADKVrVQkQKlqTg4mB/jAoOxBYm3l5tNf4IY5N5hp7sj3HO5S4Vt
+onWvN960K0W+MWUvBVydLaJDcEH1OJXkj58kGwDyBVQjUnnGBgJbs9TtMKyB89ew
+a1W2OqnXvonFZ0bThpc6LceFV/HBWGIfzjutEPxJpgTQzyI5Ua2BYaLvHP4y6+QT
+eQIF1fLqodSJxiejmoWdiLx5zkkSKnfRv5MKSYHlNkfu/Pa2JEm//oWEhljyI/R7
+6JmUWw7KaQIW0sjXVOwKnaQMT+ihQjevpvOE2UQMmyuC1kZGRiyfp+Oh3KOTg6Nr
+T7UaII0F4vXOfmTeuD2WrxDBV71TXAJVROpFABEBAAG0I0plcmVteSBMb25nIDxq
+ZXJlbXkubG9uZ0BnbWFpbC5jb20+iQE/BBMBCAApBQJXG+DhAhsDBQkB4TOABwsJ
+CAcDAgEGFQgCCQoLBBYCAwECHgECF4AACgkQ9+uo7NbyK/65gwgAgXE+wo69vhS5
+DHs4aqcaLHcLcH+oiLitgMiRd/TQvX+iB9sVln2d2+yulo5auMrccSLhF+HAT4u6
+0IOFtKqfhZJA7ogtvwS4UOC6Zz3ZGk0VEalsaQWC6SAck8cCJlXJ6Z7Z61Tasfw8
+5m+N0LDoiqldHFGoTQaXGpnvMoLtMLO0g75xkTxHIi59YSRnEMJiKgMYv4+lznai
+hMiAxqyGBHDyux2L7ypI6LYSKkzAVtfZXHJxwwzrXtpcqpqCUHqrFG02n+yvS9Vm
+sm9AKdrlg0JSM/JmcUlD7UCCYVL21X1n2JHsvjOKszf1YjJ/msvrCa+GxtYhmP+5
+R66aTuxIsg==
+=u974
+-----END PGP PUBLIC KEY BLOCK-----
+
 Versions: 1.2.2-1.2.3
 Fingerprint: F9514E84AE3708288374BBBE097586CFEA37F9A6
 Authentication record: Jeremy Long's OWASP Dependency-Check v6.0.0 CLI verification guide (2020)
