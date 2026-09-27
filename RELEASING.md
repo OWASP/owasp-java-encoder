@@ -9,6 +9,11 @@ or verification for every item. Completing a maintenance batch does not satisfy
 this gate on its own. Keep 1.5 development at `1.5.0-SNAPSHOT`; snapshot version
 changes and reviewed maintenance merges are not release approval.
 
+The [2026-09-26 maintenance closeout](releases/maintenance-closeout.md) records
+the final backlog inventory and dispositions for #110 and #169. A closed tracker
+does not waive this gate: repeat the complete open-issue/PR inventory when a 1.5
+release is actually proposed and obtain release approval then.
+
 The signed 1.4.1 release has been [published to Central and verified](releases/1.4.1-central-publication.md).
 That publication is separate from the 1.5 release gate. Do not rebuild or replace
 1.4.1 artifacts, republish its coordinates, or move its tag.
@@ -16,8 +21,8 @@ That publication is separate from the 1.5 release gate. Do not rebuild or replac
 ## Publishing access and project identity
 
 See [MAINTAINERS.md](MAINTAINERS.md) for named maintainers, security contacts,
-signing-key custodians, independent recovery procedures, and the dated status
-of outstanding custody and publishing checks.
+signing-key custodians, independent recovery procedures, and the dated results
+of custody and publishing checks, including how each result was established.
 
 Artifact signing and permission to publish Maven coordinates are separate.
 The release key is the dedicated **OWASP Java Encoder Release** key in `KEYS`;

@@ -1,0 +1,198 @@
+{
+  "verified_at_utc": "2026-09-27T05:12:28.248695+00:00",
+  "tool": "gpg (GnuPG) 2.5.20",
+  "key_source": "../KEYS",
+  "public_primary_keys": 7,
+  "secret_keys": 0,
+  "original_public_key_blocks_preserved": true,
+  "github_authentication": {
+    "source": "https://api.github.com/users/jeremylong/gpg_keys",
+    "record_id": 213069,
+    "created_at": "2017-08-20T08:20:01.000-07:00",
+    "fingerprint": "33F28D32BAB335D03EC5DAD6F7EBA8ECD6F22BFE",
+    "packet_sha256": "5372283957ae77546761756ec6da71fcfebeaebeee3d16e957c47b63a89cdae7",
+    "revoked": false,
+    "expires_at": "2019-04-26T20:02:17.000-07:00",
+    "public_key_packet_base64": "xsBNBFcb4OEBCADKVrVQkQKlqTg4mB/jAoOxBYm3l5tNf4IY5N5hp7sj3HO5S4VtonWvN960K0W+MWUvBVydLaJDcEH1OJXkj58kGwDyBVQjUnnGBgJbs9TtMKyB89ewa1W2OqnXvonFZ0bThpc6LceFV/HBWGIfzjutEPxJpgTQzyI5Ua2BYaLvHP4y6+QTeQIF1fLqodSJxiejmoWdiLx5zkkSKnfRv5MKSYHlNkfu/Pa2JEm//oWEhljyI/R76JmUWw7KaQIW0sjXVOwKnaQMT+ihQjevpvOE2UQMmyuC1kZGRiyfp+Oh3KOTg6NrT7UaII0F4vXOfmTeuD2WrxDBV71TXAJVROpFABEBAAE=",
+    "raw_key_available": false
+  },
+  "certificates": [
+    {
+      "fingerprint": "1C5F632B86809F2F5DB25092BEA0075F94074A9B",
+      "bits": 4096,
+      "openpgp_algorithm_id": 1,
+      "created_utc": "2026-09-26T01:32:57+00:00",
+      "expires_utc": "2028-09-25T01:32:57+00:00"
+    },
+    {
+      "fingerprint": "37D880CD406BAD34CA2A8DD61845EF37A3B6533A",
+      "bits": 1024,
+      "openpgp_algorithm_id": 17,
+      "created_utc": "2012-11-14T02:04:18+00:00",
+      "expires_utc": "2013-11-14T02:04:18+00:00"
+    },
+    {
+      "fingerprint": "AD0C981AEE36D3880512E28F5AD6F7C8740E3CF2",
+      "bits": 2048,
+      "openpgp_algorithm_id": 1,
+      "created_utc": "2013-11-16T14:53:13+00:00",
+      "expires_utc": "2014-11-16T14:53:13+00:00"
+    },
+    {
+      "fingerprint": "C82AF58D3985677F9D575CEC9BC190E3DA071BD4",
+      "bits": 2048,
+      "openpgp_algorithm_id": 1,
+      "created_utc": "2015-03-03T11:12:38+00:00",
+      "expires_utc": "2017-03-05T15:50:31+00:00"
+    },
+    {
+      "fingerprint": "33F28D32BAB335D03EC5DAD6F7EBA8ECD6F22BFE",
+      "bits": 2048,
+      "openpgp_algorithm_id": 1,
+      "created_utc": "2016-04-23T20:53:53+00:00",
+      "expires_utc": "2017-04-23T20:53:53+00:00"
+    },
+    {
+      "fingerprint": "F9514E84AE3708288374BBBE097586CFEA37F9A6",
+      "bits": 2048,
+      "openpgp_algorithm_id": 1,
+      "created_utc": "2017-10-13T01:56:33+00:00",
+      "expires_utc": "2021-10-13T10:17:38+00:00"
+    },
+    {
+      "fingerprint": "259A55407DD6C00299E6607EFFDE55BE73A2D1ED",
+      "bits": 4096,
+      "openpgp_algorithm_id": 1,
+      "created_utc": "2021-10-07T09:44:56+00:00",
+      "expires_utc": null
+    }
+  ],
+  "artifacts": [
+    {
+      "version": "1.1",
+      "source": "https://repo.maven.apache.org/maven2/org/owasp/encoder/encoder/1.1/",
+      "fingerprint": "37D880CD406BAD34CA2A8DD61845EF37A3B6533A",
+      "signature_utc": "2013-02-15T01:49:06+00:00",
+      "jar_sha256": "cdf109ec3dfdfea91dd6415246547202ab9f8e7341c4142bf53920e3e87a9c56",
+      "signature_sha256": "98a750d3e44b3e1dbe2c437d0012c954dbee5bfa9a0c3ee3568bded549f88ab8",
+      "gpg_status": [
+        "[GNUPG:] KEYEXPIRED 1384394658",
+        "[GNUPG:] EXPKEYSIG 1845EF37A3B6533A Jeremy Long <jeremy.long@gmail.com>",
+        "[GNUPG:] VALIDSIG 37D880CD406BAD34CA2A8DD61845EF37A3B6533A 2013-02-15 1360892946 0 4 0 17 2 00 37D880CD406BAD34CA2A8DD61845EF37A3B6533A"
+      ]
+    },
+    {
+      "version": "1.1.1",
+      "source": "https://repo.maven.apache.org/maven2/org/owasp/encoder/encoder/1.1.1/",
+      "fingerprint": "AD0C981AEE36D3880512E28F5AD6F7C8740E3CF2",
+      "signature_utc": "2014-01-28T00:57:29+00:00",
+      "jar_sha256": "45195faeb11e5ab6251da4f0f19f06748ab340f3477d2a5eef73bdf8a867c74d",
+      "signature_sha256": "4570b97df8a4d3b37291102732828262f41f0be7accfa71aa86b011099ea5958",
+      "gpg_status": [
+        "[GNUPG:] KEYEXPIRED 1416149593",
+        "[GNUPG:] EXPKEYSIG 5AD6F7C8740E3CF2 Jeremy Long <jeremy.long@gmail.com>",
+        "[GNUPG:] VALIDSIG AD0C981AEE36D3880512E28F5AD6F7C8740E3CF2 2014-01-28 1390870649 0 4 0 1 2 00 AD0C981AEE36D3880512E28F5AD6F7C8740E3CF2"
+      ]
+    },
+    {
+      "version": "1.2",
+      "source": "https://repo.maven.apache.org/maven2/org/owasp/encoder/encoder/1.2/",
+      "fingerprint": "C82AF58D3985677F9D575CEC9BC190E3DA071BD4",
+      "signature_utc": "2015-04-10T19:59:40+00:00",
+      "jar_sha256": "ffba2e892b62a1a1864a3ff3e89bf1b30f4ce7eb16f97d067276cfe1269b4927",
+      "signature_sha256": "0a279a49d313bb914478785b2c7dd5ce0e287a085cecc1e3a6e36683459fee52",
+      "gpg_status": [
+        "[GNUPG:] KEYEXPIRED 1488729031",
+        "[GNUPG:] EXPKEYSIG 9BC190E3DA071BD4 Jeremy Long <jeremy.long@owasp.org>",
+        "[GNUPG:] VALIDSIG C82AF58D3985677F9D575CEC9BC190E3DA071BD4 2015-04-10 1428695980 0 4 0 1 2 00 C82AF58D3985677F9D575CEC9BC190E3DA071BD4"
+      ]
+    },
+    {
+      "version": "1.2.1",
+      "source": "https://repo.maven.apache.org/maven2/org/owasp/encoder/encoder/1.2.1/",
+      "fingerprint": "33F28D32BAB335D03EC5DAD6F7EBA8ECD6F22BFE",
+      "signature_utc": "2017-02-19T11:59:54+00:00",
+      "jar_sha256": "dd50d40a58b38c81be51239366f0980efc849ab059b5a999ae6155c0a7d59177",
+      "signature_sha256": "66f2710bef35893a67386b57ada5963e1ac9f57c97e1844925fd8c29bce93c86",
+      "gpg_status": [
+        "[GNUPG:] KEYEXPIRED 1492980833",
+        "[GNUPG:] EXPKEYSIG F7EBA8ECD6F22BFE Jeremy Long <jeremy.long@gmail.com>",
+        "[GNUPG:] VALIDSIG 33F28D32BAB335D03EC5DAD6F7EBA8ECD6F22BFE 2017-02-19 1487505594 0 4 0 1 8 00 33F28D32BAB335D03EC5DAD6F7EBA8ECD6F22BFE"
+      ]
+    },
+    {
+      "version": "1.2.2",
+      "source": "https://repo.maven.apache.org/maven2/org/owasp/encoder/encoder/1.2.2/",
+      "fingerprint": "F9514E84AE3708288374BBBE097586CFEA37F9A6",
+      "signature_utc": "2018-09-03T11:13:11+00:00",
+      "jar_sha256": "32313d4f4fa494c86cb236664e74723231b9418028c7cfc6d61cc4d14c4a993f",
+      "signature_sha256": "73bac536d25c3e72adf0a11b859cbaa8eb0b2da8bcd595379ad36c689cade723",
+      "gpg_status": [
+        "[GNUPG:] KEYEXPIRED 1634120258",
+        "[GNUPG:] EXPKEYSIG 097586CFEA37F9A6 Jeremy Long <jeremy.long@gmail.com>",
+        "[GNUPG:] VALIDSIG F9514E84AE3708288374BBBE097586CFEA37F9A6 2018-09-03 1535973191 0 4 0 1 8 00 F9514E84AE3708288374BBBE097586CFEA37F9A6"
+      ]
+    },
+    {
+      "version": "1.2.3",
+      "source": "https://repo.maven.apache.org/maven2/org/owasp/encoder/encoder/1.2.3/",
+      "fingerprint": "F9514E84AE3708288374BBBE097586CFEA37F9A6",
+      "signature_utc": "2020-11-08T18:48:02+00:00",
+      "jar_sha256": "b09e2cd5c36a7127e091df9be628278b1166b40bc08b9de8196ccddb0cccd67f",
+      "signature_sha256": "6475a0faa3f3b1a15f1ab69fc3629675010b0caf7d9b8a122be8d79651eae306",
+      "gpg_status": [
+        "[GNUPG:] KEYEXPIRED 1634120258",
+        "[GNUPG:] EXPKEYSIG 097586CFEA37F9A6 Jeremy Long <jeremy.long@gmail.com>",
+        "[GNUPG:] VALIDSIG F9514E84AE3708288374BBBE097586CFEA37F9A6 2020-11-08 1604861282 0 4 0 1 8 00 F9514E84AE3708288374BBBE097586CFEA37F9A6"
+      ]
+    },
+    {
+      "version": "1.3.0",
+      "source": "https://repo.maven.apache.org/maven2/org/owasp/encoder/encoder/1.3.0/",
+      "fingerprint": "259A55407DD6C00299E6607EFFDE55BE73A2D1ED",
+      "signature_utc": "2024-08-02T11:07:41+00:00",
+      "jar_sha256": "5871da031423337062b30fe8dee82f6b4927d05de432c5d31fe6831083a93808",
+      "signature_sha256": "9239cf5449d20f4ab36f77e6b3892b0eb04122b35650bf4b37d488f1a255e312",
+      "gpg_status": [
+        "[GNUPG:] VALIDSIG 259A55407DD6C00299E6607EFFDE55BE73A2D1ED 2024-08-02 1722596861 0 4 0 1 8 00 259A55407DD6C00299E6607EFFDE55BE73A2D1ED",
+        "[GNUPG:] TRUST_UNDEFINED 0 pgp"
+      ]
+    },
+    {
+      "version": "1.3.1",
+      "source": "https://repo.maven.apache.org/maven2/org/owasp/encoder/encoder/1.3.1/",
+      "fingerprint": "259A55407DD6C00299E6607EFFDE55BE73A2D1ED",
+      "signature_utc": "2024-08-20T09:51:43+00:00",
+      "jar_sha256": "c9c56c8970c7cb11b231913ba5190ce930f8fd4fac2bd918810642dc3848e757",
+      "signature_sha256": "043f441991db85c38eddd6ee607c9abf089c689d5bc0af4fc483f14844ee1616",
+      "gpg_status": [
+        "[GNUPG:] VALIDSIG 259A55407DD6C00299E6607EFFDE55BE73A2D1ED 2024-08-20 1724147503 0 4 0 1 8 00 259A55407DD6C00299E6607EFFDE55BE73A2D1ED",
+        "[GNUPG:] TRUST_UNDEFINED 0 pgp"
+      ]
+    },
+    {
+      "version": "1.4.0",
+      "source": "https://repo.maven.apache.org/maven2/org/owasp/encoder/encoder/1.4.0/",
+      "fingerprint": "259A55407DD6C00299E6607EFFDE55BE73A2D1ED",
+      "signature_utc": "2025-11-17T12:10:32+00:00",
+      "jar_sha256": "90f9860925905dd97f313cffae065835eb02acc3e2e9b0051621693efd09025c",
+      "signature_sha256": "4cda8d53deb04d84f5905ff17e972b70ad2f51b453d14155e606b12c0fe9b12f",
+      "gpg_status": [
+        "[GNUPG:] VALIDSIG 259A55407DD6C00299E6607EFFDE55BE73A2D1ED 2025-11-17 1763381432 0 4 0 1 8 00 259A55407DD6C00299E6607EFFDE55BE73A2D1ED",
+        "[GNUPG:] TRUST_UNDEFINED 0 pgp"
+      ]
+    },
+    {
+      "version": "1.4.1",
+      "source": "https://repo.maven.apache.org/maven2/org/owasp/encoder/encoder/1.4.1/",
+      "fingerprint": "1C5F632B86809F2F5DB25092BEA0075F94074A9B",
+      "signature_utc": "2026-09-26T01:43:50+00:00",
+      "jar_sha256": "ee16cdcc2e566989474cf09b381b44d0510385374727d0ef0c62fd2367729229",
+      "signature_sha256": "99e6d7d1903c5a7bb8fb41328abf76e688a9bcc338245a0d0076aad93019c069",
+      "gpg_status": [
+        "[GNUPG:] VALIDSIG 1C5F632B86809F2F5DB25092BEA0075F94074A9B 2026-09-26 1790387030 0 4 0 1 10 00 1C5F632B86809F2F5DB25092BEA0075F94074A9B",
+        "[GNUPG:] TRUST_UNDEFINED 0 pgp"
+      ]
+    }
+  ]
+}

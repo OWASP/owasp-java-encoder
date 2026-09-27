@@ -40,13 +40,15 @@ Development builds use `1.5.0-SNAPSHOT`; this is not a published release.
   (#185, #187). This does not change the Java 8 library runtime baseline.
 - Add release verification, historical key evidence, maintainer custody and
   release-specific ESAPI guidance (#164, #171, #185). Historical signing-key
-  authorization gaps (#110) remain open. Central publication and the reported
-  completion of maintainer access/custody work (#111) are recorded in the
-  [publication follow-up](releases/1.4.1-central-publication.md).
+  authorization records (#110) now distinguish retrospective maintainer
+  authentication from historical GitHub/project records; see the
+  [key verification record](releases/historical-key-authentication.md).
+  Central publication and the reported completion of maintainer access/custody
+  work (#111) are recorded in the [publication follow-up](releases/1.4.1-central-publication.md).
 
-These items are merged through `3bd86250a9c9cd48577c3bf7fb9c46dbe91c1c90`.
 The [maintenance tracker](https://github.com/OWASP/owasp-java-encoder/issues/169)
-records PRs, tests and dispositions; it is not approval to publish 1.5.
+and [closeout record](releases/maintenance-closeout.md) record the corresponding
+PRs, tests and dispositions; they are not approval to publish 1.5.
 
 ## 1.4.1 — 2026-09-26 UTC
 

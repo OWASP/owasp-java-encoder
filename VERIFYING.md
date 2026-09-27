@@ -13,18 +13,18 @@ confirms that Central serves the same artifacts and signatures.
 ## Fresh public-only keyring
 
 Download the artifact, its original `.asc`, and the trusted `KEYS`. This example
-verifies historical 1.4.0 to demonstrate the process; it is not a recommendation
-to use that affected release. Substitute the expected project fingerprint and
-artifact name for 1.4.1. Commands use GnuPG and `shasum` (or equivalent SHA tools).
+verifies the published 1.4.1 release. For historical releases, use the full
+fingerprint mapped below and review the historical key's expiry and algorithms.
+Commands use GnuPG and `shasum` (or equivalent SHA tools).
 
 ```sh
 verify_home=$(mktemp -d)
 chmod 700 "$verify_home"
-gpg --homedir "$verify_home" --batch --import KEYS
-expected_fingerprint=259A55407DD6C00299E6607EFFDE55BE73A2D1ED
-artifact=encoder-1.4.0.jar
-gpg --homedir "$verify_home" --fingerprint "$expected_fingerprint"
-gpg --homedir "$verify_home" --batch --status-fd 1 \
+gpg --homedir "$verify_home" --batch --no-autostart --import KEYS
+expected_fingerprint=1C5F632B86809F2F5DB25092BEA0075F94074A9B
+artifact=encoder-1.4.1.jar
+gpg --homedir "$verify_home" --no-autostart --fingerprint "$expected_fingerprint"
+gpg --homedir "$verify_home" --batch --no-autostart --status-fd 1 \
   --verify "$artifact.asc" "$artifact" > signature.status || exit 1
 awk -v expected="$expected_fingerprint" \
   '$2 == "VALIDSIG" && ($3 == expected || $NF == expected) { valid=1 }
@@ -45,7 +45,7 @@ A Maven `.sha256` sidecar usually contains **only a hex digest**, not a filename
 After fetching it over the intended distribution channel, form a check manifest:
 
 ```sh
-artifact=encoder-1.4.0.jar
+artifact=encoder-1.4.1.jar
 expected_hash=$(tr -d '[:space:]' < "$artifact.sha256")
 printf '%s\n' "$expected_hash" | grep -Eq '^[[:xdigit:]]{64}$' || exit 1
 printf '%s  %s\n' "$expected_hash" "$artifact" | shasum -a 256 --check || exit 1
@@ -64,16 +64,17 @@ origin, does not authenticate a publisher.
 Reviewed 2026-09-26 against the original core JARs and detached signatures at
 [Maven Central](https://repo.maven.apache.org/maven2/org/owasp/encoder/encoder/).
 Every listed original signature mathematically verified in a fresh public-only
-keyring; the pre-1.3 keys are now expired. This does not retrospectively authorize
-those keys or change any artifact. The table records the primary fingerprint,
-not a short key ID, and release-use periods rather than all possible key uses.
+keyring; the pre-1.3 certificates archived here are now expired. Signature
+verification and the authentication records below are separate evidence. The
+table records the primary fingerprint, not a short key ID, and release-use
+periods rather than all possible key uses.
 
 | Releases | Observed primary fingerprint | Authentication/archival status |
 | --- | --- | --- |
-| 1.1 | `37D880CD406BAD34CA2A8DD61845EF37A3B6533A` | Expired; independent historical full-fingerprint authorization record still missing |
-| 1.1.1 | `AD0C981AEE36D3880512E28F5AD6F7C8740E3CF2` | Expired; independent authorization record still missing |
-| 1.2 | `C82AF58D3985677F9D575CEC9BC190E3DA071BD4` | Expired; independent authorization record still missing |
-| 1.2.1 | `33F28D32BAB335D03EC5DAD6F7EBA8ECD6F22BFE` | Expired; independent authorization record still missing |
+| 1.1 | `37D880CD406BAD34CA2A8DD61845EF37A3B6533A` | Expired; archived after Jim Manico's retrospective exact-fingerprint authentication on 2026-09-26 |
+| 1.1.1 | `AD0C981AEE36D3880512E28F5AD6F7C8740E3CF2` | Expired; archived after Jim Manico's retrospective exact-fingerprint authentication on 2026-09-26 |
+| 1.2 | `C82AF58D3985677F9D575CEC9BC190E3DA071BD4` | Expired; archived after Jim Manico's retrospective exact-fingerprint authentication on 2026-09-26 |
+| 1.2.1 | `33F28D32BAB335D03EC5DAD6F7EBA8ECD6F22BFE` | Expired; archived after matching Jeremy Long's public GitHub key record 213069 |
 | 1.2.2–1.2.3 | `F9514E84AE3708288374BBBE097586CFEA37F9A6` | Expired 2021-10-13; archived in KEYS |
 | 1.3.0, 1.3.1, 1.4.0 | `259A55407DD6C00299E6607EFFDE55BE73A2D1ED` | Historical personal key; archived in KEYS |
 | 1.4.1 onward until rotation | `1C5F632B86809F2F5DB25092BEA0075F94074A9B` | Current dedicated project key |
@@ -85,17 +86,23 @@ The 1.3.0–1.4.0 fingerprint was already recorded in this project's
 [KEYS at the rotation](https://github.com/OWASP/owasp-java-encoder/blob/b51c575/KEYS)
 and is corroborated by the [maintainer's Dependency-Check guide](https://dependency-check.github.io/DependencyCheck/dependency-check-cli/index.html).
 Retrieved keys were checked against those full records before adding minimal
-public exports to KEYS. The first four keys were retrieved only to analyze the
-signatures; they are **not** added to trusted archival KEYS without the missing
-historical/project authorization records. This is the remaining evidence gap in
-#110. Do not resolve it by treating keyserver availability or a matching UID as
-project authorization.
+public exports to KEYS. For 1.2.1, the primary public-key packet in
+[Jeremy's GitHub account key listing](https://api.github.com/users/jeremylong/gpg_keys)
+(record 213069, added 2017-08-20) yields the exact full fingerprint above.
+For 1.1, 1.1.1 and 1.2, Jim authenticated the exact fingerprints on 2026-09-26,
+citing his involvement from the project's beginning and recruitment of Jeff
+Ichnowski. This is retrospective maintainer authentication, not a recovered
+contemporaneous fingerprint announcement or a claim that Jim held those private
+keys. See the [authentication and verification record](releases/historical-key-authentication.md)
+for source limits, certificate dates, signature times and artifact hashes.
+Keyserver availability and matching UIDs alone are still insufficient authority.
 
 The three oldest signatures use SHA-1 and 1.1 uses a 1024-bit DSA key; these are
 historical facts, not algorithms to use for new releases. Preserve their original
 bytes/signatures. Current key custody, independent recovery and Central access
-remain [MAINTAINERS.md](MAINTAINERS.md) / #111. Record a new authorized project's
-full fingerprint before first use and retain the old public verification record.
+are recorded in [MAINTAINERS.md](MAINTAINERS.md) / #111. Record each newly authorized
+project key's full fingerprint before first use and retain the old public
+verification record.
 
 OpenPGP detached artifact signing is separate from Java `jarsigner`: it signs the
 whole downloaded file without adding JAR entries. This project does not claim
