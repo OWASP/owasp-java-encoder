@@ -100,6 +100,8 @@
         </plugin></plugins></pluginManagement>
         <finalName>jakarta-test</finalName>
         <plugins>
+            <!-- Build-plugin dependencies run only in isolated plugin realms;
+                 explicit pins keep those development graphs on fixed lines. -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-checkstyle-plugin</artifactId>
@@ -111,6 +113,9 @@
                         <!-- Last Java 17-compatible line; 13+ requires Java 21. -->
                         <version>12.3.1</version>
                     </dependency>
+                    <dependency><groupId>org.apache.commons</groupId><artifactId>commons-lang3</artifactId><version>3.20.0</version></dependency>
+                    <dependency><groupId>org.codehaus.plexus</groupId><artifactId>plexus-archiver</artifactId><version>4.14.0</version></dependency>
+                    <dependency><groupId>org.codehaus.plexus</groupId><artifactId>plexus-utils</artifactId><version>4.0.3</version></dependency>
                 </dependencies>
                 <configuration>
                     <configLocation>${maven.multiModuleProjectDirectory}/src/main/config/checkstyle.xml</configLocation>
@@ -163,8 +168,47 @@
                 </executions>
             </plugin>
             <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-clean-plugin</artifactId>
+                <dependencies>
+                    <dependency><groupId>org.codehaus.plexus</groupId><artifactId>plexus-utils</artifactId><version>4.0.3</version></dependency>
+                </dependencies>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-resources-plugin</artifactId>
+                <dependencies>
+                    <dependency><groupId>org.codehaus.plexus</groupId><artifactId>plexus-utils</artifactId><version>3.6.2</version></dependency>
+                </dependencies>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.16.0</version>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-war-plugin</artifactId>
+                <dependencies>
+                    <dependency><groupId>org.codehaus.plexus</groupId><artifactId>plexus-archiver</artifactId><version>4.14.0</version></dependency>
+                    <dependency><groupId>org.codehaus.plexus</groupId><artifactId>plexus-utils</artifactId><version>4.0.3</version></dependency>
+                </dependencies>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <version>3.11.0</version>
+                <dependencies>
+                    <dependency><groupId>commons-beanutils</groupId><artifactId>commons-beanutils</artifactId><version>1.11.0</version></dependency>
+                </dependencies>
+            </plugin>
+            <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+                <dependencies>
+                    <dependency><groupId>org.apache.commons</groupId><artifactId>commons-lang3</artifactId><version>3.20.0</version></dependency>
+                    <dependency><groupId>org.codehaus.plexus</groupId><artifactId>plexus-utils</artifactId><version>3.6.2</version></dependency>
+                </dependencies>
                 <configuration>
                     <mainClass>org.owasp.encoder.testing.jakarta_test.JakartaTestApplication</mainClass>
                 </configuration>

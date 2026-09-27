@@ -6,7 +6,6 @@ updates:
       - /core
       - /jsp
       - /jakarta
-      - /esapi
       - /jakarta-test
     schedule:
       interval: weekly

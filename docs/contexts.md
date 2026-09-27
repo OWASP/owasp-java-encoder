@@ -98,11 +98,11 @@ element. Ordinary JSON serialization alone need not protect an HTML end tag.
 
 Java `null` is encoded as the text `null`: with the caller's quotes this is the
 JSON **string** `"null"`, not the JSON null value. The facade generally renders null
-as text; JSP EL conversion and the ESAPI-delegated JSON method have separate
-contracts. `forJson` preserves unpaired surrogates as `\uXXXX`, which not every
+as text; JSP EL conversion has its own contract. `forJson` preserves unpaired
+surrogates as `\uXXXX`, which not every
 JSON consumer interoperates with. JSON strings do not belong in HTML attributes
 without the enclosing attribute encoding, and HTML entity escaping is not JSON
-serialization. The ESAPI adapter keeps its existing upstream JSON delegation.
+serialization.
 
 ## URLs and non-goals
 
@@ -116,8 +116,7 @@ encoded for a surrounding quoted HTML attribute. See the [URL example](usage.md#
 `forUriComponent` uses UTF-8 percent encoding and `%20` spaces. Form encoding
 (`java.net.URLEncoder`) has a different contract. Already encoded input is encoded
 again; unpaired surrogates are replaced with `-`. Deprecated `forUri` preserves
-whole-URI delimiters and cannot make a dangerous scheme safe. Read the
-[unreleased ESAPI URL migration](../esapi/README.md#url-encoding-migration-in-15-unreleased).
+whole-URI delimiters and cannot make a dangerous scheme safe.
 
 Java Encoder does not perform input validation, HTML sanitization, URL authorization,
 SQL parameterization, canonicalization or decoding. Its JSON and JavaScript

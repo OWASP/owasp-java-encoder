@@ -13,7 +13,7 @@ ROOT = Path(__file__).resolve().parents[1]
 NAMESPACE = 'http://maven.apache.org/POM/4.0.0'
 FIELDS = ('connection', 'developerConnection', 'url')
 MODULES = {'': 'encoder-parent', 'core': 'encoder', 'jsp': 'encoder-jsp',
-           'jakarta': 'encoder-jakarta-jsp', 'esapi': 'encoder-esapi'}
+           'jakarta': 'encoder-jakarta-jsp'}
 MODULE_SUFFIXES = tuple('/' + name for name in
                         ('core', 'jsp', 'jakarta', 'esapi', 'encoder',
                          'encoder-jsp', 'encoder-jakarta-jsp', 'encoder-esapi'))
@@ -46,9 +46,9 @@ def read_scm(path, artifact):
 
 
 def check_effective_poms(paths):
-    """Compare the five parsed effective POMs, including inherited SCM paths."""
+    """Compare the four parsed effective POMs, including inherited SCM paths."""
     if set(paths) != set(MODULES):
-        raise ValueError('Expected effective POMs for parent, core, jsp, jakarta and esapi')
+        raise ValueError('Expected effective POMs for parent, core, jsp and jakarta')
     parent = read_scm(paths[''], MODULES[''])
     for field, value in parent.items():
         if value.rstrip('/').endswith(MODULE_SUFFIXES):
@@ -109,7 +109,7 @@ def main():
         generate_and_check(root, maven, repository, settings, args.maven_option)
     except (ValueError, ET.ParseError, subprocess.CalledProcessError) as error:
         parser.exit(1, str(error) + '\n')
-    print('Effective SCM metadata matches encoder-parent for all four published modules')
+    print('Effective SCM metadata matches encoder-parent for all three published modules')
 
 
 if __name__ == '__main__':

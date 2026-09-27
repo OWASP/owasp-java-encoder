@@ -31,6 +31,30 @@ The following plugins have been resolved:
             with self.subTest(report=report), self.assertRaises(ValueError):
                 graph.parse_report(report)
 
+    def test_module_delta_omits_shared_closures(self):
+        shared = graph.parse_report('''
+The following plugins have been resolved:
+   org.example:compiler:jar:1.0
+      org.example:shared:jar:2.0
+   org.example:tests:jar:1.0
+      org.example:runner:jar:2.0
+''')
+        child = graph.parse_report('''
+The following plugins have been resolved:
+   org.example:compiler:jar:1.0
+      org.example:shared:jar:2.0
+   org.example:tests:jar:1.0
+      org.example:runner:jar:2.0
+      org.example:engine:jar:3.0
+''')
+        delta = graph.module_delta(shared, child)
+        compiler = graph.purl('org.example:compiler:jar:1.0')
+        tests = graph.purl('org.example:tests:jar:1.0')
+        engine = graph.purl('org.example:engine:jar:3.0')
+        self.assertNotIn(compiler, delta)
+        self.assertEqual('direct', delta[tests]['relationship'])
+        self.assertEqual('indirect', delta[engine]['relationship'])
+
 
 if __name__ == '__main__':
     unittest.main()

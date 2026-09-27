@@ -62,14 +62,30 @@ class PublicApiBaseline(unittest.TestCase):
                                 namespaces=NS)
         self.assertEqual(expected, baseline)
 
-        plugins = pom.findall('p:build/p:plugins/p:plugin', NS)
-        japicmp = next(plugin for plugin in plugins
-                        if plugin.findtext('p:artifactId', namespaces=NS)
-                        == 'japicmp-maven-plugin')
-        configured = japicmp.findtext(
-            'p:configuration/p:oldVersion/p:dependency/p:version',
-            namespaces=NS)
-        self.assertEqual('${public.api.baseline.version}', configured)
+        plugins = pom.findall('p:build/p:pluginManagement/p:plugins/p:plugin', NS)
+        execution = next(plugin for plugin in plugins
+                         if plugin.findtext('p:artifactId', namespaces=NS)
+                         == 'exec-maven-plugin')
+        dependencies = execution.findall('p:dependencies/p:dependency', NS)
+        self.assertTrue(any(
+            dependency.findtext('p:artifactId', namespaces=NS) == 'japicmp'
+            for dependency in dependencies))
+        arguments = [node.text for node in execution.findall(
+            'p:executions/p:execution/p:configuration/p:arguments/p:argument', NS)]
+        self.assertTrue(any('${public.api.baseline.version}' in argument
+                            for argument in arguments))
+        self.assertIn('--error-on-binary-incompatibility', arguments)
+        self.assertIn('--error-on-source-incompatibility', arguments)
+
+        for module in ('core', 'jsp', 'jakarta'):
+            child = ET.parse(ROOT / module / 'pom.xml').getroot()
+            plugins = child.findall('p:build/p:plugins/p:plugin', NS)
+            configured = next(plugin for plugin in plugins
+                              if plugin.findtext('p:artifactId', namespaces=NS)
+                              == 'exec-maven-plugin')
+            baseline_dependency = configured.find(
+                'p:dependencies/p:dependency/p:version', NS)
+            self.assertEqual('${public.api.baseline.version}', baseline_dependency.text)
 
 
 if __name__ == '__main__':

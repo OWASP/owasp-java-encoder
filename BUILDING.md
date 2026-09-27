@@ -23,7 +23,7 @@ Run from the root, with `-pl core -am`, or from a module using `../mvnw`.
 The wrapper's `.mvn` root also anchors Checkstyle paths. Maven's JVM must be 17+
 (Maven 3.9.16+); Java 8 is a **forked unit-test/consumer JVM**, never the build JVM.
 Newer JDK build jobs remain advisory. Library class files retain releases 8/9.
-The five library POMs share one Enforcer execution: tool minimums, duplicate
+The four release POMs share one Enforcer execution: tool minimums, duplicate
 coordinates, dependency convergence, upper bounds and explicit plugin versions.
 The separate Boot application applies those rules under its own parent/BOM.
 
@@ -37,7 +37,7 @@ requires Java 21; 12.3.1 is the explicit Java 17 compatibility exception, not a
 claim of upstream support for older engines. Review migration when the build JDK
 changes. Its parser cannot parse module declarations, so `module-info.java` is
 excluded from Checkstyle; compiler, packaged descriptor/source guards and actual
-JPMS consumers cover it. Headers were added to those four descriptors and four
+JPMS consumers cover it. Headers were added to the three library descriptors and four
 app files using their 2024 Jeremy Long introduction commits. All existing BSD
 notices and original attribution remain. TLD license comments remain intact;
 JSP server-side comments do not emit output. The app declares the same BSD license.
@@ -58,7 +58,6 @@ CI's Java 8 run starts in its own job/cache and uploads its own reports/data.
 | core | 1228/1240 (99.032%) | 890/903 (98.560%) | 99.0% | 98.5% |
 | jsp | 66/66 | no branches | 100% | 100% |
 | jakarta | 66/66 | no branches | 100% | 100% |
-| esapi | 27/28 (96.429%) | no branches | 96.4% | 100% |
 
 Floors round the current baseline down to 0.1 percentage points. They are not a
 claim that every encoding behavior is covered. CI retains reports alongside test
@@ -95,7 +94,12 @@ Lifecycle pins are in root `pluginManagement`, with explicit versions on API,
 source-helper and signature plugins. Maven 4 prerelease plugins were deliberately
 not selected for this Maven 3 build. The optional app inherits maintained plugin
 pins from Boot 4.1.1 and adds explicit Enforcer/Checkstyle/disabled Site pins.
-Review effective POMs for normal, `testJakarta`, and `sign-artifacts` profiles;
-`dependency:resolve-plugins` feeds their resolved closures into dependency review.
+Review effective POMs for normal, `testJakarta`, and `sign-artifacts` profiles.
+Dependency submission resolves a reviewed allowlist of the plugins those gates
+actually invoke and feeds their closures into dependency review. The optional
+Jakarta app has its own package-gate allowlist. Inactive plugin-management defaults
+and the disabled Site lifecycle are not represented as executed build dependencies;
+shared inherited tooling is submitted once at the root rather than copied onto
+every child POM.
 Release-only publisher dependencies are submitted separately with the same
 GitHub detector and a distinct correlator, so they do not hide runtime graphs.

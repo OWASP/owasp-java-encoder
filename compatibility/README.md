@@ -11,34 +11,29 @@ and OSGi consumers. Java 9+ legs additionally run explicit and automatic modules
 | `encoder` | Java 8 | No runtime dependencies |
 | `encoder-jsp` | Java 8 | JSP 2.2.1, Servlet 3.0.1, EL 2.2.5 (`javax`) |
 | `encoder-jakarta-jsp` | Java 8 with compatible container APIs | JSP 3.0.0, Servlet 5.0.0, EL 4.0.0 (`jakarta`) |
-| `encoder-esapi` | Java 8 with compatible ESAPI dependencies | ESAPI 2.7.0.0, HttpClient 5.6.4, HttpCore/Core H2 5.4.4, and remaining runtime dependencies |
 
 The Jakarta fixture deliberately uses Servlet 5.0, whose minimum Java SE version
 is 8 ([specification](https://jakarta.ee/specifications/servlet/5.0/)). Newer servlet
 containers/APIs can require a newer JVM. The reactor's Jakarta tests use Servlet 6,
 and the Docker/Selenium application remains in the separate JDK 17 `Java CI` job.
-This smoke matrix is not certification of every container, ESAPI operation, or
-transitive dependency on every JDK. The separate ESAPI version matrix tests the
-adapter's broader supported ESAPI range.
+This smoke matrix is not certification of every container or transitive
+dependency on every JDK.
 
-The Java 8 proof includes packaged consumer execution across all four artifacts,
+The Java 8 proof includes packaged consumer execution across all three artifacts,
 including Jakarta with Java 8-compatible APIs. A separate CI job builds on JDK 17,
-then forks the core, JSP, and ESAPI unit tests on Temurin 8 and requires a JaCoCo
+then forks the core and JSP unit tests on Temurin 8 and requires a JaCoCo
 execution-data file from each module. The Java 8 unit job does not run the
 packaged/module-path integration tests or the Jakarta test suite; those remain on
-JDK 17. The isolated packaged consumer job covers those four artifacts on Java 8.
+JDK 17. The isolated packaged consumer job covers those three artifacts on Java 8.
 
 ## What runs
 
-`consumers.py prepare` copies the four JARs produced by `./mvnw clean verify`, resolves
+`consumers.py prepare` copies the three JARs produced by `./mvnw clean verify`, resolves
 the pinned fixture dependencies, and compiles consumers independently of reactor
 classes or test classpaths. Core consumers assert String and Writer output,
 including input that crosses internal buffer boundaries, plus JavaScript and URI
 encoding. JSP consumers instantiate the actual tag, set a minimal `JspContext`,
-call `doTag()`, and assert output. The ESAPI consumer obtains the real adapter and
-asserts an HTML encoding result. Its minimal `config/ESAPI.properties` is supplied
-explicitly; it is not a production configuration or a claim that ESAPI needs no
-configuration. SLF4J may report that the fixture has no logging provider.
+call `doTag()`, and assert output.
 
 The runtime jobs download the prepared fixtures into fresh checkouts, verify the
 original JAR SHA-256 values, assert the actual JVM specification version, and run
@@ -53,15 +48,13 @@ consumers assert the historical automatic
 names documented in the root README. Because javac does not use that runtime
 property for module discovery, preparation makes visibly separate
 `compile-only-automatic/` copies without module descriptors. These copies are used
-only to compile the automatic consumers, never on a runtime path. The ESAPI JAR
-is on the module path; its other dependencies remain on the classpath to avoid
-unrelated split packages among legacy dependency JARs.
+only to compile the automatic consumers, never on a runtime path.
 
 OSGi tests start Felix 5.6.12 (R6) and 7.0.5 (R8), install the actual core/adapter
 JARs and a consumer probe bundle, assert ACTIVE state, invoke encoding through
 the probe's bundle class loader, and shut down the framework. The framework host
-supplies the pinned servlet/JSP/EL or ESAPI API packages via system-package exports,
-at the versions the pinned API JARs declare (ESAPI packages are unversioned). The
+supplies the pinned servlet/JSP/EL API packages via system-package exports at the
+versions the pinned API JARs declare. The
 JSP and Jakarta probes also run `ForJsonTag`, which needs the 1.5 core API. Each
 adapter is then installed with the released 1.4.0 core and must fail to resolve,
 proving its `org.owasp.encoder` import range excludes cores it cannot run on.
@@ -72,7 +65,7 @@ disabled because this fixture does not use them.
 
 ## Guards and limits
 
-Preparation asserts all four artifacts' automatic/explicit module names,
+Preparation asserts all three artifacts' automatic/explicit module names,
 descriptor requirements (including transitive API readability), exports, OSGi
 identities, imported packages with their exact version ranges, export versions, absence of execution-environment
 requirements, multi-release layout, Java 8 class versions, TLD identities and
@@ -92,9 +85,9 @@ reach the `verify` phase.
 
 There are no API exclusions today. A future intentional tag-package move requires
 an explicit compatibility decision. If approved, add narrowly scoped japicmp
-`parameter/excludes/exclude` entries for the affected classes in the parent POM,
-with an issue link and migration notes; do not disable compatibility checks for
-the whole adapter. New public API members must carry `@since` for their first
+`--exclude` arguments for the affected classes in the parent POM, with an issue
+link and migration notes; do not disable compatibility checks for a whole artifact.
+New public API members must carry `@since` for their first
 release. The XML 1.1 additions already carry `@since 1.4.0`.
 
 JDK 21 and 25 additionally run advisory builds to expose compiler/plugin drift.
@@ -146,7 +139,6 @@ new 1.5 calls and must not be projected onto older published JARs.
 | encoder             | owasp.encoder         | org.owasp.encoder        |
 | encoder-jakarta-jsp  | owasp.encoder.jakarta | org.owasp.encoder.jakarta |
 | encoder-jsp          | owasp.encoder.jsp     | org.owasp.encoder.jsp     |
-| encoder-esapi        | owasp.encoder.esapi   | org.owasp.encoder.esapi   |
 
 The multi-release descriptors define the explicit Java 9+ module names. The
 manifest names intentionally retain their historical values for consumers that
@@ -158,16 +150,12 @@ The adapter modules also require their public API dependency on the module path:
 |---------------------------|----------------------------|-------------------------------------------------------|
 | `owasp.encoder.jsp`       | `javax.servlet.jsp.api`    | `javax.servlet.jsp:javax.servlet.jsp-api:2.2.1`       |
 | `owasp.encoder.jakarta`   | `jakarta.servlet.jsp`      | `jakarta.servlet.jsp:jakarta.servlet.jsp-api:3.0.0`   |
-| `owasp.encoder.esapi`     | `esapi`                    | `org.owasp.esapi:esapi:2.7.0.0`                       |
 
 These dependencies are transitive in the module descriptors because their types
-appear in the adapters' public APIs. The JSP and ESAPI dependencies are automatic
-modules; use the original Maven artifact filenames so Java derives the module
+appear in the adapters' public APIs. The JSP dependencies are automatic modules;
+use the original Maven artifact filenames so Java derives the module
 names shown above. Servlet containers continue to provide the JSP APIs at runtime,
 and classpath-based applications are unaffected.
-
-The ESAPI adapter's fixed dependency and tested compatibility policy are
-documented in [esapi/README.md](../esapi/README.md).
 
 
 ### OSGi bundles
@@ -177,14 +165,9 @@ documented in [esapi/README.md](../esapi/README.md).
 | encoder             | `org.owasp.encoder`             | `org.owasp.encoder`      | (none)                      | (none)                                                      |
 | encoder-jsp         | `org.owasp.encoder.jsp`         | `org.owasp.encoder.tag`  | `[1.5,2)`                   | `javax.servlet.jsp`, `javax.servlet.jsp.tagext`: `[2.0,3)`   |
 | encoder-jakarta-jsp | `org.owasp.encoder.jakarta-jsp` | `org.owasp.encoder.tag`  | `[1.5,2)`                   | `jakarta.servlet.jsp`, `jakarta.servlet.jsp.tagext`: `[3.0,4)` |
-| encoder-esapi       | `org.owasp.encoder.esapi`       | `org.owasp.encoder.esapi`| `[1.4.1,2)`                 | `org.owasp.esapi.*`: unversioned                            |
 
 The symbolic names are fixed; note that the Jakarta bundle's differs from its
 `Automatic-Module-Name`. Core exports `org.owasp.encoder` at its release version.
-The JSP and Jakarta tags require core 1.5 because they call `Encode.forJson`; the
-ESAPI adapter only calls older methods, so its floor is the oldest supported core,
-the 1.4.1 security release. Jakarta Pages 4 is not in the accepted range until
-compatibility with it has been verified. ESAPI publishes no OSGi metadata: OSGi
-users must wrap ESAPI and its dependencies as bundles themselves. The project's
-tests supply the ESAPI packages from the framework host, which is not a statement
-that upstream ESAPI supports OSGi.
+The JSP and Jakarta tags require core 1.5 because they call `Encode.forJson`.
+Jakarta Pages 4 is not in the accepted range until compatibility with it has been
+verified.

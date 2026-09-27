@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Compare twelve JARs and five installed POMs from the same committed sources."""
+"""Compare nine JARs and four installed POMs from the same committed sources."""
 import argparse
 import hashlib
 import io
@@ -13,7 +13,7 @@ import xml.etree.ElementTree as ET
 ROOT = Path(__file__).resolve().parents[1]
 NS = {'p': 'http://maven.apache.org/POM/4.0.0'}
 MODULES = {'': 'encoder-parent', 'core': 'encoder', 'jsp': 'encoder-jsp',
-           'jakarta': 'encoder-jakarta-jsp', 'esapi': 'encoder-esapi'}
+           'jakarta': 'encoder-jakarta-jsp'}
 
 
 def require_identical(first, second):
@@ -62,15 +62,15 @@ def main():
             for suffix in suffixes:
                 filename = artifact + '-' + version + suffix
                 hashes[filename] = hashlib.sha256((base / filename).read_bytes()).hexdigest()
-        if len(hashes) != 17:
-            raise ValueError('Expected seventeen release payload files')
+        if len(hashes) != 13:
+            raise ValueError('Expected thirteen release payload files')
         results.append(hashes)
     differences = [name for name in results[0] if results[0][name] != results[1][name]]
     report = {'commit': commit, 'java': props, 'maven': '3.9.16',
               'hashes': results, 'differences': differences}
     (directory / 'comparison.json').write_text(json.dumps(report, indent=2) + '\n')
     require_identical(results[0], results[1])
-    print('Identical: twelve binary/source/Javadoc JARs and five POMs from', commit)
+    print('Identical: nine binary/source/Javadoc JARs and four POMs from', commit)
 
 
 if __name__ == '__main__':

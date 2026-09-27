@@ -83,9 +83,9 @@ existing Maven version.
    [BUILDING.md](BUILDING.md) on the original JARs. With a running
    Docker-compatible runtime, also run `./mvnw -B -ntp
    -Dmaven.repo.local=<fresh-cache> verify -PtestJakarta`.
-6. Commit the release files before tagging. Verify the four binary JARs, their
-   source and Javadoc JARs, and five POMs. The optional `jakarta-test` WAR is not a
-   published component. Inspect all four generated manifests and effective parent/
+6. Commit the release files before tagging. Verify the three binary JARs, their
+   source and Javadoc JARs, and four POMs. The optional `jakarta-test` WAR is not a
+   published component. Inspect all three generated manifests and effective parent/
    module POMs: current organization/maintainer IDs, project URL, Bundle-Vendor and
    Bundle-DocURL, preserved original-author attribution, and unchanged published
    JPMS/automatic/OSGi identities and dependency scopes. Metadata edits affect
@@ -120,7 +120,7 @@ python3 scripts/package-release.py --output /private/path/release-bundle.zip \
   --fingerprint 1C5F632B86809F2F5DB25092BEA0075F94074A9B
 ```
 
-The assembler verifies all seventeen signatures against that expected fingerprint,
+The assembler verifies all thirteen signatures against that expected fingerprint,
 checks the signed POMs match the source POMs, excludes the optional WAR, generates
 four checksum types and refuses to overwrite an existing bundle. It never builds,
 signs or uploads. Do **not** use `skipPublishing=true` as a bundle-generation
@@ -155,10 +155,10 @@ uploading. Keep an audit record of the exact uploaded bundle and its SHA-256.
 4. Set the fixed versions in the security advisories and publish the advisories
    in coordination with the available release. Do not announce a Central version
    that has not actually published.
-5. Set main to the next development version (currently `1.5.0-SNAPSHOT` for the
-   new JSON API), update
-   `jakarta-test` accordingly, and reset the SCM tag to `HEAD`. README examples
-   and the supported-version table continue to refer to the published release.
+5. Set main to the next unreleased version (for example `1.5.1-SNAPSHOT` or
+   `1.6.0-SNAPSHOT`, chosen through version review), update `jakarta-test`
+   accordingly, and reset the SCM tag to `HEAD`. README examples and the
+   supported-version table continue to refer to the published release.
 6. Verify GitHub CI on main, update the OWASP project page, and check javadoc.io
    after its indexing delay.
 
@@ -166,11 +166,11 @@ If staging fails, repair the cause and drop the failed staging deployment before
 retrying. For a retained signed release awaiting delivery, correct access or
 upload problems and retry the exact bundle; do not rebuild or re-sign it to
 address a validation failure. Escalate a failure requiring different artifact bytes to
-the release coordinator. After publication, compare all four libraries' binary,
-source, and Javadoc JARs and all five POMs and their signatures from Central with
+the release coordinator. After publication, compare all three libraries' binary,
+source, and Javadoc JARs and all four POMs and their signatures from Central with
 the retained files and signed checksums. Only after that comparison succeeds,
 reconcile the Central-pending notices in README, SECURITY.md, release notes,
-the GitHub release, and the ESAPI consumer guidance. Check the OWASP project page
+and the GitHub release. Check the OWASP project page
 and javadoc.io against the actual publication status as well.
 
 Published Maven coordinates are immutable. If release tags are
@@ -208,8 +208,8 @@ limited, audit-visible emergency PR review bypass are documented in
 Use the reference toolchain above, the exact immutable source commit, and its
 recorded timestamp. `python3 scripts/check-reproducible.py --commit <commit>
 --directory <new-empty-directory>` exports that commit twice, uses separate fresh
-Maven repositories, builds the twelve binary/source/Javadoc JARs and installs the
-five POMs locally, then compares all seventeen files directly by SHA-256. It never
+Maven repositories, builds the nine binary/source/Javadoc JARs and installs the
+four POMs locally, then compares all thirteen files directly by SHA-256. It never
 signs or uploads. The initial experiment is recorded in the batch 04 validation
 record. Compare the same source revision, never a different historical release.
 OS/architecture, locale, archive permissions and the JDK distribution/version are

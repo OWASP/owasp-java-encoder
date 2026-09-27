@@ -42,7 +42,8 @@ publication. State whether this is a security release and the upgrade destinatio
 ## Coordinates and availability
 
 Group `org.owasp.encoder`, version `<VERSION>`: `encoder`, `encoder-jsp`,
-`encoder-jakarta-jsp`, `encoder-esapi`; parent `encoder-parent`.
+`encoder-jakarta-jsp`; parent `encoder-parent`. `encoder-esapi` was retired after
+1.4.1 and is not part of this release.
 The optional `jakarta-test` WAR is not published. Include exact Central artifact
 links only after verification. While Central is pending, give signed GitHub
 artifact verification and local/organizational installation instructions.
