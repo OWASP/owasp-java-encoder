@@ -9,16 +9,17 @@ has no runtime dependencies; optional JSP and Jakarta adapters provide view-laye
 bindings. Encoding is one part of [XSS prevention][xss], alongside
 safe templates, URL validation and other application controls.
 
-**Release preparation:** version 1.5.0 fixes parser-boundary vulnerabilities in
+**Released 2026-09-28:** version 1.5.0 fixes parser-boundary vulnerabilities in
 JavaScript-in-HTML, CDATA, and XML-comment fragment composition. Versions through
-1.4.1 do not contain those fixes. The signed 1.5.0 artifacts are not available
-until the maintainers complete the release gates and update this notice with the
-verified GitHub and Maven Central links. See the [1.5.0 release notes](releases/1.5.0.md)
+1.4.1 do not contain those fixes. The [signed GitHub release][release] and
+[Maven Central artifacts](releases/1.5.0-central-publication.md) have been
+independently verified. See the [1.5.0 release notes](releases/1.5.0.md),
+[security advisory](https://github.com/OWASP/owasp-java-encoder/security/advisories/GHSA-g8p6-7r8f-qrpv)
 and [VERIFYING.md](VERIFYING.md).
 
 ## Start using the OWASP Java Encoders
 
-After 1.5.0 publication is independently verified, select the dependency you need.
+Select the dependency you need.
 The three supported artifacts use group ID `org.owasp.encoder`:
 
 | Artifact ID | Purpose and runtime dependencies |
@@ -39,11 +40,14 @@ Replace `encoder` with one tag adapter artifact ID when needed; each adapter bri
 in core. Keep separately managed core/adapter versions aligned. Use **one** of the
 javax or Jakarta taglib JARs: they share `org.owasp.encoder.tag` and must not coexist
 on the same classpath or module path. See the [runtime matrix](compatibility/README.md) and
-[dependency/license inventory](docs/dependencies.md). Do not use the example version
-until its signed artifacts and Central availability have been verified.
+[dependency/license inventory](docs/dependencies.md).
 
-`encoder-esapi` was retired after 1.4.1 and will not be published or supported in
+`encoder-esapi` was retired after 1.4.1 and is not included or supported in
 1.5.0. Applications using it must [migrate away from the adapter](docs/encoder-esapi-retirement.md).
+
+Published 1.5.0 API documentation: [core](https://javadoc.io/doc/org.owasp.encoder/encoder/1.5.0/),
+[javax JSP](https://javadoc.io/doc/org.owasp.encoder/encoder-jsp/1.5.0/) and
+[Jakarta JSP](https://javadoc.io/doc/org.owasp.encoder/encoder-jakarta-jsp/1.5.0/).
 
 ```java
 import org.owasp.encoder.Encode;

@@ -3,6 +3,7 @@
 from pathlib import Path
 import re
 import subprocess
+import tempfile
 import unittest
 import xml.etree.ElementTree as ET
 
@@ -13,10 +14,11 @@ RELEASE_TAG = re.compile(r'^v(\d+)\.(\d+)\.(\d+)$')
 PROJECT_VERSION = re.compile(r'^(\d+)\.(\d+)\.(\d+)(?:[-+].*)?$')
 
 
-def immutable_release_versions():
+def immutable_release_versions(repository=ROOT):
+    """Include signed release sources integrated by squash, not just ancestors."""
     versions = []
     tags = subprocess.check_output(
-        ['git', 'tag', '--merged', 'HEAD', '--list', 'v*'], cwd=ROOT,
+        ['git', 'tag', '--list', 'v*'], cwd=repository,
         text=True).splitlines()
     for tag in tags:
         match = RELEASE_TAG.match(tag)
@@ -51,6 +53,50 @@ class BaselineSelection(unittest.TestCase):
     def test_next_snapshot_uses_the_completed_release(self):
         releases = [((1, 4, 1), '1.4.1'), ((1, 5, 0), '1.5.0')]
         self.assertEqual('1.5.0', preceding_release(releases, '1.5.1-SNAPSHOT'))
+
+    def test_future_release_is_not_a_baseline(self):
+        releases = [((1, 5, 0), '1.5.0'), ((2, 0, 0), '2.0.0')]
+        self.assertEqual('1.5.0', preceding_release(releases, '1.5.1-SNAPSHOT'))
+
+
+class ReleaseTagDiscovery(unittest.TestCase):
+    def setUp(self):
+        temporary = tempfile.TemporaryDirectory()
+        self.addCleanup(temporary.cleanup)
+        self.repository = Path(temporary.name)
+        self.git('init', '--quiet')
+        self.git('commit', '--quiet', '--allow-empty', '-m', 'Initial fixture')
+
+    def git(self, *arguments):
+        return subprocess.check_output([
+            'git', '-c', 'user.name=Release test',
+            '-c', 'user.email=release-test@example.invalid',
+            '-c', 'commit.gpgSign=false', '-c', 'tag.gpgSign=false',
+            '-c', 'core.hooksPath=/dev/null', *arguments,
+        ], cwd=self.repository, text=True, stderr=subprocess.STDOUT).strip()
+
+    def test_squash_merged_release_tag_is_discovered(self):
+        base = self.git('rev-parse', 'HEAD')
+        self.git('tag', '-a', 'v1.4.1', '-m', 'Previous release')
+        self.git('checkout', '--quiet', '--detach')
+        self.git('commit', '--quiet', '--allow-empty', '-m', 'Tested release')
+        self.git('tag', '-a', 'v1.5.0', '-m', 'Released source')
+        self.git('checkout', '--quiet', '--detach', base)
+        self.git('commit', '--quiet', '--allow-empty', '-m', 'Squash merge')
+        self.assertNotIn('v1.5.0', self.git('tag', '--merged', 'HEAD').splitlines())
+        versions = immutable_release_versions(self.repository)
+        self.assertEqual('1.5.0', preceding_release(versions, '1.5.1-SNAPSHOT'))
+        self.assertEqual('1.4.1', preceding_release(versions, '1.5.0'))
+
+    def test_nonrelease_tags_are_ignored(self):
+        for tag in ('v1.5.0', 'v2.0.0-rc1', 'v99.0', 'notes', 'v1.5.0-extra'):
+            self.git('tag', tag)
+        self.assertEqual([((1, 5, 0), '1.5.0')],
+                         immutable_release_versions(self.repository))
+
+    def test_missing_release_tags_fail_closed(self):
+        with self.assertRaisesRegex(ValueError, 'No immutable'):
+            immutable_release_versions(self.repository)
 
 
 class PublicApiBaseline(unittest.TestCase):

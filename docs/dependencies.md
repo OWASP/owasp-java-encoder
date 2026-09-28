@@ -17,8 +17,9 @@ unsupported; see the [retirement and migration notice](encoder-esapi-retirement.
 ## Consumer dependency inventory — 2026-09-27
 
 Generated from dependency-plugin 3.11.0's resolved reactor `dependency:tree`
-JSON for the reviewed `1.5.0-SNAPSHOT` candidate. Release preparation does not
-change the published dependency graph. This inventory includes the publishable
+JSON for the reviewed `1.5.0-SNAPSHOT` candidate. The published 1.5.0 POMs retain
+this consumer graph; see the [publication record](../releases/1.5.0-central-publication.md).
+This inventory includes the publishable
 modules' compile/runtime and provided scopes, excludes test/plugin dependencies
 and this project's own BSD-3-Clause modules, and identifies the consuming module.
 

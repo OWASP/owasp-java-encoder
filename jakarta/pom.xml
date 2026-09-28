@@ -42,7 +42,7 @@
     <parent>
         <groupId>org.owasp.encoder</groupId>
         <artifactId>encoder-parent</artifactId>
-        <version>1.5.0</version>
+        <version>1.5.1-SNAPSHOT</version>
     </parent>
 
     <artifactId>encoder-jakarta-jsp</artifactId>
@@ -61,9 +61,9 @@
         <coverage.branch.minimum>1.000</coverage.branch.minimum>
         <jigsaw.module.name>org.owasp.encoder.jakarta</jigsaw.module.name>
         <osgi.symbolic.name>org.owasp.encoder.jakarta-jsp</osgi.symbolic.name>
-        <jakarta.el.api.baseline.version>4.0.0</jakarta.el.api.baseline.version>
+        <jakarta.el.api.baseline.version>6.0.1</jakarta.el.api.baseline.version>
         <jakarta.el.api.version>6.0.1</jakarta.el.api.version>
-        <jakarta.servlet.api.baseline.version>6.0.0</jakarta.servlet.api.baseline.version>
+        <jakarta.servlet.api.baseline.version>6.1.0</jakarta.servlet.api.baseline.version>
         <jakarta.servlet.api.version>6.1.0</jakarta.servlet.api.version>
         <japicmp.old.classpath>${settings.localRepository}/org/owasp/encoder/encoder/${public.api.baseline.version}/encoder-${public.api.baseline.version}.jar${path.separator}${settings.localRepository}/jakarta/servlet/jsp/jakarta.servlet.jsp-api/3.0.0/jakarta.servlet.jsp-api-3.0.0.jar${path.separator}${settings.localRepository}/jakarta/el/jakarta.el-api/${jakarta.el.api.baseline.version}/jakarta.el-api-${jakarta.el.api.baseline.version}.jar${path.separator}${settings.localRepository}/jakarta/servlet/jakarta.servlet-api/${jakarta.servlet.api.baseline.version}/jakarta.servlet-api-${jakarta.servlet.api.baseline.version}.jar</japicmp.old.classpath>
         <japicmp.new.classpath>${maven.multiModuleProjectDirectory}/core/target/encoder-${project.version}.jar${path.separator}${settings.localRepository}/jakarta/servlet/jsp/jakarta.servlet.jsp-api/3.0.0/jakarta.servlet.jsp-api-3.0.0.jar${path.separator}${settings.localRepository}/jakarta/el/jakarta.el-api/${jakarta.el.api.version}/jakarta.el-api-${jakarta.el.api.version}.jar${path.separator}${settings.localRepository}/jakarta/servlet/jakarta.servlet-api/${jakarta.servlet.api.version}/jakarta.servlet-api-${jakarta.servlet.api.version}.jar</japicmp.new.classpath>

@@ -1,23 +1,23 @@
 # Releasing OWASP Java Encoder
 
-## Release gate for 1.5
+## Release gate
 
-Do not tag, publish, or announce a 1.5 release until **all open issues and all
+Do not tag, publish, or announce a release until **all open issues and all
 open pull requests have been handled**. Before considering release approval,
 inventory the full open backlog and record the outcome and supporting review
 or verification for every item. Completing a maintenance batch does not satisfy
-this gate on its own. Keep 1.5 development at `1.5.0-SNAPSHOT` until maintainers
+this gate on its own. Keep current development at `1.5.1-SNAPSHOT` until maintainers
 deliberately create the exact release commit after the technical gates pass.
-Changing that commit to `1.5.0` is release preparation, not release approval.
+Changing that commit to a release version is release preparation, not release approval.
 
 The [2026-09-26 maintenance closeout](releases/maintenance-closeout.md) records
 the final backlog inventory and dispositions for #110 and #169. A closed tracker
-does not waive this gate: repeat the complete open-issue/PR inventory when a 1.5
+does not waive this gate: repeat the complete open-issue/PR inventory when a new
 release is actually proposed and obtain release approval then.
 
-The signed 1.4.1 release has been [published to Central and verified](releases/1.4.1-central-publication.md).
-That publication is separate from the 1.5 release gate. Do not rebuild or replace
-1.4.1 artifacts, republish its coordinates, or move its tag.
+The signed 1.5.0 release has been [published to Central and verified](releases/1.5.0-central-publication.md).
+Repeat these gates for each subsequent release. Do not rebuild or replace
+published artifacts, republish existing coordinates, or move release tags.
 
 ## Publishing access and project identity
 
@@ -158,7 +158,11 @@ uploading. Keep an audit record of the exact uploaded bundle and its SHA-256.
    that has not actually published.
 5. Set main to the next unreleased version (for example `1.5.1-SNAPSHOT` or
    `1.6.0-SNAPSHOT`, chosen through version review), update `jakarta-test`
-   accordingly, and reset the SCM tag to `HEAD`. README examples and the
+   accordingly, and reset the SCM tag to `HEAD`. Advance `public.api.baseline.version`
+   and its old support-API classpaths to the newly published immutable release.
+   Fetch all release tags before running the baseline regression: the tested
+   release commit can be outside main's ancestry after a squash merge.
+   README examples and the
    supported-version table continue to refer to the published release.
 6. Verify GitHub CI on main, update the OWASP project page, and check javadoc.io
    after its indexing delay.

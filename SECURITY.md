@@ -2,9 +2,11 @@
 
 ## Supported Versions
 
-Version **1.5.0** is the prepared security release. Do not treat it as available
-until the signed GitHub artifacts and Maven Central publication have been
-independently verified and this paragraph is updated with the exact links and date.
+Version **1.5.0**, published **2026-09-28 UTC**, is the current security release.
+The [signed GitHub assets](https://github.com/OWASP/owasp-java-encoder/releases/tag/v1.5.0)
+and [Maven Central publication](releases/1.5.0-central-publication.md) have been
+independently verified. See [GHSA-g8p6-7r8f-qrpv](https://github.com/OWASP/owasp-java-encoder/security/advisories/GHSA-g8p6-7r8f-qrpv)
+for affected versions and migration guidance.
 
 Only the latest 1.x release receives security fixes. Fixes ship in a new release;
 older release lines are not patched.
@@ -85,11 +87,14 @@ release tag, then verify:
 ```sh
 gpg --import KEYS
 gpg --verify encoder-1.5.0.jar.asc encoder-1.5.0.jar
+gpg --verify SHA256SUMS.asc SHA256SUMS
+gpg --verify SHA512SUMS.asc SHA512SUMS
 shasum -a 256 -c SHA256SUMS
 shasum -a 512 -c SHA512SUMS
 ```
 
-The `SHA256SUMS` and `SHA512SUMS` manifests are included with the GitHub release
+For full-fingerprint checks in a fresh public-only keyring, follow
+[VERIFYING.md](VERIFYING.md). The `SHA256SUMS` and `SHA512SUMS` manifests are included with the GitHub release
 assets. Maven Central provides individual checksum files alongside each artifact.
 A new project key and its fingerprint must be added to `KEYS` before a release
 uses it. Previously published artifacts retain their original signatures.

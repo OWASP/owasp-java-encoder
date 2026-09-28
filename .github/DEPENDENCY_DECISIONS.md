@@ -25,7 +25,7 @@ old **OSGi framework** compatibility fixture.
 
 Use `javax.servlet.jsp-api` **2.3.3** as the published `encoder-jsp` provided
 dependency. Keep JSP 2.2.1, Servlet 3.0.1 and EL 2.2.5 as the independent minimum
-consumer fixture. Japicmp resolves 1.4.1 against the old support API and the 1.5
+consumer fixture. For the 1.5.0 release, japicmp resolved 1.4.1 against the old support API and the 1.5
 artifact against the new one, so inherited API changes are not hidden. The Java 8,
 JPMS, OSGi and packaged Jasper checks continue to exercise the original artifacts.
 This is a consumer-POM dependency change, not a claim that the minimum supported
@@ -36,8 +36,32 @@ classpath. Their test-scope declarations remain visible in the published source
 POM, but Maven does not propagate them into ordinary consumer dependency graphs
 and their classes do not enter the adapter JAR. Keep the independent Java 8
 packaged-consumer fixture on Jakarta Pages 3.0.0, Servlet 5.0.0 and EL 4.0.0. The
-old Servlet 6.0.0 and EL 4.0.0 support JARs remain explicit japicmp inputs for the
-1.4.1 side of the comparison; the new side uses the new test APIs.
+old Servlet 6.0.0 and EL 4.0.0 support JARs were explicit japicmp inputs for the
+1.4.1 side of the release comparison; the new side used the new test APIs.
+
+After publication, `1.5.1-SNAPSHOT` compares against the immutable 1.5.0 artifacts.
+Its old support classpaths therefore use JSP 2.3.3, Jakarta Servlet 6.1.0 and
+EL 6.0.1, matching that release. This does not change the independent minimum
+consumer fixtures or the published provided dependencies.
+
+## Post-release Jackson build-plugin fix — 2026-09-28
+
+GitHub's Dependabot alerts for
+[GHSA-q4xh-88c3-wmh7](https://github.com/FasterXML/jackson-databind/security/advisories/GHSA-q4xh-88c3-wmh7)
+and [GHSA-wjgm-6hv5-3cvf](https://github.com/FasterXML/jackson-databind/security/advisories/GHSA-wjgm-6hv5-3cvf)
+surfaced after 1.5.0 publication. Both advisories identify Jackson 3.1.6 as the fixed 3.1 release.
+The unpublished Jakarta fixture's executed `spring-boot-maven-plugin:4.1.1`
+depends on `spring-boot-buildpack-platform:4.1.1`, which brings in Jackson
+databind/core 3.1.5. Pin both to **3.1.6** directly in that plugin's dependencies.
+Application dependency management does not control Maven plugin realms.
+
+The resolved fixture compile/runtime/test tree has no Jackson databind; its
+existing JSP-only web starter excludes the JSON starter. Jackson annotations
+remain test-only via Testcontainers. The core library's independent test-only
+Jackson 2.22.3 is outside the two affected 2.x ranges. No application exclusion,
+security suppression or published library dependency is added or changed.
+Verify both the resolved plugin closure and the packaged browser fixture in CI;
+a source-POM pin alone does not demonstrate the executed dependency version.
 
 ## Deferred proposals and reconsideration conditions
 

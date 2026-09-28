@@ -1,8 +1,7 @@
 # Output contexts and boundaries
 
-This guide describes version **1.5.0**; feature introductions are marked below.
-Do not treat that version as available until the [release-preparation notice](../README.md)
-is updated with independently verified signed artifacts and Maven Central links.
+This guide describes the published version **1.5.0**; feature introductions are
+marked below. See the [verified downloads](../releases/1.5.0-central-publication.md).
 The [Encode Javadoc source](../core/src/main/java/org/owasp/encoder/Encode.java) is
 the detailed per-method contract; each method has a String-returning and a
 `(Writer out, String input)` overload. `Encoders` exposes shared stateless encoders;
