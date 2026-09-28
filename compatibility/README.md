@@ -135,9 +135,9 @@ multi-release layout remain unchanged.
 
 ## Published identities and development import ranges
 
-The tables below describe the current **1.5 development** artifacts. The names
-are historical identities preserved in 1.x; the OSGi import floors reflect the
-new 1.5 calls and must not be projected onto older published JARs.
+The tables below describe the prepared **1.5.0** artifacts. The names are
+historical identities preserved in 1.x; the OSGi import floors reflect the new
+1.5 calls and must not be projected onto older published JARs.
 
 ### Java 9+ module names
 

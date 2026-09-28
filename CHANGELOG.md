@@ -6,9 +6,16 @@ UTC where a release record exists; older announcement/tag dates are labeled.
 An open proposal is not a release. Historical tags, assets and signatures remain
 unchanged. [1.4.1 is also available from Central](releases/1.4.1-central-publication.md).
 
-## Unreleased — 1.5.0
+## Unreleased
 
-Development builds use `1.5.0-SNAPSHOT`; this is not a published release.
+No changes are recorded after 1.5.0 yet.
+
+## 1.5.0 — 2026-09-28 UTC
+
+This is a security release for
+[GHSA-g8p6-7r8f-qrpv](https://github.com/OWASP/owasp-java-encoder/security/advisories/GHSA-g8p6-7r8f-qrpv).
+Signed artifact availability and independent verification are tracked in the
+[1.5.0 release record](releases/1.5.0.md).
 
 * build: stop Dependabot from recreating already-reviewed incompatible API,
   servlet-engine and build-tool version proposals. The ignores are limited to

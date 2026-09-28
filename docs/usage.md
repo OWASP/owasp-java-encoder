@@ -1,8 +1,9 @@
 # Java and JSP examples
 
-Use the [verified signed 1.4.1 distribution](../README.md#start-using-the-owasp-java-encoders)
-for production. The examples here use APIs available in that release unless
-explicitly marked **1.5**. New features on `main` remain unreleased.
+These examples target version **1.5.0**. Do not use that coordinate until the
+[release-preparation notice](../README.md) is updated with independently verified
+signed artifacts and Maven Central links. Features marked **1.5** are new in this
+release.
 
 ## HTML and Writer output
 
@@ -128,7 +129,7 @@ and the [packaged JSP engine checks](../compatibility/jsp-engine/README.md).
 ## Java modules
 
 The explicit module name for core is `owasp.encoder`. After verifying and obtaining
-`encoder-1.4.1.jar`, put that unchanged JAR in `lib/`, then create:
+`encoder-1.5.0.jar`, put that unchanged JAR in `lib/`, then create:
 
 `src/example.app/module-info.java`:
 
