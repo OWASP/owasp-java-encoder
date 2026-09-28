@@ -263,6 +263,28 @@ class DependencySubmissionPolicy(unittest.TestCase):
         self.assertLess(workflow.index('Resolve shared library build plugins'),
                         workflow.index(app_command))
 
+    def test_boot_plugin_jackson_fix_stays_in_its_own_realm(self):
+        app = ET.parse(ROOT / 'jakarta-test/pom.xml').getroot()
+        self.assertEqual('3.1.6', app.findtext(
+            'p:properties/p:jackson.build.version', namespaces=version.NS))
+        plugins = app.findall('p:build/p:plugins/p:plugin', version.NS)
+        boot = next(plugin for plugin in plugins
+                    if plugin.findtext('p:artifactId', namespaces=version.NS)
+                    == 'spring-boot-maven-plugin')
+        jackson = {
+            dep.findtext('p:artifactId', namespaces=version.NS):
+            dep.findtext('p:version', namespaces=version.NS)
+            for dep in boot.findall('p:dependencies/p:dependency', version.NS)
+            if dep.findtext('p:groupId', namespaces=version.NS) == 'tools.jackson.core'
+        }
+        self.assertEqual({
+            'jackson-core': '${jackson.build.version}',
+            'jackson-databind': '${jackson.build.version}',
+        }, jackson)
+        for dep in app.findall('p:dependencies/p:dependency', version.NS):
+            self.assertNotEqual('tools.jackson.core', dep.findtext(
+                'p:groupId', namespaces=version.NS))
+
     def test_consumer_fixture_downloader_uses_submitted_patched_realm(self):
         workflow = (ROOT / '.github/workflows/dependency-submission.yaml').read_text()
         fixture_command = '-f compatibility/dependencies/pom.xml'

@@ -44,6 +44,25 @@ Its old support classpaths therefore use JSP 2.3.3, Jakarta Servlet 6.1.0 and
 EL 6.0.1, matching that release. This does not change the independent minimum
 consumer fixtures or the published provided dependencies.
 
+## Post-release Jackson build-plugin fix — 2026-09-28
+
+GitHub's Dependabot alerts for
+[GHSA-q4xh-88c3-wmh7](https://github.com/FasterXML/jackson-databind/security/advisories/GHSA-q4xh-88c3-wmh7)
+and [GHSA-wjgm-6hv5-3cvf](https://github.com/FasterXML/jackson-databind/security/advisories/GHSA-wjgm-6hv5-3cvf)
+surfaced after 1.5.0 publication. Both advisories identify Jackson 3.1.6 as the fixed 3.1 release.
+The unpublished Jakarta fixture's executed `spring-boot-maven-plugin:4.1.1`
+depends on `spring-boot-buildpack-platform:4.1.1`, which brings in Jackson
+databind/core 3.1.5. Pin both to **3.1.6** directly in that plugin's dependencies.
+Application dependency management does not control Maven plugin realms.
+
+The resolved fixture compile/runtime/test tree has no Jackson databind; its
+existing JSP-only web starter excludes the JSON starter. Jackson annotations
+remain test-only via Testcontainers. The core library's independent test-only
+Jackson 2.22.3 is outside the two affected 2.x ranges. No application exclusion,
+security suppression or published library dependency is added or changed.
+Verify both the resolved plugin closure and the packaged browser fixture in CI;
+a source-POM pin alone does not demonstrate the executed dependency version.
+
 ## Deferred proposals and reconsideration conditions
 
 | Proposal | Disposition and required evidence before reconsideration |

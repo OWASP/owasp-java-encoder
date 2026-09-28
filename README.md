@@ -45,6 +45,10 @@ on the same classpath or module path. See the [runtime matrix](compatibility/REA
 `encoder-esapi` was retired after 1.4.1 and is not included or supported in
 1.5.0. Applications using it must [migrate away from the adapter](docs/encoder-esapi-retirement.md).
 
+Published 1.5.0 API documentation: [core](https://javadoc.io/doc/org.owasp.encoder/encoder/1.5.0/),
+[javax JSP](https://javadoc.io/doc/org.owasp.encoder/encoder-jsp/1.5.0/) and
+[Jakarta JSP](https://javadoc.io/doc/org.owasp.encoder/encoder-jakarta-jsp/1.5.0/).
+
 ```java
 import org.owasp.encoder.Encode;
 
