@@ -61,7 +61,7 @@
         <coverage.branch.minimum>1.000</coverage.branch.minimum>
         <jigsaw.module.name>org.owasp.encoder.jakarta</jigsaw.module.name>
         <osgi.symbolic.name>org.owasp.encoder.jakarta-jsp</osgi.symbolic.name>
-        <jakarta.el.api.baseline.version>4.0.0</jakarta.el.api.baseline.version>
+        <jakarta.el.api.baseline.version>6.0.1</jakarta.el.api.baseline.version>
         <jakarta.el.api.version>6.0.1</jakarta.el.api.version>
         <jakarta.servlet.api.baseline.version>6.0.0</jakarta.servlet.api.baseline.version>
         <jakarta.servlet.api.version>6.1.0</jakarta.servlet.api.version>
