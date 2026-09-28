@@ -350,7 +350,7 @@ class DependencySubmissionPolicy(unittest.TestCase):
 
         jsp = ET.parse(ROOT / 'jsp/pom.xml').getroot()
         jsp_properties = properties(jsp)
-        self.assertEqual('2.2.1', jsp_properties.findtext(
+        self.assertEqual('2.3.3', jsp_properties.findtext(
             'p:jsp.api.baseline.version', namespaces=version.NS))
         self.assertEqual('2.3.3', jsp_properties.findtext(
             'p:jsp.api.version', namespaces=version.NS))
@@ -372,9 +372,9 @@ class DependencySubmissionPolicy(unittest.TestCase):
         jakarta = ET.parse(ROOT / 'jakarta/pom.xml').getroot()
         jakarta_properties = properties(jakarta)
         expected = {
-            'jakarta.el.api.baseline.version': '4.0.0',
+            'jakarta.el.api.baseline.version': '6.0.1',
             'jakarta.el.api.version': '6.0.1',
-            'jakarta.servlet.api.baseline.version': '6.0.0',
+            'jakarta.servlet.api.baseline.version': '6.1.0',
             'jakarta.servlet.api.version': '6.1.0',
         }
         for name, value in expected.items():

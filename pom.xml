@@ -41,7 +41,7 @@
 
     <groupId>org.owasp.encoder</groupId>
     <artifactId>encoder-parent</artifactId>
-    <version>1.5.0</version>
+    <version>1.5.1-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>OWASP Java Encoder Project</name>
@@ -78,7 +78,7 @@
         <developerConnection>scm:git:git@github.com:OWASP/owasp-java-encoder.git</developerConnection>
         <connection>scm:git:https://github.com/OWASP/owasp-java-encoder.git</connection>
         <url>https://github.com/OWASP/owasp-java-encoder</url>
-        <tag>v1.5.0</tag>
+        <tag>HEAD</tag>
     </scm>
 
     <issueManagement>
@@ -114,13 +114,14 @@
     </contributors>
 
     <properties>
-        <!-- Exact UTC timestamp of the reviewed release-source commit; not build wall-clock time. -->
+        <!-- Stable development timestamp; set the reviewed source timestamp before release. -->
         <project.build.outputTimestamp>2026-09-28T13:21:37Z</project.build.outputTimestamp>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <!-- Most recent immutable release strictly older than this project version;
-             scripts/tests/test_release_baselines.py checks reachable release tags. -->
-        <public.api.baseline.version>1.4.1</public.api.baseline.version>
+             scripts/tests/test_release_baselines.py checks all local release tags,
+             including release commits integrated by squash merge. -->
+        <public.api.baseline.version>1.5.0</public.api.baseline.version>
         <japicmp.old.classpath>${settings.localRepository}/org/owasp/encoder/${project.artifactId}/${public.api.baseline.version}/${project.artifactId}-${public.api.baseline.version}.jar</japicmp.old.classpath>
         <japicmp.new.classpath>${project.build.directory}/${project.build.finalName}.jar</japicmp.new.classpath>
         <!-- Each module sets its published Bundle-SymbolicName explicitly (#137). -->

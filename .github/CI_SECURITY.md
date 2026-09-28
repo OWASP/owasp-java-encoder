@@ -67,10 +67,10 @@ for child or fixture POMs. Graph reports and submission JSON are retained for
 inspection. Inspect representative Jakarta Spring/Tomcat dependencies in the
 resulting graph; alert counts are not gates.
 
-The immutable 1.4.1 Java Encoder artifacts used by japicmp are intentional
+The immutable 1.5.0 Java Encoder artifacts used by japicmp are intentional
 development-only comparison inputs. Keep them visible in the build graph: an alert
 on a baseline artifact describes that historical input, not a dependency shipped
-to 1.5 consumers, and must be assessed rather than hidden with a graph filter.
+to current development consumers, and must be assessed rather than hidden with a graph filter.
 
 All submissions use detector `encoder-maven-build-graph` with distinct, stable
 correlators. Keep the action's detector inputs synchronized with the

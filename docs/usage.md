@@ -1,9 +1,8 @@
 # Java and JSP examples
 
-These examples target version **1.5.0**. Do not use that coordinate until the
-[release-preparation notice](../README.md) is updated with independently verified
-signed artifacts and Maven Central links. Features marked **1.5** are new in this
-release.
+These examples target the published version **1.5.0**. See the
+[verified downloads](../releases/1.5.0-central-publication.md).
+Features marked **1.5** are new in this release.
 
 ## HTML and Writer output
 

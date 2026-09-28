@@ -25,7 +25,7 @@ old **OSGi framework** compatibility fixture.
 
 Use `javax.servlet.jsp-api` **2.3.3** as the published `encoder-jsp` provided
 dependency. Keep JSP 2.2.1, Servlet 3.0.1 and EL 2.2.5 as the independent minimum
-consumer fixture. Japicmp resolves 1.4.1 against the old support API and the 1.5
+consumer fixture. For the 1.5.0 release, japicmp resolved 1.4.1 against the old support API and the 1.5
 artifact against the new one, so inherited API changes are not hidden. The Java 8,
 JPMS, OSGi and packaged Jasper checks continue to exercise the original artifacts.
 This is a consumer-POM dependency change, not a claim that the minimum supported
@@ -36,8 +36,13 @@ classpath. Their test-scope declarations remain visible in the published source
 POM, but Maven does not propagate them into ordinary consumer dependency graphs
 and their classes do not enter the adapter JAR. Keep the independent Java 8
 packaged-consumer fixture on Jakarta Pages 3.0.0, Servlet 5.0.0 and EL 4.0.0. The
-old Servlet 6.0.0 and EL 4.0.0 support JARs remain explicit japicmp inputs for the
-1.4.1 side of the comparison; the new side uses the new test APIs.
+old Servlet 6.0.0 and EL 4.0.0 support JARs were explicit japicmp inputs for the
+1.4.1 side of the release comparison; the new side used the new test APIs.
+
+After publication, `1.5.1-SNAPSHOT` compares against the immutable 1.5.0 artifacts.
+Its old support classpaths therefore use JSP 2.3.3, Jakarta Servlet 6.1.0 and
+EL 6.0.1, matching that release. This does not change the independent minimum
+consumer fixtures or the published provided dependencies.
 
 ## Deferred proposals and reconsideration conditions
 

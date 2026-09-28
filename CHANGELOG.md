@@ -4,11 +4,15 @@ Released entries are grounded in the linked immutable tags, GitHub release notes
 and retained README announcements. Dates below are GitHub publication dates in
 UTC where a release record exists; older announcement/tag dates are labeled.
 An open proposal is not a release. Historical tags, assets and signatures remain
-unchanged. [1.4.1 is also available from Central](releases/1.4.1-central-publication.md).
+unchanged. [1.5.0 is available from Central](releases/1.5.0-central-publication.md).
 
 ## Unreleased
 
-No changes are recorded after 1.5.0 yet.
+- Resume development at `1.5.1-SNAPSHOT`, with the immutable 1.5.0 public-API
+  baseline and its matching support APIs. Minimum-consumer fixtures are unchanged.
+- Discover release tags independently of commit ancestry so squash merges cannot
+  leave the compatibility baseline stale; add isolated Git regressions.
+- Record verified 1.5.0 publication and replace pending-availability notices.
 
 ## 1.5.0 — 2026-09-28 UTC
 
