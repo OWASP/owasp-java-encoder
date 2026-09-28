@@ -35,10 +35,54 @@ updates:
       maven-security:
         applies-to: security-updates
         patterns: ['*']
-    # The Felix 5.6.12 fixture is the intentional OSGi R6/Java 8 baseline.
-    # Review alerts by execution scope; never dismiss or upgrade it blindly.
+    # Suppress only the routine SemVer update classes already rejected by the
+    # documented compatibility review. GitHub applies update-types only to
+    # version updates, so security updates remain eligible. Dependabot combines
+    # repeated Maven coordinates from their lowest version; for mixed historical
+    # and current inputs, routine current-line updates therefore require manual
+    # review while these rules are active.
+    #
+    # The unqualified Felix rule predates these scoped rules: 5.6.12 is the
+    # intentional OSGi R6/Java 8 execution fixture. Review any alert against its
+    # actual test scope; never dismiss or upgrade it blindly.
     ignore:
       - dependency-name: org.apache.felix:org.apache.felix.framework
+      - dependency-name: com.puppycrawl.tools:checkstyle
+        update-types:
+          - version-update:semver-major
+      - dependency-name: org.codehaus.plexus:plexus-utils
+        update-types:
+          - version-update:semver-major
+      - dependency-name: javax.servlet.jsp:javax.servlet.jsp-api
+        update-types:
+          - version-update:semver-minor
+          - version-update:semver-major
+      - dependency-name: javax.servlet:javax.servlet-api
+        update-types:
+          - version-update:semver-minor
+          - version-update:semver-major
+      - dependency-name: javax.el:javax.el-api
+        update-types:
+          - version-update:semver-minor
+          - version-update:semver-major
+      - dependency-name: jakarta.servlet.jsp:jakarta.servlet.jsp-api
+        update-types:
+          - version-update:semver-minor
+          - version-update:semver-major
+      - dependency-name: jakarta.servlet:jakarta.servlet-api
+        update-types:
+          - version-update:semver-minor
+          - version-update:semver-major
+      - dependency-name: jakarta.el:jakarta.el-api
+        update-types:
+          - version-update:semver-minor
+          - version-update:semver-major
+      - dependency-name: org.apache.tomcat.embed:tomcat-embed-jasper
+        update-types:
+          - version-update:semver-major
+      - dependency-name: org.apache.tomcat:tomcat-annotations-api
+        update-types:
+          - version-update:semver-major
   - package-ecosystem: github-actions
     directory: /
     schedule:

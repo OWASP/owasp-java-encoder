@@ -88,11 +88,19 @@ configured. Review new action source and transitive downloads as well as pins.
 Do not dismiss alerts merely to reduce the count. Correct versions or graph
 semantics, submit the new graph, and let GitHub close packages that are no longer
 present.
-Baseline-sensitive API, JSP-engine and build-plugin dependencies are excluded only
-from the broad Maven **version-update group**, so their proposals receive individual
-review. They remain eligible for updates; the security-update group is unchanged.
-See [dependency decisions](DEPENDENCY_DECISIONS.md) for the current contracts,
-PR dispositions and conditions for reconsideration.
+Baseline-sensitive API, JSP-engine and build-plugin dependencies are excluded
+from the broad Maven **version-update group**, so unsuppressed proposals receive
+individual review. Reviewed incompatible minor and major proposal classes use
+`ignore.update-types`; GitHub applies those rules only to version updates, so
+security updates remain eligible and the security-update group is unchanged.
+Dependabot classifies repeated Maven coordinates from their lowest occurrence;
+where historical and current inputs share a coordinate, a current-line patch can
+therefore fall inside a suppressed update class. Review those coordinates
+manually during dependency/release maintenance and for every advisory. Revisiting
+a suppressed version class requires a deliberate compatibility change and removal
+or narrowing of its rule. See
+[dependency decisions](DEPENDENCY_DECISIONS.md) for the exact scopes, current
+contracts, PR dispositions and conditions for reconsideration.
 The nonstandard XML files under `compatibility/dependencies` remain explicit
 manual compatibility fixtures. In particular Felix 5.6.12 is an intentional
 OSGi R6/Java 8 baseline, not a production dependency; the Maven ignore prevents

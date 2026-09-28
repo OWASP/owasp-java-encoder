@@ -10,6 +10,11 @@ unchanged. [1.4.1 is also available from Central](releases/1.4.1-central-publica
 
 Development builds use `1.5.0-SNAPSHOT`; this is not a published release.
 
+* build: stop Dependabot from recreating already-reviewed incompatible API,
+  servlet-engine and build-tool version proposals. The ignores are limited to
+  routine version updates in the rejected SemVer classes; security updates remain
+  eligible. Mixed historical/current coordinates require manual version review
+  because Dependabot classifies them from their lowest occurrence.
 * removed: retire the optional `encoder-esapi` adapter. Version 1.4.1 is its final published release and is no longer supported; no `encoder-esapi:1.5.0` artifact will be published. Consumers must remove the adapter and [migrate Java Encoder-backed calls to the direct context APIs](docs/encoder-esapi-retirement.md). Historical Maven artifacts remain immutable.
 * build: remove advisory-affected dependencies from active Maven plugin realms, including the separately invoked compatibility-fixture downloader; invoke the same japicmp engine without its obsolete reporting wrapper; and submit only actually invoked build plugins to GitHub's dependency graph. Shared inherited tooling is recorded once, and no Dependabot alert is dismissed or suppressed.
 * build/compatibility: update the published JSP provided API to 2.3.3 and the Jakarta test classpath to Servlet 6.1.0 and EL 6.0.1, while retaining independent JSP 2.2.1 and Java 8-compatible Jakarta minimum-consumer fixtures. Japicmp now resolves distinct old/new support classpaths so the 1.4.1 comparison remains complete. Dependabot scans the root Maven reactor once, rather than opening duplicate module proposals, and continues to scan the standalone compatibility-fixture project separately.

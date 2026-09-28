@@ -1,6 +1,7 @@
 """Negative tests for the CI release/version and aggregate-result boundaries."""
 import importlib.util
 from pathlib import Path
+import re
 import shutil
 import tempfile
 import unittest
@@ -18,6 +19,66 @@ def load(name):
 
 version = load('check-ci-version')
 gate = load('check-ci-gate')
+
+
+def parse_dependabot_ignore(block):
+    """Parse the deliberately narrow ignore-rule subset and reject drift."""
+    rules = {}
+    seen_keys = {}
+    current = None
+    active = None
+
+    def require_nonempty_update_types(number):
+        if (current is not None
+                and 'update-types' in seen_keys[current]
+                and not rules[current]):
+            raise ValueError('empty update-types before line %d' % number)
+
+    for number, line in enumerate(block.splitlines(), start=1):
+        if not line.strip() or line.lstrip().startswith('#'):
+            continue
+
+        dependency = re.fullmatch(
+            r' {6}- dependency-name\s*:\s*(\S+)\s*', line)
+        if dependency:
+            require_nonempty_update_types(number)
+            name = dependency.group(1)
+            if name in rules:
+                raise ValueError('duplicate dependency-name on line %d' % number)
+            rules[name] = []
+            seen_keys[name] = {'dependency-name'}
+            current = name
+            active = None
+            continue
+
+        key_value = re.fullmatch(
+            r' {8}([A-Za-z][A-Za-z0-9_-]*)\s*:\s*(.*?)\s*', line)
+        if key_value:
+            if current is None:
+                raise ValueError('ignore key before dependency on line %d' % number)
+            key, value = key_value.groups()
+            if key in seen_keys[current]:
+                raise ValueError('duplicate %s key on line %d' % (key, number))
+            if key != 'update-types' or value:
+                raise ValueError('unsupported ignore key on line %d' % number)
+            seen_keys[current].add(key)
+            active = key
+            continue
+
+        item = re.fullmatch(r' {10}-\s*(\S+)\s*', line)
+        if item:
+            if current is None or active != 'update-types':
+                raise ValueError('orphan ignore value on line %d' % number)
+            value = item.group(1)
+            if value in rules[current]:
+                raise ValueError('duplicate ignore value on line %d' % number)
+            rules[current].append(value)
+            continue
+
+        raise ValueError('unexpected ignore syntax on line %d' % number)
+
+    require_nonempty_update_types(len(block.splitlines()) + 1)
+    return rules
 
 
 class VersionPolicy(unittest.TestCase):
@@ -118,6 +179,64 @@ class DependencySubmissionPolicy(unittest.TestCase):
         }
         self.assertTrue(reactor_modules)
         self.assertEqual(set(), reactor_modules.intersection(directories))
+
+    def test_dependabot_scopes_reviewed_ignores_to_version_updates(self):
+        dependabot = (ROOT / '.github/dependabot.yml').read_text()
+        maven = dependabot.split('- package-ecosystem: maven', 1)[1]
+        maven = maven.split('- package-ecosystem:', 1)[0]
+        self.assertIn(
+            "maven-security:\n"
+            "        applies-to: security-updates\n"
+            "        patterns: ['*']",
+            maven)
+
+        ignore = maven.split('    ignore:\n', 1)[1]
+        rules = parse_dependabot_ignore(ignore)
+
+        minor_and_major = [
+            'version-update:semver-minor',
+            'version-update:semver-major',
+        ]
+        expected = {
+            'org.apache.felix:org.apache.felix.framework': [],
+            'com.puppycrawl.tools:checkstyle': [
+                'version-update:semver-major'],
+            'org.codehaus.plexus:plexus-utils': [
+                'version-update:semver-major'],
+            'javax.servlet.jsp:javax.servlet.jsp-api': minor_and_major,
+            'javax.servlet:javax.servlet-api': minor_and_major,
+            'javax.el:javax.el-api': minor_and_major,
+            'jakarta.servlet.jsp:jakarta.servlet.jsp-api': minor_and_major,
+            'jakarta.servlet:jakarta.servlet-api': minor_and_major,
+            'jakarta.el:jakarta.el-api': minor_and_major,
+            'org.apache.tomcat.embed:tomcat-embed-jasper': [
+                'version-update:semver-major'],
+            'org.apache.tomcat:tomcat-annotations-api': [
+                'version-update:semver-major'],
+        }
+        self.assertEqual(expected, rules)
+        self.assertEqual(
+            {'org.apache.felix:org.apache.felix.framework'},
+            {name for name, update_types in rules.items() if not update_types})
+
+        mutations = {
+            'spaced versions key': ignore.replace(
+                '        update-types:\n', '        versions : ["[0,)"]\n', 1),
+            'duplicate dependency': ignore + (
+                '\n      - dependency-name: com.puppycrawl.tools:checkstyle\n'),
+            'duplicate key': ignore.replace(
+                '        update-types:\n',
+                '        update-types:\n        update-types:\n', 1),
+            'unknown key': ignore.replace(
+                '        update-types:\n', '        directory: /\n', 1),
+            'empty update-types': ignore.replace(
+                '      - dependency-name: org.apache.felix:org.apache.felix.framework\n',
+                '      - dependency-name: org.apache.felix:org.apache.felix.framework\n'
+                '        update-types:\n', 1),
+        }
+        for name, mutation in mutations.items():
+            with self.subTest(mutation=name), self.assertRaises(ValueError):
+                parse_dependabot_ignore(mutation)
 
     def test_only_executed_plugins_are_submitted(self):
         workflow = (ROOT / '.github/workflows/dependency-submission.yaml').read_text()
