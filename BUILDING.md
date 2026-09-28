@@ -53,8 +53,8 @@ Empty defaults support `-Djacoco.skip=true`. Appending execution data intentiona
 unions successive unit JVMs in one build; use `clean` for an independent baseline.
 CI's Java 8 run starts in its own job/cache and uploads its own reports/data.
 
-The existing floors were selected from the following 2026-09-27 baseline
-measurement:
+The existing floors were selected from the following 2026-09-26 baseline
+measurement recorded for PR #185:
 
 | Module | Measured lines | Measured branches | Line floor | Branch floor |
 | --- | --- | --- | --- | --- |
