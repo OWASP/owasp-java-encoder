@@ -59,8 +59,10 @@ import java.nio.charset.CoderResult;
  *
  * <p>For large inputs, prefer the Writer overloads or {@link EncodedWriter}.
  * String overloads retain the complete encoded result in memory, while the
- * Writer APIs emit output in fixed-size batches. CDATA can produce up to
- * thirteen output characters per input character.</p>
+ * Writer paths stream encoded output through fixed-size buffers. Pass-through
+ * text and Writer String convenience methods may still copy a caller-supplied
+ * String. CDATA can produce up to thirteen output characters per input
+ * character.</p>
  *
  * <p>Please make sure to read and understand the context that the method encodes
  * for.  Encoding for the incorrect context will likely lead to exposing a
