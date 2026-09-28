@@ -1,12 +1,13 @@
 # Output contexts and boundaries
 
-This guide describes current `main` (unreleased **1.5**); feature introductions
-are marked below. For production use, follow the [1.4.1 distribution and security
-notice](../README.md). The [Encode Javadoc source](../core/src/main/java/org/owasp/encoder/Encode.java)
-is the detailed per-method contract; each method has a String-returning and a
-`(Writer out, String input)` overload. `Encoders` exposes shared stateless
-encoders; `EncodedWriter` supports chunked input and must be closed to finish
-pending input. Use the facade Writer overload when encoding one String directly.
+This guide describes version **1.5.0**; feature introductions are marked below.
+Do not treat that version as available until the [release-preparation notice](../README.md)
+is updated with independently verified signed artifacts and Maven Central links.
+The [Encode Javadoc source](../core/src/main/java/org/owasp/encoder/Encode.java) is
+the detailed per-method contract; each method has a String-returning and a
+`(Writer out, String input)` overload. `Encoders` exposes shared stateless encoders;
+`EncodedWriter` supports chunked input and must be closed to finish pending input.
+Use the facade Writer overload when encoding one String directly.
 
 ## Encode for the parser that receives the value
 
@@ -60,8 +61,8 @@ continue to support single- and double-quoted strings in their documented contex
 This does **not** support tagged templates such as `String.raw`, or insertion
 inside a `${...}` expression. Tagged templates can observe raw escape text.
 Do not use a 1.4.1 JavaScript encoder for template-literal text: this support is
-unreleased 1.5 behavior. The old IE grave-accent/`innerHTML` workaround is a
-separate historical browser issue, not a substitute for this contract. The
+introduced in 1.5.0. The old IE grave-accent/`innerHTML` workaround is a separate
+historical browser issue, not a substitute for this contract. The
 [wiki archive](archive/wiki-2019/README.md) records why that advice was retired.
 
 In 1.5, DEL/C1 controls use hex escapes and unpaired UTF-16 surrogates use Unicode

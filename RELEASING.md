@@ -6,8 +6,9 @@ Do not tag, publish, or announce a 1.5 release until **all open issues and all
 open pull requests have been handled**. Before considering release approval,
 inventory the full open backlog and record the outcome and supporting review
 or verification for every item. Completing a maintenance batch does not satisfy
-this gate on its own. Keep 1.5 development at `1.5.0-SNAPSHOT`; snapshot version
-changes and reviewed maintenance merges are not release approval.
+this gate on its own. Keep 1.5 development at `1.5.0-SNAPSHOT` until maintainers
+deliberately create the exact release commit after the technical gates pass.
+Changing that commit to `1.5.0` is release preparation, not release approval.
 
 The [2026-09-26 maintenance closeout](releases/maintenance-closeout.md) records
 the final backlog inventory and dispositions for #110 and #169. A closed tracker

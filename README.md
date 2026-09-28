@@ -9,21 +9,16 @@ has no runtime dependencies; optional JSP and Jakarta adapters provide view-laye
 bindings. Encoding is one part of [XSS prevention][xss], alongside
 safe templates, URL validation and other application controls.
 
-**Upgrade all Java Encoder artifacts to 1.4.1. Versions through 1.4.0 are affected
-by the [security issues fixed in 1.4.1](releases/1.4.1.md#security-fixes).**
-Version 1.4.1 is available from [Maven Central](https://repo.maven.apache.org/maven2/org/owasp/encoder/)
-and the signed [GitHub release][release]. All published artifacts and signatures
-[match the retained release](releases/1.4.1-central-publication.md). See
-[VERIFYING.md](VERIFYING.md) for verification instructions.
-
-`main` is **unreleased 1.5.0-SNAPSHOT**. Its JSON API, JavaScript template support,
-XML 1.1 tag bindings, and parser-boundary fixes are described below with version
-labels; they are not features of the signed 1.4.1 release. See
-[CHANGELOG.md](CHANGELOG.md).
+**Release preparation:** version 1.5.0 fixes parser-boundary vulnerabilities in
+JavaScript-in-HTML, CDATA, and XML-comment fragment composition. Versions through
+1.4.1 do not contain those fixes. The signed 1.5.0 artifacts are not available
+until the maintainers complete the release gates and update this notice with the
+verified GitHub and Maven Central links. See the [1.5.0 release notes](releases/1.5.0.md)
+and [VERIFYING.md](VERIFYING.md).
 
 ## Start using the OWASP Java Encoders
 
-Select the dependency you need; Maven resolves version 1.4.1 from Central.
+After 1.5.0 publication is independently verified, select the dependency you need.
 The three supported artifacts use group ID `org.owasp.encoder`:
 
 | Artifact ID | Purpose and runtime dependencies |
@@ -36,7 +31,7 @@ The three supported artifacts use group ID `org.owasp.encoder`:
 <dependency>
     <groupId>org.owasp.encoder</groupId>
     <artifactId>encoder</artifactId>
-    <version>1.4.1</version>
+    <version>1.5.0</version>
 </dependency>
 ```
 
@@ -44,8 +39,8 @@ Replace `encoder` with one tag adapter artifact ID when needed; each adapter bri
 in core. Keep separately managed core/adapter versions aligned. Use **one** of the
 javax or Jakarta taglib JARs: they share `org.owasp.encoder.tag` and must not coexist
 on the same classpath or module path. See the [runtime matrix](compatibility/README.md) and
-[dependency/license inventory](docs/dependencies.md). Development snapshots are
-not security releases or a substitute for the signed 1.4.1 artifacts.
+[dependency/license inventory](docs/dependencies.md). Do not use the example version
+until its signed artifacts and Central availability have been verified.
 
 `encoder-esapi` was retired after 1.4.1 and will not be published or supported in
 1.5.0. Applications using it must [migrate away from the adapter](docs/encoder-esapi-retirement.md).
@@ -111,7 +106,7 @@ Java source generation is not a JSP context. XML 1.1 bindings are new in 1.5.
 
 ## Migrating from forUri
 
-`Encode.forUri` is deprecated in the released API. **Unreleased 1.5** extends
+`Encode.forUri` is deprecated in the released API. Version 1.5.0 extends
 that deprecation to `Encoders.URI`, both `ForUriTag` classes and the `forUri`
 tag/function documentation. All of these entry points are retained through 1.x. Encoding a whole URI does not validate it:
 `forUri("javascript:alert(1)")` returns it unchanged. Existing `%` signs are encoded
@@ -173,4 +168,4 @@ links distinguish maintainer support from OWASP Foundation donations.
 [xss]: https://cheatsheetseries.owasp.org/cheatsheets/Cross_Site_Scripting_Prevention_Cheat_Sheet.html
 [java-libraries]: https://devguide.owasp.org/en/05-implementation/03-secure-libraries/04-java-secure-libs/
 [project]: https://owasp.org/projects/java-encoder
-[release]: https://github.com/OWASP/owasp-java-encoder/releases/tag/v1.4.1
+[release]: https://github.com/OWASP/owasp-java-encoder/releases/tag/v1.5.0

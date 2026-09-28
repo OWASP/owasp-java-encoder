@@ -2,26 +2,29 @@
 
 ## Supported Versions
 
-Version **1.4.1** is available from [Maven Central](https://repo.maven.apache.org/maven2/org/owasp/encoder/)
-and as signed artifacts from the [GitHub security release](https://github.com/OWASP/owasp-java-encoder/releases/tag/v1.4.1).
-The Central artifacts and signatures [match the retained release](releases/1.4.1-central-publication.md).
+Version **1.5.0** is the prepared security release. Do not treat it as available
+until the signed GitHub artifacts and Maven Central publication have been
+independently verified and this paragraph is updated with the exact links and date.
 
 Only the latest 1.x release receives security fixes. Fixes ship in a new release;
 older release lines are not patched.
 
 | Maven coordinate                        | Supported | Not supported |
 | --------------------------------------- | --------- | ------------- |
-| `org.owasp.encoder:encoder`             | 1.4.1     | < 1.4.1       |
-| `org.owasp.encoder:encoder-jsp`         | 1.4.1     | < 1.4.1       |
-| `org.owasp.encoder:encoder-jakarta-jsp` | 1.4.1     | < 1.4.1       |
+| `org.owasp.encoder:encoder`             | 1.5.0     | < 1.5.0       |
+| `org.owasp.encoder:encoder-jsp`         | 1.5.0     | < 1.5.0       |
+| `org.owasp.encoder:encoder-jakarta-jsp` | 1.5.0     | < 1.5.0       |
 
 The optional `org.owasp.encoder:encoder-esapi` artifact is retired. Version
 1.4.1 is its final published release, no version is currently supported, and no
 1.5.0 artifact will be published. See the [retirement and migration notice](docs/encoder-esapi-retirement.md).
 
-Upgrading the core `encoder` artifact to the latest 1.x release needs no code changes:
-no public API was removed between 1.2.3 and 1.4.1. It does need Java 8 or later;
-1.2.3 and earlier also ran on Java 5 through 7.
+The three retained artifacts (`encoder`, `encoder-jsp`, and
+`encoder-jakarta-jsp`) remove no public API in 1.5.0. The separately published
+`encoder-esapi` API ends at 1.4.1 as described above. Security corrections also
+intentionally change encoded output in several contexts. Read the [compatibility
+and migration record](docs/compatibility-decisions.md) before upgrading. Version
+1.5.0 needs Java 8 or later; 1.2.3 and earlier also ran on Java 5 through 7.
 
 ## Reporting a Vulnerability
 
@@ -81,7 +84,7 @@ release tag, then verify:
 
 ```sh
 gpg --import KEYS
-gpg --verify encoder-1.4.1.jar.asc encoder-1.4.1.jar
+gpg --verify encoder-1.5.0.jar.asc encoder-1.5.0.jar
 shasum -a 256 -c SHA256SUMS
 shasum -a 512 -c SHA512SUMS
 ```

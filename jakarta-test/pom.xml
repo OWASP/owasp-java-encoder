@@ -28,7 +28,7 @@
         <selenium.version>4.49.0</selenium.version>
         <!-- Must equal the version in the root pom.xml so this app tests the
              encoder-jakarta-jsp built in the same reactor. CI checks this. -->
-        <encoder.version>1.5.0-SNAPSHOT</encoder.version>
+        <encoder.version>1.5.0</encoder.version>
     </properties>
     <dependencies>
         <dependency>
