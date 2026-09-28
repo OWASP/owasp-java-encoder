@@ -46,7 +46,7 @@ and [security policy](https://github.com/ESAPI/esapi-java-legacy/security) both
 identified 2.7.0.0 as current and supported at this check. Older versions in the
 adapter CI matrix do not gain upstream security support by passing adapter tests.
 
-Validated the XML examples taken directly from the [immutable 1.4.1 adapter guide](https://github.com/OWASP/owasp-java-encoder/blob/v1.4.1/esapi/README.md)
+Validated the XML examples taken directly from the [reviewed 1.5 candidate adapter guide](https://github.com/OWASP/owasp-java-encoder/blob/07d8e58f6b9fd834089dc86895e01a1be018cbc0/esapi/README.md)
 using Maven 3.9.12 and Homebrew OpenJDK 17.0.20.1. Each consumer used its own
 initially empty local Maven repository and empty user/global settings, outside
 the checkout. No reactor build or existing local install supplied artifacts.

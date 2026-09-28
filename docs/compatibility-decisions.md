@@ -55,9 +55,11 @@ API, but three outputs change compared with 1.4.1:
 
 The trusted fragments must already be valid for the selected parser context.
 Migration review must cover byte snapshots, signatures, cache keys and any code
-that consumes XML events rather than the parsed text value. Large CDATA values
-should use a Writer facade or `EncodedWriter`; String facades retain the complete
-result but grow according to actual output rather than reserving the 13× bound.
+that consumes XML events rather than the parsed text value. Review output-size
+budgets as well: ordinary HTML-script JavaScript text can grow materially, while
+the CDATA maximum is 13×. Large CDATA values should use a Writer facade or
+`EncodedWriter`; String facades retain the complete result but grow according to
+actual output rather than reserving the maximum bound.
 
 ## Base64url disposition (#149)
 

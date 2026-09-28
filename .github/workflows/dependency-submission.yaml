@@ -67,6 +67,8 @@ jobs:
         env:
           APP_PLUGINS: ${{ matrix.app_plugins }}
         run: ./mvnw -B -ntp -f jakarta-test/pom.xml org.apache.maven.plugins:maven-dependency-plugin:3.11.0:resolve-plugins -DincludeArtifactIds="$APP_PLUGINS" -DoutputFile=target/build-dependencies.txt
+      - name: Resolve the compatibility fixture downloader and its dependencies
+        run: ./mvnw -B -ntp -f compatibility/dependencies/pom.xml org.apache.maven.plugins:maven-dependency-plugin:3.11.0:resolve-plugins -DincludeArtifactIds=maven-dependency-plugin -DoutputFile=target/build-dependencies.txt
       - name: Submit build graph
         env:
           GH_TOKEN: ${{ github.token }}

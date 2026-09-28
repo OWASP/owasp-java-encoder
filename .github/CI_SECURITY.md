@@ -58,11 +58,19 @@ plugins actually invoked by verification, consumer installation, metadata checks
 and release staging. The optional Jakarta app is resolved from its own smaller
 package-gate allowlist, so inherited but inactive Boot plugin-management entries
 are not submitted. The disabled Site plugin is likewise not represented as an
-executed dependency. `scripts/build-dependency-snapshot.py` submits those closures as
-development dependencies, once for shared root tooling and only the differing
-plugin closures for child POMs. Graph reports and submission JSON are retained
-for inspection. Inspect representative Jakarta Spring/Tomcat dependencies in the
+executed dependency. The five separately invoked consumer dependency fixtures inherit a
+local toolchain parent which pins the downloader's plugin realm; that parent is
+resolved separately so any drift from the submitted root closure remains visible.
+`scripts/build-dependency-snapshot.py` submits those closures as development
+dependencies, once for shared root tooling and only the differing plugin closures
+for child or fixture POMs. Graph reports and submission JSON are retained for
+inspection. Inspect representative Jakarta Spring/Tomcat dependencies in the
 resulting graph; alert counts are not gates.
+
+The immutable 1.4.1 Java Encoder artifacts used by japicmp are intentional
+development-only comparison inputs. Keep them visible in the build graph: an alert
+on a baseline artifact describes that historical input, not a dependency shipped
+to 1.5 consumers, and must be assessed rather than hidden with a graph filter.
 
 All submissions use detector `encoder-maven-build-graph` with distinct, stable
 correlators. Keep the action's detector inputs synchronized with the
@@ -72,8 +80,9 @@ runtime dependencies behind build-only results despite successful submissions.
 Check the final SBOM after both matrix jobs finish, including runtime versions
 and development dependencies together, not just the snapshot API status.
 
-Dependabot checks all current library POMs, the parent and optional app weekly, with
-separate Maven and SHA-pinned Actions groups and grouped Maven security updates.
+Dependabot checks all current library POMs, the parent, optional app and compatibility
+fixture toolchain parent weekly, with separate Maven and SHA-pinned Actions groups
+and grouped Maven security updates.
 Normal review and complete CI apply to automated PRs; no automatic merging is
 configured. Review new action source and transitive downloads as well as pins.
 Do not dismiss alerts merely to reduce the count. Correct versions or graph

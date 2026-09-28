@@ -11,6 +11,9 @@ not public issues, reproduction links or pull requests.
 Use JDK 17, the committed Maven wrapper, and Python 3.8+ for repository checks.
 Libraries target Java 8; the build JVM is not Java 8. Docker is needed only for
 the optional local browser/WAR fixture, which remains a required CI job.
+The release-baseline test deliberately requires the repository's reachable release
+tags; fetch tags before running it from a shallow clone. A source export without Git
+history cannot perform that release gate.
 
 ```sh
 ./mvnw -B -ntp clean verify
