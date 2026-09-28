@@ -61,8 +61,12 @@
         <coverage.branch.minimum>1.000</coverage.branch.minimum>
         <jigsaw.module.name>org.owasp.encoder.jakarta</jigsaw.module.name>
         <osgi.symbolic.name>org.owasp.encoder.jakarta-jsp</osgi.symbolic.name>
-        <japicmp.old.classpath>${settings.localRepository}/org/owasp/encoder/encoder/${public.api.baseline.version}/encoder-${public.api.baseline.version}.jar${path.separator}${settings.localRepository}/jakarta/servlet/jsp/jakarta.servlet.jsp-api/3.0.0/jakarta.servlet.jsp-api-3.0.0.jar${path.separator}${settings.localRepository}/jakarta/el/jakarta.el-api/4.0.0/jakarta.el-api-4.0.0.jar${path.separator}${settings.localRepository}/jakarta/servlet/jakarta.servlet-api/6.0.0/jakarta.servlet-api-6.0.0.jar</japicmp.old.classpath>
-        <japicmp.new.classpath>${maven.multiModuleProjectDirectory}/core/target/encoder-${project.version}.jar${path.separator}${settings.localRepository}/jakarta/servlet/jsp/jakarta.servlet.jsp-api/3.0.0/jakarta.servlet.jsp-api-3.0.0.jar${path.separator}${settings.localRepository}/jakarta/el/jakarta.el-api/4.0.0/jakarta.el-api-4.0.0.jar${path.separator}${settings.localRepository}/jakarta/servlet/jakarta.servlet-api/6.0.0/jakarta.servlet-api-6.0.0.jar</japicmp.new.classpath>
+        <jakarta.el.api.baseline.version>4.0.0</jakarta.el.api.baseline.version>
+        <jakarta.el.api.version>6.0.1</jakarta.el.api.version>
+        <jakarta.servlet.api.baseline.version>6.0.0</jakarta.servlet.api.baseline.version>
+        <jakarta.servlet.api.version>6.1.0</jakarta.servlet.api.version>
+        <japicmp.old.classpath>${settings.localRepository}/org/owasp/encoder/encoder/${public.api.baseline.version}/encoder-${public.api.baseline.version}.jar${path.separator}${settings.localRepository}/jakarta/servlet/jsp/jakarta.servlet.jsp-api/3.0.0/jakarta.servlet.jsp-api-3.0.0.jar${path.separator}${settings.localRepository}/jakarta/el/jakarta.el-api/${jakarta.el.api.baseline.version}/jakarta.el-api-${jakarta.el.api.baseline.version}.jar${path.separator}${settings.localRepository}/jakarta/servlet/jakarta.servlet-api/${jakarta.servlet.api.baseline.version}/jakarta.servlet-api-${jakarta.servlet.api.baseline.version}.jar</japicmp.old.classpath>
+        <japicmp.new.classpath>${maven.multiModuleProjectDirectory}/core/target/encoder-${project.version}.jar${path.separator}${settings.localRepository}/jakarta/servlet/jsp/jakarta.servlet.jsp-api/3.0.0/jakarta.servlet.jsp-api-3.0.0.jar${path.separator}${settings.localRepository}/jakarta/el/jakarta.el-api/${jakarta.el.api.version}/jakarta.el-api-${jakarta.el.api.version}.jar${path.separator}${settings.localRepository}/jakarta/servlet/jakarta.servlet-api/${jakarta.servlet.api.version}/jakarta.servlet-api-${jakarta.servlet.api.version}.jar</japicmp.new.classpath>
         <!-- The tags call Encode.forJson, added in 1.5. Jakarta Pages 3.x is the
              supported baseline; accepting Pages 4 needs compatibility evidence. -->
         <osgi.import.package>
@@ -88,13 +92,13 @@
         <dependency>
             <groupId>jakarta.el</groupId>
             <artifactId>jakarta.el-api</artifactId>
-            <version>4.0.0</version>
+            <version>${jakarta.el.api.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>jakarta.servlet</groupId>
             <artifactId>jakarta.servlet-api</artifactId>
-            <version>6.0.0</version>
+            <version>${jakarta.servlet.api.version}</version>
             <scope>test</scope>
         </dependency>
         <!-- Independent HTML parser for tag and EL script-boundary regressions. -->
@@ -116,6 +120,18 @@
                         <groupId>org.owasp.encoder</groupId>
                         <artifactId>encoder-jakarta-jsp</artifactId>
                         <version>${public.api.baseline.version}</version>
+                    </dependency>
+                    <!-- Resolve the old support APIs in clean repositories so
+                         japicmp can compare inherited public types accurately. -->
+                    <dependency>
+                        <groupId>jakarta.el</groupId>
+                        <artifactId>jakarta.el-api</artifactId>
+                        <version>${jakarta.el.api.baseline.version}</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>jakarta.servlet</groupId>
+                        <artifactId>jakarta.servlet-api</artifactId>
+                        <version>${jakarta.servlet.api.baseline.version}</version>
                     </dependency>
                 </dependencies>
             </plugin>

@@ -1,12 +1,11 @@
 version: 2
 updates:
   - package-ecosystem: maven
+    # The root scan covers every module in the Maven reactor. Keep only
+    # standalone Maven projects as additional directories so Dependabot does
+    # not open duplicate pull requests for reactor dependencies.
     directories:
       - /
-      - /core
-      - /jsp
-      - /jakarta
-      - /jakarta-test
       - /compatibility/dependencies
     schedule:
       interval: weekly

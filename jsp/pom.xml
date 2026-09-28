@@ -61,8 +61,10 @@
         <coverage.branch.minimum>1.000</coverage.branch.minimum>
         <jigsaw.module.name>org.owasp.encoder.jsp</jigsaw.module.name>
         <osgi.symbolic.name>org.owasp.encoder.jsp</osgi.symbolic.name>
-        <japicmp.old.classpath>${settings.localRepository}/org/owasp/encoder/encoder/${public.api.baseline.version}/encoder-${public.api.baseline.version}.jar${path.separator}${settings.localRepository}/javax/servlet/jsp/javax.servlet.jsp-api/2.2.1/javax.servlet.jsp-api-2.2.1.jar${path.separator}${settings.localRepository}/javax/el/javax.el-api/2.2.5/javax.el-api-2.2.5.jar${path.separator}${settings.localRepository}/javax/servlet/javax.servlet-api/3.0.1/javax.servlet-api-3.0.1.jar</japicmp.old.classpath>
-        <japicmp.new.classpath>${maven.multiModuleProjectDirectory}/core/target/encoder-${project.version}.jar${path.separator}${settings.localRepository}/javax/servlet/jsp/javax.servlet.jsp-api/2.2.1/javax.servlet.jsp-api-2.2.1.jar${path.separator}${settings.localRepository}/javax/el/javax.el-api/2.2.5/javax.el-api-2.2.5.jar${path.separator}${settings.localRepository}/javax/servlet/javax.servlet-api/3.0.1/javax.servlet-api-3.0.1.jar</japicmp.new.classpath>
+        <jsp.api.baseline.version>2.2.1</jsp.api.baseline.version>
+        <jsp.api.version>2.3.3</jsp.api.version>
+        <japicmp.old.classpath>${settings.localRepository}/org/owasp/encoder/encoder/${public.api.baseline.version}/encoder-${public.api.baseline.version}.jar${path.separator}${settings.localRepository}/javax/servlet/jsp/javax.servlet.jsp-api/${jsp.api.baseline.version}/javax.servlet.jsp-api-${jsp.api.baseline.version}.jar${path.separator}${settings.localRepository}/javax/el/javax.el-api/2.2.5/javax.el-api-2.2.5.jar${path.separator}${settings.localRepository}/javax/servlet/javax.servlet-api/3.0.1/javax.servlet-api-3.0.1.jar</japicmp.old.classpath>
+        <japicmp.new.classpath>${maven.multiModuleProjectDirectory}/core/target/encoder-${project.version}.jar${path.separator}${settings.localRepository}/javax/servlet/jsp/javax.servlet.jsp-api/${jsp.api.version}/javax.servlet.jsp-api-${jsp.api.version}.jar${path.separator}${settings.localRepository}/javax/el/javax.el-api/2.2.5/javax.el-api-2.2.5.jar${path.separator}${settings.localRepository}/javax/servlet/javax.servlet-api/3.0.1/javax.servlet-api-3.0.1.jar</japicmp.new.classpath>
         <!-- The tags call Encode.forJson, added in 1.5. SimpleTagSupport and the
              other tag APIs used here are JSP 2.0; javax.servlet.jsp has no 3.x. -->
         <osgi.import.package>
@@ -82,7 +84,7 @@
         <dependency>
             <groupId>javax.servlet.jsp</groupId>
             <artifactId>javax.servlet.jsp-api</artifactId>
-            <version>2.2.1</version>
+            <version>${jsp.api.version}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -116,6 +118,13 @@
                         <groupId>org.owasp.encoder</groupId>
                         <artifactId>encoder-jsp</artifactId>
                         <version>${public.api.baseline.version}</version>
+                    </dependency>
+                    <!-- Resolve the old support API in clean repositories so
+                         japicmp can compare inherited public types accurately. -->
+                    <dependency>
+                        <groupId>javax.servlet.jsp</groupId>
+                        <artifactId>javax.servlet.jsp-api</artifactId>
+                        <version>${jsp.api.baseline.version}</version>
                     </dependency>
                 </dependencies>
             </plugin>

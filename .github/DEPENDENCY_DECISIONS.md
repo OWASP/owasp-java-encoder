@@ -1,4 +1,6 @@
-# Dependency proposal decisions — 2026-09-26
+# Dependency proposal decisions — 1.5.0
+
+Initial review: 2026-09-26. Focused API follow-up: 2026-09-27.
 
 PRs [#176](https://github.com/OWASP/owasp-java-encoder/pull/176) and
 [#188](https://github.com/OWASP/owasp-java-encoder/pull/188) mixed ordinary build
@@ -18,16 +20,32 @@ Validate generated JAR entries/manifests, original-JAR consumers and determinist
 payloads after the change. Felix's **Maven plugin** is distinct from the deliberately
 old **OSGi framework** compatibility fixture.
 
+## Accepted focused API updates
+
+Use `javax.servlet.jsp-api` **2.3.3** as the published `encoder-jsp` provided
+dependency. Keep JSP 2.2.1, Servlet 3.0.1 and EL 2.2.5 as the independent minimum
+consumer fixture. Japicmp resolves 1.4.1 against the old support API and the 1.5
+artifact against the new one, so inherited API changes are not hidden. The Java 8,
+JPMS, OSGi and packaged Jasper checks continue to exercise the original artifacts.
+This is a consumer-POM dependency change, not a claim that the minimum supported
+JSP container was raised to 2.3.
+
+Use Jakarta Servlet **6.1.0** and Jakarta EL **6.0.1** for the reactor's test
+classpath. Their test-scope declarations remain visible in the published source
+POM, but Maven does not propagate them into ordinary consumer dependency graphs
+and their classes do not enter the adapter JAR. Keep the independent Java 8
+packaged-consumer fixture on Jakarta Pages 3.0.0, Servlet 5.0.0 and EL 4.0.0. The
+old Servlet 6.0.0 and EL 4.0.0 support JARs remain explicit japicmp inputs for the
+1.4.1 side of the comparison; the new side uses the new test APIs.
+
 ## Deferred proposals and reconsideration conditions
 
 | Proposal | Disposition and required evidence before reconsideration |
 | --- | --- |
 | Checkstyle 12.3.1 → 14.1.0 | Keep 12.3.1 for the JDK 17 build. PR #188 fails with Java 21 classfile version 65 on Java 17. Reconsider with a separately reviewed build/release-JDK migration and source-policy validation; this is not a claim that the old engine has upstream support. |
 | Plexus Utils 3.6.2 → 4.1.0 in GPG/Central plugin dependencies | Keep the reviewed 3.6.2 mitigation. The [upstream 4.x migration](https://github.com/codehaus-plexus/plexus-utils) moves XML utilities to a separate artifact; 4.1 also changes DirectoryScanner default exclusions. A newer major is not a drop-in plugin-realm security fix. Reconsider with actual plugin linkage, isolated signing/bundle/rehearsal evidence, transitive-advisory review and repeatable payloads. |
-| javax JSP 2.2.1 → 2.3.3 | Keep the published provided API and minimum fixture. A changed consumer POM dependency is observable even if no new API method is called. Reconsider only with explicit compatibility policy and old-container/OSGi/JPMS evidence. |
 | javax Servlet 3.0.1 → 4.0.1; EL 2.2.5 → 3.0.0 | Keep the test-only minimum API fixtures. These are not bundled production container implementations. Modern engine coverage is separate; replacing the minimum tests would remove evidence for existing consumers. |
 | Jakarta Pages 3.0.0 → 4.0.0 | Keep the published provided Pages 3 API and existing `[3.0,4)` package ranges. Reconsider only with a reviewed minimum-runtime/API migration, public POM implications and compatibility evidence. |
-| Jakarta Servlet 6.0.0 → 6.1.0; EL 4.0.0 → 6.0.1 | Keep the deliberate test API set. Reconsider test-baseline changes with explicit coverage goals and minimum-consumer evidence, rather than automatically matching the newest application container. |
 | Jasper/annotations 9.0.122 or 10.1.60 → 11.0.26 in the isolated tag fixtures | Keep coherent Tomcat 9 (`javax`) and 10.1 (`jakarta`) engines. PR #188 fails the javax engine with missing `javax.servlet.jsp.tagext.SimpleTagSupport` after the Tomcat 11 switch. The optional Boot/browser WAR already exercises Tomcat 11. Patch updates within each intended engine line remain reviewable; cross-line migration needs a separate coverage decision. |
 
 A dependency's test/build scope does not dismiss an advisory. Check each finding's
@@ -56,10 +74,13 @@ coordinates above from the broad Maven **version-update group**, not from update
 eligibility. They therefore receive individual proposals and compatibility review;
 ordinary Maven changes can proceed separately. This follows GitHub's
 [group matching rules](https://docs.github.com/en/code-security/reference/supply-chain-security/dependabot-options-reference#groups).
-All original directories remain monitored. The Maven security-update group is
-unchanged, and no new `ignore` rules, security-alert dismissals or automatic merges
-are introduced. The pre-existing Felix framework fixture exception remains scoped
-and documented in [CI/security operations](CI_SECURITY.md).
+The root directory monitors the complete Maven reactor once; listing each reactor
+module again produced duplicate pull requests. The standalone
+`compatibility/dependencies` Maven project remains a separate monitored directory.
+The Maven security-update group is unchanged, and no new `ignore` rules,
+security-alert dismissals or automatic merges are introduced. The pre-existing
+Felix framework fixture exception remains scoped and documented in
+[CI/security operations](CI_SECURITY.md).
 
 When a new proposal repeats a deferred baseline change, compare it with this dated
 record and any new advisory or upstream evidence. Do not automatically close a

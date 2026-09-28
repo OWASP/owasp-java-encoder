@@ -28,7 +28,7 @@ and this project's own BSD-3-Clause modules, and identifies the consuming module
 | Coordinate | Consumer scope | Declared licenses | Provenance |
 | --- | --- | --- | --- |
 | `jakarta.servlet.jsp:jakarta.servlet.jsp-api:3.0.0` | jakarta: provided | Eclipse Public License v. 2.0; GNU General Public License, version 2 with the GNU Classpath Exception | [POM](https://repo.maven.apache.org/maven2/org/eclipse/ee4j/project/1.0.6/project-1.0.6.pom) |
-| `javax.servlet.jsp:javax.servlet.jsp-api:2.2.1` | jsp: provided | CDDL + GPLv2 with Classpath Exception | [POM](https://repo.maven.apache.org/maven2/javax/servlet/jsp/javax.servlet.jsp-api/2.2.1/javax.servlet.jsp-api-2.2.1.pom) |
+| `javax.servlet.jsp:javax.servlet.jsp-api:2.3.3` | jsp: provided | CDDL + GPLv2 with Classpath Exception | [POM](https://repo.maven.apache.org/maven2/javax/servlet/jsp/javax.servlet.jsp-api/2.3.3/javax.servlet.jsp-api-2.3.3.pom) |
 
 These are upstream POM license declarations, not a legal conclusion about every
 file or application distribution. Preserve required notices and review the
