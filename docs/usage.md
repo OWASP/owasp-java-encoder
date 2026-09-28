@@ -21,6 +21,41 @@ String-returning calls such as `Encode.forHtmlAttribute(userText)` have the same
 context contract. Do not reuse this result for JavaScript, CSS or a URL component.
 Avoid double escaping with frameworks that already escape HTML output.
 
+## Composing trusted and untrusted fragments — changed in 1.5
+
+The 1.5 JavaScript block, CDATA and XML-comment encoders protect the boundary on
+both sides of each nonempty encoded fragment. Ordinary composition remains
+supported:
+
+```java
+out.write("<script>const message = \"trusted prefix: ");
+Encode.forJavaScriptBlock(out, userText);
+out.write("\";</script>");
+
+out.write("<value><![CDATA[trusted prefix: ");
+Encode.forCDATA(out, userText);
+out.write("]]></value>");
+
+out.write("<!-- trusted prefix: ");
+Encode.forXmlComment(out, userText);
+out.write(" -->");
+```
+
+The trusted prefix and suffix must themselves be valid syntax. Keep the encoder
+matched to the actual parser: `forJavaScriptBlock` and the general
+`forJavaScript` protect HTML script raw text; `forJavaScriptAttribute` is for a
+quoted event-handler attribute, and `forJavaScriptSource` is for a standalone
+resource.
+
+This correction changes emitted text. HTML-script JavaScript uses additional
+hex escapes (including `\x2d` for hyphen and escapes for both cases of the
+letters in `script`) while preserving the JavaScript string value. CDATA
+preserves parsed XML text but can expand each `]` or `>` to 13 characters and
+can change SAX/StAX event boundaries. XML-comment encoding replaces every
+hyphen with `~` and therefore does not preserve comment text. Review snapshots,
+signatures, cache keys and code that inspects encoded bytes. Prefer Writer APIs
+for large or high-expansion CDATA values.
+
 ## URLs
 
 For a same-origin search URL with a fixed trusted path and one raw query value:

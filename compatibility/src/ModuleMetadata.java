@@ -11,9 +11,9 @@ import java.util.stream.Collectors;
 /** Assert the actual packaged descriptors, including transitive API readability. */
 public final class ModuleMetadata {
     public static void main(String[] args) {
-        String[] modules = {"owasp.encoder", "owasp.encoder.jsp", "owasp.encoder.jakarta", "owasp.encoder.esapi"};
-        String[] packages = {"org.owasp.encoder", "org.owasp.encoder.tag", "org.owasp.encoder.tag", "org.owasp.encoder.esapi"};
-        String[] apis = {null, "javax.servlet.jsp.api", "jakarta.servlet.jsp", "esapi"};
+        String[] modules = {"owasp.encoder", "owasp.encoder.jsp", "owasp.encoder.jakarta"};
+        String[] packages = {"org.owasp.encoder", "org.owasp.encoder.tag", "org.owasp.encoder.tag"};
+        String[] apis = {null, "javax.servlet.jsp.api", "jakarta.servlet.jsp"};
         for (int i = 0; i < modules.length; ++i) {
             ModuleDescriptor module = ModuleFinder.of(Paths.get(args[i])).find(modules[i]).orElseThrow(AssertionError::new).descriptor();
             if (module.isAutomatic() || module.isOpen()) throw new AssertionError(module);

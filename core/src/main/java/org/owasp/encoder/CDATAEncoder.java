@@ -41,47 +41,42 @@ import java.nio.charset.CoderResult;
  * for including large blocks of text that contain characters that normally
  * require encoding (ampersand, quotes, less-than, etc...). The CDATA context
  * however still does not allow invalid characters, and can be closed by the
- * sequence "]]>". This encoder removes invalid XML characters, and encodes
- * "]]>" (to "]]]]>&lt;![CDATA[>"). The result is that the data integrity is
- * maintained, but the code receiving the output will have to handle multiple
- * CDATA events. As an alternate approach, the caller could pre-encode "]]>" to
- * something of their choosing (e.g. data.replaceAll("\\]\\]>", "]] >")), then
- * use this encoder to remove any invalid XML characters.
+ * sequence "]]>". This encoder removes invalid XML characters and represents
+ * every {@code "]"} and {@code ">"} with close/reopen sequences. That rule
+ * prevents any nonempty encoded substring from completing a {@code "]]>"}
+ * delimiter supplied partly by adjacent trusted literal text. Parsed character
+ * data is preserved, but a streaming XML consumer must handle multiple CDATA
+ * and character-data events.
  *
  * @author Jeff Ichnowski
  */
 class CDATAEncoder extends Encoder {
 
-    /**
-     * The encoding of @{code "]]>"}.
-     */
-    private static final char[] CDATA_END_ENCODED
-            = "]]]]><![CDATA[>".toCharArray();
+    /** A parsed-value-preserving spelling of {@code "]"}. */
+    private static final char[] RIGHT_BRACKET_ENCODED
+            = "]]>]<![CDATA[".toCharArray();
+
+    /** Length of {@link #RIGHT_BRACKET_ENCODED}. */
+    private static final int RIGHT_BRACKET_ENCODED_LENGTH = 13;
 
     /**
-     * Length of {@code "]]]]><![CDATA[>"}.
+     * A value-preserving spelling of {@code ">"} that remains safe when
+     * adjacent trusted CDATA text ends in {@code "]]"}.
      */
-    private static final int CDATA_END_ENCODED_LENGTH = 15;
+    private static final char[] GREATER_THAN_ENCODED
+            = "]]><![CDATA[>".toCharArray();
 
-    /**
-     * Length of {@code "]]>"}.
-     */
-    private static final int CDATA_END_LENGTH = 3;
+    /** Length of {@link #GREATER_THAN_ENCODED}. */
+    private static final int GREATER_THAN_ENCODED_LENGTH = 13;
 
     @Override
     protected int maxEncodedLength(int n) {
-        // "]" becomes "]" (1 -> 1)
-        // "]]" becomes "]]" (2 -> 2)
-        // "]]>" becomes "]]]]><![CDATA[>" (3 -> 15)
-        // "]]>]" becomes "]]]]><![CDATA[>]" (3 -> 15 + 1 -> 1)
-        // ...
-
-        int worstCase = n / CDATA_END_LENGTH;
-        int remainder = n % CDATA_END_LENGTH;
-
-        return worstCase * CDATA_END_ENCODED_LENGTH + remainder;
-
-//        return (n - remainder) * 5 + remainder;
+        // A lone ']' has the largest per-character replacement.
+        if (n > Integer.MAX_VALUE / RIGHT_BRACKET_ENCODED_LENGTH) {
+            // The exact result cannot fit in an int (or a Java String).
+            return Integer.MAX_VALUE;
+        }
+        return n * RIGHT_BRACKET_ENCODED_LENGTH;
     }
 
     @Override
@@ -91,38 +86,14 @@ class CDATAEncoder extends Encoder {
         for (int i = off; i < n; ++i) {
             char ch = input.charAt(i);
             if (ch <= Unicode.MAX_ASCII) {
-                if (ch != ']') {
+                if (ch == ']' || ch == '>') {
+                    return i;
+                } else {
                     if (ch < ' ' && ch != '\n' && ch != '\r' && ch != '\t') {
                         return i;
 //                    } else {
 //                        // valid
                     }
-
-                } else if (i + 1 < n) {
-                    if (input.charAt(i + 1) != ']') {
-                        // "]x" (next character is safe for this to be ']')
-                    } else {
-                        // "]]?"
-                        // keep looping through ']'
-                        for (; i + 2 < n && input.charAt(i + 2) == ']'; ++i) {
-                            // valid
-                        }
-                        // at this point we've looped through a sequence
-                        // of 2 or more "]", if the next character is ">"
-                        // we need to encode "]]>".
-                        if (i + 2 < n) {
-                            if (input.charAt(i + 2) == '>') {
-                                return i;
-//                                } else {
-//                                    // valid
-                            }
-
-                        } else {
-                            return n;
-                        }
-                    }
-                } else {
-                    return n;
                 }
             } else if (ch < Character.MIN_HIGH_SURROGATE) {
                 if (ch <= Unicode.MAX_C1_CTRL_CHAR && ch != Unicode.NEL) {
@@ -174,7 +145,21 @@ class CDATAEncoder extends Encoder {
         for (; i < n; ++i) {
             char ch = in[i];
             if (ch <= Unicode.MAX_ASCII) {
-                if (ch != ']') {
+                if (ch == ']') {
+                    if (m - j < RIGHT_BRACKET_ENCODED_LENGTH) {
+                        return overflow(input, i, output, j);
+                    }
+                    System.arraycopy(RIGHT_BRACKET_ENCODED, 0, out, j,
+                        RIGHT_BRACKET_ENCODED_LENGTH);
+                    j += RIGHT_BRACKET_ENCODED_LENGTH;
+                } else if (ch == '>') {
+                    if (m - j < GREATER_THAN_ENCODED_LENGTH) {
+                        return overflow(input, i, output, j);
+                    }
+                    System.arraycopy(GREATER_THAN_ENCODED, 0, out, j,
+                        GREATER_THAN_ENCODED_LENGTH);
+                    j += GREATER_THAN_ENCODED_LENGTH;
+                } else {
                     if (j >= m) {
                         return overflow(input, i, output, j);
                     }
@@ -183,61 +168,6 @@ class CDATAEncoder extends Encoder {
                     } else {
                         out[j++] = XMLEncoder.INVALID_CHARACTER_REPLACEMENT;
                     }
-                } else if (i + 1 < n) {
-                    if (in[i + 1] != ']') {
-                        // "]x" (next character is safe for this to be ']')
-                        if (j >= m) {
-                            return overflow(input, i, output, j);
-                        }
-                        out[j++] = ']';
-                    } else {
-                        // "]]?"
-                        // keep looping through ']'
-                        for (; i + 2 < n && in[i + 2] == ']'; ++i) {
-                            if (j >= m) {
-                                return overflow(input, i, output, j);
-                            }
-                            out[j++] = ']';
-                        }
-                        // at this point we've looped through a sequence
-                        // of 2 or more "]", if the next character is ">"
-                        // we need to encode "]]>".
-                        if (i + 2 < n) {
-                            if (in[i + 2] == '>') {
-                                if (j + CDATA_END_ENCODED_LENGTH > m) {
-                                    return overflow(input, i, output, j);
-                                }
-                                System.arraycopy(CDATA_END_ENCODED, 0, out, j, CDATA_END_ENCODED_LENGTH);
-                                j += CDATA_END_ENCODED_LENGTH;
-                                i += 2;
-                            } else {
-                                if (j >= m) {
-                                    return overflow(input, i, output, j);
-                                }
-                                out[j++] = ']';
-                            }
-                        } else if (endOfInput) {
-                            if (j + 2 > m) {
-                                return overflow(input, i, output, j);
-                            }
-                            out[j++] = ']';
-                            out[j++] = ']';
-                            i = n;
-                            break;
-                        } else {
-                            break;
-                        }
-                    }
-                } else if (endOfInput) {
-                    // seen "]", then end of input.
-                    if (j >= m) {
-                        return overflow(input, i, output, j);
-                    }
-                    out[j++] = ']';
-                    i++;
-                    break;
-                } else {
-                    break;
                 }
             } else if (ch < Character.MIN_HIGH_SURROGATE) {
                 if (ch > Unicode.MAX_C1_CTRL_CHAR || ch == Unicode.NEL) {
@@ -263,7 +193,7 @@ class CDATAEncoder extends Encoder {
                             out[j++] = XMLEncoder.INVALID_CHARACTER_REPLACEMENT;
                             ++i;
                         } else {
-                            if (j + 1 >= m) {
+                            if (m - j < 2) {
                                 return overflow(input, i, output, j);
                             }
                             out[j++] = ch;

@@ -64,9 +64,10 @@ class JavaScriptEncoder extends Encoder {
         ATTRIBUTE,
         /**
          * Encoding for use in HTML script blocks. The main concern here is
-         * prematurely terminating a script block with a closing "&lt;/" inside
-         * the string. This encoding escapes "/" as "\/" to prevent such
-         * termination.
+         * prematurely terminating a script block with a closing
+         * "&lt;/script" token inside the string. Characters that can contribute
+         * to an HTML script delimiter are escaped so an encoded substring
+         * cannot complete a delimiter supplied partly by trusted literal text.
          */
         BLOCK,
         /**
@@ -131,16 +132,21 @@ class JavaScriptEncoder extends Encoder {
             ~((1 << Unicode.DEL) | (1 << '`') | (1 << '{')),};
 
         if (mode == Mode.BLOCK || mode == Mode.HTML) {
-            // in <script> blocks, we need to prevent the browser from seeing
-            // "</anything>" and "<!--". To do so we escape "/" as "\/" and
-            // escape "-" as "\-".  Both could be solved with a hex encoding
-            // on "<" but we figure "<" appears often in script strings and
-            // the backslash encoding is more readable than a hex encoding.
-            // (And note, a backslash encoding would not prevent the exploits
-            // on "</...>" and "<!--".
-            // In short "</script>" is escaped as "<\/script>" and "<!--" is
-            // escaped as "<!\-\-".
-            _validMasks[1] &= ~((1 << '/') | (1 << '-'));
+            // In <script> blocks, prevent the browser from seeing a
+            // "</script" end tag, "<!--", or "-->". To do so we escape "/" as
+            // "\/" and hex-escape every other ASCII character that could form
+            // part of an HTML script delimiter. This prevents
+            // any non-empty encoded substring from completing "</script",
+            // "<!--", or "-->" with adjacent trusted literal text. Other ASCII
+            // whitespace already uses JavaScript escapes in every mode.
+            // A JavaScript backslash escape would not prevent the exploits on
+            // "</...>" and "<!--" unless it changes the raw HTML token.
+            _validMasks[1] &= ~((1 << ' ') | (1 << '!') | (1 << '-')
+                | (1 << '/') | (1 << '<') | (1 << '>'));
+            _validMasks[2] &= ~((1 << 'C') | (1 << 'I') | (1 << 'P')
+                | (1 << 'R') | (1 << 'S') | (1 << 'T'));
+            _validMasks[3] &= ~((1 << 'c') | (1 << 'i') | (1 << 'p')
+                | (1 << 'r') | (1 << 's') | (1 << 't'));
         }
         if (mode != Mode.SOURCE) {
             _validMasks[1] &= ~(1 << '&');
@@ -294,10 +300,8 @@ class JavaScriptEncoder extends Encoder {
                     // fall through
                     case '\\':
                     case '/':
-                    case '-':
-                        // We'll only see '/' and '-' here in the BLOCK and HTML
-                        // modes otherwise it will be accepted as valid by the
-                        // bitmasks.
+                        // We'll only see '/' here in the BLOCK and HTML modes;
+                        // otherwise it will be accepted as valid by the masks.
                         if (j + 2 > m) {
                             return overflow(input, i, output, j);
                         }

@@ -47,15 +47,14 @@
     <name>OWASP Java Encoder Project</name>
     <description>
         Contextual output encoding for Java 8 and later. The core has no runtime
-        dependencies; optional JSP, Jakarta and ESAPI adapters integrate it with
-        their respective APIs. Select an encoder for the destination parser context.
+        dependencies; optional JSP and Jakarta adapters provide view-layer bindings.
+        Select an encoder for the destination parser context.
     </description>
 
     <modules>
         <module>core</module>
         <module>jsp</module>
         <module>jakarta</module>
-        <module>esapi</module>
     </modules>
 
     <url>https://owasp.org/projects/java-encoder</url>
@@ -73,7 +72,9 @@
         </license>
     </licenses>
 
-    <scm>
+    <scm child.scm.connection.inherit.append.path="false"
+         child.scm.developerConnection.inherit.append.path="false"
+         child.scm.url.inherit.append.path="false">
         <developerConnection>scm:git:git@github.com:OWASP/owasp-java-encoder.git</developerConnection>
         <connection>scm:git:https://github.com/OWASP/owasp-java-encoder.git</connection>
         <url>https://github.com/OWASP/owasp-java-encoder</url>
@@ -117,6 +118,11 @@
         <project.build.outputTimestamp>2026-09-26T00:00:00Z</project.build.outputTimestamp>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <!-- Most recent immutable release strictly older than this project version;
+             scripts/tests/test_release_baselines.py checks reachable release tags. -->
+        <public.api.baseline.version>1.4.1</public.api.baseline.version>
+        <japicmp.old.classpath>${settings.localRepository}/org/owasp/encoder/${project.artifactId}/${public.api.baseline.version}/${project.artifactId}-${public.api.baseline.version}.jar</japicmp.old.classpath>
+        <japicmp.new.classpath>${project.build.directory}/${project.build.finalName}.jar</japicmp.new.classpath>
         <!-- Each module sets its published Bundle-SymbolicName explicitly (#137). -->
         <osgi.symbolic.name/>
         <!-- Empty defaults make -Djacoco.skip and caller JVM arguments safe. -->
@@ -146,15 +152,24 @@
     <build>
         <pluginManagement>
             <plugins>
+                <!-- Project dependency management does not affect Maven plugin
+                     realms. These leaf/intermediate pins replace advisory-affected
+                     transitives while their current upstream plugins catch up. -->
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-clean-plugin</artifactId>
                     <version>3.5.0</version>
+                    <dependencies>
+                        <dependency><groupId>org.codehaus.plexus</groupId><artifactId>plexus-utils</artifactId><version>4.0.3</version></dependency>
+                    </dependencies>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-resources-plugin</artifactId>
                     <version>3.5.0</version>
+                    <dependencies>
+                        <dependency><groupId>org.codehaus.plexus</groupId><artifactId>plexus-utils</artifactId><version>3.6.2</version></dependency>
+                    </dependencies>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
@@ -175,11 +190,17 @@
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-dependency-plugin</artifactId>
                     <version>3.11.0</version>
+                    <dependencies>
+                        <dependency><groupId>commons-beanutils</groupId><artifactId>commons-beanutils</artifactId><version>1.11.0</version></dependency>
+                    </dependencies>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-help-plugin</artifactId>
                     <version>3.5.2</version>
+                    <dependencies>
+                        <dependency><groupId>org.jsoup</groupId><artifactId>jsoup</artifactId><version>1.23.2</version></dependency>
+                    </dependencies>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
@@ -203,6 +224,9 @@
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-antrun-plugin</artifactId>
                     <version>3.2.0</version>
+                    <dependencies>
+                        <dependency><groupId>org.codehaus.plexus</groupId><artifactId>plexus-utils</artifactId><version>4.0.3</version></dependency>
+                    </dependencies>
                     <executions>
                         <execution>
                             <id>packaged-jsp-engine</id>
@@ -247,16 +271,28 @@
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-source-plugin</artifactId>
                     <version>3.4.0</version>
+                    <dependencies>
+                        <dependency><groupId>org.codehaus.plexus</groupId><artifactId>plexus-archiver</artifactId><version>4.14.0</version></dependency>
+                        <dependency><groupId>org.codehaus.plexus</groupId><artifactId>plexus-utils</artifactId><version>4.0.3</version></dependency>
+                    </dependencies>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-javadoc-plugin</artifactId>
                     <version>3.12.0</version>
+                    <dependencies>
+                        <dependency><groupId>commons-beanutils</groupId><artifactId>commons-beanutils</artifactId><version>1.11.0</version></dependency>
+                        <dependency><groupId>org.codehaus.plexus</groupId><artifactId>plexus-archiver</artifactId><version>4.14.0</version></dependency>
+                        <dependency><groupId>org.codehaus.plexus</groupId><artifactId>plexus-utils</artifactId><version>4.0.3</version></dependency>
+                    </dependencies>
                 </plugin>
                 <plugin>
                     <groupId>org.jacoco</groupId>
                     <artifactId>jacoco-maven-plugin</artifactId>
                     <version>0.8.15</version>
+                    <dependencies>
+                        <dependency><groupId>org.codehaus.plexus</groupId><artifactId>plexus-utils</artifactId><version>3.6.2</version></dependency>
+                    </dependencies>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
@@ -284,11 +320,55 @@
                     <groupId>org.apache.felix</groupId>
                     <artifactId>maven-bundle-plugin</artifactId>
                     <version>6.2.0</version>
+                    <dependencies>
+                        <dependency><groupId>commons-beanutils</groupId><artifactId>commons-beanutils</artifactId><version>1.11.0</version></dependency>
+                        <dependency><groupId>org.codehaus.plexus</groupId><artifactId>plexus-archiver</artifactId><version>4.14.0</version></dependency>
+                    </dependencies>
                 </plugin>
                 <plugin>
                     <groupId>org.codehaus.mojo</groupId>
                     <artifactId>versions-maven-plugin</artifactId>
                     <version>2.22.0</version>
+                </plugin>
+                <!-- Run the japicmp engine directly. The Maven report wrapper pulls
+                     obsolete site/reporting libraries into the build-only graph. -->
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>exec-maven-plugin</artifactId>
+                    <version>3.6.4</version>
+                    <dependencies>
+                        <dependency>
+                            <groupId>com.github.siom79.japicmp</groupId>
+                            <artifactId>japicmp</artifactId>
+                            <version>0.26.2</version>
+                        </dependency>
+                    </dependencies>
+                    <executions>
+                        <execution>
+                            <id>public-api-baseline</id>
+                            <phase>verify</phase>
+                            <goals><goal>java</goal></goals>
+                            <configuration>
+                                <mainClass>japicmp.JApiCmp</mainClass>
+                                <includeProjectDependencies>false</includeProjectDependencies>
+                                <includePluginDependencies>true</includePluginDependencies>
+                                <blockSystemExit>true</blockSystemExit>
+                                <arguments>
+                                    <argument>--old</argument>
+                                    <argument>${settings.localRepository}/org/owasp/encoder/${project.artifactId}/${public.api.baseline.version}/${project.artifactId}-${public.api.baseline.version}.jar</argument>
+                                    <argument>--new</argument>
+                                    <argument>${project.build.directory}/${project.build.finalName}.jar</argument>
+                                    <argument>--old-classpath</argument>
+                                    <argument>${japicmp.old.classpath}</argument>
+                                    <argument>--new-classpath</argument>
+                                    <argument>${japicmp.new.classpath}</argument>
+                                    <argument>--only-modified</argument>
+                                    <argument>--error-on-binary-incompatibility</argument>
+                                    <argument>--error-on-source-incompatibility</argument>
+                                </arguments>
+                            </configuration>
+                        </execution>
+                    </executions>
                 </plugin>
                 <plugin>
                     <groupId>org.sonatype.central</groupId>
@@ -332,6 +412,9 @@
                         <!-- Last Java 17-compatible line; 13+ requires Java 21. -->
                         <version>12.3.1</version>
                     </dependency>
+                    <dependency><groupId>org.apache.commons</groupId><artifactId>commons-lang3</artifactId><version>3.20.0</version></dependency>
+                    <dependency><groupId>org.codehaus.plexus</groupId><artifactId>plexus-archiver</artifactId><version>4.14.0</version></dependency>
+                    <dependency><groupId>org.codehaus.plexus</groupId><artifactId>plexus-utils</artifactId><version>4.0.3</version></dependency>
                 </dependencies>
                 <configuration>
                     <configLocation>${maven.multiModuleProjectDirectory}/src/main/config/checkstyle.xml</configLocation>
@@ -350,39 +433,6 @@
                         <id>main-source-policy</id>
                         <phase>validate</phase>
                         <goals><goal>check</goal></goals>
-                    </execution>
-                </executions>
-            </plugin>
-            <!-- Check the library API against the last release available in Central. -->
-            <plugin>
-                <groupId>com.github.siom79.japicmp</groupId>
-                <artifactId>japicmp-maven-plugin</artifactId>
-                <version>0.26.2</version>
-                <configuration>
-                    <oldVersion>
-                        <dependency>
-                            <groupId>${project.groupId}</groupId>
-                            <artifactId>${project.artifactId}</artifactId>
-                            <version>1.4.0</version>
-                            <type>jar</type>
-                        </dependency>
-                    </oldVersion>
-                    <newVersion>
-                        <file>
-                            <path>${project.build.directory}/${project.build.finalName}.jar</path>
-                        </file>
-                    </newVersion>
-                    <parameter>
-                        <onlyModified>true</onlyModified>
-                        <breakBuildOnBinaryIncompatibleModifications>true</breakBuildOnBinaryIncompatibleModifications>
-                        <breakBuildOnSourceIncompatibleModifications>true</breakBuildOnSourceIncompatibleModifications>
-                    </parameter>
-                </configuration>
-                <executions>
-                    <execution>
-                        <id>public-api-baseline</id>
-                        <phase>verify</phase>
-                        <goals><goal>cmp</goal></goals>
                     </execution>
                 </executions>
             </plugin>

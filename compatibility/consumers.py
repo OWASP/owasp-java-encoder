@@ -15,30 +15,26 @@ import zipfile
 
 ROOT = Path(__file__).resolve().parents[1]
 SOURCE = ROOT / 'compatibility' / 'src'
+POM_NS = {'p': 'http://maven.apache.org/POM/4.0.0'}
 ARTIFACTS = {
     'core': ('encoder', 'owasp.encoder', 'org.owasp.encoder', 'org.owasp.encoder', 'CoreConsumer'),
     'jsp': ('encoder-jsp', 'owasp.encoder.jsp', 'org.owasp.encoder.jsp', 'org.owasp.encoder.tag', 'TagConsumer'),
     'jakarta': ('encoder-jakarta-jsp', 'owasp.encoder.jakarta', 'org.owasp.encoder.jakarta', 'org.owasp.encoder.tag', 'TagConsumer'),
-    'esapi': ('encoder-esapi', 'owasp.encoder.esapi', 'org.owasp.encoder.esapi', 'org.owasp.encoder.esapi', 'EsapiConsumer'),
 }
 API_MODULES = {'core': [], 'jsp': ['javax.servlet.jsp.api', 'javax.el.api', 'javax.servlet.api'],
-               'jakarta': ['jakarta.servlet.jsp', 'jakarta.el', 'jakarta.servlet'], 'esapi': ['esapi']}
+               'jakarta': ['jakarta.servlet.jsp', 'jakarta.el', 'jakarta.servlet']}
 HOST_PACKAGES = {'core': [], 'jsp': ['javax.servlet.jsp', 'javax.servlet.jsp.tagext', 'javax.servlet.jsp.el', 'javax.el'],
-                 'jakarta': ['jakarta.servlet.jsp', 'jakarta.servlet.jsp.tagext', 'jakarta.servlet.jsp.el', 'jakarta.el'],
-                 'esapi': ['org.owasp.esapi', 'org.owasp.esapi.codecs', 'org.owasp.esapi.errors', 'org.owasp.esapi.reference']}
+                 'jakarta': ['jakarta.servlet.jsp', 'jakarta.servlet.jsp.tagext', 'jakarta.servlet.jsp.el', 'jakarta.el']}
 # Versions the framework exports for host packages, copied from the Export-Package
-# headers of the API JARs in compatibility/dependencies (ESAPI has no OSGi metadata).
+# headers of the API JARs in compatibility/dependencies.
 HOST_VERSIONS = {'javax.servlet.jsp': '2.2.1', 'javax.servlet.jsp.tagext': '2.2.1', 'javax.servlet.jsp.el': '2.2.1',
                  'javax.el': '2.2.5', 'jakarta.servlet.jsp': '3.0.0.SNAPSHOT', 'jakarta.servlet.jsp.tagext': '3.0.0.SNAPSHOT',
                  'jakarta.servlet.jsp.el': '3.0.0.SNAPSHOT', 'jakarta.el': '4.0.0'}
-# Published Import-Package version ranges (#137); None means deliberately unversioned.
-# The tags call Encode.forJson (1.5); the ESAPI adapter's floor is the oldest supported core.
+# Published Import-Package version ranges (#137). The tags call Encode.forJson (1.5).
 IMPORT_RANGES = {
     'core': {},
     'jsp': {'org.owasp.encoder': '[1.5,2)', 'javax.servlet.jsp': '[2.0,3)', 'javax.servlet.jsp.tagext': '[2.0,3)'},
     'jakarta': {'org.owasp.encoder': '[1.5,2)', 'jakarta.servlet.jsp': '[3.0,4)', 'jakarta.servlet.jsp.tagext': '[3.0,4)'},
-    'esapi': {'org.owasp.encoder': '[1.4.1,2)', 'org.owasp.esapi': None, 'org.owasp.esapi.codecs': None,
-              'org.owasp.esapi.errors': None, 'org.owasp.esapi.reference': None},
 }
 
 
@@ -123,23 +119,21 @@ def metadata(kind, jar, core):
                 resource = name.replace('.', '/') + '.class'
                 assert resource in names or resource in core_archive.namelist(), (tld, name)
         pom = ET.fromstring(archive.read('META-INF/maven/org.owasp.encoder/' + artifact + '/pom.xml'))
-        ns = {'p': 'http://maven.apache.org/POM/4.0.0'}
-        version = pom.findtext('p:parent/p:version', namespaces=ns)
-        assert pom.findtext('p:artifactId', namespaces=ns) == artifact, artifact
+        version = pom.findtext('p:parent/p:version', namespaces=POM_NS)
+        assert pom.findtext('p:artifactId', namespaces=POM_NS) == artifact, artifact
         assert jar.name == artifact + '-' + version + '.jar', jar
         assert attrs['Bundle-Version'] == version.replace('-SNAPSHOT', '.SNAPSHOT'), attrs
         runtime_dependencies = set()
         provided_dependencies = set()
-        for dep in pom.findall('p:dependencies/p:dependency', ns):
-            group = dep.findtext('p:groupId', namespaces=ns)
-            scope = dep.findtext('p:scope', default='compile', namespaces=ns)
-            coordinate = (group, dep.findtext('p:artifactId', namespaces=ns))
+        for dep in pom.findall('p:dependencies/p:dependency', POM_NS):
+            group = dep.findtext('p:groupId', namespaces=POM_NS)
+            scope = dep.findtext('p:scope', default='compile', namespaces=POM_NS)
+            coordinate = (group, dep.findtext('p:artifactId', namespaces=POM_NS))
             if scope in ('compile', 'runtime'):
                 runtime_dependencies.add(coordinate)
-                assert dep.findtext('p:optional', default='false', namespaces=ns) == 'false', coordinate
+                assert dep.findtext('p:optional', default='false', namespaces=POM_NS) == 'false', coordinate
             if scope == 'provided': provided_dependencies.add(coordinate)
         expected_dependencies = set() if kind == 'core' else {('org.owasp.encoder', 'encoder')}
-        if kind == 'esapi': expected_dependencies.add(('org.owasp.esapi', 'esapi'))
         assert runtime_dependencies == expected_dependencies, (kind, runtime_dependencies)
         expected_provided = {'jsp': {('javax.servlet.jsp', 'javax.servlet.jsp-api')},
                              'jakarta': {('jakarta.servlet.jsp', 'jakarta.servlet.jsp-api')}}.get(kind, set())
@@ -166,11 +160,9 @@ def prepare(args):
     if out.exists() and any(out.iterdir()):
         raise ValueError('Preparation requires an empty directory; run ./mvnw clean verify or choose a new --directory: ' + str(out))
     out.mkdir(parents=True, exist_ok=True)
-    shutil.copytree(ROOT / 'compatibility/config', out / 'config', dirs_exist_ok=True)
-    ns = {'p': 'http://maven.apache.org/POM/4.0.0'}
     parent = ET.parse(ROOT / 'pom.xml')
-    for dep in parent.findall('p:dependencies/p:dependency', ns):
-        assert dep.findtext('p:scope', namespaces=ns) == 'test', ET.tostring(dep)
+    for dep in parent.findall('p:dependencies/p:dependency', POM_NS):
+        assert dep.findtext('p:scope', namespaces=POM_NS) == 'test', ET.tostring(dep)
     jars = {}
     for kind, (artifact, *_) in ARTIFACTS.items():
         candidates = [p for p in (ROOT / kind / 'target').glob(artifact + '-*.jar')
@@ -183,7 +175,8 @@ def prepare(args):
         source_metadata(kind, candidates[0].with_name(candidates[0].stem + '-sources.jar'))
         with zipfile.ZipFile(candidates[0].with_name(candidates[0].stem + '-javadoc.jar')) as docs:
             assert 'index.html' in docs.namelist(), ('missing Javadoc index', kind)
-    for kind, jar in jars.items(): metadata(kind, jar, jars['core'])
+    for kind, jar in jars.items():
+        metadata(kind, jar, jars['core'])
     run('javac', '--release', '9', '-d', out / 'metadata', SOURCE / 'ModuleMetadata.java')
     run('java', '-cp', out / 'metadata', 'consumer.ModuleMetadata', *jars.values())
     # javac's module discovery does not honor the runtime multi-release property.
@@ -196,7 +189,7 @@ def prepare(args):
             for entry in source.infolist():
                 if not entry.filename.endswith('module-info.class'):
                     target.writestr(entry, source.read(entry))
-    for kind in ('jsp', 'jakarta', 'esapi', 'osgi-r6', 'osgi-r8', 'legacy-core'):
+    for kind in ('jsp', 'jakarta', 'osgi-r6', 'osgi-r8', 'legacy-core'):
         run(args.maven, '-B', '-ntp', '-f', ROOT / 'compatibility/dependencies' / (kind + '.xml'),
             '-Dmaven.repo.local=' + str(args.repository.resolve()),
             'org.apache.maven.plugins:maven-dependency-plugin:3.11.0:copy-dependencies',
@@ -218,7 +211,7 @@ def prepare(args):
             module_src.parent.mkdir(exist_ok=True)
             requires = [encoder_module] + API_MODULES[kind]
             module_src.write_text('module consumer.fixture {\n' + ''.join('    requires ' + m + ';\n' for m in requires) + '}\n')
-            module_deps = deps if kind != 'esapi' else [p for p in deps if p.name.startswith('esapi-')]
+            module_deps = deps
             compile_artifacts = [compile_only / p.name for p in artifacts] if mode == 'automatic' else artifacts
             run('javac', '--release', '9', '-d', out / mode / kind,
                 '--module-path', path(compile_artifacts + module_deps), module_src, *sources)
@@ -251,13 +244,12 @@ def consume(args):
     for kind, (_, explicit, automatic, package, main) in ARTIFACTS.items():
         deps = sorted((out / 'dependencies' / kind).glob('*.jar'))
         artifacts = [jars['core']] + ([jars[kind]] if kind != 'core' else [])
-        config = ['-Dorg.owasp.esapi.resources=' + str(out / 'config')] if kind == 'esapi' else []
-        run(java, *config, '-cp', path([out / 'classes' / kind] + artifacts + deps), 'consumer.' + main)
+        run(java, '-cp', path([out / 'classes' / kind] + artifacts + deps), 'consumer.' + main)
         if args.runtime != 8:
             for mode, name in [('explicit', explicit), ('automatic', automatic)]:
-                module_deps = deps if kind != 'esapi' else [p for p in deps if p.name.startswith('esapi-')]
+                module_deps = deps
                 classpath = [p for p in deps if p not in module_deps]
-                run(java, *config, '-Djdk.util.jar.enableMultiRelease=' + str(mode == 'explicit').lower(),
+                run(java, '-Djdk.util.jar.enableMultiRelease=' + str(mode == 'explicit').lower(),
                     '-Dconsumer.module=' + name, '--module-path', path([out / mode / kind] + artifacts + module_deps),
                     '--class-path', path(classpath), '--module', 'consumer.fixture/consumer.' + main)
         host = ','.join(p + (';version="' + HOST_VERSIONS[p] + '"' if p in HOST_VERSIONS else '')
@@ -266,14 +258,14 @@ def consume(args):
         for framework in ('osgi-r6', 'osgi-r8'):
             framework_jars = sorted((out / 'dependencies' / framework).glob('*.jar'))
             with tempfile.TemporaryDirectory(prefix='encoder-osgi-') as storage:
-                run(java, *config, '-cp', path([out / 'osgi'] + framework_jars + deps), 'consumer.OsgiConsumer',
+                run(java, '-cp', path([out / 'osgi'] + framework_jars + deps), 'consumer.OsgiConsumer',
                     storage, host, 'consumer.' + main,
                     *artifacts, out / 'probes' / (kind + '.jar'))
             if kind != 'core':
                 # A released core older than the adapter's import range must not wire.
                 assert len(legacy_core) == 1, legacy_core
                 with tempfile.TemporaryDirectory(prefix='encoder-osgi-') as storage:
-                    run(java, *config, '-cp', path([out / 'osgi'] + framework_jars + deps), 'consumer.OsgiConsumer',
+                    run(java, '-cp', path([out / 'osgi'] + framework_jars + deps), 'consumer.OsgiConsumer',
                         storage, host, '--expect-unresolved', legacy_core[0], jars[kind])
         print('PASS Java', args.runtime, kind, flush=True)
 

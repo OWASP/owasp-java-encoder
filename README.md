@@ -5,8 +5,8 @@
 
 Contextual output encoding for Java 8+. Choose an encoder for the parser context
 receiving untrusted text: HTML, JavaScript, CSS, XML or a URL component. The core
-has no runtime dependencies; optional JSP, Jakarta and ESAPI adapters have their
-own dependency graphs. Encoding is one part of [XSS prevention][xss], alongside
+has no runtime dependencies; optional JSP and Jakarta adapters provide view-layer
+bindings. Encoding is one part of [XSS prevention][xss], alongside
 safe templates, URL validation and other application controls.
 
 **Upgrade all Java Encoder artifacts to 1.4.1. Versions through 1.4.0 are affected
@@ -17,20 +17,20 @@ and the signed [GitHub release][release]. All published artifacts and signatures
 [VERIFYING.md](VERIFYING.md) for verification instructions.
 
 `main` is **unreleased 1.5.0-SNAPSHOT**. Its JSON API, JavaScript template support,
-XML 1.1 tag bindings and ESAPI URL change are described below with version labels;
-they are not features of the signed 1.4.1 release. See [CHANGELOG.md](CHANGELOG.md).
+XML 1.1 tag bindings, and parser-boundary fixes are described below with version
+labels; they are not features of the signed 1.4.1 release. See
+[CHANGELOG.md](CHANGELOG.md).
 
 ## Start using the OWASP Java Encoders
 
 Select the dependency you need; Maven resolves version 1.4.1 from Central.
-All four use group ID `org.owasp.encoder` and version `1.4.1`:
+The three supported artifacts use group ID `org.owasp.encoder`:
 
 | Artifact ID | Purpose and runtime dependencies |
 | --- | --- |
 | `encoder` | Core String/Writer API; no runtime dependencies |
 | `encoder-jsp` | Legacy `javax` JSP tags/EL functions; core plus container-provided JSP API |
 | `encoder-jakarta-jsp` | Jakarta JSP tags/EL functions; core plus container-provided Jakarta JSP API |
-| `encoder-esapi` | ESAPI `Encoder` adapter; core and ESAPI 2.7.0.0 with its transitive dependencies |
 
 ```xml
 <dependency>
@@ -40,13 +40,15 @@ All four use group ID `org.owasp.encoder` and version `1.4.1`:
 </dependency>
 ```
 
-Replace `encoder` with one adapter artifact ID when needed; each adapter brings
+Replace `encoder` with one tag adapter artifact ID when needed; each adapter brings
 in core. Keep separately managed core/adapter versions aligned. Use **one** of the
 javax or Jakarta taglib JARs: they share `org.owasp.encoder.tag` and must not coexist
-on the same classpath or module path. See [ESAPI dependency and migration
-policy](esapi/README.md), [runtime matrix](compatibility/README.md), and
+on the same classpath or module path. See the [runtime matrix](compatibility/README.md) and
 [dependency/license inventory](docs/dependencies.md). Development snapshots are
 not security releases or a substitute for the signed 1.4.1 artifacts.
+
+`encoder-esapi` was retired after 1.4.1 and will not be published or supported in
+1.5.0. Applications using it must [migrate away from the adapter](docs/encoder-esapi-retirement.md).
 
 ```java
 import org.owasp.encoder.Encode;
@@ -118,12 +120,9 @@ fragment; validate complete URLs separately, then use `forHtmlAttribute` when
 placing one in a quoted HTML attribute. Parsing with `java.net.URI` alone does
 not establish safety. See the [worked URL example](docs/usage.md#urls).
 
-The ESAPI adapter's `encodeForURL` changes in **unreleased 1.5** to component
-encoding, escaping delimiters and literal `+`, with `%20` spaces. Earlier adapter
-releases preserve whole-URI delimiters. Its existing null and malformed-Unicode
-policies remain. Read the [adapter migration guide](esapi/README.md#url-encoding-migration-in-15-unreleased)
-before upgrading. Removing the legacy API needs a separately reviewed future-major
-decision; deprecation is not a removal schedule.
+Removing the deprecated core/tag API needs a separately reviewed future-major
+decision; deprecation is not a removal schedule. The separate historical ESAPI
+adapter is retired rather than carried into 1.5.0.
 
 ## Java 9+ module names and OSGi
 
@@ -149,8 +148,8 @@ required in CI. See [BUILDING.md](BUILDING.md) for style/coverage policy,
 [RELEASING.md](RELEASING.md) for the distinct release gates. There is no benchmark
 or Maven Site publishing profile.
 
-The 1.x line preserves Java 8 library APIs/bytecode, published API/module identities
-and dependency scopes. Exact encoded output is also observable behavior: adding
+The supported 1.x artifacts preserve Java 8 library APIs/bytecode and their
+published API/module identities and dependency scopes. Exact encoded output is also observable behavior: adding
 escapes is not automatically patch-compatible. Changes need context/parser tests,
 an output-change note and migration guidance when required. Security fixes can
 correct unsafe behavior in a patch with explicit advisories; other compatibility

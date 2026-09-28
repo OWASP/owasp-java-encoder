@@ -128,6 +128,19 @@
                     </execution>
                 </executions>
             </plugin>
+            <!-- The dependency makes the immutable comparison JAR available to
+                 the direct japicmp execution configured by the parent. -->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.owasp.encoder</groupId>
+                        <artifactId>encoder</artifactId>
+                        <version>${public.api.baseline.version}</version>
+                    </dependency>
+                </dependencies>
+            </plugin>
         </plugins>
     </build>
 </project>

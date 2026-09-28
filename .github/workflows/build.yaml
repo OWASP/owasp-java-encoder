@@ -28,6 +28,7 @@ jobs:
     - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       with:
         persist-credentials: false
+        fetch-depth: 0
     - name: Check versions and isolate Maven storage
       run: |
         python3 scripts/check-ci-version.py --ref "$GITHUB_REF"
@@ -43,6 +44,8 @@ jobs:
       run: python3 -m unittest discover -s scripts/tests
     - name: Verify clean reactor including the required Docker/browser test
       run: ./mvnw -B -ntp clean verify -PtestJakarta 2>&1 | tee build.log
+    - name: Check published modules' effective SCM metadata
+      run: python3 scripts/check-effective-pom-scm.py
     - name: Confirm the Jakarta application contains this reactor's exact JAR
       run: |
         python3 - <<'PY'
@@ -70,51 +73,17 @@ jobs:
           **/target/checkstyle-result.xml
           jakarta-test/target/packaged-war.log
 
-  esapi-compatibility:
-    name: ESAPI ${{ matrix.esapi-version }}
-    runs-on: ubuntu-latest
-    timeout-minutes: 25
-    strategy:
-      fail-fast: false
-      matrix:
-        esapi-version:
-          - '2.5.1.0'
-          - '2.5.2.0'
-          - '2.5.3.0'
-          - '2.5.3.1'
-          - '2.5.4.0'
-          - '2.5.5.0'
-          - '2.6.0.0'
-          - '2.6.1.0'
-          - '2.6.2.0'
-          - '2.7.0.0'
-    steps:
-    - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-      with:
-        persist-credentials: false
-    - name: Check versions and isolate Maven storage
-      run: |
-        python3 scripts/check-ci-version.py --ref "$GITHUB_REF"
-        echo "MAVEN_OPTS=-Dmaven.repo.local=$RUNNER_TEMP/m2" >> "$GITHUB_ENV"
-    - name: Set up JDK 17
-      uses: actions/setup-java@de7274f081f381c8f8158605e0321c36c376e2e6 # v6.0.1
-      with:
-        java-version: '17'
-        distribution: 'temurin'
-    - name: Test ESAPI compatibility
-      run: ./mvnw -B -ntp -pl esapi -am verify -Desapi.version=${{ matrix.esapi-version }}
-
   gate:
     name: Java CI gate
     if: ${{ always() }}
-    needs: [build, esapi-compatibility]
+    needs: [build]
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
-      - name: Require every build, browser and ESAPI matrix result
+      - name: Require the build and browser result
         env:
           NEEDS: ${{ toJSON(needs) }}
-        run: python3 scripts/check-ci-gate.py build esapi-compatibility
+        run: python3 scripts/check-ci-gate.py build

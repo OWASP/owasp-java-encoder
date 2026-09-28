@@ -11,6 +11,9 @@ not public issues, reproduction links or pull requests.
 Use JDK 17, the committed Maven wrapper, and Python 3.8+ for repository checks.
 Libraries target Java 8; the build JVM is not Java 8. Docker is needed only for
 the optional local browser/WAR fixture, which remains a required CI job.
+The release-baseline test deliberately requires the repository's reachable release
+tags; fetch tags before running it from a shallow clone. A source export without Git
+history cannot perform that release gate.
 
 ```sh
 ./mvnw -B -ntp clean verify
@@ -24,14 +27,7 @@ python3 compatibility/consumers.py run --runtime 17 --java-home "$JAVA_HOME"
 
 Set `JAVA_HOME` to the JDK used for a consumer run. Prepare consumers only after a
 successful reactor verify and in an empty `target/compatibility`; `clean` removes
-old preparation output. To exercise one ESAPI matrix version:
-
-```sh
-./mvnw -B -ntp -pl esapi -am clean verify -Desapi.version=2.7.0.0
-```
-
-Other supported versions and their upstream security status are separate in
-[esapi/README.md](esapi/README.md). See [BUILDING.md](BUILDING.md) for the verified
+old preparation output. See [BUILDING.md](BUILDING.md) for the verified
 wrapper, Checkstyle's actual source scope/Java 17 exception, measured coverage
 floors and diagnostics. The legacy Maven Site and benchmark profiles are retired.
 Use fresh execution data when checking coverage; do not lower floors just to make

@@ -1,4 +1,4 @@
-# Compatibility and scope decisions — 2026-09-26
+# Compatibility and scope decisions — updated 2026-09-27
 
 This record resolves the decision queue in [#142](https://github.com/OWASP/owasp-java-encoder/issues/142)
 and [#149](https://github.com/OWASP/owasp-java-encoder/issues/149). It approves no
@@ -15,19 +15,20 @@ closed/not-planned proposals are not reopened. The full release gate in
 | Jakarta tag package and split packages | **Keep `org.owasp.encoder.tag` in both separate adapters for 1.x; defer a rename.** | Both namespaces pass packaged JSP engines and parity checks. They cannot coexist on one classpath/module path. A rename could allow coexistence but would break direct class imports, reflective/TLD references and OSGi package wiring; it needs an explicit migration design before acceptance. |
 | Deprecated `forUri` entry points | **Keep through all 1.x; defer any removal.** | `Encode.forUri` was already deprecated; 1.5 extends notices/annotations to registry and tags. Existing call sites retain behavior. Migrate raw components to `forUriComponent`, validate complete URLs, then encode the enclosing context. Removal would break source, binary and view-template callers and has no approved date. |
 | Legacy javax JSP adapter | **Keep in 1.x; defer end-of-life or removal.** | Maintained javax Jasper fixtures and original-JAR consumers exercise it. Removing the artifact would strand applications whose container/framework migration is independent of this library. Passing fixtures are evidence of functionality, not a count of downstream users or a promise to support every old container. |
-| ESAPI adapter and dependency scope | **Keep the adapter and compile-scoped ESAPI dependency in 1.x; defer a scope/lifecycle change.** | Public APIs expose ESAPI types; its supported-version matrix and packaged consumers pass. Making ESAPI optional/provided would move dependency management to callers and could break compilation or runtime linkage. Upstream security support/advisories remain a separate review, not a blanket exemption. |
+| ESAPI adapter and dependency scope | **Retire the adapter; 1.4.1 is its final release and no version remains supported.** | This supersedes the 2026-09-26 plan to keep the adapter through 1.x. A newer ESAPI/Commons graph cannot be obtained with compatible version overrides, and maintaining another project's API, dependency graph, or a private ESAPI fork is outside Java Encoder's scope. No `encoder-esapi:1.5.0` artifact will be published; see the [migration notice](encoder-esapi-retirement.md). |
 | Multi-release JARs versus one classfile level | **Keep Java 8 classes plus Java 9 descriptors in 1.x; defer single-release packaging.** | Original JARs pass Java 8 and explicit/automatic JPMS tests. A future runtime baseline of 9+ might permit one release level, but that depends on a baseline decision and all packaging/OSGi/JPMS evidence, not just compiler convenience. |
-| Exact encoded output and contexts | **Keep explicit versioning/migration review; accept no blanket “more escaping is patch-safe” rule.** | 1.5's ESAPI URL-component change alters delimiters; JavaScript escape additions preserve interpreted strings but change bytes. Output affects snapshots, signatures and protocol consumers. Security patches may correct unsafe behavior with an advisory; other changes need parser tests, release notes and a justified version. |
+| Exact encoded output and contexts | **Keep explicit versioning/migration review; accept no blanket “more escaping is patch-safe” rule.** | JavaScript escape additions preserve interpreted strings but change bytes. Output affects snapshots, signatures and protocol consumers. Security patches may correct unsafe behavior with an advisory; other changes need parser tests, release notes and a justified version. |
 
 Evidence: [runtime matrix, package guards and identities](../compatibility/README.md),
 [required browser/WAR fixture](../jakarta-test/README.md), [JSP engine checks](../compatibility/jsp-engine/README.md),
-[ESAPI contracts](../esapi/README.md), [migration guide](../README.md#migrating-from-foruri)
-and [merged-change history](../CHANGELOG.md). These are real consumer fixtures,
+[migration guide](../README.md#migrating-from-foruri), and
+[merged-change history](../CHANGELOG.md). These are real consumer fixtures,
 not an ecosystem usage census; a few code-search hits cannot establish that a
 breaking change has no downstream users.
 
-No breaking proposal above is accepted for implementation. Therefore no speculative
-implementation tickets or removals are created. To reconsider an item, maintainers
+Except for the explicit `encoder-esapi` retirement recorded above, no breaking
+proposal in this table is accepted for implementation. Therefore no speculative
+implementation tickets or removals are created. To reconsider another item, maintainers
 must review a focused proposal with affected public surfaces, measured consumer
 impact, migration examples, version choice and alternatives. An accepted break
 must be announced in a published migration/design note and release notes **before**
@@ -40,6 +41,26 @@ are already merged 1.5 features; they are not deferred or rejected by this recor
 Tagged templates, arbitrary executable expressions and complete JSON serialization
 remain outside those contracts.
 
+## 1.5 parser-boundary output migration
+
+The 1.5 security correction keeps the existing trusted-prefix/encoded-value/
+trusted-suffix composition contract. Applications do not need a new stateful
+API, but three outputs change compared with 1.4.1:
+
+| Context | 1.5 behavior | Compatibility consequence |
+| --- | --- | --- |
+| HTML script JavaScript (`forJavaScript`, `forJavaScriptBlock`) | Escapes every character that can contribute to a case-insensitive `</script` end tag, its delimiter, `<!--` or `-->`; hyphen uses `\x2d` | JavaScript string values are preserved, but common letters and spaces can change encoded bytes. Attribute-only and standalone-source modes retain their narrower rules. |
+| XML CDATA | Represents every `]` and `>` with a close/character-data/reopen spelling | Parsed XML text is preserved, apart from documented XML normalization/replacement. Output can expand 13× and parser event boundaries can change. |
+| XML comment | Replaces every hyphen with `~` | Prevents cross-fragment `--` and `-->`; comment text is deliberately lossy. |
+
+The trusted fragments must already be valid for the selected parser context.
+Migration review must cover byte snapshots, signatures, cache keys and any code
+that consumes XML events rather than the parsed text value. Review output-size
+budgets as well: ordinary HTML-script JavaScript text can grow materially, while
+the CDATA maximum is 13×. Large CDATA values should use a Writer facade or
+`EncodedWriter`; String facades retain the complete result but grow according to
+actual output rather than reserving the maximum bound.
+
 ## Base64url disposition (#149)
 
 **Reject adding a Base64Url class, `Encode.forBase64Url`, or tag/EL bindings to this
@@ -49,7 +70,7 @@ canonical decoding require byte/protocol contracts that do not fit contextual
 output encoding. In particular, a decoder broadens the existing non-goals, and
 byte grouping does not fit the char-to-char `Encoder`/`EncodedWriter` abstraction.
 Encoding-only view tags would add another surface without a demonstrated need;
-no decoder tags are accepted. Existing ESAPI delegates stay unchanged.
+no decoder tags are accepted.
 
 For a protocol that explicitly requires **unpadded** base64url, use already-defined
 bytes with the [JDK 8+ Base64 API](https://docs.oracle.com/javase/8/docs/api/java/util/Base64.html):

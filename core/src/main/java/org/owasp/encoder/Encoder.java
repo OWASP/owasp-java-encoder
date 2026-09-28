@@ -108,14 +108,13 @@ public abstract class Encoder {
      * UNDERFLOW}, there may be characters left to encode in the
      * {@code input} buffer (i.e. {@code input.hasRemaining() ==
      * true}).  This will happen when the encoder needs to see more
-     * input before determining what to do--for example when encoding
-     * for CDATA, if the input ends with {@code "foo]]"}, the encoder
-     * will need to see the next character to determine if it is a "&gt;"
-     * or not.</p>
+     * input before determining what to do--for example when an encoder sees
+     * a high surrogate at the end of a non-final input buffer and needs the
+     * next code unit to determine whether it forms a pair.</p>
      *
      * <p>The output buffer must have enough remaining space for an entire
-     * encoded sequence. Allow at least 15 characters of output space to support
-     * every encoder (CDATA requires 15 for its terminator replacement).
+     * encoded sequence. Allow at least 13 characters of output space to support
+     * every current encoder (CDATA has the longest replacement).
      * An undersized buffer can cause repeated {@code OVERFLOW} results without
      * advancing either buffer; drain or enlarge it before retrying.</p>
      *

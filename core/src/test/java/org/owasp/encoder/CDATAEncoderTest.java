@@ -34,6 +34,8 @@
 
 package org.owasp.encoder;
 
+import java.io.StringWriter;
+import java.util.Arrays;
 import junit.framework.Test;
 import junit.framework.TestCase;
 
@@ -44,20 +46,24 @@ import junit.framework.TestCase;
  */
 public class CDATAEncoderTest extends TestCase {
     public static Test suite() {
+        String rb = "]]>]<![CDATA[";
+        String gt = "]]><![CDATA[>";
         return new EncoderTestSuiteBuilder(CDATAEncoderTest.class, new CDATAEncoder(), "-safe-", "-]]>-")
-            .encode("]]]]><![CDATA[>", "]]>")
-            .encode("]", "]")
-            .encode("]]", "]]")
-            .encode("]]]]><![CDATA[>]", "]]>]")
-            .encode("]]]]><![CDATA[>]>", "]]>]>")
-            .encode("]]]]><![CDATA[>>", "]]>>")
-            .encode("]]]]]", "]]]]]")
-            .encode("<\"&\'>", "<\"&\'>") // valid in CDATA, not in XML
+            .encode(rb + rb + gt, "]]>")
+            .encode(rb, "]")
+            .encode(rb + rb, "]]")
+            .encode(rb + rb + gt + rb, "]]>]")
+            .encode(rb + rb + gt + rb + gt, "]]>]>")
+            .encode(rb + rb + gt + gt, "]]>>")
+            .encode(rb + rb + rb + rb + rb, "]]]]]")
+            .encode(gt, ">")
+            .encode("<\"&'" + gt, "<\"&'>")
             .encode("missing-low-surrogate", " x", "\ud800x")
 
             .invalid(0, 0x1f)
             .valid("\t\r\n")
             .valid(' ', Character.MAX_CODE_POINT)
+            .encoded("]>")
             .invalid(0x7f, 0x9f)
             .valid("\u0085")
             .invalid(Character.MIN_SURROGATE, Character.MAX_SURROGATE)
@@ -89,12 +95,44 @@ public class CDATAEncoderTest extends TestCase {
     public void testMaxEncodedLength() {
         CDATAEncoder encoder = new CDATAEncoder();
         assertEquals(0, encoder.maxEncodedLength(0));
-        assertEquals(1, encoder.maxEncodedLength(1));
-        assertEquals(2, encoder.maxEncodedLength(2));
-        assertEquals(15, encoder.maxEncodedLength(3));
-        assertEquals(16, encoder.maxEncodedLength(4));
-        assertEquals(17, encoder.maxEncodedLength(5));
-        assertEquals(30, encoder.maxEncodedLength(6));
+        assertEquals(13, encoder.maxEncodedLength(1));
+        assertEquals(26, encoder.maxEncodedLength(2));
+        assertEquals(39, encoder.maxEncodedLength(3));
+        assertEquals(52, encoder.maxEncodedLength(4));
+        assertEquals(65, encoder.maxEncodedLength(5));
+        assertEquals(78, encoder.maxEncodedLength(6));
+        assertEquals(Integer.MAX_VALUE,
+            encoder.maxEncodedLength(Integer.MAX_VALUE / 13 + 1));
+    }
+
+    public void testStringFacadeDoesNotEagerlyAllocateMaximumExpansion() {
+        CDATAEncoder encoder = new CDATAEncoder() {
+            @Override
+            protected int maxEncodedLength(int n) {
+                throw new AssertionError("String facade must grow from actual output");
+            }
+        };
+        String input = "]" + repeat('a', Encode.Buffer.INPUT_BUFFER_SIZE * 4);
+        assertEquals(Encode.forCDATA(input), Encode.encode(encoder, input));
+    }
+
+    public void testHighExpansionRunUsesDocumentedBound() throws Exception {
+        char[] chars = new char[100000];
+        Arrays.fill(chars, ']');
+        String input = new String(chars);
+        String encoded = Encode.forCDATA(input);
+        assertEquals(1300000, encoded.length());
+        assertEquals(encoded.length(), new CDATAEncoder().maxEncodedLength(input.length()));
+
+        StringWriter writer = new StringWriter(encoded.length());
+        Encode.forCDATA(writer, input);
+        assertEquals(encoded, writer.toString());
+    }
+
+    private static String repeat(char ch, int count) {
+        char[] chars = new char[count];
+        Arrays.fill(chars, ch);
+        return new String(chars);
     }
 
 }

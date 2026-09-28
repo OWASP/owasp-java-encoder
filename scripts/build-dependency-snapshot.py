@@ -1,9 +1,11 @@
 #!/usr/bin/env python3
-"""Convert Maven dependency:resolve-plugins 3.11.0 reports to a GitHub snapshot.
+"""Convert filtered Maven resolve-plugins 3.11.0 reports to a GitHub snapshot.
 
 Runtime/test graphs are submitted by the Maven submission action. This separate
-development-scope graph retains each build plugin's resolved dependency edges.
-No network or credentials are needed to generate the reviewable JSON file.
+development-scope graph retains each invoked build plugin's resolved dependency
+edges. Shared inherited tooling is submitted once on the root POM; child POMs
+contain only module-specific plugin deltas. No network or credentials are needed
+to generate the reviewable JSON file.
 """
 import argparse
 from datetime import datetime, timezone
@@ -51,17 +53,40 @@ def parse_report(text):
     return resolved
 
 
+def module_delta(shared, resolved):
+    """Return direct plugin closures that differ from the shared root graph."""
+    delta = {}
+    for key, node in resolved.items():
+        if node['relationship'] != 'direct':
+            continue
+        common = shared.get(key)
+        if (common is not None
+                and set(common['dependencies']) == set(node['dependencies'])):
+            continue
+        delta[key] = node
+        for dependency in node['dependencies']:
+            delta[dependency] = resolved[dependency]
+    return delta
+
+
 def snapshot(root, correlator):
+    reports = sorted(root.glob('**/target/build-dependencies.txt'))
+    root_report = root / 'target' / 'build-dependencies.txt'
+    if root_report not in reports:
+        raise ValueError('No resolved root build dependency report')
+    shared = parse_report(root_report.read_text())
     manifests = {}
-    for report in sorted(root.glob('**/target/build-dependencies.txt')):
+    for report in reports:
         pom = (report.parent.parent / 'pom.xml').relative_to(root).as_posix()
         if not (root / pom).is_file():
             raise ValueError('No POM for report: ' + str(report))
+        resolved = shared if report == root_report else module_delta(
+            shared, parse_report(report.read_text()))
+        if not resolved:
+            continue
         manifests[pom + ' (build)'] = {
             'name': pom + ' (build)', 'file': {'source_location': pom},
-            'resolved': parse_report(report.read_text())}
-    if not manifests:
-        raise ValueError('No resolved build dependency reports')
+            'resolved': resolved}
     return {'version': 0, 'sha': os.environ['GITHUB_SHA'], 'ref': os.environ['GITHUB_REF'],
             'job': {'correlator': correlator, 'id': os.environ['GITHUB_RUN_ID']},
             'detector': {'name': 'encoder-maven-build-graph', 'version': '1.0.0',

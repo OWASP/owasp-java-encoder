@@ -58,7 +58,6 @@ jobs:
             **/target/surefire-reports/
             **/target/failsafe-reports/
             **/target/jsp-engine/
-            **/target/japicmp/
             **/target/site/jacoco/
 
   runtime:
@@ -99,7 +98,7 @@ jobs:
           path: runtime.log
 
   java8-unit-tests:
-    name: Core, JSP, and ESAPI unit tests on Java 8
+    name: Core and JSP unit tests on Java 8
     needs: prepare
     runs-on: ubuntu-latest
     timeout-minutes: 20
@@ -118,12 +117,12 @@ jobs:
             8
             17
       - name: Build with JDK 17
-        run: ./mvnw -B -ntp -DskipTests install -pl core,jsp,esapi -am 2>&1 | tee build.log
+        run: ./mvnw -B -ntp -DskipTests install -pl core,jsp -am 2>&1 | tee build.log
       - name: Run unit tests and collect coverage with Java 8
-        run: ./mvnw -B -ntp -pl core,jsp,esapi jacoco:prepare-agent@prepare-agent surefire:test jacoco:report -Djvm="$JAVA_HOME_8_X64/bin/java" 2>&1 | tee java8-tests.log
+        run: ./mvnw -B -ntp -pl core,jsp jacoco:prepare-agent@prepare-agent surefire:test jacoco:report -Djvm="$JAVA_HOME_8_X64/bin/java" 2>&1 | tee java8-tests.log
       - name: Confirm Java 8 execution and coverage in every tested module
         run: |
-          for module in core jsp esapi; do
+          for module in core jsp; do
             grep -q 'name="java.specification.version" value="1.8"' "$module"/target/surefire-reports/TEST-*.xml || {
               echo "::error::Missing Java 8 Surefire report for $module"
               exit 1
@@ -143,13 +142,10 @@ jobs:
             java8-tests.log
             core/target/surefire-reports/
             jsp/target/surefire-reports/
-            esapi/target/surefire-reports/
             core/target/site/jacoco/
             jsp/target/site/jacoco/
-            esapi/target/site/jacoco/
             core/target/jacoco.exec
             jsp/target/jacoco.exec
-            esapi/target/jacoco.exec
 
   forward-build:
     name: Advisory build on JDK ${{ matrix.java }}
@@ -184,7 +180,6 @@ jobs:
             **/target/surefire-reports/
             **/target/failsafe-reports/
             **/target/jsp-engine/
-            **/target/japicmp/
             **/target/site/jacoco/
 
   wrapper:

@@ -40,9 +40,13 @@ import java.util.Map;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 import org.owasp.encoder.Encode;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
 
 /** A named JUnit 3 parameterized case for every advanced tag and input. */
 public class TagEncodingTest extends EncodingTagTest {
+    private static final String SCRIPT_BOUNDARY_INPUT = "script><img id=pwn src=x>";
+
     private final Class<? extends EncodingTag> tagClass;
     private final Method facade;
     private final String input;
@@ -64,6 +68,10 @@ public class TagEncodingTest extends EncodingTagTest {
             add(suite, type, method, "null", null);
             add(suite, type, method, "empty", "");
             add(suite, type, method, "plain", "plain text");
+            if ("forJavaScript".equals(method.getName())
+                    || "forJavaScriptBlock".equals(method.getName())) {
+                add(suite, type, method, "script-boundary", SCRIPT_BOUNDARY_INPUT);
+            }
             String hostile = "\"'<>&/\\`$={}() :;?#%+--]]>\0\t\r\n\u007f\u0085\u2028\u2029"
                 + "\u00e9\ud83d\ude00\ud800X\udc00\uffff\ud800";
             add(suite, type, method, "hostile-unicode", hostile);
@@ -91,6 +99,23 @@ public class TagEncodingTest extends EncodingTagTest {
         tag.setJspContext(_pageContext);
         tag.setValue(input);
         tag.doTag();
-        assertEquals(getName(), expected, _response.getContentAsString());
+        String actual = _response.getContentAsString();
+        assertEquals(getName(), expected, actual);
+        if (SCRIPT_BOUNDARY_INPUT.equals(input)) {
+            assertScriptContained("TLD function target", expected);
+            assertScriptContained("tag", actual);
+        }
+    }
+
+    private void assertScriptContained(String path, String encoded) {
+        Document parsed = Jsoup.parse("<script>var value=\"</" + encoded
+            + "\";</script><p id=after>after</p>");
+        assertEquals(path + " script", 1, parsed.select("script").size());
+        assertEquals(path + " injection", 0, parsed.select("img#pwn").size());
+        assertEquals(path + " trailing document", 1, parsed.select("p#after").size());
+
+        Document raw = Jsoup.parse("<script>var value=\"</" + SCRIPT_BOUNDARY_INPUT
+            + "\";</script>");
+        assertEquals(path + " negative control", 1, raw.select("img#pwn").size());
     }
 }

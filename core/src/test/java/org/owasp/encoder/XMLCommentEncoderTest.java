@@ -46,7 +46,8 @@ public class XMLCommentEncoderTest extends TestCase {
     public static Test suite() {
         return new EncoderTestSuiteBuilder(
             XMLCommentEncoderTest.class, new XMLCommentEncoder(), "(safe)", "--")
-            .encode("a - b", "a - b")
+            .encode("a ~ b", "a - b")
+            .encode("trusted-prefix boundary", "~>", "->")
             .encode("<\"&\'>", "<\"&\'>") // valid in comments, not in XML
             .encode("missing-low-surrogate", " x", "\ud800x")
 
@@ -85,8 +86,9 @@ public class XMLCommentEncoderTest extends TestCase {
 
     public void testEncodeHyphens() throws Exception {
         XMLCommentEncoder encoder = new XMLCommentEncoder();
-        assertEquals("-~", Encode.encode(encoder, "--"));
-        assertEquals("ab-~cd", Encode.encode(encoder, "ab--cd"));
+        assertEquals("~~", Encode.encode(encoder, "--"));
+        assertEquals("ab~~cd", Encode.encode(encoder, "ab--cd"));
+        assertEquals("ab~>cd", Encode.encode(encoder, "ab->cd"));
     }
 
     public void testEncodeHyphenAtEnd() throws Exception {
@@ -97,6 +99,6 @@ public class XMLCommentEncoderTest extends TestCase {
 
     public void testEncodeHyphenBar() throws Exception {
         XMLCommentEncoder encoder = new XMLCommentEncoder();
-        assertEquals("-~-~-~-~-~~", Encode.encode(encoder, "-----------"));
+        assertEquals("~~~~~~~~~~~", Encode.encode(encoder, "-----------"));
     }
 }

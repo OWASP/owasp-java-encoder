@@ -107,8 +107,8 @@ class ArtifactGuards(unittest.TestCase):
             entries, 'Import-Package', lambda value: value.replace('org.owasp.encoder;version="[1.5,2)"', 'org.owasp.encoder')))
 
     def test_lowered_core_floor(self):
-        self.rejected('esapi', lambda entries: self.header(
-            entries, 'Import-Package', lambda value: value.replace('[1.4.1,2)', '[1.4,2)')))
+        self.rejected('jsp', lambda entries: self.header(
+            entries, 'Import-Package', lambda value: value.replace('[1.5,2)', '[1.4,2)')))
 
     def test_widened_jakarta_pages_range(self):
         self.rejected('jakarta', lambda entries: self.header(

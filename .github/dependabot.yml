@@ -6,8 +6,8 @@ updates:
       - /core
       - /jsp
       - /jakarta
-      - /esapi
       - /jakarta-test
+      - /compatibility/dependencies
     schedule:
       interval: weekly
       day: monday

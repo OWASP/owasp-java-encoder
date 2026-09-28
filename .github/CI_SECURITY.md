@@ -4,10 +4,10 @@
 
 `Java CI gate` requires the clean JDK 17 reactor build, JSP/Jakarta source parity,
 CI policy tests, the Docker/Selenium browser test, exact reactor JAR inclusion in
-the Jakarta WAR, and every ESAPI version from 2.5.1.0 through 2.7.0.0.
+the Jakarta WAR.
 `Packaged consumer gate` requires JDK 17 artifact preparation/API and Java 8
 signature checks, package guard tests, the original packaged bytes on Java
-8/11/17/21/25, and core/JSP/ESAPI unit tests with the Java 8 JVM and coverage.
+8/11/17/21/25, and core/JSP unit tests with the Java 8 JVM and coverage.
 JDK 21/25 build probes remain advisory. Require **both** gates: neither observes
 the other workflow. The gates run with `always()` and accept only `success` for
 every expected dependency; missing, failed, skipped and cancelled jobs fail.
@@ -34,15 +34,13 @@ See [local quarantine guidance](../RELEASING.md#maven-storage-and-repository-con
 Baseline main runs [Java CI 36220505798](https://github.com/OWASP/owasp-java-encoder/actions/runs/36220505798)
 and [consumers 36220505783](https://github.com/OWASP/owasp-java-encoder/actions/runs/36220505783)
 had 14 Maven cache misses and one hit (Java 8 install job). Build took 3m14s;
-ESAPI jobs 65–97s; preparation 85s; Java 8 tests 87s; runtimes 12–16s.
-The separate clean test-compilation and install lifecycles are now one clean
-verify lifecycle. Further core sharing between ESAPI versions is deferred: it
-would complicate reactor resolution and package checks for little measured gain.
+preparation took 85s; Java 8 tests 87s; runtimes 12–16s. The separate clean
+test-compilation and install lifecycles are now one clean verify lifecycle.
 
 ## Scanning and dependency updates
 
 Advanced CodeQL in `codeql.yaml` is the single analysis owner; leave default
-setup unconfigured. Java uses a manual JDK 17 build of all four libraries and
+setup unconfigured. Java uses a manual JDK 17 build of all three libraries and
 the optional `testJakarta` application; Actions and Python tooling use extraction
 without a build. It runs on PRs, main, a weekly schedule and manual dispatch.
 Only analysis jobs request `security-events: write`; fork PRs use GitHub's
@@ -55,24 +53,41 @@ snapshot API. It builds its own checkout without caches or imported artifacts.
 Separate correlators submit the normal reactor and the optional Jakarta profile.
 The pinned Maven submission action includes all resolved project scopes,
 including runtime, test and provided dependencies. Maven dependency plugin
-3.11.0 `resolve-plugins` separately resolves build/report plugins and their
-transitives; `scripts/build-dependency-snapshot.py` submits those edges as
-development dependencies. Graph reports and submission JSON are retained for
-inspection. Inspect representative ESAPI/AntiSamy HTTP transitives and Jakarta
-Spring/Tomcat dependencies in the resulting graph; alert counts are not gates.
+3.11.0 `resolve-plugins` separately resolves the source-controlled allowlist of
+plugins actually invoked by verification, consumer installation, metadata checks,
+and release staging. The optional Jakarta app is resolved from its own smaller
+package-gate allowlist, so inherited but inactive Boot plugin-management entries
+are not submitted. The disabled Site plugin is likewise not represented as an
+executed dependency. The five separately invoked consumer dependency fixtures inherit a
+local toolchain parent which pins the downloader's plugin realm; that parent is
+resolved separately so any drift from the submitted root closure remains visible.
+`scripts/build-dependency-snapshot.py` submits those closures as development
+dependencies, once for shared root tooling and only the differing plugin closures
+for child or fixture POMs. Graph reports and submission JSON are retained for
+inspection. Inspect representative Jakarta Spring/Tomcat dependencies in the
+resulting graph; alert counts are not gates.
 
-All four submissions use detector `encoder-maven-build-graph` with distinct,
-stable correlators. Keep the action's detector inputs synchronized with the
+The immutable 1.4.1 Java Encoder artifacts used by japicmp are intentional
+development-only comparison inputs. Keep them visible in the build graph: an alert
+on a baseline artifact describes that historical input, not a dependency shipped
+to 1.5 consumers, and must be assessed rather than hidden with a graph filter.
+
+All submissions use detector `encoder-maven-build-graph` with distinct, stable
+correlators. Keep the action's detector inputs synchronized with the
 Python build snapshot: GitHub [merges correlators from the same detector](https://docs.github.com/en/code-security/concepts/supply-chain-security/dependency-graph-data#prioritization),
 but selects between different detectors for a POM. Different detectors can hide
 runtime dependencies behind build-only results despite successful submissions.
 Check the final SBOM after both matrix jobs finish, including runtime versions
 and development dependencies together, not just the snapshot API status.
 
-Dependabot checks all library POMs, the parent and optional app weekly, with
-separate Maven and SHA-pinned Actions groups and grouped Maven security updates.
+Dependabot checks all current library POMs, the parent, optional app and compatibility
+fixture toolchain parent weekly, with separate Maven and SHA-pinned Actions groups
+and grouped Maven security updates.
 Normal review and complete CI apply to automated PRs; no automatic merging is
 configured. Review new action source and transitive downloads as well as pins.
+Do not dismiss alerts merely to reduce the count. Correct versions or graph
+semantics, submit the new graph, and let GitHub close packages that are no longer
+present.
 Baseline-sensitive API, JSP-engine and build-plugin dependencies are excluded only
 from the broad Maven **version-update group**, so their proposals receive individual
 review. They remain eligible for updates; the security-update group is unchanged.
@@ -85,9 +100,9 @@ an automatic baseline replacement. Inspect any advisory against its actual
 local bundle-loading test scope, and record a specific disposition. Do not
 suppress advisories across all Felix versions or application deployments.
 
-ESAPI advisory triage lives in [the adapter guide](../esapi/README.md#dependency-security-triage).
-Upstream fixes are preferred; tested mitigations remain possible. No transitive
-finding is dismissed merely because another library introduces it. Optional
+The retired `encoder-esapi` module is absent from Dependabot configuration and
+the submitted 1.5 dependency graph. Its historical artifacts are not rewritten;
+see the [retirement notice](../docs/encoder-esapi-retirement.md). Optional
 Scorecard publication, best-practices registration and another scheduled scanner
 are follow-ups, not prerequisites for these operating controls.
 

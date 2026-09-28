@@ -10,7 +10,7 @@ import zipfile
 
 NS = {'p': 'http://maven.apache.org/POM/4.0.0'}
 MODULES = {'': 'encoder-parent', 'core': 'encoder', 'jsp': 'encoder-jsp',
-           'jakarta': 'encoder-jakarta-jsp', 'esapi': 'encoder-esapi'}
+           'jakarta': 'encoder-jakarta-jsp'}
 
 
 def require(condition, message):
@@ -60,7 +60,7 @@ def main():
             for algorithm in ('md5', 'sha1', 'sha256', 'sha512'):
                 entries[name + '.' + algorithm] = hashlib.new(algorithm, data).hexdigest().encode('ascii')
             payloads += 1
-    require(payloads == 17 and len(entries) == 102, 'Incomplete release bundle')
+    require(payloads == 13 and len(entries) == 78, 'Incomplete release bundle')
     # Exclusive creation protects retained immutable bundles from accidental replacement.
     with zipfile.ZipFile(args.output, 'x', compression=zipfile.ZIP_DEFLATED) as archive:
         for name, data in sorted(entries.items()):
@@ -70,7 +70,7 @@ def main():
         require(set(archive.namelist()) == set(entries), 'Bundle entry mismatch')
         for name, data in entries.items():
             require(archive.read(name) == data, 'Bundle byte mismatch: ' + name)
-    print('Verified 17 signatures; assembled 5 POMs, 12 JARs, signatures and 68 checksums:', args.output)
+    print('Verified 13 signatures; assembled 4 POMs, 9 JARs, signatures and 52 checksums:', args.output)
     print('Bundle SHA-256:', hashlib.sha256(args.output.read_bytes()).hexdigest())
 
 

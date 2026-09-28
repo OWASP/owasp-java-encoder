@@ -35,6 +35,7 @@
 package org.owasp.encoder;
 
 import java.io.IOException;
+import java.io.StringWriter;
 import java.io.Writer;
 import java.nio.CharBuffer;
 import java.nio.charset.CoderResult;
@@ -57,9 +58,11 @@ import java.nio.charset.CoderResult;
  * coordinating access to a shared output writer.</p>
  *
  * <p>For large inputs, prefer the Writer overloads or {@link EncodedWriter}.
- * String overloads may allocate temporary storage for the maximum possible
- * encoded length of the remaining input, even when the actual result is much
- * shorter (up to nine output characters per input character for URI encoding).</p>
+ * String overloads retain the complete encoded result in memory, while the
+ * Writer paths stream encoded output through fixed-size buffers. Pass-through
+ * text and Writer String convenience methods may still copy a caller-supplied
+ * String. CDATA can produce up to thirteen output characters per input
+ * character.</p>
  *
  * <p>Please make sure to read and understand the context that the method encodes
  * for.  Encoding for the incorrect context will likely lead to exposing a
@@ -888,8 +891,9 @@ public final class Encode {
      *
      * <p>This method replaces invalid XML 1.0 characters and the additional
      * controls and noncharacters described by {@link #forHtml(String)} with spaces,
-     * and replaces the "--" sequence (which is invalid in XML comments)
-     * with "-~" (hyphen-tilde).  <b>This encoding behavior may change
+     * and replaces every hyphen with a tilde. This prevents an input hyphen
+     * from combining with a hyphen in adjacent trusted text to form the forbidden
+     * "--" sequence. <b>This encoding behavior may change
      * in future releases.</b>  If the comments need to be decoded, the
      * caller will need to come up with their own encode/decode system.</p>
      *
@@ -1017,9 +1021,13 @@ public final class Encode {
     }
 
     /**
-     * Encodes data for an XML CDATA section.  On the chance that the input
-     * contains a terminating {@code "]]>"}, it will be replaced by
-     * {@code "]]]]><![CDATA[>"}.
+     * Encodes data for an XML CDATA section. Every {@code "]"} and
+     * {@code ">"} is represented with close/reopen sequences. This preserves
+     * parsed character data and prevents any nonempty encoded substring from
+     * completing a {@code "]]>"} terminator supplied partly by adjacent
+     * trusted literal text.
+     * Each input {@code "]"} or {@code ">"} expands to thirteen output
+     * characters; prefer the Writer overload for large values.
      * Invalid XML 1.0 characters and the additional controls and noncharacters
      * described by {@link #forHtml(String)} are replaced by a space.
      * XML parsers normalize line endings. The caller must provide the CDATA
@@ -1122,6 +1130,16 @@ public final class Encode {
      *     </tr>
      *   </thead>
      *   <tbody>
+     *     <tr class="rowColor">
+     *       <td class="colFirst">U+0020</td><td><i>SPACE</i></td>
+     *       <td class="colLast"><code>\x20</code></td>
+     *       <td class="colLast">HTML script end-tag delimiter</td>
+     *     </tr>
+     *     <tr class="altColor">
+     *       <td class="colFirst">U+0021</td><td><code>!</code></td>
+     *       <td class="colLast"><code>\x21</code></td>
+     *       <td class="colLast">Part of the HTML script comment-open token</td>
+     *     </tr>
      *     <tr class="altColor">
      *       <td class="colFirst">U+0008</td><td><i>BS</i></td>
      *       <td class="colLast"><code>\b</code></td>
@@ -1182,6 +1200,22 @@ public final class Encode {
      *       block.</td>
      *     </tr>
      *     <tr class="altColor">
+     *       <td class="colFirst">U+003C</td><td><code>&lt;</code></td>
+     *       <td class="colLast"><code>\x3c</code></td>
+     *       <td class="colLast">Part of HTML script delimiters</td>
+     *     </tr>
+     *     <tr class="rowColor">
+     *       <td class="colFirst">U+003E</td><td><code>&gt;</code></td>
+     *       <td class="colLast"><code>\x3e</code></td>
+     *       <td class="colLast">HTML script end-tag delimiter</td>
+     *     </tr>
+     *     <tr class="altColor">
+     *       <td class="colFirst" colspan="2">C, I, P, R, S, T and lowercase</td>
+     *       <td class="colLast"><code>\x##</code></td>
+     *       <td class="colLast">Breaks every nonempty encoded substring of a
+     *       case-insensitive <code>&lt;/script</code> token.</td>
+     *     </tr>
+     *     <tr class="rowColor">
      *       <td class="colFirst">U+005C</td><td><code>\</code></td>
      *       <td class="colLast"><code>\\</code></td>
      *       <td class="colLast"></td>
@@ -1206,8 +1240,8 @@ public final class Encode {
      *     </tr>
      *     <tr class="altColor">
      *       <td class="colFirst">U+002D</td><td><code>-</code></td>
-     *       <td class="colLast"><code>\-</code></td>
-     *       <td class="colLast">Hyphen character</td>
+     *       <td class="colLast"><code>\x2d</code></td>
+     *       <td class="colLast">Part of HTML script comment tokens</td>
      *     </tr>
      *     <tr class="rowColor">
      *       <td class="colFirst" colspan="2">U+2028, U+2029</td>
@@ -1271,8 +1305,10 @@ public final class Encode {
      * NOT safe for use in script blocks.  The caller MUST provide the
      * surrounding single (') or double (") quotation marks, or backticks (`) for
      * an ordinary (untagged) template literal. This method performs the
-     * same encode as {@link #forJavaScript(String)} with the
-     * exception that <code>/</code> and <code>-</code> are not escaped.</p>
+     * same encode as {@link #forJavaScript(String)} except that slash, hyphen,
+     * space, {@code !}, {@code <}, {@code >}, and both cases of C, I, P, R, S,
+     * and T are not escaped. Those additional escapes protect an outer HTML
+     * script context and do not apply to an event attribute.</p>
      * <p>DEL and C1 controls (U+007F to U+009F) are hex-escaped. Unpaired UTF-16
      * surrogates use Unicode escapes; valid surrogate pairs remain unescaped.</p>
      *
@@ -1379,10 +1415,10 @@ public final class Encode {
      * use in ANY context embedded in HTML.</strong> The caller must
      * provide surrounding single (') or double (") quotation marks, or backticks
      * (`) for an ordinary (untagged) template literal. This method
-     * performs the same encode as {@link #forJavaScript(String)} with
-     * the exception that <code>/</code>, <code>-</code>, and <code>&amp;</code> are not
-     * escaped and <code>"</code> and <code>'</code> are encoded as
-     * <code>\"</code> and <code>\'</code> respectively.</p>
+     * performs the same encode as {@link #forJavaScript(String)} except that
+     * slash, hyphen, space, {@code !}, {@code <}, {@code >}, both cases of C,
+     * I, P, R, S, and T, and ampersand are not escaped; double and single
+     * quotes use backslash escapes.</p>
      * <p>DEL and C1 controls (U+007F to U+009F) are hex-escaped. Unpaired UTF-16
      * surrogates use Unicode escapes; valid surrogate pairs remain unescaped.</p>
      *
@@ -1638,10 +1674,11 @@ public final class Encode {
 
         /**
          * The core String encoding routine of this class.  It uses the input
-         * and output buffers to allow the encoders to work in reuse arrays.
-         * When the input and/or output exceeds the capacity of the reused
-         * arrays, temporary ones are allocated and then discarded after
-         * the encode is done.
+         * and output buffers to allow the encoders to work in reused arrays.
+         * If the encoded result exceeds the reused output array, the same
+         * fixed-size streaming loop as the Writer facade grows a StringWriter
+         * according to the actual output length. It does not eagerly allocate
+         * the encoder's worst-case expansion.
          *
          * @param encoder the encoder to use
          * @param str the string to encode
@@ -1666,41 +1703,19 @@ public final class Encode {
                     return new String(_output.array(), 0, _output.position());
                 }
 
-                // else, it's an overflow, we need to use a new output buffer
-                // we'll allocate this buffer to be the exact size of the worst
-                // case, guaranteeing a second overflow would not be possible.
-                CharBuffer tmp = CharBuffer.allocate(_output.position()
-                            + encoder.maxEncodedLength(_input.remaining()));
-
-                // copy over everything that has been encoded so far
-                tmp.put(_output.array(), 0, _output.position());
-
-                cr = encoder.encodeArrays(_input, tmp, true);
-                if (cr.isOverflow()) {
-                    throw new AssertionError("unexpected result from encoder");
-                }
-
-                return new String(tmp.array(), 0, tmp.position());
-            } else {
-                // the input it too large for our pre-allocated buffers
-                // we'll use a temporary direct heap allocation
-                final int m = j + encoder.maxEncodedLength(remaining);
-                CharBuffer buffer = CharBuffer.allocate(m);
-                str.getChars(0, j, buffer.array(), 0);
-                str.getChars(j, n, buffer.array(), m - remaining);
-
-                CharBuffer input = buffer.duplicate();
-                input.limit(m).position(m-remaining);
-                buffer.position(j);
-
-                CoderResult cr = encoder.encodeArrays(input, buffer, true);
-
-                if (cr.isOverflow()) {
-                    throw new AssertionError("unexpected result from encoder");
-                }
-
-                return new String(buffer.array(), 0, buffer.position());
             }
+
+            // The input or actual output exceeds the reusable buffers. Grow
+            // only with output that the encoder really emits. In particular,
+            // CDATA's 13x maximum must not force a 13x eager allocation for a
+            // large string containing only one character that needs encoding.
+            StringWriter out = new StringWriter(n);
+            try {
+                encode(encoder, out, str, j);
+            } catch (IOException impossible) {
+                throw new AssertionError("StringWriter threw IOException", impossible);
+            }
+            return out.toString();
         }
 
         /**

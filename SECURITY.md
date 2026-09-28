@@ -14,7 +14,10 @@ older release lines are not patched.
 | `org.owasp.encoder:encoder`             | 1.4.1     | < 1.4.1       |
 | `org.owasp.encoder:encoder-jsp`         | 1.4.1     | < 1.4.1       |
 | `org.owasp.encoder:encoder-jakarta-jsp` | 1.4.1     | < 1.4.1       |
-| `org.owasp.encoder:encoder-esapi`       | 1.4.1     | < 1.4.1       |
+
+The optional `org.owasp.encoder:encoder-esapi` artifact is retired. Version
+1.4.1 is its final published release, no version is currently supported, and no
+1.5.0 artifact will be published. See the [retirement and migration notice](docs/encoder-esapi-retirement.md).
 
 Upgrading the core `encoder` artifact to the latest 1.x release needs no code changes:
 no public API was removed between 1.2.3 and 1.4.1. It does need Java 8 or later;
@@ -53,6 +56,7 @@ Out of scope:
 - using an encoder in a context it does not document (for example, `forHtml` output
   placed in a JavaScript string)
 - canonicalization, decoding, or input validation, which this library does not perform
+- the retired `encoder-esapi` adapter
 - vulnerabilities in ESAPI, Spring, or servlet containers; report ESAPI issues through
   the [ESAPI security policy](https://github.com/ESAPI/esapi-java-legacy/security)
 - the unpublished `jakarta-test` application
