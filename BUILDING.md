@@ -53,15 +53,19 @@ Empty defaults support `-Djacoco.skip=true`. Appending execution data intentiona
 unions successive unit JVMs in one build; use `clean` for an independent baseline.
 CI's Java 8 run starts in its own job/cache and uploads its own reports/data.
 
+The existing floors were selected from the following 2026-09-27 baseline
+measurement:
+
 | Module | Measured lines | Measured branches | Line floor | Branch floor |
 | --- | --- | --- | --- | --- |
 | core | 1228/1240 (99.032%) | 890/903 (98.560%) | 99.0% | 98.5% |
 | jsp | 66/66 | no branches | 100% | 100% |
 | jakarta | 66/66 | no branches | 100% | 100% |
 
-Floors round the current baseline down to 0.1 percentage points. They are not a
-claim that every encoding behavior is covered. CI retains reports alongside test
-results. Changes that intentionally alter these baselines require reviewed evidence.
+Floors round that recorded baseline down to 0.1 percentage points. They are not a
+claim that every encoding behavior is covered. Current measured totals can change
+when executable lines or branches change; do not lower the floors without reviewed
+evidence. CI retains reports alongside test results.
 
 ## Retired Maven Site
 
