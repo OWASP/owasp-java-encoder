@@ -99,6 +99,26 @@ class GatePolicy(unittest.TestCase):
 
 
 class DependencySubmissionPolicy(unittest.TestCase):
+    def test_dependabot_scans_reactor_once(self):
+        dependabot = (ROOT / '.github/dependabot.yml').read_text()
+        maven = dependabot.split('- package-ecosystem: maven', 1)[1]
+        maven = maven.split('- package-ecosystem:', 1)[0]
+        directories = [line.split('- ', 1)[1].strip()
+                       for line in maven.splitlines()
+                       if line.lstrip().startswith('- /')]
+
+        self.assertEqual(len(directories), len(set(directories)))
+        self.assertIn('/', directories)
+        self.assertIn('/compatibility/dependencies', directories)
+
+        root = ET.parse(ROOT / 'pom.xml').getroot()
+        reactor_modules = {
+            '/' + node.text.strip()
+            for node in root.findall('.//p:modules/p:module', version.NS)
+        }
+        self.assertTrue(reactor_modules)
+        self.assertEqual(set(), reactor_modules.intersection(directories))
+
     def test_only_executed_plugins_are_submitted(self):
         workflow = (ROOT / '.github/workflows/dependency-submission.yaml').read_text()
         self.assertIn('-DincludeArtifactIds=', workflow)
@@ -182,6 +202,107 @@ class DependencySubmissionPolicy(unittest.TestCase):
 
         dependabot = (ROOT / '.github/dependabot.yml').read_text()
         self.assertIn('- /compatibility/dependencies', dependabot)
+
+    def test_api_updates_keep_explicit_compatibility_baselines(self):
+        def properties(project):
+            return project.find('p:properties', version.NS)
+
+        def dependencies(parent):
+            return {
+                (dependency.findtext('p:groupId', namespaces=version.NS),
+                 dependency.findtext('p:artifactId', namespaces=version.NS)):
+                dependency
+                for dependency in parent.findall('p:dependencies/p:dependency',
+                                                   version.NS)
+            }
+
+        def dependency_version(dependency):
+            return dependency.findtext('p:version', namespaces=version.NS)
+
+        def dependency_scope(dependency):
+            return dependency.findtext('p:scope', namespaces=version.NS)
+
+        def exec_dependencies(project):
+            plugins = project.findall('p:build/p:plugins/p:plugin', version.NS)
+            plugin = next(item for item in plugins
+                          if item.findtext('p:artifactId', namespaces=version.NS)
+                          == 'exec-maven-plugin')
+            return dependencies(plugin)
+
+        jsp = ET.parse(ROOT / 'jsp/pom.xml').getroot()
+        jsp_properties = properties(jsp)
+        self.assertEqual('2.2.1', jsp_properties.findtext(
+            'p:jsp.api.baseline.version', namespaces=version.NS))
+        self.assertEqual('2.3.3', jsp_properties.findtext(
+            'p:jsp.api.version', namespaces=version.NS))
+        jsp_dependencies = dependencies(jsp)
+        jsp_api = jsp_dependencies[('javax.servlet.jsp', 'javax.servlet.jsp-api')]
+        self.assertEqual('${jsp.api.version}', dependency_version(jsp_api))
+        self.assertEqual('provided', dependency_scope(jsp_api))
+        self.assertEqual('${jsp.api.baseline.version}', dependency_version(
+            exec_dependencies(jsp)[('javax.servlet.jsp', 'javax.servlet.jsp-api')]))
+        self.assertIn('${jsp.api.baseline.version}', jsp_properties.findtext(
+            'p:japicmp.old.classpath', namespaces=version.NS))
+        self.assertIn('${jsp.api.version}', jsp_properties.findtext(
+            'p:japicmp.new.classpath', namespaces=version.NS))
+        self.assertNotIn('${jsp.api.version}', jsp_properties.findtext(
+            'p:japicmp.old.classpath', namespaces=version.NS))
+        self.assertNotIn('${jsp.api.baseline.version}', jsp_properties.findtext(
+            'p:japicmp.new.classpath', namespaces=version.NS))
+
+        jakarta = ET.parse(ROOT / 'jakarta/pom.xml').getroot()
+        jakarta_properties = properties(jakarta)
+        expected = {
+            'jakarta.el.api.baseline.version': '4.0.0',
+            'jakarta.el.api.version': '6.0.1',
+            'jakarta.servlet.api.baseline.version': '6.0.0',
+            'jakarta.servlet.api.version': '6.1.0',
+        }
+        for name, value in expected.items():
+            self.assertEqual(value, jakarta_properties.findtext(
+                'p:' + name, namespaces=version.NS))
+
+        jakarta_dependencies = dependencies(jakarta)
+        jakarta_exec_dependencies = exec_dependencies(jakarta)
+        for group, artifact, current, baseline in (
+                ('jakarta.el', 'jakarta.el-api',
+                 '${jakarta.el.api.version}',
+                 '${jakarta.el.api.baseline.version}'),
+                ('jakarta.servlet', 'jakarta.servlet-api',
+                 '${jakarta.servlet.api.version}',
+                 '${jakarta.servlet.api.baseline.version}')):
+            coordinate = (group, artifact)
+            self.assertEqual(current, dependency_version(
+                jakarta_dependencies[coordinate]))
+            self.assertEqual('test', dependency_scope(
+                jakarta_dependencies[coordinate]))
+            self.assertEqual(baseline, dependency_version(
+                jakarta_exec_dependencies[coordinate]))
+
+        old_classpath = jakarta_properties.findtext(
+            'p:japicmp.old.classpath', namespaces=version.NS)
+        new_classpath = jakarta_properties.findtext(
+            'p:japicmp.new.classpath', namespaces=version.NS)
+        self.assertIn('${jakarta.el.api.baseline.version}', old_classpath)
+        self.assertIn('${jakarta.servlet.api.baseline.version}', old_classpath)
+        self.assertIn('${jakarta.el.api.version}', new_classpath)
+        self.assertIn('${jakarta.servlet.api.version}', new_classpath)
+        self.assertNotIn('${jakarta.el.api.version}', old_classpath)
+        self.assertNotIn('${jakarta.servlet.api.version}', old_classpath)
+        self.assertNotIn('${jakarta.el.api.baseline.version}', new_classpath)
+        self.assertNotIn('${jakarta.servlet.api.baseline.version}', new_classpath)
+
+        jsp_fixture = dependencies(ET.parse(
+            ROOT / 'compatibility/dependencies/jsp.xml').getroot())
+        self.assertEqual('2.2.1', dependency_version(
+            jsp_fixture[('javax.servlet.jsp', 'javax.servlet.jsp-api')]))
+
+        jakarta_fixture = dependencies(ET.parse(
+            ROOT / 'compatibility/dependencies/jakarta.xml').getroot())
+        self.assertEqual('4.0.0', dependency_version(
+            jakarta_fixture[('jakarta.el', 'jakarta.el-api')]))
+        self.assertEqual('5.0.0', dependency_version(
+            jakarta_fixture[('jakarta.servlet', 'jakarta.servlet-api')]))
 
 
 if __name__ == '__main__':

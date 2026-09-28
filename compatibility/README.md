@@ -12,12 +12,19 @@ and OSGi consumers. Java 9+ legs additionally run explicit and automatic modules
 | `encoder-jsp` | Java 8 | JSP 2.2.1, Servlet 3.0.1, EL 2.2.5 (`javax`) |
 | `encoder-jakarta-jsp` | Java 8 with compatible container APIs | JSP 3.0.0, Servlet 5.0.0, EL 4.0.0 (`jakarta`) |
 
+The published `encoder-jsp` POM defaults its provided API to JSP 2.3.3. The
+JSP 2.2.1 row is deliberately older: it is an independent minimum-consumer
+fixture that prevents a dependency refresh from silently raising the runtime
+contract. The Jakarta Servlet and EL dependencies used by the reactor are
+test-only: their declarations remain in the published source POM, but they do
+not propagate into ordinary consumer dependency graphs or enter the adapter JAR.
+
 The Jakarta fixture deliberately uses Servlet 5.0, whose minimum Java SE version
 is 8 ([specification](https://jakarta.ee/specifications/servlet/5.0/)). Newer servlet
-containers/APIs can require a newer JVM. The reactor's Jakarta tests use Servlet 6,
-and the Docker/Selenium application remains in the separate JDK 17 `Java CI` job.
-This smoke matrix is not certification of every container or transitive
-dependency on every JDK.
+containers/APIs can require a newer JVM. The reactor's Jakarta tests use Servlet
+6.1.0 and EL 6.0.1 on the JDK 17 build, and the Docker/Selenium application remains
+in the separate JDK 17 `Java CI` job. This smoke matrix is not certification of
+every container or transitive dependency on every JDK.
 
 The Java 8 proof includes packaged consumer execution across all three artifacts,
 including Jakarta with Java 8-compatible APIs. A separate CI job builds on JDK 17,
@@ -148,7 +155,7 @@ The adapter modules also require their public API dependency on the module path:
 
 | Adapter module            | Required dependency module | Supported Maven artifact                              |
 |---------------------------|----------------------------|-------------------------------------------------------|
-| `owasp.encoder.jsp`       | `javax.servlet.jsp.api`    | `javax.servlet.jsp:javax.servlet.jsp-api:2.2.1`       |
+| `owasp.encoder.jsp`       | `javax.servlet.jsp.api`    | `javax.servlet.jsp:javax.servlet.jsp-api:2.3.3`       |
 | `owasp.encoder.jakarta`   | `jakarta.servlet.jsp`      | `jakarta.servlet.jsp:jakarta.servlet.jsp-api:3.0.0`   |
 
 These dependencies are transitive in the module descriptors because their types
