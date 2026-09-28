@@ -173,6 +173,12 @@ class DependencySubmissionPolicy(unittest.TestCase):
                                   for field in ('groupId', 'artifactId', 'version',
                                                 'relativePath'))
             self.assertEqual(expected_parent, actual_parent, name)
+            downloader_overrides = [
+                plugin for plugin in child.findall('.//p:plugin', version.NS)
+                if plugin.findtext('p:artifactId', namespaces=version.NS)
+                == 'maven-dependency-plugin'
+            ]
+            self.assertEqual([], downloader_overrides, name)
 
         dependabot = (ROOT / '.github/dependabot.yml').read_text()
         self.assertIn('- /compatibility/dependencies', dependabot)
