@@ -27,7 +27,7 @@
         <!-- Keep the client aligned with the reviewed, digest-pinned browser image. -->
         <selenium.version>4.49.0</selenium.version>
         <!-- GHSA-q4xh-88c3-wmh7 / GHSA-wjgm-6hv5-3cvf: Boot's separate plugin realm. -->
-        <jackson.build.version>3.1.6</jackson.build.version>
+        <jackson.build.version>3.2.3</jackson.build.version>
         <!-- Must equal the version in the root pom.xml so this app tests the
              encoder-jakarta-jsp built in the same reactor. CI checks this. -->
         <encoder.version>1.5.1-SNAPSHOT</encoder.version>
@@ -115,7 +115,7 @@
                         <!-- Last Java 17-compatible line; 13+ requires Java 21. -->
                         <version>12.3.1</version>
                     </dependency>
-                    <dependency><groupId>org.apache.commons</groupId><artifactId>commons-lang3</artifactId><version>3.20.0</version></dependency>
+                    <dependency><groupId>org.apache.commons</groupId><artifactId>commons-lang3</artifactId><version>3.21.0</version></dependency>
                     <dependency><groupId>org.codehaus.plexus</groupId><artifactId>plexus-archiver</artifactId><version>4.14.0</version></dependency>
                     <dependency><groupId>org.codehaus.plexus</groupId><artifactId>plexus-utils</artifactId><version>4.0.3</version></dependency>
                 </dependencies>
@@ -210,7 +210,7 @@
                 <dependencies>
                     <dependency><groupId>tools.jackson.core</groupId><artifactId>jackson-databind</artifactId><version>${jackson.build.version}</version></dependency>
                     <dependency><groupId>tools.jackson.core</groupId><artifactId>jackson-core</artifactId><version>${jackson.build.version}</version></dependency>
-                    <dependency><groupId>org.apache.commons</groupId><artifactId>commons-lang3</artifactId><version>3.20.0</version></dependency>
+                    <dependency><groupId>org.apache.commons</groupId><artifactId>commons-lang3</artifactId><version>3.21.0</version></dependency>
                     <dependency><groupId>org.codehaus.plexus</groupId><artifactId>plexus-utils</artifactId><version>3.6.2</version></dependency>
                 </dependencies>
                 <configuration>
