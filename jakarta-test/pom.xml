@@ -26,8 +26,9 @@
         <tomcat.version>11.0.26</tomcat.version>
         <!-- Keep the client aligned with the reviewed, digest-pinned browser image. -->
         <selenium.version>4.49.0</selenium.version>
-        <!-- GHSA-q4xh-88c3-wmh7 / GHSA-wjgm-6hv5-3cvf: Boot's separate plugin realm. -->
-        <jackson.build.version>3.1.6</jackson.build.version>
+        <!-- GHSA-q4xh-88c3-wmh7 / GHSA-wjgm-6hv5-3cvf / GHSA-wv8q-qhhj-9h54 /
+             GHSA-cxp5-3px4-pw24: Boot's separate plugin realm. -->
+        <jackson.build.version>3.1.7</jackson.build.version>
         <!-- Must equal the version in the root pom.xml so this app tests the
              encoder-jakarta-jsp built in the same reactor. CI checks this. -->
         <encoder.version>1.5.1-SNAPSHOT</encoder.version>

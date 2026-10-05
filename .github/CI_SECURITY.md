@@ -88,9 +88,10 @@ configured. Review new action source and transitive downloads as well as pins.
 Do not dismiss alerts merely to reduce the count. Correct versions or graph
 semantics, submit the new graph, and let GitHub close packages that are no longer
 present.
-Baseline-sensitive API, JSP-engine and build-plugin dependencies are excluded
-from the broad Maven **version-update group**, so unsuppressed proposals receive
-individual review. Reviewed incompatible minor and major proposal classes use
+Baseline-sensitive API, JSP-engine and build-plugin dependencies, the exact Boot
+plugin-realm Jackson pins and the Maven distribution used by the wrapper are
+excluded from the broad Maven **version-update group**, so unsuppressed proposals
+receive individual review. Reviewed incompatible minor and major proposal classes use
 `ignore.update-types`; GitHub applies those rules only to version updates, so
 security updates remain eligible and the security-update group is unchanged.
 Dependabot classifies repeated Maven coordinates from their lowest occurrence;

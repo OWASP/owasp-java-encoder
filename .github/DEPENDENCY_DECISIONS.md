@@ -1,7 +1,8 @@
 # Dependency proposal decisions — 1.5.0
 
 Initial review: 2026-09-26. Focused API follow-up: 2026-09-27. Dependabot
-proposal-policy follow-up: 2026-09-28.
+proposal-policy follow-up: 2026-09-28. Jackson and proposal-routing follow-up:
+2026-10-05.
 
 PRs [#176](https://github.com/OWASP/owasp-java-encoder/pull/176) and
 [#188](https://github.com/OWASP/owasp-java-encoder/pull/188) mixed ordinary build
@@ -63,6 +64,42 @@ security suppression or published library dependency is added or changed.
 Verify both the resolved plugin closure and the packaged browser fixture in CI;
 a source-POM pin alone does not demonstrate the executed dependency version.
 
+## Jackson 3.1.7 and proposal routing — 2026-10-05
+
+[GHSA-wv8q-qhhj-9h54](https://github.com/advisories/GHSA-wv8q-qhhj-9h54)
+and [GHSA-cxp5-3px4-pw24](https://github.com/advisories/GHSA-cxp5-3px4-pw24)
+affect Jackson databind 3.0.0 through 3.1.6 and are fixed in 3.1.7. GitHub
+reported both against the Boot plugin-realm pin above. Raise databind and core in
+that realm to **3.1.7**. The scope, CI evidence and unchanged library dependencies
+from the 2026-09-28 fix still apply. Both advisories also list fixed 2.x releases;
+the core library's test-only Jackson 2.22.3 is already the fixed 2.22 release.
+This replaces security PR [#231](https://github.com/OWASP/owasp-java-encoder/pull/231),
+which failed only on the exact-version policy assertion.
+
+Grouped PR [#232](https://github.com/OWASP/owasp-java-encoder/pull/232) mixed
+three different decisions:
+
+- Its Jackson 3.2.3 proposal is not accepted. It moves Boot 4.1.1's plugin realm
+  to a minor line that its buildpack platform was not built against, and the
+  3.1 line already has the fix. The configuration ignores Jackson minor and major
+  version updates; patch and security updates remain eligible.
+- Its Maven wrapper 3.10.0 proposal is not rejected, but it is a release-toolchain
+  change. The configuration now excludes `org.apache.maven:apache-maven` from the
+  broad group so it arrives as its own PR. That PR fails by design until it also
+  updates the release enforcer range (`pom.xml`), `scripts/check-wrapper.py`,
+  `scripts/check-reproducible.py`, BUILDING.md, README.md and RELEASING.md,
+  keeps `mvnw.cmd` LF-normalized in the index (#232 committed CRLF), and records
+  reproducibility evidence for the new Maven version.
+- Its commons-lang3 3.21.0 build-plugin update is routine and returns in the group.
+
+The Jackson pin remains an exact policy-test value, so every Jackson proposal,
+including a security update, needs a matching change to that test and this
+record. Excluding Jackson from the broad group keeps such a proposal from blocking
+routine updates. Revisit when the Boot parent moves past 4.1.1: if its buildpack
+platform brings the same or a newer Jackson, remove the pin, its ignore rules and
+the policy assertion together. Enforcer rules do not inspect plugin realms, so a
+stale exact pin would silently downgrade Boot's own Jackson.
+
 ## Deferred proposals and reconsideration conditions
 
 | Proposal | Disposition and required evidence before reconsideration |
@@ -94,10 +131,13 @@ record; a grouped PR closure is not proof that every proposed upgrade was applie
 
 ## Future Dependabot proposals
 
-The [configuration](dependabot.yml) excludes the eleven baseline-sensitive
-coordinates above from the broad Maven **version-update group**. For the ten
-coordinates with a rejected proposal in #218–#227, it also ignores only the
-SemVer minor or major version-update classes covered by the decisions above.
+The [configuration](dependabot.yml) excludes fourteen coordinates from the broad
+Maven **version-update group**: the eleven baseline-sensitive coordinates above,
+the two Boot plugin-realm Jackson coordinates and the Maven distribution used by
+the wrapper. For the ten coordinates with a rejected proposal in #218–#227 and
+the two Jackson coordinates from #232, it also ignores only the SemVer minor or
+major version-update classes covered by the decisions above. The Maven wrapper
+has no ignore rule.
 This prevents the weekly job from recreating proposals that merely replace
 historical comparators, minimum-consumer fixtures, coherent servlet-engine
 lines, or reviewed tool majors. The accepted Felix Maven Bundle Plugin remains

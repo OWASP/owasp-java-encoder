@@ -13,9 +13,13 @@ unchanged. [1.5.0 is available from Central](releases/1.5.0-central-publication.
 - Discover release tags independently of commit ancestry so squash merges cannot
   leave the compatibility baseline stale; add isolated Git regressions.
 - Record verified 1.5.0 publication and replace pending-availability notices.
-- Update Jackson core/databind to 3.1.6 in the unpublished Jakarta fixture's
-  Spring Boot Maven plugin realm for GHSA-q4xh-88c3-wmh7 and GHSA-wjgm-6hv5-3cvf.
-  Published library dependencies and release artifacts are unchanged.
+- Update Jackson core/databind to 3.1.7 in the unpublished Jakarta fixture's
+  Spring Boot Maven plugin realm for GHSA-q4xh-88c3-wmh7, GHSA-wjgm-6hv5-3cvf,
+  GHSA-wv8q-qhhj-9h54 and GHSA-cxp5-3px4-pw24. Published library dependencies
+  and release artifacts are unchanged.
+- Route Jackson plugin-realm pins and Maven wrapper upgrades out of the grouped
+  Dependabot PR for individual review, and keep Jackson on its 3.1 line until the
+  Boot parent moves. Security updates remain eligible.
 
 ## 1.5.0 — 2026-09-28 UTC
 
