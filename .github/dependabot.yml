@@ -32,6 +32,11 @@ updates:
           - jakarta.el:jakarta.el-api
           - org.apache.tomcat.embed:tomcat-embed-jasper
           - org.apache.tomcat:tomcat-annotations-api
+          # Exact Boot plugin-realm pins checked by CI policy tests.
+          - tools.jackson.core:jackson-databind
+          - tools.jackson.core:jackson-core
+          # The wrapper's Maven version is a separately reviewed toolchain change.
+          - org.apache.maven:apache-maven
       maven-security:
         applies-to: security-updates
         patterns: ['*']
@@ -82,6 +87,16 @@ updates:
           - version-update:semver-major
       - dependency-name: org.apache.tomcat:tomcat-annotations-api
         update-types:
+          - version-update:semver-major
+      # Keep Boot 4.1.1's plugin realm on its own 3.1 line; patches and
+      # security updates remain eligible.
+      - dependency-name: tools.jackson.core:jackson-databind
+        update-types:
+          - version-update:semver-minor
+          - version-update:semver-major
+      - dependency-name: tools.jackson.core:jackson-core
+        update-types:
+          - version-update:semver-minor
           - version-update:semver-major
   - package-ecosystem: github-actions
     directory: /

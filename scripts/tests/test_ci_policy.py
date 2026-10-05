@@ -213,6 +213,8 @@ class DependencySubmissionPolicy(unittest.TestCase):
                 'version-update:semver-major'],
             'org.apache.tomcat:tomcat-annotations-api': [
                 'version-update:semver-major'],
+            'tools.jackson.core:jackson-databind': minor_and_major,
+            'tools.jackson.core:jackson-core': minor_and_major,
         }
         self.assertEqual(expected, rules)
         self.assertEqual(
@@ -237,6 +239,30 @@ class DependencySubmissionPolicy(unittest.TestCase):
         for name, mutation in mutations.items():
             with self.subTest(mutation=name), self.assertRaises(ValueError):
                 parse_dependabot_ignore(mutation)
+
+    def test_dependabot_routes_reviewed_coordinates_out_of_broad_group(self):
+        dependabot = (ROOT / '.github/dependabot.yml').read_text()
+        maven = dependabot.split('- package-ecosystem: maven', 1)[1]
+        maven = maven.split('- package-ecosystem:', 1)[0]
+        group = maven.split('      maven-dependencies:\n', 1)[1]
+        group = group.split('      maven-security:\n', 1)[0]
+        block = group.split('        exclude-patterns:\n', 1)[1]
+        excluded = [line.split('- ', 1)[1].strip()
+                    for line in block.splitlines()
+                    if line.startswith('          - ')]
+        self.assertEqual(len(excluded), len(set(excluded)))
+
+        # Pinned Boot plugin-realm Jackson and the wrapper's Maven distribution
+        # need individual review; a mixed group PR cannot pass their checks.
+        for coordinate in ('tools.jackson.core:jackson-databind',
+                           'tools.jackson.core:jackson-core',
+                           'org.apache.maven:apache-maven'):
+            self.assertIn(coordinate, excluded)
+
+        ignore = parse_dependabot_ignore(maven.split('    ignore:\n', 1)[1])
+        versioned = {name for name, update_types in ignore.items() if update_types}
+        self.assertEqual(set(), versioned.difference(excluded))
+        self.assertNotIn('org.apache.maven:apache-maven', ignore)
 
     def test_only_executed_plugins_are_submitted(self):
         workflow = (ROOT / '.github/workflows/dependency-submission.yaml').read_text()
@@ -265,7 +291,7 @@ class DependencySubmissionPolicy(unittest.TestCase):
 
     def test_boot_plugin_jackson_fix_stays_in_its_own_realm(self):
         app = ET.parse(ROOT / 'jakarta-test/pom.xml').getroot()
-        self.assertEqual('3.1.6', app.findtext(
+        self.assertEqual('3.1.7', app.findtext(
             'p:properties/p:jackson.build.version', namespaces=version.NS))
         plugins = app.findall('p:build/p:plugins/p:plugin', version.NS)
         boot = next(plugin for plugin in plugins
