@@ -66,7 +66,7 @@ def main():
             raise ValueError('Expected thirteen release payload files')
         results.append(hashes)
     differences = [name for name in results[0] if results[0][name] != results[1][name]]
-    report = {'commit': commit, 'java': props, 'maven': '3.9.16',
+    report = {'commit': commit, 'java': props, 'maven': '3.10.0',
               'hashes': results, 'differences': differences}
     (directory / 'comparison.json').write_text(json.dumps(report, indent=2) + '\n')
     require_identical(results[0], results[1])

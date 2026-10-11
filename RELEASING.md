@@ -55,7 +55,7 @@ existing Maven version.
 ## Prepare and verify
 
 1. Use a clean checkout, **Eclipse Temurin 17.0.20.1+1** and the committed
-   wrapper (**Maven 3.9.16**). The signing profile enforces vendor, exact runtime
+   wrapper (**Maven 3.10.0**). The signing profile enforces vendor, exact runtime
    and Maven versions, and a non-SNAPSHOT project version. Ordinary builds allow
    JDK 17+; the release path is stricter because javac output changes on newer
    JDKs. Record the full Git commit and operating system/architecture. Build with a fresh Maven local repository so

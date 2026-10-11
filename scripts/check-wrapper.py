@@ -32,7 +32,7 @@ def bootstrap(directory, bad_hash):
         if result.returncode == 0 or 'SHA-256' not in result.stdout:
             raise ValueError('Checksum rejection did not work: ' + result.stdout)
     else:
-        if result.returncode != 0 or 'Apache Maven 3.9.16' not in result.stdout:
+        if result.returncode != 0 or 'Apache Maven 3.10.0' not in result.stdout:
             raise ValueError('Wrapper bootstrap failed: ' + result.stdout)
     print(('Rejected incorrect checksum' if bad_hash else 'Verified bootstrap'), WRAPPER)
 
