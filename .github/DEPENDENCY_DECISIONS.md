@@ -2,7 +2,7 @@
 
 Initial review: 2026-09-26. Focused API follow-up: 2026-09-27. Dependabot
 proposal-policy follow-up: 2026-09-28. Jackson and proposal-routing follow-up:
-2026-10-05.
+2026-10-05. Maven 3.10.0 wrapper follow-up: 2026-10-11.
 
 PRs [#176](https://github.com/OWASP/owasp-java-encoder/pull/176) and
 [#188](https://github.com/OWASP/owasp-java-encoder/pull/188) mixed ordinary build
@@ -99,6 +99,32 @@ routine updates. Revisit when the Boot parent moves past 4.1.1: if its buildpack
 platform brings the same or a newer Jackson, remove the pin, its ignore rules and
 the policy assertion together. Enforcer rules do not inspect plugin realms, so a
 stale exact pin would silently downgrade Boot's own Jackson.
+
+## Maven 3.10.0 wrapper — 2026-10-11
+
+Accept the Maven **3.10.0** distribution proposed by Dependabot PR
+[#235](https://github.com/OWASP/owasp-java-encoder/pull/235). That PR failed only
+on the wrapper version assertion and re-committed `mvnw.cmd` with CRLF in the index,
+so a separate change completes the checklist above. The wrapper scripts remain
+Apache Maven Wrapper 3.3.4 and `mvnw.cmd` is unchanged. The signing profile now
+requires exactly 3.10.0. Ordinary builds keep the `[3.9.16,)` minimum.
+
+The ZIP's SHA-256 matches the wrapper properties and the SHA-512 published by
+Apache, and its detached signature verifies against a key in Apache Maven's
+`KEYS` file. Maven 3.10.0 moves to Resolver 2, breadth-first classpath ordering,
+stricter model validation, origin-scoped repository credentials and a Super POM
+without plugin management or `release-profile`
+([release notes](https://maven.apache.org/docs/3.10.0/release-notes.html)).
+This build already declares its plugin versions, `attach-sources`/`attach-javadocs`
+executions, encodings and `outputTimestamp`. Effective POMs from 3.9.16 and 3.10.0
+differ only in two unused Super POM plugin-management entries (assembly and
+release) and, with `performRelease=true`, a redundant `<inherited>true</inherited>`
+on the source, Javadoc and deploy plugins. Payload evidence is in the
+[Maven 3.10.0 validation](../releases/maven-3.10.0-validation.md).
+
+Credential scoping is the one release-path change this review cannot exercise
+without the project's Central token. The first signed `clean deploy` under 3.10.0
+should confirm that staging still authenticates before the release relies on it.
 
 ## Deferred proposals and reconsideration conditions
 
