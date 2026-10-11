@@ -2,9 +2,9 @@
 
 Use JDK 17+ and the committed `./mvnw` (`mvnw.cmd` on Windows). The wrapper is
 Apache Maven Wrapper 3.3.4's unmodified `only-script` distribution; no wrapper
-JAR executes before the download check. It pins Maven 3.9.16 and its SHA-256.
+JAR executes before the download check. It pins Maven 3.10.0 and its SHA-256.
 The downloaded Maven ZIP was independently compared to the SHA-512 served at
-[Apache's distribution site](https://downloads.apache.org/maven/maven-3/3.9.16/binaries/).
+[Apache's distribution site](https://downloads.apache.org/maven/maven-3/3.10.0/binaries/).
 Wrapper archive SHA-256: `6cb584c2bc907b849a0b931d8266d3ff3214cdd3127115ed4f49fb7176413d36`.
 Both bootstrap paths are CI gates, including a deliberately wrong checksum with
 an empty wrapper cache. `.mvn/maven.config` requires strict transfer checksums.

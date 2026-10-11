@@ -642,7 +642,7 @@
                                     <requireReleaseVersion/>
                                     <requireJavaVendor><includes><include>Eclipse Adoptium</include></includes></requireJavaVendor>
                                     <requireProperty><property>java.runtime.version</property><regex>17\.0\.20\.1\+1</regex></requireProperty>
-                                    <requireMavenVersion><version>[3.9.16]</version></requireMavenVersion>
+                                    <requireMavenVersion><version>[3.10.0]</version></requireMavenVersion>
                                 </rules></configuration>
                             </execution>
                         </executions>

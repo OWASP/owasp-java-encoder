@@ -134,7 +134,7 @@ container or downstream dependency combination.
 
 ## Building and contributing
 
-Build with JDK 17 and the committed wrapper (Maven 3.9.16); use `mvnw.cmd` on Windows:
+Build with JDK 17 and the committed wrapper (Maven 3.10.0); use `mvnw.cmd` on Windows:
 
 ```sh
 ./mvnw clean verify

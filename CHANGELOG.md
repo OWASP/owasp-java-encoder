@@ -20,6 +20,10 @@ unchanged. [1.5.0 is available from Central](releases/1.5.0-central-publication.
 - Route Jackson plugin-realm pins and Maven wrapper upgrades out of the grouped
   Dependabot PR for individual review, and keep Jackson on its 3.1 line until the
   Boot parent moves. Security updates remain eligible.
+- Build with Maven 3.10.0 through the committed wrapper and require it for signed
+  releases. Ordinary builds still accept Maven 3.9.16 or later. Library JARs and
+  module POMs are byte-identical to 3.9.16 builds
+  ([validation](releases/maven-3.10.0-validation.md)).
 
 ## 1.5.0 — 2026-09-28 UTC
 
