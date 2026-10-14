@@ -30,8 +30,6 @@ updates:
           - jakarta.servlet.jsp:jakarta.servlet.jsp-api
           - jakarta.servlet:jakarta.servlet-api
           - jakarta.el:jakarta.el-api
-          - org.apache.tomcat.embed:tomcat-embed-jasper
-          - org.apache.tomcat:tomcat-annotations-api
           # Exact Boot plugin-realm pins checked by CI policy tests.
           - tools.jackson.core:jackson-databind
           - tools.jackson.core:jackson-core
@@ -82,12 +80,12 @@ updates:
         update-types:
           - version-update:semver-minor
           - version-update:semver-major
+      # The JSP engine fixtures pin Tomcat 9.0 in jsp/ and 10.1 in jakarta/
+      # under the same coordinates. This scan would combine them from 9.0 and
+      # write that line's release into both modules, so the /jsp and /jakarta
+      # entries below own these coordinates instead.
       - dependency-name: org.apache.tomcat.embed:tomcat-embed-jasper
-        update-types:
-          - version-update:semver-major
       - dependency-name: org.apache.tomcat:tomcat-annotations-api
-        update-types:
-          - version-update:semver-major
       # Keep Boot 4.1.1's plugin realm on its own 3.1 line; patches and
       # security updates remain eligible.
       - dependency-name: tools.jackson.core:jackson-databind
@@ -97,6 +95,52 @@ updates:
       - dependency-name: tools.jackson.core:jackson-core
         update-types:
           - version-update:semver-minor
+          - version-update:semver-major
+  # Each JSP engine fixture gets its own scan, limited to Tomcat. A module scan
+  # reads the module and its parent POM but not sibling modules, so it sees one
+  # engine line and proposes that line's patch release. Major updates would
+  # replace the engine; see DEPENDENCY_DECISIONS.md.
+  - package-ecosystem: maven
+    directory: /jsp
+    schedule:
+      interval: weekly
+      day: monday
+      time: '09:00'
+      timezone: Etc/UTC
+    open-pull-requests-limit: 1
+    allow:
+      - dependency-name: org.apache.tomcat.embed:tomcat-embed-jasper
+      - dependency-name: org.apache.tomcat:tomcat-annotations-api
+    groups:
+      tomcat-9-jsp-engine:
+        patterns: ['*']
+    ignore:
+      - dependency-name: org.apache.tomcat.embed:tomcat-embed-jasper
+        update-types:
+          - version-update:semver-major
+      - dependency-name: org.apache.tomcat:tomcat-annotations-api
+        update-types:
+          - version-update:semver-major
+  - package-ecosystem: maven
+    directory: /jakarta
+    schedule:
+      interval: weekly
+      day: monday
+      time: '09:00'
+      timezone: Etc/UTC
+    open-pull-requests-limit: 1
+    allow:
+      - dependency-name: org.apache.tomcat.embed:tomcat-embed-jasper
+      - dependency-name: org.apache.tomcat:tomcat-annotations-api
+    groups:
+      tomcat-10-jakarta-engine:
+        patterns: ['*']
+    ignore:
+      - dependency-name: org.apache.tomcat.embed:tomcat-embed-jasper
+        update-types:
+          - version-update:semver-major
+      - dependency-name: org.apache.tomcat:tomcat-annotations-api
+        update-types:
           - version-update:semver-major
   - package-ecosystem: github-actions
     directory: /

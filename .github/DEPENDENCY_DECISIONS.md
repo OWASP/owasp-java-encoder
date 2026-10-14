@@ -134,7 +134,7 @@ should confirm that staging still authenticates before the release relies on it.
 | Plexus Utils 3.6.2 → 4.1.0 in GPG/Central plugin dependencies | Keep the reviewed 3.6.2 mitigation. The [upstream 4.x migration](https://github.com/codehaus-plexus/plexus-utils) moves XML utilities to a separate artifact; 4.1 also changes DirectoryScanner default exclusions. A newer major is not a drop-in plugin-realm security fix. Reconsider with actual plugin linkage, isolated signing/bundle/rehearsal evidence, transitive-advisory review and repeatable payloads. |
 | javax Servlet 3.0.1 → 4.0.1; EL 2.2.5 → 3.0.0 | Keep the test-only minimum API fixtures. These are not bundled production container implementations. Modern engine coverage is separate; replacing the minimum tests would remove evidence for existing consumers. |
 | Jakarta Pages 3.0.0 → 4.0.0 | Keep the published provided Pages 3 API and existing `[3.0,4)` package ranges. Reconsider only with a reviewed minimum-runtime/API migration, public POM implications and compatibility evidence. |
-| Jasper/annotations 9.0.122 or 10.1.60 → 11.0.26 in the isolated tag fixtures | Keep coherent Tomcat 9 (`javax`) and 10.1 (`jakarta`) engines. PR #188 fails the javax engine with missing `javax.servlet.jsp.tagext.SimpleTagSupport` after the Tomcat 11 switch. The optional Boot/browser WAR already exercises Tomcat 11. Patch updates within each intended engine line remain candidates for manual review; Dependabot's lowest-version classification cannot automate both lines independently. Cross-line migration needs a separate coverage decision. |
+| Jasper/annotations 9.0.122 or 10.1.60 → 11.0.26 in the isolated tag fixtures | Keep coherent Tomcat 9 (`javax`) and 10.1 (`jakarta`) engines. PR #188 fails the javax engine with missing `javax.servlet.jsp.tagext.SimpleTagSupport` after the Tomcat 11 switch. The optional Boot/browser WAR already exercises Tomcat 11. Patch updates within each engine line come from the separate `/jsp` and `/jakarta` Dependabot entries described below. Cross-line migration needs a separate coverage decision. |
 
 A dependency's test/build scope does not dismiss an advisory. Check each finding's
 actual affected versions, executed path and proposed remedy; use a supported fix
@@ -157,20 +157,22 @@ record; a grouped PR closure is not proof that every proposed upgrade was applie
 
 ## Future Dependabot proposals
 
-The [configuration](dependabot.yml) excludes fourteen coordinates from the broad
-Maven **version-update group**: the eleven baseline-sensitive coordinates above,
+The [configuration](dependabot.yml) excludes twelve coordinates from the broad
+Maven **version-update group**: the nine baseline-sensitive coordinates above,
 the two Boot plugin-realm Jackson coordinates and the Maven distribution used by
-the wrapper. For the ten coordinates with a rejected proposal in #218–#227 and
-the two Jackson coordinates from #232, it also ignores only the SemVer minor or
-major version-update classes covered by the decisions above. The Maven wrapper
-has no ignore rule.
+the wrapper. For the eight of those coordinates with a rejected proposal in
+#218–#227 and the two Jackson coordinates from #232, it also ignores only the
+SemVer minor or major version-update classes covered by the decisions above. The
+Maven wrapper has no ignore rule. The two Tomcat engine coordinates, the other
+rejected proposals in that range, have their own entries described below.
 This prevents the weekly job from recreating proposals that merely replace
 historical comparators, minimum-consumer fixtures, coherent servlet-engine
 lines, or reviewed tool majors. The accepted Felix Maven Bundle Plugin remains
 individually updateable.
 
-Every new rule uses `update-types`, not a version range or an unqualified
-coordinate ignore. GitHub documents that `update-types` affects version updates,
+Apart from the Felix framework fixture and the root entry's two Tomcat rules,
+every rule uses `update-types`, not a version range or an unqualified coordinate
+ignore. GitHub documents that `update-types` affects version updates,
 not security updates, so the Maven security-update group and security alerts
 remain eligible:
 <https://docs.github.com/en/code-security/reference/supply-chain-security/dependabot-options-reference#update-types-ignore>.
@@ -190,13 +192,31 @@ Dependabot's [`DependencySet`](https://github.com/dependabot/dependabot-core/blo
 and [`IgnoreCondition`](https://github.com/dependabot/dependabot-core/blob/a6e095f540c6542facc06ba47f66418da50d669c/common/lib/dependabot/config/ignore_condition.rb#L50-L65)
 implementations.
 
+For the Tomcat JSP engine fixtures, that combination writes a wrong version
+instead of suppressing one. `jsp/` pins Jasper and the annotations API on Tomcat
+9.0 (`javax`) and `jakarta/` pins the same coordinates on 10.1 (`jakarta`). The
+reactor scan combined them from 9.0 and wrote 9.0.123 into both modules in #238
+and #239, which broke the Jakarta engine; #241 applied each line's patch instead.
+The root entry therefore ignores both coordinates outright, so its combined scan
+cannot propose a cross-line version or security update. Separate `/jsp` and
+`/jakarta` entries allow only those two coordinates. A module scan fetches the
+module and its parent POM but not sibling modules (Dependabot's Maven
+[`FileFetcher`](https://github.com/dependabot/dependabot-core/blob/fed09ef6f7252c3d527cf592f871a6b83fdeea17/maven/lib/dependabot/maven/file_fetcher.rb#L42-L48)),
+so each sees one engine line and proposes its patch release as one grouped pull
+request. These entries ignore only major version updates, which would replace
+the engine, so security updates remain eligible there. A policy test requires
+every reactor module that pins these coordinates to have its own entry on its
+expected line.
+
 The root directory monitors the complete Maven reactor once; listing each reactor
-module again produced duplicate pull requests. The standalone
-`compatibility/dependencies` Maven project remains a separate monitored directory.
+module again produced duplicate pull requests. The Tomcat-only `/jsp` and
+`/jakarta` entries do not duplicate it because the root entry ignores everything
+they allow. The standalone `compatibility/dependencies` Maven project remains a
+separate monitored directory.
 No security-alert dismissals or automatic merges are introduced. The pre-existing
 unqualified Felix framework fixture exception remains scoped and documented in
-[CI/security operations](CI_SECURITY.md); it is the only ignore rule without an
-explicit version-update class.
+[CI/security operations](CI_SECURITY.md); it and the root entry's two Tomcat
+rules are the only ignore rules without an explicit version-update class.
 
 When a new security proposal or manually raised compatibility change revisits a
 deferred baseline, compare it with this dated record and current upstream evidence.

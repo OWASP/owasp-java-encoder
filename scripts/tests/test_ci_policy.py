@@ -209,16 +209,16 @@ class DependencySubmissionPolicy(unittest.TestCase):
             'jakarta.servlet.jsp:jakarta.servlet.jsp-api': minor_and_major,
             'jakarta.servlet:jakarta.servlet-api': minor_and_major,
             'jakarta.el:jakarta.el-api': minor_and_major,
-            'org.apache.tomcat.embed:tomcat-embed-jasper': [
-                'version-update:semver-major'],
-            'org.apache.tomcat:tomcat-annotations-api': [
-                'version-update:semver-major'],
+            'org.apache.tomcat.embed:tomcat-embed-jasper': [],
+            'org.apache.tomcat:tomcat-annotations-api': [],
             'tools.jackson.core:jackson-databind': minor_and_major,
             'tools.jackson.core:jackson-core': minor_and_major,
         }
         self.assertEqual(expected, rules)
         self.assertEqual(
-            {'org.apache.felix:org.apache.felix.framework'},
+            {'org.apache.felix:org.apache.felix.framework',
+             'org.apache.tomcat.embed:tomcat-embed-jasper',
+             'org.apache.tomcat:tomcat-annotations-api'},
             {name for name, update_types in rules.items() if not update_types})
 
         mutations = {
@@ -263,6 +263,62 @@ class DependencySubmissionPolicy(unittest.TestCase):
         versioned = {name for name, update_types in ignore.items() if update_types}
         self.assertEqual(set(), versioned.difference(excluded))
         self.assertNotIn('org.apache.maven:apache-maven', ignore)
+
+    def test_dependabot_scans_each_tomcat_engine_line_separately(self):
+        # jsp/ and jakarta/ pin different Tomcat lines under the same
+        # coordinates. The reactor scan combines them from the lowest version
+        # and writes that line into both modules (#238, #239), so each module
+        # needs its own Tomcat-only entry.
+        tomcat = {'org.apache.tomcat.embed:tomcat-embed-jasper',
+                  'org.apache.tomcat:tomcat-annotations-api'}
+        dependabot = (ROOT / '.github/dependabot.yml').read_text()
+        entries = dependabot.split('\n  - package-ecosystem: ')[1:]
+        maven = [entry for entry in entries if entry.startswith('maven\n')]
+
+        root_ignore = parse_dependabot_ignore(maven[0].split('    ignore:\n', 1)[1])
+        self.assertEqual({name: [] for name in tomcat},
+                         {name: root_ignore.get(name) for name in tomcat})
+
+        engines = {}
+        for entry in maven[1:]:
+            directory = re.search(r'^    directory: (\S+)$', entry, re.M)
+            self.assertIsNotNone(directory, entry)
+            engines[directory.group(1)] = entry
+        self.assertEqual(len(maven) - 1, len(engines))
+
+        for directory, entry in engines.items():
+            with self.subTest(directory=directory):
+                allow = entry.split('    allow:\n', 1)[1].split('    groups:\n', 1)[0]
+                allowed = re.findall(r'^      - dependency-name: (\S+)$', allow, re.M)
+                self.assertEqual(sorted(tomcat), sorted(allowed))
+                self.assertEqual(1, entry.count("        patterns: ['*']"))
+                self.assertEqual(
+                    {name: ['version-update:semver-major'] for name in tomcat},
+                    parse_dependabot_ignore(entry.split('    ignore:\n', 1)[1]))
+
+        expected_lines = {'/jsp': '9.0.', '/jakarta': '10.1.'}
+        root = ET.parse(ROOT / 'pom.xml').getroot()
+        pinned = {}
+        for node in root.findall('.//p:modules/p:module', version.NS):
+            module = node.text.strip()
+            pom = ET.parse(ROOT / module / 'pom.xml').getroot()
+            for dependency in pom.findall('.//p:dependency', version.NS):
+                name = '%s:%s' % (
+                    dependency.findtext('p:groupId', namespaces=version.NS),
+                    dependency.findtext('p:artifactId', namespaces=version.NS))
+                declared = dependency.findtext('p:version', namespaces=version.NS)
+                if name in tomcat and declared:
+                    pinned.setdefault('/' + module, set()).add(declared.strip())
+
+        # A module that pins Tomcat without its own entry would get no updates.
+        self.assertEqual(set(expected_lines), set(engines))
+        self.assertEqual(set(expected_lines), set(pinned))
+        for directory, versions in pinned.items():
+            with self.subTest(directory=directory):
+                self.assertEqual(1, len(versions), versions)
+                self.assertTrue(
+                    next(iter(versions)).startswith(expected_lines[directory]),
+                    versions)
 
     def test_only_executed_plugins_are_submitted(self):
         workflow = (ROOT / '.github/workflows/dependency-submission.yaml').read_text()
