@@ -12,8 +12,8 @@ not its JAR. `-DskipTests` skips this integration fixture as well as unit tests.
 
 | Adapter | Test engine | Engine APIs | Engine JVM |
 | --- | --- | --- | --- |
-| `encoder-jsp` | Tomcat/Jasper 9.0.122 | Servlet 4.0 / JSP 2.3 / EL 3.0 (`javax`) | 17 |
-| `encoder-jakarta-jsp` | Tomcat/Jasper 10.1.60 | Servlet 6.0 / Pages 3.1 / EL 5.0 (`jakarta`) | 17 |
+| `encoder-jsp` | Tomcat/Jasper 9.0.123 | Servlet 4.0 / JSP 2.3 / EL 3.0 (`javax`) | 17 |
+| `encoder-jakarta-jsp` | Tomcat/Jasper 10.1.61 | Servlet 6.0 / Pages 3.1 / EL 5.0 (`jakarta`) | 17 |
 
 These maintained engine generations accept the adapters' older provided APIs;
 this does not raise the libraries' Java 8 or API baselines. The separate
