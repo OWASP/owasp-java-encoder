@@ -4,14 +4,14 @@ Released entries are grounded in the linked immutable tags, GitHub release notes
 and retained README announcements. Dates below are GitHub publication dates in
 UTC where a release record exists; older announcement/tag dates are labeled.
 An open proposal is not a release. Historical tags, assets and signatures remain
-unchanged. [1.5.0 is available from Central](releases/1.5.0-central-publication.md).
+unchanged. [1.5.1 is available from Central](releases/1.5.1-central-publication.md).
 
 ## Unreleased
 
-## 1.5.1 — release preparation, 2026-10-15 UTC
+## 1.5.1 — 2026-10-15 UTC
 
-Documentation and build-maintenance patch; publication is tracked in the
-[release record](releases/1.5.1.md). Encoding behavior and public APIs are unchanged.
+Documentation and build-maintenance patch; publication is verified in the
+[publication record](releases/1.5.1-central-publication.md). Encoding behavior and public APIs are unchanged.
 
 - Clarify JavaScript encoding modes, output growth, and insertion-boundary
   requirements for #243; distinguish JSON whole-string HTML embedding from
