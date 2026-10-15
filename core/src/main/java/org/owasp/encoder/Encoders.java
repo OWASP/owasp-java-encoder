@@ -220,7 +220,7 @@ public final class Encoders {
     static final JavaScriptEncoder JAVASCRIPT_ENCODER
             = map(JAVASCRIPT, new JavaScriptEncoder(JavaScriptEncoder.Mode.HTML, false));
     /**
-     * Encoder for JavaScript appearing in XML/HTML attributes.
+     * Encoder for JavaScript string literal text in quoted HTML event attributes.
      */
     static final JavaScriptEncoder JAVASCRIPT_ATTRIBUTE_ENCODER
             = map(JAVASCRIPT_ATTRIBUTE, new JavaScriptEncoder(JavaScriptEncoder.Mode.ATTRIBUTE, false));

@@ -23,6 +23,14 @@ Use the facade Writer overload when encoding one String directly.
   JavaScript resource, not HTML. Avoid dynamic event handlers when possible.
   Never put the result in an unquoted expression, identifier, `${...}` expression
   body, regular expression, or `javascript:`/`data:` URL.
+  Insert complete encoded results at a JavaScript literal-text boundary, never
+  where they can continue or extend an escape sequence. This includes an
+  unmatched backslash, an incomplete hex escape, or `\0` before an input digit. Quote
+  HTML event-attribute values as well as the JavaScript strings inside them.
+  An event-attribute insertion must not continue an HTML character reference
+  begun by trusted text: `&` + encoded `#39;` can become a quote before
+  JavaScript parses it. Encode the complete string value, including trusted
+  string text, when possible.
 - CSS: `forCssString` encodes data **inside a quoted CSS string**.
   `forCssUrl` encodes a URL value inside CSS `url(...)`; allow-list its scheme
   and destination first. Neither accepts arbitrary selectors, property names,
@@ -70,14 +78,33 @@ pairs remain intact. This does not promise that every downstream system accepts
 unpaired surrogates.
 
 The general and block encoders also escape every ASCII character that can form
-part of a case-insensitive `</script` end tag or the `<!--` and `-->` script
-tokens. This keeps any nonempty encoded substring from completing a delimiter
+part of case-insensitive `</script` and `<script` tokens or the `<!--` and `-->`
+script tokens. This keeps the encoding of any nonempty value from completing a delimiter
 supplied partly by adjacent trusted literal string text. The additional output
 changes include space, `!`, hyphen (`\x2d`), `<`, `>`, slash, and both cases of
 the letters in `script`. JavaScript interprets these spellings as the original
 string value, but byte-for-byte output, snapshots, signatures and cache keys can
 change. `forJavaScriptAttribute` and `forJavaScriptSource` do not apply the HTML
 raw-text rule because their output is not for an HTML script element.
+
+The opening `<script` token matters after `<!--` has put the HTML tokenizer
+in its escaped script-data state. Completing that token can enter the
+double-escaped state, causing the intended closing tag and the rest of the page
+to be consumed as script text.
+
+This protection assumes the surrounding template keeps the insertion in the
+intended JavaScript and HTML contexts. It cannot repair an already recognized
+HTML end-tag name followed by whitespace or `/`, such as `</script `, before
+the insertion. Empty input also produces empty output: it cannot separate
+dangerous trusted text on its two sides. These are requirements on the template,
+not additional input characters the encoder can fix.
+
+For example, `forJavaScript("http://google.com")` and `forJavaScriptBlock` produce
+`h\x74\x74\x70:\/\/google.\x63om` (31 characters for a 17-character input).
+JavaScript reads this as the original URL. `forJavaScriptSource` and
+`forJavaScriptAttribute` leave this example unchanged; use them only in their
+documented contexts. Source spelling and output size can change substantially
+even when the evaluated value is unchanged.
 
 CDATA has the same fragment-composition guarantee for `]]>` and preserves the
 XML parser's text value, subject to the existing invalid-character replacement
@@ -95,6 +122,13 @@ escapes and also escapes HTML script delimiters, allowing the quoted string in a
 HTML script data block. A complete JSON document should come from a JSON serializer;
 choose one configured for safe HTML embedding if it is put inside a `<script>`
 element. Ordinary JSON serialization alone need not protect an HTML end tag.
+
+For HTML embedding, encode the complete contents of each JSON string value and
+member name, including its trusted text, before supplying the double quotes.
+Do not insert output into an unfinished JSON escape. Unlike the JavaScript
+general/block fragment protection, `forJson` does not protect arbitrary fragments
+joined to unencoded string text: `</scr` + `forJson("i")` + `pt>` still forms
+`</script>`. The rest of the document and template must also be safe for HTML.
 
 Java `null` is encoded as the text `null`: with the caller's quotes this is the
 JSON **string** `"null"`, not the JSON null value. The facade generally renders null

@@ -48,9 +48,9 @@ class JavaScriptEncoder extends Encoder {
      */
     enum Mode {
         /**
-         * Standard encoding of JavaScript Strings. Escape sequences are chosen
-         * according to what is the shortest sequence possible for the
-         * character.
+         * Encoding for string literal text in standalone JavaScript, including
+         * ordinary template literals. Template syntax is escaped even where
+         * a shorter spelling would be possible for a particular string.
          */
         SOURCE,
         /**
@@ -59,15 +59,17 @@ class JavaScriptEncoder extends Encoder {
          * use a sequence of encodes that would actually be longer. In this mode
          * double-quote is "\x22" and single-quote is "\x27". (In HTML
          * attributes the alternate would be encoding "\"" and "\'" with entity
-         * escapes to "\&amp;#34;" and "\&amp;39;").
+         * escapes to "\&amp;#34;" and "\&amp;#39;").
          */
         ATTRIBUTE,
         /**
          * Encoding for use in HTML script blocks. The main concern here is
          * prematurely terminating a script block with a closing
          * "&lt;/script" token inside the string. Characters that can contribute
-         * to an HTML script delimiter are escaped so an encoded substring
-         * cannot complete a delimiter supplied partly by trusted literal text.
+         * to an HTML script delimiter are escaped so a nonempty encoded fragment
+         * cannot complete a raw token supplied partly by trusted literal text.
+         * The surrounding template must satisfy the insertion-boundary
+         * requirements documented by Encode.forJavaScript.
          */
         BLOCK,
         /**
@@ -83,9 +85,9 @@ class JavaScriptEncoder extends Encoder {
      */
     private final Mode _mode;
     /**
-     * True if quotation characters should be hex encoded. Hex encoding quotes
-     * allows JavaScript to be included in XML attributes without additional
-     * XML-based encoding.
+     * True if quotation characters should be hex encoded, preventing those
+     * quotes from terminating a quoted HTML attribute. This is not a promise
+     * of XML attribute safety; XML has separate escaping and validity rules.
      */
     private final boolean _hexEncodeQuotes;
     /**
@@ -133,11 +135,12 @@ class JavaScriptEncoder extends Encoder {
 
         if (mode == Mode.BLOCK || mode == Mode.HTML) {
             // In <script> blocks, prevent the browser from seeing a
-            // "</script" end tag, "<!--", or "-->". To do so we escape "/" as
+            // "</script" end tag, "<script" double-escape start, "<!--", or
+            // "-->". To do so we escape "/" as
             // "\/" and hex-escape every other ASCII character that could form
             // part of an HTML script delimiter. This prevents
-            // any non-empty encoded substring from completing "</script",
-            // "<!--", or "-->" with adjacent trusted literal text. Other ASCII
+            // the encoding of any nonempty value from completing "</script",
+            // "<script", "<!--", or "-->" with adjacent trusted literal text. Other ASCII
             // whitespace already uses JavaScript escapes in every mode.
             // A JavaScript backslash escape would not prevent the exploits on
             // "</...>" and "<!--" unless it changes the raw HTML token.

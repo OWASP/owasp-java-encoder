@@ -1103,14 +1103,47 @@ public final class Encode {
      * blocks, and JavaScript source.  The caller MUST
      * provide surrounding single (') or double (") quotation marks, or backticks
      * (`) for an ordinary (untagged) template literal.
-     * Since this performs additional encoding so it can work in all
-     * of the JavaScript contexts listed, it may be slightly less
-     * efficient than using one of the methods targeted to a specific
-     * JavaScript context ({@link #forJavaScriptAttribute(String)},
-     * {@link #forJavaScriptBlock}, {@link #forJavaScriptSource}).
-     * Unless you are interested in saving a few bytes of output or
-     * are writing a framework on top of this library, it is recommend
-     * that you use this method over the others.</p>
+     * HTML event-attribute values must also be quoted at the HTML level.
+     * This general method applies the protections needed for all of these
+     * contexts. The resulting source can be substantially longer than the input;
+     * the evaluated JavaScript string value is preserved, not its source spelling.
+     * Choose {@link #forJavaScriptAttribute(String)},
+     * {@link #forJavaScriptBlock(String)}, or {@link #forJavaScriptSource(String)}
+     * when the output context is known and satisfies that method's contract.</p>
+     *
+     * <p><b>Insertion boundaries:</b> insert the complete encoded result into
+     * literal string text, not into a JavaScript expression or where it can
+     * continue or extend an escape sequence. Trusted text immediately before the
+     * insertion must not leave an unmatched backslash or an incomplete hex or
+     * Unicode escape, or an extendable escape such as <code>\0</code> before
+     * an input digit. In an HTML event attribute, it must not continue an HTML
+     * character reference begun by trusted text, such as an unencoded
+     * <code>&amp;</code> followed by encoded <code>#39;</code>. Encode the
+     * complete string value, including trusted text, when possible.
+     * The surrounding template must keep the insertion in the
+     * intended JavaScript string and HTML context. Encoding cannot repair an
+     * already unsafe template, such as an HTML script end-tag name
+     * <code>&lt;/script</code> followed by whitespace or <code>/</code>
+     * before the insertion, with the closing <code>&gt;</code> supplied later.</p>
+     *
+     * <p>In HTML script blocks, a nonempty encoded fragment cannot complete the
+     * raw sequences <code>&lt;/script</code> or <code>&lt;script</code>
+     * (case-insensitive),
+     * <code>&lt;!--</code>, or <code>--&gt;</code> with adjacent trusted text.
+     * For example, trusted <code>&lt;/scr</code>, an encoded <code>i</code>, and
+     * trusted <code>pt&gt;</code> cannot form an HTML closing script tag.
+     * Preventing a split <code>&lt;script</code> also avoids entering the HTML
+     * tokenizer's double-escaped state after a trusted <code>&lt;!--</code>,
+     * which could otherwise cause the rest of the page to be consumed as script.
+     * Empty input produces empty output and cannot separate dangerous trusted
+     * fragments. These protections do not sanitize the surrounding template.</p>
+     *
+     * <p>For example, <code>forJavaScript("http://google.com")</code> returns
+     * <code>h\x74\x74\x70:\/\/google.\x63om</code>, which evaluates to the
+     * original URL inside a supported JavaScript string literal.
+     * {@link #forJavaScriptSource(String)} and
+     * {@link #forJavaScriptAttribute(String)} leave this URL unchanged, but
+     * must only be used in their respective output contexts.</p>
      *
      * <b>Example JSP Usage:</b>
      * <pre>
@@ -1195,9 +1228,8 @@ public final class Encode {
      *     <tr class="rowColor">
      *       <td class="colFirst">U+002F</td><td><code>/</code></td>
      *       <td class="colLast"><code>\/</code></td>
-     *       <td class="colLast">This encoding is used to avoid an input sequence
-     *       "&lt;/" from prematurely terminating a &lt;/script&gt;
-     *       block.</td>
+     *       <td class="colLast">Escaping slash prevents it from contributing to
+     *       an HTML script end tag such as <code>&lt;/script&gt;</code>.</td>
      *     </tr>
      *     <tr class="altColor">
      *       <td class="colFirst">U+003C</td><td><code>&lt;</code></td>
@@ -1212,8 +1244,10 @@ public final class Encode {
      *     <tr class="altColor">
      *       <td class="colFirst" colspan="2">C, I, P, R, S, T and lowercase</td>
      *       <td class="colLast"><code>\x##</code></td>
-     *       <td class="colLast">Breaks every nonempty encoded substring of a
-     *       case-insensitive <code>&lt;/script</code> token.</td>
+     *       <td class="colLast">Prevents a nonempty encoded fragment from completing
+     *       the case-insensitive sequences <code>&lt;/script</code> or
+     *       <code>&lt;script</code> with
+     *       adjacent trusted text; see the insertion-boundary requirements above.</td>
      *     </tr>
      *     <tr class="rowColor">
      *       <td class="colFirst">U+005C</td><td><code>\</code></td>
@@ -1236,7 +1270,7 @@ public final class Encode {
      *       <td class="colFirst" colspan="2">U+0000&nbsp;to&nbsp;U+001F</td>
      *       <td class="colLast"><code>\x##</code></td>
      *       <td class="colLast">Hexadecimal encoding is used for characters in this
-     *       range that were not already mentioned in above.</td>
+     *       range that were not already listed above.</td>
      *     </tr>
      *     <tr class="altColor">
      *       <td class="colFirst">U+002D</td><td><code>-</code></td>
@@ -1271,7 +1305,9 @@ public final class Encode {
      * preserve the string value in single-quoted, double-quoted, and ordinary
      * template literals. Tagged templates (including {@code String.raw}) are not
      * supported: tags can observe raw escapes or interpret the text in another
-     * language. This is not a JSON encoder; use a JSON serializer for JSON.
+     * language. This is not a JSON encoder; use a JSON serializer for complete
+     * JSON documents. JSON embedded in HTML must also be safe for that HTML
+     * context; see {@link #forJson(String)} for JSON string contents.
      * Do not use the result in {@code javascript:} or {@code data:} URLs;
      * URL decoding introduces a separate parsing context.</p>
      *
@@ -1312,10 +1348,10 @@ public final class Encode {
      * <p>DEL and C1 controls (U+007F to U+009F) are hex-escaped. Unpaired UTF-16
      * surrogates use Unicode escapes; valid surrogate pairs remain unescaped.</p>
      *
-     * <p><strong>Unless you are interested in saving a few bytes of
-     * output or are writing a framework on top of this library, it is
-     * recommend that you use {@link #forJavaScript(String)} over this
-     * method.</strong></p>
+     * <p>The HTML attribute value must also be enclosed in quotation marks.
+     * The insertion-boundary requirements of {@link #forJavaScript(String)}
+     * apply. This method avoids the additional HTML script-block escapes,
+     * which can substantially increase source size.</p>
      *
      * <b>Example JSP Usage:</b>
      * <pre>
@@ -1325,7 +1361,8 @@ public final class Encode {
      * <p>For ordinary template literals, insert the result into literal text,
      * not a <code>${...}</code> expression. Tagged templates (including
      * {@code String.raw}) are not supported; see {@link #forJavaScript(String)}.
-     * This is not a JSON encoder; use a JSON serializer for JSON.
+     * This is not a JSON encoder; use a JSON serializer for complete JSON
+     * documents. For JSON embedded in HTML, see {@link #forJson(String)}.
      * Do not use the result in {@code javascript:} or {@code data:} URLs;
      * URL decoding introduces a separate parsing context.</p>
      *
@@ -1366,10 +1403,10 @@ public final class Encode {
      * <p>DEL and C1 controls (U+007F to U+009F) are hex-escaped. Unpaired UTF-16
      * surrogates use Unicode escapes; valid surrogate pairs remain unescaped.</p>
      *
-     * <p><strong>Unless you are interested in saving a few bytes of
-     * output or are writing a framework on top of this library, it is
-     * recommend that you use {@link #forJavaScript(String)} over this
-     * method.</strong></p>
+     * <p>The insertion-boundary requirements and nonempty-fragment HTML
+     * protection of {@link #forJavaScript(String)} apply. This method retains
+     * the script-letter escapes; its shorter quote escapes do not make it safe
+     * for HTML event attributes.</p>
      *
      * <b>Example JSP Usage:</b>
      * <pre>
@@ -1381,7 +1418,8 @@ public final class Encode {
      * <p>For ordinary template literals, insert the result into literal text,
      * not a <code>${...}</code> expression. Tagged templates (including
      * {@code String.raw}) are not supported; see {@link #forJavaScript(String)}.
-     * This is not a JSON encoder; use a JSON serializer for JSON.
+     * This is not a JSON encoder; use a JSON serializer for complete JSON
+     * documents. For JSON embedded in HTML, see {@link #forJson(String)}.
      * Do not use the result in {@code javascript:} or {@code data:} URLs;
      * URL decoding introduces a separate parsing context.</p>
      *
@@ -1422,10 +1460,10 @@ public final class Encode {
      * <p>DEL and C1 controls (U+007F to U+009F) are hex-escaped. Unpaired UTF-16
      * surrogates use Unicode escapes; valid surrogate pairs remain unescaped.</p>
      *
-     * <p><strong>Unless you are interested in saving a few bytes of
-     * output or are writing a framework on top of this library, it is
-     * recommend that you use {@link #forJavaScript(String)} over this
-     * method.</strong></p>
+     * <p>The JavaScript insertion-boundary requirements of
+     * {@link #forJavaScript(String)} apply. This method avoids HTML-specific
+     * escaping and leaves <code>http://google.com</code> unchanged. Use it only
+     * for standalone JavaScript resources, not to reduce escaping in HTML.</p>
      *
      * <b>Example JSP Usage:</b>
      * This example is serving up JavaScript source directly:
@@ -1437,7 +1475,8 @@ public final class Encode {
      * <p>For ordinary template literals, insert the result into literal text,
      * not a <code>${...}</code> expression. Tagged templates (including
      * {@code String.raw}) are not supported; see {@link #forJavaScript(String)}.
-     * This is not a JSON encoder; use a JSON serializer for JSON.
+     * This is not a JSON encoder; use a JSON serializer for complete JSON
+     * documents. For JSON embedded in HTML, see {@link #forJson(String)}.
      * Do not use the result in {@code javascript:} or {@code data:} URLs;
      * URL decoding introduces a separate parsing context.</p>
      *
@@ -1480,6 +1519,16 @@ public final class Encode {
      * <code>&gt;</code> or <code>&amp;</code>.</li>
      * </ul>
      *
+     * <p>For HTML script embedding, encode the complete contents of each JSON
+     * string value and member name, including any trusted text that belongs
+     * inside that string, and then supply its double quotes. Do not insert the
+     * result into an unfinished JSON escape sequence. This method does not
+     * protect arbitrary fragments joined to unencoded string text: for example,
+     * trusted <code>&lt;/scr</code> + <code>forJson("i")</code> + trusted
+     * <code>pt&gt;</code> still forms an HTML closing script tag. The rest of
+     * the JSON document and enclosing template must also be safe for the HTML
+     * context.</p>
+     *
      * <p>The encoding is:</p>
      *
      * <ul>
@@ -1490,8 +1539,9 @@ public final class Encode {
      * <code>\f</code>, <code>\r</code> or <code>&#92;u00xx</code>.</li>
      * <li><code>&lt;</code>, <code>&gt;</code> and <code>&amp;</code>
      * are encoded as <code>&#92;u003c</code>, <code>&#92;u003e</code> and
-     * <code>&#92;u0026</code>, so the output cannot close or comment out an
-     * enclosing HTML <code>&lt;script&gt;</code> element.</li>
+     * <code>&#92;u0026</code>, so the complete encoded string content cannot
+     * supply an HTML script end tag or comment token. The surrounding text
+     * remains subject to the requirements above.</li>
      * <li>U+2028 and U+2029 are encoded as <code>&#92;u2028</code> and
      * <code>&#92;u2029</code>.</li>
      * <li>Unpaired surrogates are encoded as <code>&#92;ud800</code> to
