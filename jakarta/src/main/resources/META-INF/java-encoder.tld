@@ -99,19 +99,29 @@
     <tag>
         <description>
             Encodes a JavaScript string for HTML event attributes (such as onclick), HTML script
-            blocks, or standalone JavaScript source. In HTML script blocks, additional hex
-            escapes prevent encoded fragments from completing &lt;/script, &lt;!--, or --&gt;
-            tokens across trusted boundaries; hyphen uses \x2d.
+            blocks, or standalone JavaScript source. Additional escapes are always applied so
+            nonempty encoded fragments cannot complete &lt;/script, &lt;script, &lt;!--, or --&gt; across trusted
+            boundaries in an HTML script element. Most use hex escapes; slash uses \/ and
+            hyphen uses \x2d. The output can be substantially longer than the original text.
             Caller must supply single (') or double (") quotation marks, or backticks (`)
             for an ordinary (untagged) template literal. Insert encoded output into literal text,
-            not a ${...} expression. Dollar sign ($), backtick, and opening brace ({) are encoded
+            not a ${...} expression or where it can continue or extend a JavaScript escape
+            sequence, including a numeric escape such as \0 before an input digit.
+            The surrounding template must keep the insertion in its intended context;
+            encoding cannot repair an already-started HTML end tag such as &lt;/script followed
+            by a space, or dangerous trusted text joined around empty input.
+            Where event attributes are supported, quote the HTML attribute value too and do not
+            continue an HTML character reference begun by trusted text, such as an unencoded &amp;.
+            Encode the complete string value, including trusted text, when possible.
+            Dollar sign ($), backtick, and opening brace ({) are encoded
             as \x24, \x60, and \x7b. Escaping { also prevents input after a trusted $ from
             completing ${...}.
             DEL and C1 controls (U+007F to U+009F) use \xNN escapes. Unpaired UTF-16 surrogates
             use \uXXXX escapes; valid surrogate pairs remain unescaped.
             Tagged templates (including String.raw) are unsupported: tags can observe raw escapes
             or interpret another language. This is not a JSON encoder; use a JSON serializer for
-            JSON. Do not use in javascript: or data: URLs, where URL decoding introduces a separate
+            complete documents. JSON embedded in HTML also needs HTML-safe serialization; see forJson.
+            Do not use in javascript: or data: URLs, where URL decoding introduces a separate
             parsing context.
         </description>
         <display-name>forJavaScript</display-name>
@@ -131,7 +141,10 @@
             Encodes for the contents of a JSON string literal (RFC 8259).  The
             caller MUST provide the surrounding double quotation marks.  Safe for
             JSON string values in a JSON document or in an HTML script element,
-            including script type="application/json".  " and \ are encoded as \"
+            including script type="application/json". For HTML embedding, encode the complete
+            contents of each string value and member name, including any trusted text in it.
+            Do not join encoded fragments to unencoded string text or unfinished JSON escapes;
+            the remaining document and template must also be safe for HTML.  " and \ are encoded as \"
             and \\, control characters as \b, \t, \n, \f, \r or \u00xx, and
             &lt;, &gt;, &amp;, U+2028, U+2029 and unpaired surrogates as \uxxxx
             with lowercase hex digits.  Valid surrogate pairs and all other
@@ -469,19 +482,29 @@
     <function>
         <description>
             Encodes a JavaScript string for HTML event attributes (such as onclick), HTML script
-            blocks, or standalone JavaScript source. In HTML script blocks, additional hex
-            escapes prevent encoded fragments from completing &lt;/script, &lt;!--, or --&gt;
-            tokens across trusted boundaries; hyphen uses \x2d.
+            blocks, or standalone JavaScript source. Additional escapes are always applied so
+            nonempty encoded fragments cannot complete &lt;/script, &lt;script, &lt;!--, or --&gt; across trusted
+            boundaries in an HTML script element. Most use hex escapes; slash uses \/ and
+            hyphen uses \x2d. The output can be substantially longer than the original text.
             Caller must supply single (') or double (") quotation marks, or backticks (`)
             for an ordinary (untagged) template literal. Insert encoded output into literal text,
-            not a ${...} expression. Dollar sign ($), backtick, and opening brace ({) are encoded
+            not a ${...} expression or where it can continue or extend a JavaScript escape
+            sequence, including a numeric escape such as \0 before an input digit.
+            The surrounding template must keep the insertion in its intended context;
+            encoding cannot repair an already-started HTML end tag such as &lt;/script followed
+            by a space, or dangerous trusted text joined around empty input.
+            Where event attributes are supported, quote the HTML attribute value too and do not
+            continue an HTML character reference begun by trusted text, such as an unencoded &amp;.
+            Encode the complete string value, including trusted text, when possible.
+            Dollar sign ($), backtick, and opening brace ({) are encoded
             as \x24, \x60, and \x7b. Escaping { also prevents input after a trusted $ from
             completing ${...}.
             DEL and C1 controls (U+007F to U+009F) use \xNN escapes. Unpaired UTF-16 surrogates
             use \uXXXX escapes; valid surrogate pairs remain unescaped.
             Tagged templates (including String.raw) are unsupported: tags can observe raw escapes
             or interpret another language. This is not a JSON encoder; use a JSON serializer for
-            JSON. Do not use in javascript: or data: URLs, where URL decoding introduces a separate
+            complete documents. JSON embedded in HTML also needs HTML-safe serialization; see forJson.
+            Do not use in javascript: or data: URLs, where URL decoding introduces a separate
             parsing context.
         </description>
         <display-name>forJavaScript</display-name>
@@ -495,7 +518,10 @@
             Encodes for the contents of a JSON string literal (RFC 8259).  The
             caller MUST provide the surrounding double quotation marks.  Safe for
             JSON string values in a JSON document or in an HTML script element,
-            including script type="application/json".  " and \ are encoded as \"
+            including script type="application/json". For HTML embedding, encode the complete
+            contents of each string value and member name, including any trusted text in it.
+            Do not join encoded fragments to unencoded string text or unfinished JSON escapes;
+            the remaining document and template must also be safe for HTML.  " and \ are encoded as \"
             and \\, control characters as \b, \t, \n, \f, \r or \u00xx, and
             &lt;, &gt;, &amp;, U+2028, U+2029 and unpaired surrogates as \uxxxx
             with lowercase hex digits.  Valid surrogate pairs and all other

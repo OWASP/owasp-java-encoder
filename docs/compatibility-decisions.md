@@ -49,11 +49,16 @@ API, but three outputs change compared with 1.4.1:
 
 | Context | 1.5 behavior | Compatibility consequence |
 | --- | --- | --- |
-| HTML script JavaScript (`forJavaScript`, `forJavaScriptBlock`) | Escapes every character that can contribute to a case-insensitive `</script` end tag, its delimiter, `<!--` or `-->`; hyphen uses `\x2d` | JavaScript string values are preserved, but common letters and spaces can change encoded bytes. Attribute-only and standalone-source modes retain their narrower rules. |
+| HTML script JavaScript (`forJavaScript`, `forJavaScriptBlock`) | Escapes every character that can contribute to case-insensitive `</script` or `<script` tokens, their delimiters, `<!--` or `-->`; hyphen uses `\x2d` | JavaScript string values are preserved, but common letters and spaces can change encoded bytes. Attribute-only and standalone-source modes retain their narrower rules. |
 | XML CDATA | Represents every `]` and `>` with a close/character-data/reopen spelling | Parsed XML text is preserved, apart from documented XML normalization/replacement. Output can expand 13× and parser event boundaries can change. |
 | XML comment | Replaces every hyphen with `~` | Prevents cross-fragment `--` and `-->`; comment text is deliberately lossy. |
 
 The trusted fragments must already be valid for the selected parser context.
+In JavaScript, insertion must not continue or extend an escape sequence,
+including an extendable numeric escape such as `\0` before an input digit. In
+HTML, encoding cannot undo a trusted prefix that has already entered an end tag
+such as `</script `, or repair a dangerous token formed entirely by trusted
+text when the encoded input is empty.
 Migration review must cover byte snapshots, signatures, cache keys and any code
 that consumes XML events rather than the parsed text value. Review output-size
 budgets as well: ordinary HTML-script JavaScript text can grow materially, while

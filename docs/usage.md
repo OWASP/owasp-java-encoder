@@ -41,11 +41,23 @@ Encode.forXmlComment(out, userText);
 out.write(" -->");
 ```
 
-The trusted prefix and suffix must themselves be valid syntax. Keep the encoder
+The trusted prefix and suffix must keep the insertion in the intended context.
+In JavaScript, do not insert encoded output where it can continue or extend an
+escape sequence, including after an unmatched backslash, an incomplete hex
+escape, or `\0` before an input digit. In HTML script content, the trusted prefix must
+not already have formed an end-tag name followed by whitespace or `/`, such as
+`</script `. Empty encoded input cannot separate dangerous trusted fragments.
+For event attributes, insertion must not continue an HTML character reference
+begun by trusted text, such as an unencoded `&` before encoded `#39;`.
+Encoding cannot repair an already unsafe template. Keep the encoder
 matched to the actual parser: `forJavaScriptBlock` and the general
 `forJavaScript` protect HTML script raw text; `forJavaScriptAttribute` is for a
 quoted event-handler attribute, and `forJavaScriptSource` is for a standalone
 resource.
+
+These are server-side source-text boundaries. JavaScript runtime concatenation
+happens after HTML parsing and is a different operation; later inserting the
+result into an HTML-parsing API introduces another context to secure.
 
 This correction changes emitted text. HTML-script JavaScript uses additional
 hex escapes (including `\x2d` for hyphen and escapes for both cases of the

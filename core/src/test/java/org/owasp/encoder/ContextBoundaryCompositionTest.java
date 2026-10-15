@@ -57,7 +57,10 @@ public class ContextBoundaryCompositionTest extends TestCase {
             for (String delimiter : delimiters) {
                 String token = sentinel + delimiter
                     + (">".equals(delimiter) ? "" : ">");
-                for (int start = 0; start < token.length(); start++) {
+                // After a delimiter following the complete name, the parser
+                // is already in an end tag. That is not a string insertion
+                // context; encoding cannot undo the trusted prefix.
+                for (int start = 0; start <= sentinel.length(); start++) {
                     for (int end = start + 1; end <= token.length(); end++) {
                         String trusted = token.substring(0, start);
                         String attacker = token.substring(start, end);
@@ -77,6 +80,53 @@ public class ContextBoundaryCompositionTest extends TestCase {
                 assertEquals("negative control " + sentinel + " " + delimiter,
                     1, negative.select("img#pwn").size());
             }
+        }
+    }
+
+    public void testJavaScriptOpeningTagCannotEnterDoubleEscapedState() {
+        for (String endTag : scriptEndTagCaseVariants()) {
+            String token = "<" + endTag.substring(2) + ">";
+            // In escaped script data, an opening script token changes how
+            // the real closing tag is parsed and can swallow the page tail.
+            for (int i = 1; i <= 6; i++) {
+                String trusted = "<!--" + token.substring(0, i);
+                String letter = token.substring(i, i + 1);
+                String suffix = token.substring(i + 1);
+                assertScriptContained("general opening " + token + " " + i,
+                    trusted, Encode.forJavaScript(letter), suffix);
+                assertScriptContained("block opening " + token + " " + i,
+                    trusted, Encode.forJavaScriptBlock(letter), suffix);
+            }
+        }
+        // Jsoup 1.23.2 diverges from browsers for mixed-case double-escape
+        // starts. Use lowercase for this negative control; mixed-case raw
+        // tokens require a browser oracle.
+        Document negative = Jsoup.parse("<script>var value=\"<!--<script>"
+            + "\";</script><p id=after>after</p>");
+        assertNull("raw opening token swallows page tail",
+            negative.getElementById("after"));
+    }
+
+    public void testJavaScriptCannotRepairAnAlreadyStartedEndTag() {
+        for (String encoded : new String[]{Encode.forJavaScript(">"),
+                Encode.forJavaScriptBlock(">")}) {
+            String source = "var value=\"</script " + encoded + "<img id=pwn>\";";
+            Document document = Jsoup.parse("<script>" + source
+                + "</script><p id=after>after</p>");
+            // The image spelling is consumed as end-tag attributes. A marker
+            // count alone would falsely suggest that all text stayed in script.
+            assertEquals(0, document.select("img#pwn").size());
+            assertFalse(source.equals(document.selectFirst("script").data()));
+            assertEquals("var value=\"", document.selectFirst("script").data());
+        }
+    }
+
+    public void testEmptyJavaScriptInputCannotSeparateTrustedTokens() {
+        for (String encoded : new String[]{Encode.forJavaScript(""),
+                Encode.forJavaScriptBlock("")}) {
+            Document document = Jsoup.parse("<script>var value=\"</scr" + encoded
+                + "ipt><img id=pwn>\";</script>");
+            assertEquals(1, document.select("img#pwn").size());
         }
     }
 
@@ -269,10 +319,16 @@ public class ContextBoundaryCompositionTest extends TestCase {
 
     private static void assertScriptContained(String message, String trusted,
             String encoded, String trustedSuffix) {
-        Document document = Jsoup.parse("<script>var value=\"" + trusted + encoded
-            + trustedSuffix + "\";</script><p id=after>after</p>");
+        String source = "var value=\"" + trusted + encoded + trustedSuffix + "\";";
+        Document document = Jsoup.parse("<script>" + source
+            + "</script><p id=after>after</p>");
         assertEquals(message, 0, document.select("img#pwn").size());
         assertEquals(message, 1, document.select("script").size());
+        // Account for HTML line-ending normalization while requiring the
+        // entire intended source to remain inside the script element.
+        assertEquals(message, source.replace("\r\n", "\n").replace('\r', '\n'),
+            document.selectFirst("script").data()
+                .replace("\r\n", "\n").replace('\r', '\n'));
         assertEquals(message, "after", document.getElementById("after").text());
     }
 
