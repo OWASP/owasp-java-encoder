@@ -2,6 +2,11 @@
 
 ## Supported Versions
 
+Version **1.5.1** is being prepared as a documentation and build-maintenance
+patch. It preserves the 1.5.0 security fixes and introduces no new encoder
+security fix. Until [publication is verified](releases/1.5.1.md), 1.5.0 remains
+the current supported release shown below.
+
 Version **1.5.0**, published **2026-09-28 UTC**, is the current security release.
 The [signed GitHub assets](https://github.com/OWASP/owasp-java-encoder/releases/tag/v1.5.0)
 and [Maven Central publication](releases/1.5.0-central-publication.md) have been
