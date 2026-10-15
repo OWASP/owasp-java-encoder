@@ -2,15 +2,15 @@
 
 ## Supported Versions
 
-Version **1.5.1** is being prepared as a documentation and build-maintenance
-patch. It preserves the 1.5.0 security fixes and introduces no new encoder
-security fix. Until [publication is verified](releases/1.5.1.md), 1.5.0 remains
-the current supported release shown below.
+Version **1.5.1**, published **2026-10-15 UTC**, is the current supported
+release. This documentation and build-maintenance patch preserves the 1.5.0
+security fixes and introduces no new encoder security fix. The
+[signed GitHub assets](https://github.com/OWASP/owasp-java-encoder/releases/tag/v1.5.1)
+and [Maven Central publication](releases/1.5.1-central-publication.md) have been
+verified against the retained signed artifacts.
 
-Version **1.5.0**, published **2026-09-28 UTC**, is the current security release.
-The [signed GitHub assets](https://github.com/OWASP/owasp-java-encoder/releases/tag/v1.5.0)
-and [Maven Central publication](releases/1.5.0-central-publication.md) have been
-independently verified. See [GHSA-g8p6-7r8f-qrpv](https://github.com/OWASP/owasp-java-encoder/security/advisories/GHSA-g8p6-7r8f-qrpv)
+Version **1.5.0**, published **2026-09-28 UTC**, introduced the security fixes.
+See [GHSA-g8p6-7r8f-qrpv](https://github.com/OWASP/owasp-java-encoder/security/advisories/GHSA-g8p6-7r8f-qrpv)
 for affected versions and migration guidance.
 
 Only the latest 1.x release receives security fixes. Fixes ship in a new release;
@@ -18,9 +18,9 @@ older release lines are not patched.
 
 | Maven coordinate                        | Supported | Not supported |
 | --------------------------------------- | --------- | ------------- |
-| `org.owasp.encoder:encoder`             | 1.5.0     | < 1.5.0       |
-| `org.owasp.encoder:encoder-jsp`         | 1.5.0     | < 1.5.0       |
-| `org.owasp.encoder:encoder-jakarta-jsp` | 1.5.0     | < 1.5.0       |
+| `org.owasp.encoder:encoder`             | 1.5.1     | < 1.5.1       |
+| `org.owasp.encoder:encoder-jsp`         | 1.5.1     | < 1.5.1       |
+| `org.owasp.encoder:encoder-jakarta-jsp` | 1.5.1     | < 1.5.1       |
 
 The optional `org.owasp.encoder:encoder-esapi` artifact is retired. Version
 1.4.1 is its final published release, no version is currently supported, and no
@@ -91,7 +91,7 @@ release tag, then verify:
 
 ```sh
 gpg --import KEYS
-gpg --verify encoder-1.5.0.jar.asc encoder-1.5.0.jar
+gpg --verify encoder-1.5.1.jar.asc encoder-1.5.1.jar
 gpg --verify SHA256SUMS.asc SHA256SUMS
 gpg --verify SHA512SUMS.asc SHA512SUMS
 shasum -a 256 -c SHA256SUMS
