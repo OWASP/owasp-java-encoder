@@ -8,13 +8,18 @@ unchanged. [1.5.0 is available from Central](releases/1.5.0-central-publication.
 
 ## Unreleased
 
+## 1.5.1 — release preparation, 2026-10-15 UTC
+
+Documentation and build-maintenance patch; publication is tracked in the
+[release record](releases/1.5.1.md). Encoding behavior and public APIs are unchanged.
+
 - Clarify JavaScript encoding modes, output growth, and insertion-boundary
   requirements for #243; distinguish JSON whole-string HTML embedding from
   JavaScript fragment protection. Correct internal HTML/XML comments and
   strengthen parser tests to verify script text, not only absence of a marker.
   Encoding behavior is unchanged.
-- Resume development at `1.5.1-SNAPSHOT`, with the immutable 1.5.0 public-API
-  baseline and its matching support APIs. Minimum-consumer fixtures are unchanged.
+- Verify public API compatibility against immutable 1.5.0 artifacts and their
+  matching support APIs. Minimum-consumer fixtures are unchanged.
 - Discover release tags independently of commit ancestry so squash merges cannot
   leave the compatibility baseline stale; add isolated Git regressions.
 - Record verified 1.5.0 publication and replace pending-availability notices.
@@ -29,6 +34,12 @@ unchanged. [1.5.0 is available from Central](releases/1.5.0-central-publication.
   releases. Ordinary builds still accept Maven 3.9.16 or later. Library JARs and
   module POMs are byte-identical to 3.9.16 builds
   ([validation](releases/maven-3.10.0-validation.md)).
+
+- Update isolated Tomcat/Jasper test engines to 9.0.123 and 10.1.61 and give
+  each its own Dependabot scan (#241, #242). These are test tooling, not
+  dependencies shipped inside the encoder libraries.
+- Update reviewed build tooling and pinned Actions, including japicmp 0.26.3,
+  Commons Lang 3.21.0, and the publisher's HttpClient 5.6.5 (#234, #237, #240).
 
 ## 1.5.0 — 2026-09-28 UTC
 

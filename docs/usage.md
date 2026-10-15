@@ -1,7 +1,7 @@
 # Java and JSP examples
 
-These examples target the published version **1.5.0**. See the
-[verified downloads](../releases/1.5.0-central-publication.md).
+These examples target **1.5.1**, with unchanged encoding behavior from 1.5.0.
+See the [release record](../releases/1.5.1.md) for publication status.
 Features marked **1.5** are new in this release.
 
 ## HTML and Writer output
@@ -140,7 +140,7 @@ and the [packaged JSP engine checks](../compatibility/jsp-engine/README.md).
 ## Java modules
 
 The explicit module name for core is `owasp.encoder`. After verifying and obtaining
-`encoder-1.5.0.jar`, put that unchanged JAR in `lib/`, then create:
+`encoder-1.5.1.jar`, put that unchanged JAR in `lib/`, then create:
 
 `src/example.app/module-info.java`:
 

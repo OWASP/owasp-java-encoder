@@ -9,12 +9,16 @@ has no runtime dependencies; optional JSP and Jakarta adapters provide view-laye
 bindings. Encoding is one part of [XSS prevention][xss], alongside
 safe templates, URL validation and other application controls.
 
-**Released 2026-09-28:** version 1.5.0 fixes parser-boundary vulnerabilities in
-JavaScript-in-HTML, CDATA, and XML-comment fragment composition. Versions through
-1.4.1 do not contain those fixes. The [signed GitHub release][release] and
-[Maven Central artifacts](releases/1.5.0-central-publication.md) have been
-independently verified. See the [1.5.0 release notes](releases/1.5.0.md),
-[security advisory](https://github.com/OWASP/owasp-java-encoder/security/advisories/GHSA-g8p6-7r8f-qrpv)
+**1.5.1 release preparation:** this patch release clarifies the JavaScript and
+JSON documentation and strengthens parser regression tests. Encoder behavior,
+public APIs, and runtime dependencies are unchanged from 1.5.0. Publication is
+not complete; the dependency example below targets the prepared release. See
+[the 1.5.1 release record](releases/1.5.1.md) for availability and verification.
+
+The latest verified Central release remains [1.5.0](releases/1.5.0-central-publication.md)
+until 1.5.1 publication is confirmed. It introduced the parser-boundary security
+fixes retained in 1.5.1; versions through 1.4.1 do not contain those fixes. See
+[the security advisory](https://github.com/OWASP/owasp-java-encoder/security/advisories/GHSA-g8p6-7r8f-qrpv)
 and [VERIFYING.md](VERIFYING.md).
 
 ## Start using the OWASP Java Encoders
@@ -32,7 +36,7 @@ The three supported artifacts use group ID `org.owasp.encoder`:
 <dependency>
     <groupId>org.owasp.encoder</groupId>
     <artifactId>encoder</artifactId>
-    <version>1.5.0</version>
+    <version>1.5.1</version>
 </dependency>
 ```
 
@@ -45,7 +49,7 @@ on the same classpath or module path. See the [runtime matrix](compatibility/REA
 `encoder-esapi` was retired after 1.4.1 and is not included or supported in
 1.5.0. Applications using it must [migrate away from the adapter](docs/encoder-esapi-retirement.md).
 
-Published 1.5.0 API documentation: [core](https://javadoc.io/doc/org.owasp.encoder/encoder/1.5.0/),
+Published 1.5.0 API documentation (1.5.1 indexing follows publication): [core](https://javadoc.io/doc/org.owasp.encoder/encoder/1.5.0/),
 [javax JSP](https://javadoc.io/doc/org.owasp.encoder/encoder-jsp/1.5.0/) and
 [Jakarta JSP](https://javadoc.io/doc/org.owasp.encoder/encoder-jakarta-jsp/1.5.0/).
 
@@ -172,4 +176,4 @@ links distinguish maintainer support from OWASP Foundation donations.
 [xss]: https://cheatsheetseries.owasp.org/cheatsheets/Cross_Site_Scripting_Prevention_Cheat_Sheet.html
 [java-libraries]: https://devguide.owasp.org/en/05-implementation/03-secure-libraries/04-java-secure-libs/
 [project]: https://owasp.org/projects/java-encoder
-[release]: https://github.com/OWASP/owasp-java-encoder/releases/tag/v1.5.0
+[release]: https://github.com/OWASP/owasp-java-encoder/releases/tag/v1.5.1

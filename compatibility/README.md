@@ -84,8 +84,7 @@ fail these guards.
 During ordinary `./mvnw verify`, Animal Sniffer checks each library against the Java 8
 API signature. This catches linkage such as Java 9's covariant `CharBuffer.flip()`
 even when bytecode still has class version 52. japicmp checks public/protected API
-binary and source compatibility against **1.5.0** during **1.5.1-SNAPSHOT**
-development. The baseline guard selects the latest preceding semantic release tag,
+binary and source compatibility against **1.5.0** for the **1.5.1** release. The baseline guard selects the latest preceding semantic release tag,
 including signed source commits integrated by squash merge; fetch all release tags
 before running it. The old support classpath matches the 1.5.0 POMs (JSP 2.3.3,
 Jakarta Servlet 6.1.0 and EL 6.0.1). Independent minimum-consumer fixtures remain
