@@ -72,6 +72,21 @@ public class ContextBoundaryCompositionTest extends TestCase {
                             Encode.forJavaScript(attacker), trustedSuffix);
                         assertScriptContained("block " + position, trusted,
                             Encode.forJavaScriptBlock(attacker), trustedSuffix);
+                        if (start >= 2 && end <= sentinel.length()) {
+                            for (String encoded : new String[]{Encode.forJavaScript(attacker),
+                                    Encode.forJavaScriptBlock(attacker)}) {
+                                String mutant = encoded;
+                                for (char ch : "CIPRSTciprst".toCharArray()) {
+                                    mutant = mutant.replace("\\x" + Integer.toHexString(ch),
+                                        Character.toString(ch));
+                                }
+                                assertFalse("mutation changed output " + position, encoded.equals(mutant));
+                                Document unsafe = Jsoup.parse("<script>var value=\"" + trusted
+                                    + mutant + trustedSuffix + "\";</script>");
+                                assertEquals("lost terminal barrier " + position,
+                                    1, unsafe.select("img#pwn").size());
+                            }
+                        }
                     }
                 }
 
@@ -84,18 +99,27 @@ public class ContextBoundaryCompositionTest extends TestCase {
     }
 
     public void testJavaScriptOpeningTagCannotEnterDoubleEscapedState() {
+        String[] delimiters = {">", " ", "\t", "\n", "\f", "\r", "/"};
         for (String endTag : scriptEndTagCaseVariants()) {
-            String token = "<" + endTag.substring(2) + ">";
-            // In escaped script data, an opening script token changes how
-            // the real closing tag is parsed and can swallow the page tail.
-            for (int i = 1; i <= 6; i++) {
-                String trusted = "<!--" + token.substring(0, i);
-                String letter = token.substring(i, i + 1);
-                String suffix = token.substring(i + 1);
-                assertScriptContained("general opening " + token + " " + i,
-                    trusted, Encode.forJavaScript(letter), suffix);
-                assertScriptContained("block opening " + token + " " + i,
-                    trusted, Encode.forJavaScriptBlock(letter), suffix);
+            String name = "<" + endTag.substring(2);
+            for (String delimiter : delimiters) {
+                String token = name + delimiter + (">".equals(delimiter) ? "" : ">");
+                // In escaped script data, a recognized opening script token
+                // changes how the real closing tag is parsed. Start only before
+                // the name delimiter; a trusted delimiter has already committed
+                // the tokenizer transition and cannot be repaired by encoding.
+                for (int start = 0; start <= name.length(); start++) {
+                    for (int end = start + 1; end <= token.length(); end++) {
+                        String trusted = "<!--" + token.substring(0, start);
+                        String input = token.substring(start, end);
+                        String suffix = token.substring(end);
+                        String position = "opening " + token + " " + start + ":" + end;
+                        assertScriptContained("general " + position, trusted,
+                            Encode.forJavaScript(input), suffix);
+                        assertScriptContained("block " + position, trusted,
+                            Encode.forJavaScriptBlock(input), suffix);
+                    }
+                }
             }
         }
         // Jsoup 1.23.2 diverges from browsers for mixed-case double-escape
@@ -105,6 +129,17 @@ public class ContextBoundaryCompositionTest extends TestCase {
             + "\";</script><p id=after>after</p>");
         assertNull("raw opening token swallows page tail",
             negative.getElementById("after"));
+    }
+
+    public void testLongerNamesWithReadableInteriorLettersRemainScriptData() {
+        for (String input : new String[]{"scripture", "scriptX", "script0", "script_", "scriptural"}) {
+            for (String prefix : new String[]{"</", "<!--<"}) {
+                assertScriptContained("general harmless name " + input, prefix,
+                    Encode.forJavaScript(input), "><img id=pwn src=x>");
+                assertScriptContained("block harmless name " + input, prefix,
+                    Encode.forJavaScriptBlock(input), "><img id=pwn src=x>");
+            }
+        }
     }
 
     public void testJavaScriptCannotRepairAnAlreadyStartedEndTag() {
@@ -218,7 +253,7 @@ public class ContextBoundaryCompositionTest extends TestCase {
             Encode.forXmlComment("a--->b"));
     }
 
-    public void testEncodedWriterFlushDoesNotFinalizeSurrogate() throws Exception {
+    public void testEncodedWriterFlushPreservesSurrogatesWithContextSpecificSpelling() throws Exception {
         String pair = "\ud83d\ude00";
         for (String context : new String[] {Encoders.JAVASCRIPT,
                 Encoders.JAVASCRIPT_BLOCK, Encoders.CDATA, Encoders.XML_COMMENT}) {
@@ -228,8 +263,10 @@ public class ContextBoundaryCompositionTest extends TestCase {
             writer.flush();
             writer.write(pair.charAt(1));
             writer.close();
-            assertEquals(context, Encode.encode(Encoders.forName(context), pair),
-                output.toString());
+            String expected = Encoders.JAVASCRIPT.equals(context)
+                    || Encoders.JAVASCRIPT_BLOCK.equals(context)
+                ? "\\ud83d\\ude00" : Encode.encode(Encoders.forName(context), pair);
+            assertEquals(context, expected, output.toString());
         }
     }
 
@@ -456,7 +493,16 @@ public class ContextBoundaryCompositionTest extends TestCase {
             writer.flush();
             writer.write(input, split, input.length() - split);
             writer.close();
-            assertEquals(context + " split " + split, expected, output.toString());
+            // Explicit flush can finalize a script letter conservatively. These
+            // fixtures contain no surrogate pair split, so each flushed part is
+            // independently finalized. Other contexts keep their prior result.
+            boolean script = Encoders.JAVASCRIPT.equals(context)
+                || Encoders.JAVASCRIPT_BLOCK.equals(context);
+            String flushedExpected = script
+                ? Encode.encode(Encoders.forName(context), input.substring(0, split))
+                    + Encode.encode(Encoders.forName(context), input.substring(split))
+                : expected;
+            assertEquals(context + " split " + split, flushedExpected, output.toString());
         }
 
         StringWriter output = new StringWriter();
@@ -466,6 +512,13 @@ public class ContextBoundaryCompositionTest extends TestCase {
             writer.flush();
         }
         writer.close();
+        if (Encoders.JAVASCRIPT.equals(context) || Encoders.JAVASCRIPT_BLOCK.equals(context)) {
+            StringBuilder flushedExpected = new StringBuilder();
+            for (int i = 0; i < input.length(); i++) {
+                flushedExpected.append(Encode.encode(Encoders.forName(context), input.substring(i, i + 1)));
+            }
+            expected = flushedExpected.toString();
+        }
         assertEquals(context + " one-character chunks", expected, output.toString());
     }
 
