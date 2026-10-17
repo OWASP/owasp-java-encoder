@@ -67,7 +67,7 @@ class JavaScriptEncoder extends Encoder {
          * prematurely terminating a script block with a closing
          * "&lt;/script" token inside the string. Characters that can contribute
          * to an HTML script delimiter are escaped so a nonempty encoded fragment
-         * cannot complete a raw token supplied partly by trusted literal text.
+         * cannot complete a token supplied partly by trusted literal text.
          * The surrounding template must satisfy the insertion-boundary
          * requirements documented by Encode.forJavaScript.
          */
@@ -101,6 +101,11 @@ class JavaScriptEncoder extends Encoder {
      * characters that would normally not be encoded, will be encoded.
      */
     private final boolean _asciiOnly;
+    /**
+     * True if HTML script tokens split across insertion boundaries must be
+     * prevented in addition to JavaScript string syntax.
+     */
+    private final boolean _htmlScript;
 
     /**
      * Constructs a new JavaScriptEncoder for the specified contextual mode.
@@ -116,6 +121,7 @@ class JavaScriptEncoder extends Encoder {
         // (to be clear, it's much faster on 32-bit VMS, and just slightly
         // faster on 64-bit VMS)
         _mode = mode;
+        _htmlScript = mode == Mode.BLOCK || mode == Mode.HTML;
 
         // Note: this probably needs to be repeated everywhere this trick is
         // used, but here seems like as good a place as any.  According to
@@ -133,23 +139,22 @@ class JavaScriptEncoder extends Encoder {
             -1 & ~((1 << '\\')),
             ~((1 << Unicode.DEL) | (1 << '`') | (1 << '{')),};
 
-        if (mode == Mode.BLOCK || mode == Mode.HTML) {
+        if (_htmlScript) {
             // In <script> blocks, prevent the browser from seeing a
             // "</script" end tag, "<script" double-escape start, "<!--", or
-            // "-->". To do so we escape "/" as
-            // "\/" and hex-escape every other ASCII character that could form
-            // part of an HTML script delimiter. This prevents
-            // the encoding of any nonempty value from completing "</script",
-            // "<script", "<!--", or "-->" with adjacent trusted literal text. Other ASCII
-            // whitespace already uses JavaScript escapes in every mode.
+            // "-->". Escaping their punctuation prevents tokens from starting
+            // inside encoded input or across its right boundary. A final
+            // script-name letter is also escaped below, breaking a token name
+            // that began in trusted text before the input. Earlier letters
+            // need not be escaped: the name will encounter either encoded
+            // punctuation, a mismatching character, or the final letter escape.
+            // Non-final buffers leave a possible final letter unread until
+            // more input arrives. Other ASCII whitespace already uses
+            // JavaScript escapes in every mode.
             // A JavaScript backslash escape would not prevent the exploits on
             // "</...>" and "<!--" unless it changes the raw HTML token.
             _validMasks[1] &= ~((1 << ' ') | (1 << '!') | (1 << '-')
                 | (1 << '/') | (1 << '<') | (1 << '>'));
-            _validMasks[2] &= ~((1 << 'C') | (1 << 'I') | (1 << 'P')
-                | (1 << 'R') | (1 << 'S') | (1 << 'T'));
-            _validMasks[3] &= ~((1 << 'c') | (1 << 'i') | (1 << 'p')
-                | (1 << 'r') | (1 << 's') | (1 << 't'));
         }
         if (mode != Mode.SOURCE) {
             _validMasks[1] &= ~(1 << '&');
@@ -171,7 +176,8 @@ class JavaScriptEncoder extends Encoder {
         for (int i = off; i < n; ++i) {
             char ch = input.charAt(i);
             if (ch < 128) {
-                if ((validMasks[ch >>> 5] & (1 << ch)) == 0) {
+                if ((validMasks[ch >>> 5] & (1 << ch)) == 0
+                        || (_htmlScript && i + 1 == n && isScriptNameLetter(ch))) {
                     return i;
                 }
             } else if (_asciiOnly || ch <= Unicode.MAX_C1_CTRL_CHAR
@@ -187,6 +193,37 @@ class JavaScriptEncoder extends Encoder {
             }
         }
         return n;
+    }
+
+    /**
+     * Whether the ASCII character can continue a case-insensitive script name.
+     */
+    private static boolean isScriptNameLetter(char ch) {
+        switch (ch) {
+            case 'C':
+            case 'I':
+            case 'P':
+            case 'R':
+            case 'S':
+            case 'T':
+            case 'c':
+            case 'i':
+            case 'p':
+            case 'r':
+            case 's':
+            case 't':
+                return true;
+            default:
+                return false;
+        }
+    }
+
+    @Override
+    boolean canFlushPending(char ch) {
+        // Hex and Unicode escapes preserve UTF-16 values even if more input
+        // follows. A later low surrogate is escaped separately, preserving the
+        // same JavaScript string value as a raw pair.
+        return _htmlScript && (isScriptNameLetter(ch) || Character.isHighSurrogate(ch));
     }
 
     @Override
@@ -209,6 +246,14 @@ class JavaScriptEncoder extends Encoder {
                 {
                     if (ch < 128) {
                         if ((validMasks[ch >>> 5] & (1 << ch)) == 0) {
+                            break encoded;
+                        }
+                        if (_htmlScript && i + 1 == n && isScriptNameLetter(ch)) {
+                            if (!endOfInput) {
+                                // The caller retains this letter until it is
+                                // known whether the logical input ends here.
+                                return underflow(input, i, output, j);
+                            }
                             break encoded;
                         }
                     } else {

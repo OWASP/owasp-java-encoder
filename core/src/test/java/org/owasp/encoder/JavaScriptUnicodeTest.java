@@ -141,16 +141,17 @@ public class JavaScriptUnicodeTest extends TestCase {
         }
     }
 
-    public void testFlushDoesNotFinalizePendingPair() throws Exception {
+    public void testFlushUsesValuePreservingSurrogateEscapesOnlyInScriptModes() throws Exception {
         for (JavaScriptEncoder.Mode mode : JavaScriptEncoder.Mode.values()) {
             StringWriter out = new StringWriter();
             EncodedWriter writer = new EncodedWriter(out, new JavaScriptEncoder(mode, false));
             writer.write("a\ud83d");
             writer.flush();
-            assertEquals("a", out.toString());
+            boolean script = mode == JavaScriptEncoder.Mode.HTML || mode == JavaScriptEncoder.Mode.BLOCK;
+            assertEquals(script ? "a\\ud83d" : "a", out.toString());
             writer.write("\ude00");
             writer.close();
-            assertEquals("a\ud83d\ude00", out.toString());
+            assertEquals(script ? "a\\ud83d\\ude00" : "a\ud83d\ude00", out.toString());
         }
     }
 

@@ -8,6 +8,15 @@ unchanged. [1.5.1 is available from Central](releases/1.5.1-central-publication.
 
 ## Unreleased
 
+- Reduce unnecessary script-letter escaping in `forJavaScript` and
+  `forJavaScriptBlock` (#243). Interior letters remain readable; a final letter
+  from `script` (either case) is still escaped. Existing punctuation escapes and
+  protection against recognized HTML tokens across trusted-text boundaries are
+  preserved. Encoded bytes change, while JavaScript string values do not.
+  Streaming encoders may retain one trailing letter; `EncodedWriter.flush()`
+  safely emits it as a hex escape and any pending high surrogate as a Unicode
+  escape. Explicit flushes can add safe escapes while preserving UTF-16 values.
+
 ## 1.5.1 — 2026-10-15 UTC
 
 Documentation and build-maintenance patch; publication is verified in the

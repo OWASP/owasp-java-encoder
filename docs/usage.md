@@ -61,7 +61,20 @@ result into an HTML-parsing API introduces another context to secure.
 
 This correction changes emitted text. HTML-script JavaScript uses additional
 hex escapes (including `\x2d` for hyphen and escapes for both cases of the
-letters in `script`) while preserving the JavaScript string value. CDATA
+letters in `script`) while preserving the JavaScript string value. In the
+unreleased refinement for #243, only a final `C`, `I`, `P`, `R`, `S`, or `T` (either case) receives that
+letter escape; interior letters remain readable. For example, `script` becomes
+`scrip\x74` and `http://google.com` becomes `http:\/\/google.com`.
+The punctuation and terminal-letter escapes together prevent recognized HTML
+script tokens across both boundaries. A name such as `</scripture>` is not a
+script end tag; HTML does not ignore spaces between tag-name letters.
+A streaming encoder may retain one trailing script letter until more input or
+end-of-input. `EncodedWriter.flush()` safely emits a pending script letter as a
+hex escape, or a pending high surrogate as a Unicode escape. A later low surrogate
+is escaped separately, preserving the JavaScript UTF-16 value. Explicit flushes
+can add escapes compared with encoding the whole value. Other encoding contexts
+retain their existing incomplete-input handling. Use `Encode.forJavaScriptBlock(out, value)`
+for a complete value followed by trusted output, as in the example above. CDATA
 preserves parsed XML text but can expand each `]` or `>` to 13 characters and
 can change SAX/StAX event boundaries. XML-comment encoding replaces every
 hyphen with `~` and therefore does not preserve comment text. Review snapshots,

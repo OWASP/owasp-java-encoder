@@ -269,6 +269,12 @@ public class EncoderTestSuiteBuilder {
      * @return this.
      */
     public EncoderTestSuiteBuilder encode(String name, final String expected, final String input) {
+        return encode(name, expected, expected, input);
+    }
+
+    /** Adds a fixture whose terminal escape changes when more input follows. */
+    public EncoderTestSuiteBuilder encode(String name, final String expected,
+            final String expectedBeforeSuffix, final String input) {
         return add(new TestCase(name) {
             @Override
             protected void runTest() throws Throwable {
@@ -277,15 +283,15 @@ public class EncoderTestSuiteBuilder {
 
                 // test input surrounded by safe characters
                 checkEncode(_safeAffix + expected, _safeAffix + input);
-                checkEncode(expected + _safeAffix, input + _safeAffix);
-                checkEncode(_safeAffix + expected + _safeAffix,
+                checkEncode(expectedBeforeSuffix + _safeAffix, input + _safeAffix);
+                checkEncode(_safeAffix + expectedBeforeSuffix + _safeAffix,
                     _safeAffix + input + _safeAffix);
 
                 // test input surrounded by characters needing escape
                 String escapedAffix = Encode.encode(_encoder, _unsafeAffix);
                 checkEncode(escapedAffix + expected, _unsafeAffix + input);
-                checkEncode(expected + escapedAffix, input + _unsafeAffix);
-                checkEncode(escapedAffix + expected + escapedAffix,
+                checkEncode(expectedBeforeSuffix + escapedAffix, input + _unsafeAffix);
+                checkEncode(escapedAffix + expectedBeforeSuffix + escapedAffix,
                     _unsafeAffix + input + _unsafeAffix);
             }
         });

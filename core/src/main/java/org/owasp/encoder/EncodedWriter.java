@@ -45,7 +45,15 @@ import java.nio.charset.CoderResult;
  * and close operations synchronize on the wrapped writer. Keep each logical
  * encoding stream in its own EncodedWriter; synchronization does not prevent
  * separate callers' content from being interleaved. Close the writer to finish
- * pending input; flush alone does not mark the end of input.</p>
+ * pending input; flush alone does not mark the end of input. In HTML-script
+ * JavaScript modes, flush safely emits a pending trailing letter from
+ * {@code script} as a hex escape, or a pending high surrogate as a Unicode escape.
+ * A later low surrogate is escaped separately, preserving the same JavaScript
+ * UTF-16 string value. Explicit flushes can therefore add escapes compared with
+ * encoding the whole value. In other contexts, incomplete sequences can remain pending; do not write a trusted suffix
+ * directly to the wrapped writer while input remains pending. For a complete
+ * string followed by trusted output, use the Writer overloads of {@link Encode}
+ * instead. Closing this writer also closes its wrapped writer.</p>
  *
  * @author Jeff Ichnowski
  */
@@ -234,6 +242,13 @@ public class EncodedWriter extends Writer {
     public void flush() throws IOException {
         synchronized (lock) {
             ensureOpen();
+            if (_hasLeftOver && _leftOverBuffer.position() == 1
+                    && _encoder.canFlushPending(_leftOverBuffer.get(0))) {
+                // Make a safely representable code unit visible before callers
+                // write directly to the wrapped writer. Other encoders retain
+                // their existing incomplete-sequence lookahead behavior.
+                flushLeftOver(null);
+            }
             flushBufferToWriter();
             _out.flush();
         }

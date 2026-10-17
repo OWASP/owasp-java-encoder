@@ -44,8 +44,9 @@ import java.nio.charset.CoderResult;
  * OWASP Encoder's project is not currently supported.</p>
  *
  * <p>All encoder singletons returned by {@link Encoders} are stateless and
- * thread-safe. Incomplete sequences remain in the caller's input buffer;
- * callers must preserve those characters between calls and must not share
+ * thread-safe. Characters needing lookahead remain in the caller's input buffer;
+ * these include incomplete Unicode sequences and trailing HTML-script letters.
+ * Callers must preserve those characters between calls and must not share
  * mutable input or output buffers across concurrent calls.</p>
  *
  * <p>To use an Encoder instance directly, repeatedly call {@link
@@ -110,7 +111,12 @@ public abstract class Encoder {
      * true}).  This will happen when the encoder needs to see more
      * input before determining what to do--for example when an encoder sees
      * a high surrogate at the end of a non-final input buffer and needs the
-     * next code unit to determine whether it forms a pair.</p>
+     * next code unit to determine whether it forms a pair. HTML-script JavaScript
+     * encoders also retain a trailing letter from {@code script} until another
+     * code unit or end-of-input determines whether it needs escaping. After
+     * {@code UNDERFLOW}, retain unread input and supply more input, or set
+     * {@code endOfInput} to {@code true} when the logical input is complete;
+     * retrying the same incomplete input with {@code false} cannot progress.</p>
      *
      * <p>The output buffer must have enough remaining space for an entire
      * encoded sequence. Allow at least 13 characters of output space to support
@@ -238,6 +244,18 @@ public abstract class Encoder {
      * will be {@code off+len} if no characters in the input require encoding.
      */
     abstract int firstEncodedOffset(String input, int off, int len);
+
+    /**
+     * Whether one retained UTF-16 code unit can be represented at an explicit
+     * writer flush without changing its value when more input follows. Encoders
+     * that would replace an incomplete sequence must leave it pending instead.
+     *
+     * @param ch the sole retained code unit
+     * @return true if encoding this code unit with endOfInput is safe on flush
+     */
+    boolean canFlushPending(char ch) {
+        return false;
+    }
 
     /**
      * Internal helper method to properly position buffers after encoding up
