@@ -1,8 +1,7 @@
 # Model-assisted development and review
 
-Adapted from the [OWASP Cheat Sheet Series model workflow](https://github.com/OWASP/CheatSheetSeries/blob/master/MODELS.md),
-retrieved October 18, 2026, for OWASP Java Encoder. This is a proposed review
-lineup, not a record of reviews performed or a replacement for maintainer review.
+Use this workflow to develop and review changes to OWASP Java Encoder.
+Model-assisted review supplements independent maintainer review.
 Use the full workflow for substantial encoding/security changes and focused
 review for small corrections. Follow [CONTRIBUTING.md](CONTRIBUTING.md) and the
 existing repository controls; this document does not authorize publication,
@@ -10,13 +9,12 @@ merging, releases, or changes to those controls.
 
 ## Lineup
 
-The model identifiers below are the source workflow's proposed selections.
-Before using them, verify current availability through the installed tools and
+Use the lineup below, verifying current availability through the installed tools and
 official provider documentation. Record the actual model ID and tool version;
 report unavailable slots and substitutions explicitly. Do not claim a review
 ran merely because a CLI accepted a model name.
 
-| Step | Proposed model | Java Encoder responsibility |
+| Step | Model | Java Encoder responsibility |
 | --- | --- | --- |
 | 1. Build | Astra (`gpt-6-astra`, through Codex) | Implements one scoped issue or fix on a clean branch based on `main`, reads the context and compatibility contracts, adds regression coverage, and prepares the change for review. |
 | 2. Second build | Opus 5.5 (`claude-opus-5-5`, through Claude Code) | Checks the implementation and tests, corrects gaps within scope, and simplifies code without weakening parser protection or changing contracts accidentally. |
@@ -166,8 +164,7 @@ release gates in [RELEASING.md](RELEASING.md).
   PR description without copying private evidence or secrets.
 - Use the existing [PR template](.github/PULL_REQUEST_TEMPLATE.md): explain the
   problem, resulting behavior, compatibility impact, validation and limitations.
-  This repository has no Cheat Sheet Series npm approval-audit command or
-  cheat-sheet review template; use its own documented review and CI controls.
+  Follow the repository’s documented review and CI controls.
 - Confirm current required checks and human approvals on the final PR revision.
   AI reviews do not count as independent maintainer approval. Do not weaken
   rulesets or CI to deliver a change. Posting reviews, merging, closing, signing
