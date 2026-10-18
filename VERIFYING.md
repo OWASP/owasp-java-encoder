@@ -6,15 +6,14 @@ identity authority. Obtain [KEYS](KEYS) from a trusted project revision and chec
 the fingerprint before use. Never import private key material to verify a release.
 
 For 1.4.1 and later releases until a documented rotation, the expected project key
-is `1C5F632B86809F2F5DB25092BEA0075F94074A9B`. The [1.6.0 release record](releases/1.6.0.md#verification-and-evidence)
-tracks signing and publication of the prepared release. Do not treat a prepared
-release as available. The [1.5.1 publication verification](releases/1.5.1-central-publication.md)
-records the previous verified artifacts and signatures.
+is `1C5F632B86809F2F5DB25092BEA0075F94074A9B`. The [1.6.0 publication verification](releases/1.6.0-central-publication.md)
+records the signed tag, exact bundle and comparison of Central and GitHub
+downloads against the retained signed artifacts.
 
 ## Fresh public-only keyring
 
 Download the artifact, its original `.asc`, and the trusted `KEYS`. This example
-targets 1.6.0 once its publication is verified. For historical releases, use the full
+targets the published 1.6.0 release. For historical releases, use the full
 fingerprint mapped below and review the historical key's expiry and algorithms.
 Commands use GnuPG and `shasum` (or equivalent SHA tools).
 

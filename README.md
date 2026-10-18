@@ -9,13 +9,11 @@ has no runtime dependencies; optional JSP and Jakarta adapters provide view-laye
 bindings. Encoding is one part of [XSS prevention][xss], alongside
 safe templates, URL validation and other application controls.
 
-**1.6.0 release preparation:** this minor release reduces unnecessary JavaScript
-letter escaping while preserving recognized HTML-token protection across trusted
-fragments. Encoded bytes and streaming behavior change; see the
-[release notes](releases/1.6.0.md) for migration and verification.
-Publication is not complete; the dependency example below targets the prepared
-release. The latest verified Central release remains
-[1.5.1](releases/1.5.1-central-publication.md) until publication is confirmed.
+**1.6.0 is available from Maven Central.** This minor release reduces unnecessary
+JavaScript letter escaping while preserving recognized HTML-token protection
+across trusted fragments. Encoded bytes and streaming behavior change; see the
+[release notes](releases/1.6.0.md) and
+[publication verification](releases/1.6.0-central-publication.md).
 
 The parser-boundary security fixes introduced in 1.5.0 remain in effect;
 versions through 1.4.1 do not contain those fixes. See
@@ -50,9 +48,9 @@ on the same classpath or module path. See the [runtime matrix](compatibility/REA
 `encoder-esapi` was retired after 1.4.1 and is not included or supported in
 1.5.x or 1.6.0. Applications using it must [migrate away from the adapter](docs/encoder-esapi-retirement.md).
 
-Published 1.5.1 API documentation (1.6.0 indexing follows publication): [core](https://javadoc.io/doc/org.owasp.encoder/encoder/1.5.1/),
-[javax JSP](https://javadoc.io/doc/org.owasp.encoder/encoder-jsp/1.5.1/) and
-[Jakarta JSP](https://javadoc.io/doc/org.owasp.encoder/encoder-jakarta-jsp/1.5.1/).
+Published 1.6.0 API documentation (hosted indexing may lag publication): [core](https://javadoc.io/doc/org.owasp.encoder/encoder/1.6.0/),
+[javax JSP](https://javadoc.io/doc/org.owasp.encoder/encoder-jsp/1.6.0/) and
+[Jakarta JSP](https://javadoc.io/doc/org.owasp.encoder/encoder-jakarta-jsp/1.6.0/).
 
 ```java
 import org.owasp.encoder.Encode;

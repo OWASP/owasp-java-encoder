@@ -1,6 +1,6 @@
 # Java and JSP examples
 
-These examples target the prepared **1.6.0** release, including the JavaScript
+These examples target the published **1.6.0** release, including the JavaScript
 refinement for #243. See the [release record](../releases/1.6.0.md) for publication
 status. Published 1.5.1 retains 1.5.0's broader letter escaping.
 Features marked **1.5** were introduced in 1.5.0.

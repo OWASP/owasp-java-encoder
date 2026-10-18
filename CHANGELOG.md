@@ -10,9 +10,9 @@ unchanged. [1.5.1 is available from Central](releases/1.5.1-central-publication.
 
 No changes yet.
 
-## 1.6.0 — release preparation
+## 1.6.0 — 2026-10-18 UTC
 
-Publication is pending; see the [release record](releases/1.6.0.md).
+Publication is verified; see the [release record](releases/1.6.0.md).
 
 - Reduce unnecessary script-letter escaping in `forJavaScript` and
   `forJavaScriptBlock` (#243). Interior letters remain readable; the input's last
