@@ -53,15 +53,9 @@ public class JavaScriptEncoderTest extends TestCase {
             for (JavaScriptEncoder.Mode mode : JavaScriptEncoder.Mode.values()) {
 //                if (!(mode == JavaScriptEncoder.Mode.HTML_CONTENT && asciiOnly == 0)) continue;
                 boolean htmlBlock = mode == Mode.BLOCK || mode == Mode.HTML;
-                String trustedDollarExpected = htmlBlock
-                    ? "\\x7bexe\\x63u\\x74ed=\\x74\\x72ue}"
-                    : "\\x7bexecuted=true}";
-                String templateExpressionExpected = htmlBlock
-                    ? "\\x24\\x7bale\\x72\\x74(1)}"
-                    : "\\x24\\x7balert(1)}";
-                String templateBreakoutExpected = htmlBlock
-                    ? "hell\\x60;ale\\x72\\x74(1);\\x60o"
-                    : "hell\\x60;alert(1);\\x60o";
+                String trustedDollarExpected = "\\x7bexecuted=true}";
+                String templateExpressionExpected = "\\x24\\x7balert(1)}";
+                String templateBreakoutExpected = "hell\\x60;alert(1);\\x60o";
                 EncoderTestSuiteBuilder builder = new EncoderTestSuiteBuilder(
                     new JavaScriptEncoder(mode, asciiOnly==1), "(xyz)", "(\\)")
                     .encoded(0, 0x1f)
@@ -96,8 +90,7 @@ public class JavaScriptEncoderTest extends TestCase {
                         .encode("\\x3c", "<")
                         .encode("\\x3e", ">")
                         .encode("script delimiter alphabet",
-                            "\\x43\\x49\\x50\\x52\\x53\\x54"
-                                + "\\x63\\x69\\x70\\x72\\x73\\x74",
+                            "CIPRSTciprs\\x74", "CIPRSTciprst",
                             "CIPRSTciprst")
                         .encoded(" !-/<>CIPRSTciprst");
                     break;
@@ -136,8 +129,8 @@ public class JavaScriptEncoderTest extends TestCase {
                         "${alert(1)}")
                     .encode("template breakout", templateBreakoutExpected,
                         "hell`;alert(1);`o")
-                    .encode("abc", htmlBlock ? "ab\\x63" : "abc", "abc")
-                    .encode("ABC", htmlBlock ? "AB\\x43" : "ABC", "ABC")
+                    .encode("abc", htmlBlock ? "ab\\x63" : "abc", "abc", "abc")
+                    .encode("ABC", htmlBlock ? "AB\\x43" : "ABC", "ABC", "ABC")
                     // DEL and the C1 controls are hex encoded in every mode
                     .encode("DEL", "\\x7f", "\u007f")
                     .encode("U+0080", "\\x80", "\u0080")
@@ -177,15 +170,13 @@ public class JavaScriptEncoderTest extends TestCase {
     public void testTemplateCharactersThroughPublicFacadesAndRegistry() throws Exception {
         String input = "price=$5;`${value}`;\\${escaped}";
         String expected = "price=\\x245;\\x60\\x24\\x7bvalue}\\x60;\\\\\\x24\\x7bescaped}";
-        String htmlBlockExpected = "\\x70\\x72\\x69\\x63e=\\x245;"
-            + "\\x60\\x24\\x7bvalue}\\x60;\\\\\\x24\\x7be\\x73\\x63a\\x70ed}";
-        String trustedDollarExpected = "\\x7bexe\\x63u\\x74ed=\\x74\\x72ue}";
+        String trustedDollarExpected = "\\x7bexecuted=true}";
         String[] methods = {"forJavaScript", "forJavaScriptAttribute",
             "forJavaScriptBlock", "forJavaScriptSource"};
         String[] contexts = {Encoders.JAVASCRIPT, Encoders.JAVASCRIPT_ATTRIBUTE,
             Encoders.JAVASCRIPT_BLOCK, Encoders.JAVASCRIPT_SOURCE};
         for (int i = 0; i < methods.length; i++) {
-            String methodExpected = (i == 0 || i == 2) ? htmlBlockExpected : expected;
+            String methodExpected = expected;
             assertEquals(methods[i], methodExpected,
                 Encode.class.getMethod(methods[i], String.class).invoke(null, input));
             StringWriter out = new StringWriter();
@@ -193,8 +184,7 @@ public class JavaScriptEncoderTest extends TestCase {
             assertEquals(methods[i], methodExpected, out.toString());
             assertEquals(contexts[i], methodExpected,
                 Encode.encode(Encoders.forName(contexts[i]), input));
-            assertEquals(methods[i], (i == 0 || i == 2)
-                    ? trustedDollarExpected : "\\x7bexecuted=true}",
+            assertEquals(methods[i], trustedDollarExpected,
                 Encode.class.getMethod(methods[i], String.class).invoke(null, "{executed=true}"));
         }
     }

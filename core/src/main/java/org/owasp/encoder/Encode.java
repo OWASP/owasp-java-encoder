@@ -1127,9 +1127,11 @@ public final class Encode {
      * before the insertion, with the closing <code>&gt;</code> supplied later.</p>
      *
      * <p>In HTML script blocks, a nonempty encoded fragment cannot complete the
-     * raw sequences <code>&lt;/script</code> or <code>&lt;script</code>
-     * (case-insensitive),
+     * HTML tokens <code>&lt;/script</code> or <code>&lt;script</code>
+     * (case-insensitive, followed by an HTML name delimiter),
      * <code>&lt;!--</code>, or <code>--&gt;</code> with adjacent trusted text.
+     * A longer name such as <code>&lt;/scripture</code> is not a script end tag.
+     * HTML does not remove whitespace between the letters of a tag name.
      * For example, trusted <code>&lt;/scr</code>, an encoded <code>i</code>, and
      * trusted <code>pt&gt;</code> cannot form an HTML closing script tag.
      * Preventing a split <code>&lt;script</code> also avoids entering the HTML
@@ -1138,8 +1140,21 @@ public final class Encode {
      * Empty input produces empty output and cannot separate dangerous trusted
      * fragments. These protections do not sanitize the surrounding template.</p>
      *
+     * <p>HTML punctuation and whitespace escapes break tokens within the input.
+     * A final C, I, P, R, S, or T (in either case) is also hex-escaped to prevent
+     * adjacent trusted text from completing a split script name. Interior letters
+     * are unchanged. Thus <code>i</code> becomes <code>\x69</code>, while
+     * <code>script</code> becomes <code>scrip\x74</code>.
+     * Low-level streaming encoders retain a trailing script letter until more
+     * input arrives or the stream ends. An explicit {@link EncodedWriter#flush()}
+     * emits a pending script letter as a hex escape or a pending high surrogate
+     * as a Unicode escape. A later low surrogate is escaped separately, preserving
+     * the UTF-16 string value. Flushing between writes can therefore add escapes
+     * compared with encoding the whole value;
+     * it does not change the JavaScript string value.</p>
+     *
      * <p>For example, <code>forJavaScript("http://google.com")</code> returns
-     * <code>h\x74\x74\x70:\/\/google.\x63om</code>, which evaluates to the
+     * <code>http:\/\/google.com</code>, which evaluates to the
      * original URL inside a supported JavaScript string literal.
      * {@link #forJavaScriptSource(String)} and
      * {@link #forJavaScriptAttribute(String)} leave this URL unchanged, but
@@ -1243,11 +1258,11 @@ public final class Encode {
      *     </tr>
      *     <tr class="altColor">
      *       <td class="colFirst" colspan="2">C, I, P, R, S, T and lowercase</td>
-     *       <td class="colLast"><code>\x##</code></td>
-     *       <td class="colLast">Prevents a nonempty encoded fragment from completing
-     *       the case-insensitive sequences <code>&lt;/script</code> or
-     *       <code>&lt;script</code> with
-     *       adjacent trusted text; see the insertion-boundary requirements above.</td>
+     *       <td class="colLast"><code>\x##</code> at the end of input only</td>
+     *       <td class="colLast">Together with the punctuation escapes, prevents
+     *       adjacent trusted text from completing a recognized script token.
+     *       Interior letters pass through unchanged; see the insertion-boundary
+     *       requirements above.</td>
      *     </tr>
      *     <tr class="rowColor">
      *       <td class="colFirst">U+005C</td><td><code>\</code></td>
@@ -1342,8 +1357,8 @@ public final class Encode {
      * surrounding single (') or double (") quotation marks, or backticks (`) for
      * an ordinary (untagged) template literal. This method performs the
      * same encode as {@link #forJavaScript(String)} except that slash, hyphen,
-     * space, {@code !}, {@code <}, {@code >}, and both cases of C, I, P, R, S,
-     * and T are not escaped. Those additional escapes protect an outer HTML
+     * space, {@code !}, {@code <}, {@code >}, terminal C, I, P, R, S,
+     * and T (either case) are not escaped. Those additional escapes protect an outer HTML
      * script context and do not apply to an event attribute.</p>
      * <p>DEL and C1 controls (U+007F to U+009F) are hex-escaped. Unpaired UTF-16
      * surrogates use Unicode escapes; valid surrogate pairs remain unescaped.</p>
@@ -1405,7 +1420,7 @@ public final class Encode {
      *
      * <p>The insertion-boundary requirements and nonempty-fragment HTML
      * protection of {@link #forJavaScript(String)} apply. This method retains
-     * the script-letter escapes; its shorter quote escapes do not make it safe
+     * the terminal script-letter escape; its shorter quote escapes do not make it safe
      * for HTML event attributes.</p>
      *
      * <b>Example JSP Usage:</b>
@@ -1454,8 +1469,8 @@ public final class Encode {
      * provide surrounding single (') or double (") quotation marks, or backticks
      * (`) for an ordinary (untagged) template literal. This method
      * performs the same encode as {@link #forJavaScript(String)} except that
-     * slash, hyphen, space, {@code !}, {@code <}, {@code >}, both cases of C,
-     * I, P, R, S, and T, and ampersand are not escaped; double and single
+     * slash, hyphen, space, {@code !}, {@code <}, {@code >}, terminal C,
+     * I, P, R, S, and T (either case), and ampersand are not escaped; double and single
      * quotes use backslash escapes.</p>
      * <p>DEL and C1 controls (U+007F to U+009F) are hex-escaped. Unpaired UTF-16
      * surrogates use Unicode escapes; valid surrogate pairs remain unescaped.</p>

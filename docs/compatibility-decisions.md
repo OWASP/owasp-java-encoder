@@ -43,11 +43,11 @@ remain outside those contracts.
 
 ## 1.5 parser-boundary output migration
 
-The 1.5 security correction keeps the existing trusted-prefix/encoded-value/
-trusted-suffix composition contract. Applications do not need a new stateful
+The 1.5 security correction makes the trusted-prefix/encoded-value/
+trusted-suffix protection explicit. Applications do not need a new stateful
 API, but three outputs change compared with 1.4.1:
 
-| Context | 1.5 behavior | Compatibility consequence |
+| Context | 1.5.0–1.5.1 behavior | Compatibility consequence |
 | --- | --- | --- |
 | HTML script JavaScript (`forJavaScript`, `forJavaScriptBlock`) | Escapes every character that can contribute to case-insensitive `</script` or `<script` tokens, their delimiters, `<!--` or `-->`; hyphen uses `\x2d` | JavaScript string values are preserved, but common letters and spaces can change encoded bytes. Attribute-only and standalone-source modes retain their narrower rules. |
 | XML CDATA | Represents every `]` and `>` with a close/character-data/reopen spelling | Parsed XML text is preserved, apart from documented XML normalization/replacement. Output can expand 13× and parser event boundaries can change. |
@@ -65,6 +65,41 @@ budgets as well: ordinary HTML-script JavaScript text can grow materially, while
 the CDATA maximum is 13×. Large CDATA values should use a Writer facade or
 `EncodedWriter`; String facades retain the complete result but grow according to
 actual output rather than reserving the maximum bound.
+
+## Unreleased JavaScript output refinement (#243)
+
+Release recommendation: use a minor release (1.6.0), rather than assuming this
+is patch-compatible. The evaluated values and supported HTML tokenizer protection
+remain intact, but encoded bytes, explicit-flush spelling, and the previous literal
+substring prohibition change. This proposal records the migration and parser
+validation requirements; the current development snapshot version is not release
+authorization. Existing published artifacts remain unchanged.
+
+The script-fragment protection remains, with less escaping of ordinary letters.
+HTML punctuation and whitespace still use the 1.5 escapes. Of the letters in
+`script` (either case), only the final character of an encoded input is escaped.
+For example, `i` still becomes `\x69`, `script` becomes `scrip\x74`, and
+`http://google.com` becomes `http:\/\/google.com`. Attribute-only and standalone
+source modes are unchanged. This is conservative rather than minimal encoding:
+`cat` still becomes `ca\x74`. The terminal rule keeps the streaming implementation
+stateless and its safety argument small.
+
+The guarantee concerns recognized HTML script tokens, not every raw substring
+spelling `</script`: a longer name such as `</scripture>` cannot close a script.
+The trusted-boundary requirements above still apply, including the empty-input
+and already-started-end-tag exclusions. This changes encoded bytes, not the
+JavaScript string value or supported embedding contexts.
+
+The encoder remains stateless. A streaming call retains a trailing script letter
+until more input or end-of-input determines whether it needs escaping.
+`EncodedWriter.flush()` safely emits a pending letter as a hex escape or a pending
+high surrogate as a Unicode escape before flushing the wrapped writer. A later
+low surrogate is escaped separately, preserving the same JavaScript UTF-16 value. This avoids withholding ordinary letters when callers
+flush before subsequent output. Explicit flushes can add safe escapes compared with
+the whole-value facade; ordinary write chunking without flushes produces identical
+bytes. In other encoding contexts, incomplete sequences can remain pending until
+more input or `close()`, which also closes the wrapped writer. Prefer the complete-value Writer facade when
+trusted output follows.
 
 ## Base64url disposition (#149)
 

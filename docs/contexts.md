@@ -1,8 +1,9 @@
 # Output contexts and boundaries
 
-This guide describes **1.5.1**, which clarifies the unchanged 1.5.0 encoding
-behavior; feature introductions are marked below. See the
-[release record](../releases/1.5.1.md) for publication status.
+This guide describes the current development version, including the unreleased
+JavaScript refinement for #243. Published 1.5.0 and 1.5.1 retain their broader
+letter escapes; 1.5.1 clarified the 1.5.0 behavior without changing it. See the
+[1.5.1 release record](../releases/1.5.1.md) for publication status.
 The [Encode Javadoc source](../core/src/main/java/org/owasp/encoder/Encode.java) is
 the detailed per-method contract; each method has a String-returning and a
 `(Writer out, String input)` overload. `Encoders` exposes shared stateless encoders;
@@ -78,15 +79,37 @@ escapes, preserving JavaScript string values through UTF-8 output. Valid surroga
 pairs remain intact. This does not promise that every downstream system accepts
 unpaired surrogates.
 
-The general and block encoders also escape every ASCII character that can form
-part of case-insensitive `</script` and `<script` tokens or the `<!--` and `-->`
-script tokens. This keeps the encoding of any nonempty value from completing a delimiter
-supplied partly by adjacent trusted literal string text. The additional output
-changes include space, `!`, hyphen (`\x2d`), `<`, `>`, slash, and both cases of
-the letters in `script`. JavaScript interprets these spellings as the original
-string value, but byte-for-byte output, snapshots, signatures and cache keys can
-change. `forJavaScriptAttribute` and `forJavaScriptSource` do not apply the HTML
-raw-text rule because their output is not for an HTML script element.
+The general and block encoders prevent a nonempty encoded value from completing
+recognized `</script` or `<script` tokens (case-insensitive, followed by an HTML
+name delimiter), `<!--`, or `-->` with adjacent trusted literal text. They escape
+space, `!`, hyphen (`\x2d`), `<`, `>`, slash, and relevant controls throughout
+the input. In the unreleased refinement for #243, letters from `script` (either case) are escaped
+only when they are the final input character. Interior letters remain readable;
+a longer name such as `</scripture>` is not a script end tag. This preserves
+HTML tokenizer containment while allowing harmless raw `</script` substrings
+inside longer names. It refines the stronger substring prohibition documented
+for 1.5.0 and 1.5.1.
+
+Escaping `<` prevents an HTML script delimiter when the entire string value is
+encoded, alongside the required JavaScript string escapes. It does not protect
+fragments when trusted text supplies that character: `</scr` + encoded `i` +
+`pt>` still needs the letter escape. This is unrelated to whitespace inside a
+tag name. The terminal-letter rule is conservative: both `script` and `csript`
+end with `t`, so both receive a final `\x74` escape even though `csript` is not
+a script tag name.
+
+JavaScript interprets the escapes as the original string value, but encoded bytes,
+snapshots, signatures and cache keys change. `forJavaScriptAttribute` and
+`forJavaScriptSource` do not apply the HTML raw-text rule because their output is
+not for an HTML script element. A streaming encoder may retain a final script
+letter until more input or end-of-input. `EncodedWriter.flush()` safely emits a
+pending script letter as a hex escape or a pending high surrogate as a Unicode
+escape. A later low surrogate is escaped separately. Explicit flushes can add
+escapes without changing the JavaScript UTF-16 value. Other encoding contexts
+retain their existing incomplete-input handling.
+In general/block JavaScript modes, flush the `EncodedWriter` before writing
+directly to its wrapped writer.
+Use the complete-value Writer facade when trusted output must follow.
 
 The opening `<script` token matters after `<!--` has put the HTML tokenizer
 in its escaped script-data state. Completing that token can enter the
@@ -101,7 +124,7 @@ dangerous trusted text on its two sides. These are requirements on the template,
 not additional input characters the encoder can fix.
 
 For example, `forJavaScript("http://google.com")` and `forJavaScriptBlock` produce
-`h\x74\x74\x70:\/\/google.\x63om` (31 characters for a 17-character input).
+`http:\/\/google.com` (19 characters for a 17-character input).
 JavaScript reads this as the original URL. `forJavaScriptSource` and
 `forJavaScriptAttribute` leave this example unchanged; use them only in their
 documented contexts. Source spelling and output size can change substantially
