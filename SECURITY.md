@@ -2,6 +2,11 @@
 
 ## Supported Versions
 
+Version **1.6.0** is being prepared as an output-encoding refinement. It preserves
+recognized HTML-token protection from 1.5.0 and introduces no new encoder
+security fix. Until [publication is verified](releases/1.6.0.md), 1.5.1 remains
+the current supported release shown below.
+
 Version **1.5.1**, published **2026-10-15 UTC**, is the current supported
 release. This documentation and build-maintenance patch preserves the 1.5.0
 security fixes and introduces no new encoder security fix. The

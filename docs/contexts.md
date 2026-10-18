@@ -1,9 +1,8 @@
 # Output contexts and boundaries
 
-This guide describes the current development version, including the unreleased
-JavaScript refinement for #243. Published 1.5.0 and 1.5.1 retain their broader
-letter escapes; 1.5.1 clarified the 1.5.0 behavior without changing it. See the
-[1.5.1 release record](../releases/1.5.1.md) for publication status.
+This guide describes the prepared **1.6.0** release, including the JavaScript
+refinement for #243. Published 1.5.0 and 1.5.1 retain their broader letter escapes.
+See the [1.6.0 release record](../releases/1.6.0.md) for publication status.
 The [Encode Javadoc source](../core/src/main/java/org/owasp/encoder/Encode.java) is
 the detailed per-method contract; each method has a String-returning and a
 `(Writer out, String input)` overload. `Encoders` exposes shared stateless encoders;
@@ -83,7 +82,7 @@ The general and block encoders prevent a nonempty encoded value from completing
 recognized `</script` or `<script` tokens (case-insensitive, followed by an HTML
 name delimiter), `<!--`, or `-->` with adjacent trusted literal text. They escape
 space, `!`, hyphen (`\x2d`), `<`, `>`, slash, and relevant controls throughout
-the input. In the unreleased refinement for #243, letters from `script` (either case) are escaped
+the input. In 1.6.0, letters from `script` (either case) are escaped
 only when they are the final input character. Interior letters remain readable;
 a longer name such as `</scripture>` is not a script end tag. This preserves
 HTML tokenizer containment while allowing harmless raw `</script` substrings

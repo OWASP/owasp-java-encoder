@@ -8,6 +8,12 @@ unchanged. [1.5.1 is available from Central](releases/1.5.1-central-publication.
 
 ## Unreleased
 
+No changes yet.
+
+## 1.6.0 — release preparation
+
+Publication is pending; see the [release record](releases/1.6.0.md).
+
 - Reduce unnecessary script-letter escaping in `forJavaScript` and
   `forJavaScriptBlock` (#243). Interior letters remain readable; the input's last
   character is escaped if it is C, I, P, R, S, or T (either case). Existing punctuation escapes and
