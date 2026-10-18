@@ -19,14 +19,57 @@ ran merely because a CLI accepted a model name.
 | 1. Build | Astra (`gpt-6-astra`, through Codex) | Implements one scoped issue or fix on a clean branch based on `main`, reads the context and compatibility contracts, adds regression coverage, and prepares the change for review. |
 | 2. Second build | Opus 5.5 (`claude-opus-5-5`, through Claude Code) | Checks the implementation and tests, corrects gaps within scope, and simplifies code without weakening parser protection or changing contracts accidentally. |
 | 3. Independent review | Sol 6.1 (`gpt-6.1-sol`, through Codex) | Reviews Java correctness, streaming behavior, exact output, public API and packaged-consumer compatibility. |
-| 3. Independent review | Daybreak Blue access program, when available | Uses an eligible current model to examine parser-boundary attacks, context confusion and resource exhaustion. Record both the resolved model and access program; ordinary model access does not establish program eligibility. |
+| 3. Independent review | Daybreak Blue (the Codex model-picker entry; `gpt-daybreak-blue-latest`) | Examines parser-boundary attacks, context confusion and resource exhaustion. Explicitly select Blue access and run the preflight below. Record the requested alias, any returned model identity, and access program separately. |
 | 3. Independent review | Mythos 5.1 (`claude-mythos-5-1`, through Claude Code) | Challenges security assumptions with primary specifications and adversarial parser tests, including trusted/untrusted fragment composition. |
 | 3. Independent review | Sonnet 5.5 (`claude-sonnet-5-5`, through Claude Code) | Checks Javadocs, examples and migration notes for accurate context selection, complete surrounding syntax, concision and plain US English. |
 | 4. Resolve and deliver | Astra (`gpt-6-astra`, through Codex) | Resolves findings with evidence, validates the final revision, and reports the verdict, remaining blockers and results to the operator. |
 
-Use an eligible current model for the Daybreak slot; do not substitute a
-deprecated alias or describe an unresolved alias as a verified model identity.
-An unavailable reviewer is a disclosed coverage gap, not a passing review.
+### Daybreak Blue preflight
+
+This slot means the **Daybreak Blue entry in the Codex model picker**. Do not
+silently replace it with GPT-6 Sol plus Blue access: those are different model
+selections. The [API model catalog](https://developers.openai.com/api/docs/models/gpt-daybreak-blue-latest)
+marks the alias deprecated, but an operator may explicitly request the installed
+Codex picker entry. Check its availability for the current account instead of
+inferring access from environment variables, configuration keys or API deprecation.
+
+Record `codex --version` and inspect the authenticated Codex app-server
+`model/list` result: match the display name, model ID and
+`availableAccessPrograms.cyber`. Then use an empty temporary directory for this
+harmless probe (replace `/path/to/empty-directory`):
+
+```sh
+codex exec --ignore-user-config --ephemeral --skip-git-repo-check \
+  -C /path/to/empty-directory -s read-only \
+  -m gpt-daybreak-blue-latest --cyber-access-program daybreak_blue \
+  --json 'Reply exactly READY. Do not use tools or read files.'
+```
+
+Require a completed turn with `READY`, not just CLI acceptance of the name.
+For the actual review, use the same explicit model and program with the immutable
+review packet required below; a preflight is not a code review. Keep repository
+review and approval controls in force. Do not enable model/provider fallback.
+If using app-server directly, set `allowProviderModelFallback=false` on
+`thread/start` and `cyberAccessProgram=daybreakBlue` on `turn/start`.
+
+Retain the command, tool version, dated catalog/turn evidence, reviewed SHA and
+verdict. Record an alias as an alias if the tool does not expose its underlying
+model; neither a model's self-description nor requested configuration attests
+that identity. Never claim an unreported backend model was verified.
+
+Distinguish **not tested**, **probe failed** (record the actual error),
+**access verified**, and **review completed**. Missing local configuration is
+not evidence of denied access. On a failure, check the authenticated account,
+current catalog and [provider access guidance](https://developers.openai.com/api/docs/guides/daybreak).
+Do not change account entitlements or silently substitute another model. Report
+an unfilled slot as a coverage gap, not a passing review.
+
+On 2026-10-18, Codex 0.163.0 advertised the exact picker entry with Blue access,
+and its explicit probe completed successfully. The earlier #243 review had
+not attempted that probe; its unavailable label did not establish an access
+failure. This dated result does not guarantee future access. Any review added
+after publication must be labeled supplemental, not retroactively counted as a
+pre-release gate.
 
 ## Repository and security contracts
 
