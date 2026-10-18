@@ -1,5 +1,8 @@
 # Maintenance backlog closeout
 
+> Historical evidence. Versions, outstanding work, and test counts describe
+> the dated review below. See the [archive index](README.md) for current guidance.
+
 Audited 2026-09-26 (America/Los_Angeles), after
 [PR #208](https://github.com/OWASP/owasp-java-encoder/pull/208) merged as
 `1111f7982e492c60abb4897844a02e7b3a44cef7`. The live GitHub inventory before this
@@ -18,20 +21,20 @@ review/bypass provenance and scope limits; earlier statements of outstanding
 
 | Batch | Issues and final disposition | Delivery/evidence |
 | --- | --- | --- |
-| 00 | #112 completed; #111 completed by the publication/access follow-up | PRs #171, #208; [publication and custody evidence](1.4.1-central-publication.md) |
+| 00 | #112 completed; #111 completed by the publication/access follow-up | PRs #171, #208; [publication and custody evidence](../../../releases/1.4.1-central-publication.md) |
 | 01 | #100, #130 completed | PRs #170, #172; tracker validation and migration records |
 | 02 | #102, #109, #97, #119, #108 completed | PRs #173, #177; [batch 02 validation](batch-02-validation.md) |
 | 03 | #137, #131, #120, #93 completed | PRs #174, #168, #179, #180; tracker validation and consumer/browser evidence |
-| 04 | #123, #96, #104, #122, #95, #103, #124, #125 completed; #110 resolved by this archival follow-up | PRs #184, #185, #187; [batch 04 validation](batch-04-validation.md) and [historical-key authentication](historical-key-authentication.md) |
+| 04 | #123, #96, #104, #122, #95, #103, #124, #125 completed; #110 resolved by this archival follow-up | PRs #184, #185, #187; [batch 04 validation](batch-04-validation.md) and [historical-key authentication](../../../releases/historical-key-authentication.md) |
 | 05 | #128, #115, #116, #117, #127 completed; #114 consolidated into #128 and closed as not planned, not separately implemented | PR #189; [batch 05 validation](batch-05-validation.md) |
-| 06 | #142 completed as a compatibility decision record; #149 rejected and closed as not planned | PR #190; [compatibility decisions](../docs/compatibility-decisions.md) |
+| 06 | #142 completed as a compatibility decision record; #149 rejected and closed as not planned | PR #190; [compatibility decisions](../../compatibility-decisions.md) |
 
 The subsequent dependency queue is also accounted for: Actions PR #175 and
 focused Maven PR #191 merged; #176 and #188 closed as superseded. The sixteen
 individual proposals #192–#207 were inspected and closed with their specific
 compatibility rationale. These were explicit dispositions, not claims that
 every proposed upgrade was applied. See the
-[dependency decisions](../.github/DEPENDENCY_DECISIONS.md) and
+[dependency decisions](../../../.github/DEPENDENCY_DECISIONS.md) and
 [PR queue validation](pr-queue-validation.md). Future proposals remain subject
 to review, and existing scoped dependency/advisory decisions retain their
 reconsideration requirements.
@@ -65,7 +68,7 @@ reconsideration requirements.
 Closing the maintenance tracker is not approval to release 1.5. Development
 remains **`1.5.0-SNAPSHOT`**. When a 1.5 release is actually proposed, repeat the
 complete then-open issue/PR inventory and satisfy every requirement in
-[RELEASING.md](../RELEASING.md), including review of new work, final artifact
+[RELEASING.md](../../../RELEASING.md), including review of new work, final artifact
 validation and explicit release approval. Deferrals and an empty queue alone
 do not authorize signing, tagging or publication. This closeout changes public
 key archives and documentation only; it does not change artifact inputs,

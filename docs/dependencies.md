@@ -3,22 +3,27 @@
 The core `encoder` artifact has **no runtime dependencies**. `encoder-jsp` and
 `encoder-jakarta-jsp` depend on core and declare their matching JSP API as
 `provided`; the container supplies it. No third-party classes are shaded into
-the three Java Encoder 1.5.0 JARs.
+the three Java Encoder 1.6.0 JARs.
 
 The optional Boot/WAR fixture, parser and JSP-engine tests, build plugins, and
 release tooling are development infrastructure. They are not dependencies of a
 published Java Encoder library. Review the [live dependency graph][graph] for
 their separate scopes.
 
-`encoder-esapi` was retired after version 1.4.1 and is absent from the 1.5.0
-reactor and dependency graph. Its historical artifact remains immutable but is
+`encoder-esapi` was retired after version 1.4.1 and is absent from releases since
+1.5.0, including 1.6.0. Its historical artifact remains immutable but is
 unsupported; see the [retirement and migration notice](encoder-esapi-retirement.md).
 
-## Consumer dependency inventory — 2026-09-27
+## Consumer dependency inventory — verified for 1.6.0 on 2026-10-18
 
-Generated from dependency-plugin 3.11.0's resolved reactor `dependency:tree`
-JSON for the reviewed `1.5.0-SNAPSHOT` candidate. The published 1.5.0 POMs retain
-this consumer graph; see the [publication record](../releases/1.5.0-central-publication.md).
+Originally generated from dependency-plugin 3.11.0's resolved reactor
+`dependency:tree` JSON for the 1.5.0 candidate. The published 1.6.0 parent and
+module POMs retain the same third-party consumer dependency declarations and
+versions; the three downloaded binary JARs contain only encoder classes and no
+embedded JARs.
+These POM and package checks were repeated on 2026-10-18; see the
+[publication record](../releases/1.6.0-central-publication.md) for artifact links.
+The license declarations below retain their cited upstream provenance.
 This inventory includes the publishable
 modules' compile/runtime and provided scopes, excludes test/plugin dependencies
 and this project's own BSD-3-Clause modules, and identifies the consuming module.

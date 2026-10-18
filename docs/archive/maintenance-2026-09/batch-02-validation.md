@@ -1,5 +1,8 @@
 # Batch 02 validation — 2026-09-26 UTC
 
+> Historical evidence. Versions, outstanding work, and test counts describe
+> the dated review below. See the [archive index](README.md) for current guidance.
+
 Implementation: [PR #173](https://github.com/OWASP/owasp-java-encoder/pull/173),
 initial implementation `49bfc33`. This covers #102, #109, #97, #119 and #108 under
 [#169](https://github.com/OWASP/owasp-java-encoder/issues/169). No release artifacts,
@@ -9,7 +12,7 @@ release tags, library algorithms or dependency versions were changed.
 
 - Actionlint 1.7.12 passes every workflow. Every external `uses` reference is a
   full 40-character SHA; authoritative release mappings and runtime trust review
-  are in [ACTION_PINS.md](../.github/ACTION_PINS.md).
+  are in [ACTION_PINS.md](../../../.github/ACTION_PINS.md).
 - Ten Python policy/parser tests pass. Negative cases cover accidental release
   versions, mismatched module/application versions, snapshot/tag mismatch,
   intentional release and next-snapshot flow, missing/failed/cancelled/skipped
@@ -54,7 +57,7 @@ with its dereferenced commit SHA, preserving the reviewed release source. Final
 head check evidence is recorded in #169. The browser build took 2m39s versus the 3m14s baseline; packaged
 preparation took 1m52s versus 1m25s; Java 8 tests took 1m13s versus 1m27s.
 These are single-run observations, not a benchmark. See the baseline cache
-inventory and preserved coverage in [CI_SECURITY.md](../.github/CI_SECURITY.md).
+inventory and preserved coverage in [CI_SECURITY.md](../../../.github/CI_SECURITY.md).
 
 Fork behavior was checked against the real external-contributor PR #168
 [Java CI run](https://github.com/OWASP/owasp-java-encoder/actions/runs/36220576710):
@@ -105,7 +108,7 @@ a live negative probe caught this, and the exact allowlist was reapplied.
   after successful checks, verifying the normal review gate.
 
 Recovery steps were recorded before restrictions and are now in
-[CI_SECURITY.md](../.github/CI_SECURITY.md#repository-controls-and-recovery).
+[CI_SECURITY.md](../../../.github/CI_SECURITY.md#repository-controls-and-recovery).
 CODEOWNERS validation stays with #127; site retirement with #96; future release
 workflow pins with #95. Optional public Scorecard/best-practices registration and
 additional scheduled scanners are explicitly deferred. Existing ESAPI advisories

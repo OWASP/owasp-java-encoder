@@ -1,5 +1,8 @@
 # Batch 04 validation
 
+> Historical evidence. Versions, outstanding work, and test counts describe
+> the dated review below. See the [archive index](README.md) for current guidance.
+
 Validated 2026-09-26. #123 merged separately in PR #184 after all 26 checks and
 Sol then Astra reviews. This record covers the subsequent coordinated build
 policy/release changes; it is not release approval.

@@ -4,11 +4,13 @@ Released entries are grounded in the linked immutable tags, GitHub release notes
 and retained README announcements. Dates below are GitHub publication dates in
 UTC where a release record exists; older announcement/tag dates are labeled.
 An open proposal is not a release. Historical tags, assets and signatures remain
-unchanged. [1.5.1 is available from Central](releases/1.5.1-central-publication.md).
+unchanged. [1.6.0 is available from Central](releases/1.6.0-central-publication.md).
 
 ## Unreleased
 
-No changes yet.
+- Remove retired Maven Site sources and archive September maintenance records.
+- Refresh build/dependency documentation and clarify the 1.6.0 review record.
+  Encoding behavior, public APIs, and published artifacts are unchanged.
 
 ## 1.6.0 — 2026-10-18 UTC
 
@@ -110,7 +112,7 @@ Signed artifact availability and independent verification are tracked in the
   work (#111) are recorded in the [publication follow-up](releases/1.4.1-central-publication.md).
 
 The [maintenance tracker](https://github.com/OWASP/owasp-java-encoder/issues/169)
-and [closeout record](releases/maintenance-closeout.md) record the corresponding
+and [closeout record](docs/archive/maintenance-2026-09/maintenance-closeout.md) record the corresponding
 PRs, tests and dispositions; they are not approval to publish 1.5.
 
 ## 1.4.1 — 2026-09-26 UTC

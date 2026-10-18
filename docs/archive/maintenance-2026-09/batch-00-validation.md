@@ -1,5 +1,8 @@
 # Batch 00 validation — 2026-09-25
 
+> Historical evidence. Versions, outstanding work, and test counts describe
+> the dated review below. See the [archive index](README.md) for current guidance.
+
 Work tracked by [#169](https://github.com/OWASP/owasp-java-encoder/issues/169),
 [#111](https://github.com/OWASP/owasp-java-encoder/issues/111), and
 [#112](https://github.com/OWASP/owasp-java-encoder/issues/112).
@@ -56,7 +59,7 @@ the checkout. No reactor build or existing local install supplied artifacts.
 | Central 1.4.0 with the documented `dependencyManagement` pin | 1.4.0 | 1.4.0 | 2.7.0.0 (managed from `[2.5.1.0,3)`) | PASS |
 | Signed 1.4.1 with no ESAPI override | 1.4.1 | 1.4.1 | 2.7.0.0 | PASS |
 
-For the second consumer, first ran the [documented local installation](1.4.1.md#install-verified-artifacts-while-central-is-pending)
+For the second consumer, first ran the [documented local installation](../../../releases/1.4.1.md#install-verified-artifacts-while-central-is-pending)
 with `maven-install-plugin:3.1.4`: the retained parent POM and all four libraries,
 including their original POMs, sources, and Javadocs. All five installations
 succeeded. No artifact was rebuilt or re-signed.
@@ -87,7 +90,7 @@ The current Central Portal session identified Jim Manico, showed **No Namespace(
 Found**, and disabled **Publish Component**. No deployment or new Support request
 was created. Continue the existing Support request to restore access. Jim
 confirmed initial key setup on this date; independent vault recovery and
-publisher rehearsals remain unconfirmed as recorded in [MAINTAINERS.md](../MAINTAINERS.md#batch-00-follow-up-2026-09-25-americalos_angeles).
+publisher rehearsals remain unconfirmed as recorded in [MAINTAINERS.md](maintainer-status.md#batch-00-follow-up-2026-09-25-americalos_angeles).
 
 The [OWASP project page](https://owasp.org/www-project-java-encoder/) still tells
 consumers to use 1.3.0 in its Getting Started text and needs a follow-up update.
@@ -98,4 +101,4 @@ after delivery, using the signed GitHub release for current consumer guidance.
 Keep #111 open until each publisher's access and distinct validated-then-dropped
 rehearsal, each custodian's vault drill, exact Central publication, and the
 post-publication comparisons and notice updates are evidenced. The full
-[1.5 backlog gate](../RELEASING.md#release-gate-for-15) remains in force.
+[1.5 backlog gate](../../../RELEASING.md#release-gate) remains in force.

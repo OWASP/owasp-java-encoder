@@ -10,7 +10,7 @@ this gate on its own. Keep current development at `1.6.1-SNAPSHOT` until maintai
 deliberately create the exact release commit after the technical gates pass.
 Changing that commit to a release version is release preparation, not release approval.
 
-The [2026-09-26 maintenance closeout](releases/maintenance-closeout.md) records
+The [2026-09-26 maintenance closeout](docs/archive/maintenance-2026-09/maintenance-closeout.md) records
 the final backlog inventory and dispositions for #110 and #169. A closed tracker
 does not waive this gate: repeat the complete open-issue/PR inventory when a new
 release is actually proposed and obtain release approval then.
@@ -224,9 +224,11 @@ are verified separately from the deterministic unsigned payload. Never rebuild o
 replace the retained 1.4.1 release to retrofit reproducibility.
 
 The publisher's isolated dependencies override Jackson core/databind 2.22.3 and
-annotations 2.22, HttpClient 5.6.4 and HttpCore/httpcore5-h2 5.4.4. The upstream
-0.11.0 dependency versions matched current OSV advisories; these six reviewed
-replacement coordinates did not on 2026-09-26. Local signed bundle validation
+annotations 2.22, HttpClient 5.6.5 and HttpCore/httpcore5-h2 5.4.4. The upstream
+0.11.0 dependency versions matched OSV advisories in the dated
+[September validation](docs/archive/maintenance-2026-09/batch-04-validation.md#release-plugin-dependency-follow-up-187).
+That check used HttpClient 5.6.4; the current 5.6.5 pin arrived later and is not
+covered by that historical advisory result. Local signed bundle validation
 exercises the overridden plugin. This is not an audit of every plugin dependency
 or a claim that the plugin's live Central HTTP path has been tested. Jim's Portal
 namespace access and exact 1.4.1 publication are now [verified](releases/1.4.1-central-publication.md).
