@@ -90,6 +90,14 @@ HTML tokenizer containment while allowing harmless raw `</script` substrings
 inside longer names. It refines the stronger substring prohibition documented
 for 1.5.0 and 1.5.1.
 
+Escaping `<` prevents an HTML script delimiter when the entire string value is
+encoded, alongside the required JavaScript string escapes. It does not protect
+fragments when trusted text supplies that character: `</scr` + encoded `i` +
+`pt>` still needs the letter escape. This is unrelated to whitespace inside a
+tag name. The terminal-letter rule is conservative: both `script` and `csript`
+end with `t`, so both receive a final `\x74` escape even though `csript` is not
+a script tag name.
+
 JavaScript interprets the escapes as the original string value, but encoded bytes,
 snapshots, signatures and cache keys change. `forJavaScriptAttribute` and
 `forJavaScriptSource` do not apply the HTML raw-text rule because their output is
@@ -99,6 +107,8 @@ pending script letter as a hex escape or a pending high surrogate as a Unicode
 escape. A later low surrogate is escaped separately. Explicit flushes can add
 escapes without changing the JavaScript UTF-16 value. Other encoding contexts
 retain their existing incomplete-input handling.
+In general/block JavaScript modes, flush the `EncodedWriter` before writing
+directly to its wrapped writer.
 Use the complete-value Writer facade when trusted output must follow.
 
 The opening `<script` token matters after `<!--` has put the HTML tokenizer

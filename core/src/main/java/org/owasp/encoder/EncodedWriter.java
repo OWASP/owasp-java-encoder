@@ -50,8 +50,10 @@ import java.nio.charset.CoderResult;
  * {@code script} as a hex escape, or a pending high surrogate as a Unicode escape.
  * A later low surrogate is escaped separately, preserving the same JavaScript
  * UTF-16 string value. Explicit flushes can therefore add escapes compared with
- * encoding the whole value. In other contexts, incomplete sequences can remain pending; do not write a trusted suffix
- * directly to the wrapped writer while input remains pending. For a complete
+ * encoding the whole value. In these modes, call {@link #flush()} before writing
+ * directly to the wrapped writer so buffered output and pending input appear
+ * in order. In other contexts, incomplete sequences can remain pending even
+ * after flush; do not write a trusted suffix while input remains pending. For a complete
  * string followed by trusted output, use the Writer overloads of {@link Encode}
  * instead. Closing this writer also closes its wrapped writer.</p>
  *

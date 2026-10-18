@@ -99,8 +99,8 @@
             blocks, or standalone JavaScript source. Additional escapes prevent nonempty encoded
             fragments from completing recognized &lt;/script or &lt;script tokens (case-insensitive,
             followed by an HTML name delimiter), &lt;!--, or --&gt; across trusted boundaries in an
-            HTML script element. Interior script-name letters remain unchanged; a final letter
-            from script (either case) is escaped. Most escapes use hex; slash uses \/ and
+            HTML script element. Interior script-name letters remain unchanged. The last input character is escaped
+            if it is C, I, P, R, S, or T (either case). Most escapes use hex; slash uses \/ and
             hyphen uses \x2d. The output can be substantially longer than the original text.
             Caller must supply single (') or double (") quotation marks, or backticks (`)
             for an ordinary (untagged) template literal. Insert encoded output into literal text,
@@ -484,8 +484,8 @@
             blocks, or standalone JavaScript source. Additional escapes prevent nonempty encoded
             fragments from completing recognized &lt;/script or &lt;script tokens (case-insensitive,
             followed by an HTML name delimiter), &lt;!--, or --&gt; across trusted boundaries in an
-            HTML script element. Interior script-name letters remain unchanged; a final letter
-            from script (either case) is escaped. Most escapes use hex; slash uses \/ and
+            HTML script element. Interior script-name letters remain unchanged. The last input character is escaped
+            if it is C, I, P, R, S, or T (either case). Most escapes use hex; slash uses \/ and
             hyphen uses \x2d. The output can be substantially longer than the original text.
             Caller must supply single (') or double (") quotation marks, or backticks (`)
             for an ordinary (untagged) template literal. Insert encoded output into literal text,
