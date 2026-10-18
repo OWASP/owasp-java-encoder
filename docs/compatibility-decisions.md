@@ -68,7 +68,7 @@ actual output rather than reserving the maximum bound.
 
 ## JavaScript output refinement in 1.6.0 (#243)
 
-This change is prepared for the minor release 1.6.0, rather than a patch release. The evaluated values and supported HTML tokenizer protection
+This change shipped in the minor release 1.6.0, rather than a patch release. The evaluated values and supported HTML tokenizer protection
 remain intact, but encoded bytes, explicit-flush spelling, and the previous literal
 substring prohibition change. This record describes the migration and parser
 validation requirements; release preparation does not establish publication.

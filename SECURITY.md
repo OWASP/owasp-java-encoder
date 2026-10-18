@@ -2,16 +2,11 @@
 
 ## Supported Versions
 
-Version **1.6.0** is being prepared as an output-encoding refinement. It preserves
-recognized HTML-token protection from 1.5.0 and introduces no new encoder
-security fix. Until [publication is verified](releases/1.6.0.md), 1.5.1 remains
-the current supported release shown below.
-
-Version **1.5.1**, published **2026-10-15 UTC**, is the current supported
-release. This documentation and build-maintenance patch preserves the 1.5.0
-security fixes and introduces no new encoder security fix. The
-[signed GitHub assets](https://github.com/OWASP/owasp-java-encoder/releases/tag/v1.5.1)
-and [Maven Central publication](releases/1.5.1-central-publication.md) have been
+Version **1.6.0**, published **2026-10-18 UTC**, is the current supported
+release. It reduces unnecessary JavaScript escaping while retaining recognized
+HTML-token protection. It introduces no new encoder security fix. The
+[signed GitHub assets](https://github.com/OWASP/owasp-java-encoder/releases/tag/v1.6.0)
+and [Maven Central publication](releases/1.6.0-central-publication.md) were
 verified against the retained signed artifacts.
 
 Version **1.5.0**, published **2026-09-28 UTC**, introduced the security fixes.
@@ -23,9 +18,9 @@ older release lines are not patched.
 
 | Maven coordinate                        | Supported | Not supported |
 | --------------------------------------- | --------- | ------------- |
-| `org.owasp.encoder:encoder`             | 1.5.1     | < 1.5.1       |
-| `org.owasp.encoder:encoder-jsp`         | 1.5.1     | < 1.5.1       |
-| `org.owasp.encoder:encoder-jakarta-jsp` | 1.5.1     | < 1.5.1       |
+| `org.owasp.encoder:encoder`             | 1.6.0     | < 1.6.0       |
+| `org.owasp.encoder:encoder-jsp`         | 1.6.0     | < 1.6.0       |
+| `org.owasp.encoder:encoder-jakarta-jsp` | 1.6.0     | < 1.6.0       |
 
 The optional `org.owasp.encoder:encoder-esapi` artifact is retired. Version
 1.4.1 is its final published release, no version is currently supported, and no
@@ -96,7 +91,7 @@ release tag, then verify:
 
 ```sh
 gpg --import KEYS
-gpg --verify encoder-1.5.1.jar.asc encoder-1.5.1.jar
+gpg --verify encoder-1.6.0.jar.asc encoder-1.6.0.jar
 gpg --verify SHA256SUMS.asc SHA256SUMS
 gpg --verify SHA512SUMS.asc SHA512SUMS
 shasum -a 256 -c SHA256SUMS

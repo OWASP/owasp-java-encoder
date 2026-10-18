@@ -1,6 +1,6 @@
 # Output contexts and boundaries
 
-This guide describes the prepared **1.6.0** release, including the JavaScript
+This guide describes the published **1.6.0** release, including the JavaScript
 refinement for #243. Published 1.5.0 and 1.5.1 retain their broader letter escapes.
 See the [1.6.0 release record](../releases/1.6.0.md) for publication status.
 The [Encode Javadoc source](../core/src/main/java/org/owasp/encoder/Encode.java) is
