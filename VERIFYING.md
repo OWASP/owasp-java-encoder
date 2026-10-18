@@ -6,14 +6,15 @@ identity authority. Obtain [KEYS](KEYS) from a trusted project revision and chec
 the fingerprint before use. Never import private key material to verify a release.
 
 For 1.4.1 and later releases until a documented rotation, the expected project key
-is `1C5F632B86809F2F5DB25092BEA0075F94074A9B`. The [1.5.1 publication verification](releases/1.5.1-central-publication.md)
-records the signed tag, exact bundle, and comparison of Central and GitHub
-downloads against the retained signed artifacts.
+is `1C5F632B86809F2F5DB25092BEA0075F94074A9B`. The [1.6.0 release record](releases/1.6.0.md#verification-and-evidence)
+tracks signing and publication of the prepared release. Do not treat a prepared
+release as available. The [1.5.1 publication verification](releases/1.5.1-central-publication.md)
+records the previous verified artifacts and signatures.
 
 ## Fresh public-only keyring
 
 Download the artifact, its original `.asc`, and the trusted `KEYS`. This example
-targets the published 1.5.1 release. For historical releases, use the full
+targets 1.6.0 once its publication is verified. For historical releases, use the full
 fingerprint mapped below and review the historical key's expiry and algorithms.
 Commands use GnuPG and `shasum` (or equivalent SHA tools).
 
@@ -22,7 +23,7 @@ verify_home=$(mktemp -d)
 chmod 700 "$verify_home"
 gpg --homedir "$verify_home" --batch --no-autostart --import KEYS
 expected_fingerprint=1C5F632B86809F2F5DB25092BEA0075F94074A9B
-artifact=encoder-1.5.1.jar
+artifact=encoder-1.6.0.jar
 gpg --homedir "$verify_home" --no-autostart --fingerprint "$expected_fingerprint"
 gpg --homedir "$verify_home" --batch --no-autostart --status-fd 1 \
   --verify "$artifact.asc" "$artifact" > signature.status || exit 1
@@ -45,7 +46,7 @@ A Maven `.sha256` sidecar usually contains **only a hex digest**, not a filename
 After fetching it over the intended distribution channel, form a check manifest:
 
 ```sh
-artifact=encoder-1.5.1.jar
+artifact=encoder-1.6.0.jar
 expected_hash=$(tr -d '[:space:]' < "$artifact.sha256")
 printf '%s\n' "$expected_hash" | grep -Eq '^[[:xdigit:]]{64}$' || exit 1
 printf '%s  %s\n' "$expected_hash" "$artifact" | shasum -a 256 --check || exit 1

@@ -1,8 +1,8 @@
 # Java and JSP examples
 
-These examples describe the current development version, including the
-**unreleased** JavaScript refinement for #243. Published **1.5.1** retains
-1.5.0's broader letter escaping; see the [release record](../releases/1.5.1.md).
+These examples target the prepared **1.6.0** release, including the JavaScript
+refinement for #243. See the [release record](../releases/1.6.0.md) for publication
+status. Published 1.5.1 retains 1.5.0's broader letter escaping.
 Features marked **1.5** were introduced in 1.5.0.
 
 ## HTML and Writer output
@@ -62,8 +62,8 @@ result into an HTML-parsing API introduces another context to secure.
 
 This correction changes emitted text. HTML-script JavaScript uses additional
 hex escapes (including `\x2d` for hyphen and escapes for both cases of the
-letters in `script`) while preserving the JavaScript string value. In the
-unreleased refinement for #243, only a final `C`, `I`, `P`, `R`, `S`, or `T` (either case) receives that
+letters in `script`) while preserving the JavaScript string value. In
+1.6.0, only a final `C`, `I`, `P`, `R`, `S`, or `T` (either case) receives that
 letter escape; interior letters remain readable. For example, `script` becomes
 `scrip\x74` and `http://google.com` becomes `http:\/\/google.com`.
 The punctuation and terminal-letter escapes together prevent recognized HTML
@@ -159,7 +159,7 @@ and the [packaged JSP engine checks](../compatibility/jsp-engine/README.md).
 ## Java modules
 
 The explicit module name for core is `owasp.encoder`. After verifying and obtaining
-`encoder-1.5.1.jar`, put that unchanged JAR in `lib/`, then create:
+`encoder-1.6.0.jar`, put that unchanged JAR in `lib/`, then create:
 
 `src/example.app/module-info.java`:
 

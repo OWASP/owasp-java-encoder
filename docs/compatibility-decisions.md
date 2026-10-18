@@ -66,14 +66,13 @@ the CDATA maximum is 13×. Large CDATA values should use a Writer facade or
 `EncodedWriter`; String facades retain the complete result but grow according to
 actual output rather than reserving the maximum bound.
 
-## Unreleased JavaScript output refinement (#243)
+## JavaScript output refinement in 1.6.0 (#243)
 
-Release recommendation: use a minor release (1.6.0), rather than assuming this
-is patch-compatible. The evaluated values and supported HTML tokenizer protection
+This change is prepared for the minor release 1.6.0, rather than a patch release. The evaluated values and supported HTML tokenizer protection
 remain intact, but encoded bytes, explicit-flush spelling, and the previous literal
-substring prohibition change. This proposal records the migration and parser
-validation requirements; the current development snapshot version is not release
-authorization. Existing published artifacts remain unchanged.
+substring prohibition change. This record describes the migration and parser
+validation requirements; release preparation does not establish publication.
+See the [release record](../releases/1.6.0.md) for status. Existing published artifacts remain unchanged.
 
 The script-fragment protection remains, with less escaping of ordinary letters.
 HTML punctuation and whitespace still use the 1.5 escapes. Of the letters in
