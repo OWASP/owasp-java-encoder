@@ -5,7 +5,11 @@ Apache Maven Wrapper 3.3.4's unmodified `only-script` distribution; no wrapper
 JAR executes before the download check. It pins Maven 3.10.0 and its SHA-256.
 The downloaded Maven ZIP was independently compared to the SHA-512 served at
 [Apache's distribution site](https://downloads.apache.org/maven/maven-3/3.10.0/binaries/).
-Wrapper archive SHA-256: `6cb584c2bc907b849a0b931d8266d3ff3214cdd3127115ed4f49fb7176413d36`.
+The separate [Maven Wrapper 3.3.4 only-script archive](https://repo.maven.apache.org/maven2/org/apache/maven/wrapper/maven-wrapper-distribution/3.3.4/maven-wrapper-distribution-3.3.4-only-script.zip)
+(`maven-wrapper-distribution-3.3.4-only-script.zip`) has SHA-256
+`6cb584c2bc907b849a0b931d8266d3ff3214cdd3127115ed4f49fb7176413d36`.
+The Maven 3.10.0 ZIP checksum is recorded in
+[the wrapper configuration](.mvn/wrapper/maven-wrapper.properties).
 Both bootstrap paths are CI gates, including a deliberately wrong checksum with
 an empty wrapper cache. `.mvn/maven.config` requires strict transfer checksums.
 These checks detect corruption against the recorded hash; checksums fetched from
@@ -71,7 +75,8 @@ evidence. CI retains reports alongside test results.
 
 The old Site/Reflow/Velocity/Doxia, FindBugs, PMD, JXR and report-only bindings
 were dormant. Unique core/JSP examples moved to [docs/usage.md](docs/usage.md).
-README/module docs and attached source/Javadoc JARs remain supported. Build-bound
+The unused module `src/site` trees have been removed. README/module guides
+and attached source/Javadoc JARs remain supported. Build-bound
 Checkstyle/JaCoCo, Surefire XML, CodeQL and dependency submission replace useful
 reports. Maven's implicit Site plugin is pinned to 3.22.0 and skipped to prevent
 falling back to an old lifecycle default; `mvn site` is not a publishing path.

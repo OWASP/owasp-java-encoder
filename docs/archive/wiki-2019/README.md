@@ -18,7 +18,7 @@ its advice before making it public again.
 | Historical page | Disposition and current destination |
 | --- | --- |
 | Home | Java 1.5/version 1.2 claims replaced by [README](../../../README.md); original-author credit retained. News goes to [CHANGELOG](../../../CHANGELOG.md). |
-| Deploy | Old download links replaced by signed 1.4.1 verification/install instructions; Central pending is explicit. No old artifact is recommended. |
+| Deploy | At migration, old links were replaced by signed 1.4.1 instructions while Central publication was pending. Use the [current README](../../../README.md) and [verification guide](../../../VERIFYING.md) for supported releases. |
 | Use | HTML text/attribute, URL, JSP and Writer examples migrated to [usage](../../usage.md) and [contexts](../../contexts.md). Corrected unquoted CSS examples and the URL example that validated one variable but emitted another. |
 | Grave Accent Issue | Historical unpatched-IE `innerHTML` round-trip bug; do not migrate the replacement/filter workaround into current library behavior. Prefer safe DOM text APIs and supported browsers. It is distinct from 1.5's ordinary JavaScript template-literal support. |
 

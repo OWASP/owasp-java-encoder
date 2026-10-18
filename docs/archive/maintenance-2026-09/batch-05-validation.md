@@ -1,5 +1,8 @@
 # Batch 05 validation
 
+> Historical evidence. Versions, outstanding work, and test counts describe
+> the dated review below. See the [archive index](README.md) for current guidance.
+
 Checked 2026-09-26 against implementation based on `3bd8625`. This is maintenance
 validation, not release approval. No historical signed artifact, release title,
 release timestamp, key or tag was changed.

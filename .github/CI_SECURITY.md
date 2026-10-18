@@ -67,7 +67,7 @@ for child or fixture POMs. Graph reports and submission JSON are retained for
 inspection. Inspect representative Jakarta Spring/Tomcat dependencies in the
 resulting graph; alert counts are not gates.
 
-The immutable 1.5.0 Java Encoder artifacts used by japicmp are intentional
+The immutable 1.6.0 Java Encoder artifacts used by japicmp are intentional
 development-only comparison inputs. Keep them visible in the build graph: an alert
 on a baseline artifact describes that historical input, not a dependency shipped
 to current development consumers, and must be assessed rather than hidden with a graph filter.
@@ -143,9 +143,10 @@ unverified owners or treat review rules as CODEOWNERS validation.
 
 All tags prohibit update/deletion with no bypass; new signed release tags still
 follow `RELEASING.md`. GitHub `required_signatures` checks commit signatures,
-not annotated tag signatures. Legacy Codacy and Travis webhooks have no current
-workflow/required-check owner and return 404/502; disable them while retaining
-their private configuration for recovery. Site retirement remains with #96.
+not annotated tag signatures. The [September validation](../docs/archive/maintenance-2026-09/batch-02-validation.md#live-settings-and-negative-tests)
+records disabling the legacy Codacy and Travis webhooks, with their private
+configuration retained for recovery. Maven Site sources and publishing are
+retired; the implicit Site lifecycle remains explicitly pinned and disabled.
 
 For recovery, an administrator uses Settings or the REST API, records the actor,
 reason and affected PR in #169, makes the narrowest temporary change, then

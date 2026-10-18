@@ -79,11 +79,6 @@ def translated(text, path):
         text = text.replace("owasp.encoder.jsp", "owasp.encoder.jakarta")
         text = text.replace("JspConsumer", "JakartaConsumer")
         text = text.replace("exercises the JSP tag API", "exercises the Jakarta JSP tag API")
-    elif path == "site/markdown/index.md":
-        text = text.replace("OWASP JSP", "OWASP Jakarta JSP")
-        text = text.replace("<artifactId>encoder-jsp</artifactId>", "<artifactId>encoder-jakarta-jsp</artifactId>")
-        text = text.replace('uri="https://www.owasp.org/index.php/OWASP_Java_Encoder_Project"',
-                            'uri="owasp.encoder.jakarta"')
     return text
 
 

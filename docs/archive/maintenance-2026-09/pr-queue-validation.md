@@ -1,5 +1,8 @@
 # PR queue cleanup validation — 2026-09-26
 
+> Historical evidence. Versions, outstanding work, and test counts describe
+> the dated review below. See the [archive index](README.md) for current guidance.
+
 ## Reviewed changes and preserved contracts
 
 PR #175 updates verified artifact-action pins together, retains named same-run ZIP
@@ -9,7 +12,7 @@ on `9fafc772b8e7f55d44417a8b1f59b2ea69de2568`; all 28 checks passed before merge
 as `011734abc029726a115811b53228cdaa789e7232`. Post-merge workflow evidence is in #169.
 
 The focused Maven change replaces Bundle Plugin 6.1.2 with 6.2.0, which uses bnd
-7.4.0. The [dependency decision record](../.github/DEPENDENCY_DECISIONS.md) accounts
+7.4.0. The [dependency decision record](../../../.github/DEPENDENCY_DECISIONS.md) accounts
 for every proposal in #176/#188 and its reconsideration conditions. Eleven exact
 coordinates are excluded only from the broad version-update group. Parsed YAML
 comparison confirms all directories, schedules, existing ignores and the separate

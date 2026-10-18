@@ -1,28 +1,32 @@
 # Reviewed action pins
 
 Resolved release tags through each authoritative repository Git ref (including
-annotated-tag dereferencing) on 2026-09-26 UTC. These are source pins, not claims
-that runtime tool downloads are made immutable by pinning an action.
+annotated-tag dereferencing) on 2026-10-18 UTC, matching the current workflows.
+These are source pins, not claims that runtime tool downloads are made immutable
+by pinning an action.
 
 | Repository/action | Release | Commit |
 | --- | --- | --- |
 | `actions/checkout` | [v7.0.1](https://github.com/actions/checkout/releases/tag/v7.0.1) | `3d3c42e5aac5ba805825da76410c181273ba90b1` |
 | `actions/setup-java` | [v6.0.1](https://github.com/actions/setup-java/releases/tag/v6.0.1) | `de7274f081f381c8f8158605e0321c36c376e2e6` |
-| `actions/upload-artifact` | [v7.0.1](https://github.com/actions/upload-artifact/releases/tag/v7.0.1) | `043fb46d1a93c77aae656e7c1c64a875d1fc6a0a` |
-| `actions/download-artifact` | [v8.0.1](https://github.com/actions/download-artifact/releases/tag/v8.0.1) | `3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c` |
-| `github/codeql-action` | [v4.38.2](https://github.com/github/codeql-action/releases/tag/v4.38.2) | `2892aa5e19bbd11bc0cff5427e3b750a04d9e3c2` |
+| `actions/upload-artifact` | [v7.0.2](https://github.com/actions/upload-artifact/releases/tag/v7.0.2) | `cf430e030ddbb5b0abf93d22962f4752f3646cd9` |
+| `actions/download-artifact` | [v8.0.2](https://github.com/actions/download-artifact/releases/tag/v8.0.2) | `9000827ccba6bdab643e8b6fd33ac0654aef8333` |
+| `github/codeql-action` | [v4.38.3](https://github.com/github/codeql-action/releases/tag/v4.38.3) | `24c54180a607b1449ed407dd24f251e4e9147c8d` |
 | `advanced-security/maven-dependency-submission-action` | [v6.0.1](https://github.com/advanced-security/maven-dependency-submission-action/releases/tag/v6.0.1) | `a64327a7329c9939cf675e458452febe1894a70c` |
 
 CodeQL uses the `init` and `analyze` subactions at the same commit. No other
 external actions or reusable workflows are referenced. Upload/download were
-reviewed together for PR #175; the two official lightweight release tags resolve
+originally reviewed together for PR #175 and advanced with CodeQL in
+[PR #240](https://github.com/OWASP/owasp-java-encoder/pull/240). The current
+release-to-commit mappings were rechecked on 2026-10-18; this inventory refresh
+does not claim a new full source audit. The two artifact-action release tags resolve
 directly to the commits above. All actions are JavaScript actions, not composite
 actions with hidden
 `uses` references. Their metadata, entrypoints and relevant credential/download
 paths were reviewed, along with the release changes.
 
 CodeQL's release tag is annotated: the Git ref points to tag object
-`88585263c0627ee42c0e1c5143a112c8d6f4aa18`, which must be dereferenced to the
+`cee97f86b972a3ded3c58d04148362b193ddc518`, which must be dereferenced to the
 commit in the table. Do not copy an annotated tag object's SHA into a commit
 pin. Verify the object's type and follow tag targets until it is a commit
 (equivalently, inspect the peeled `refs/tags/<version>^{}` Git ref).

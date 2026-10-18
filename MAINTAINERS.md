@@ -24,6 +24,42 @@ current. The key's public fingerprint is:
 The public key is in [KEYS](KEYS). This is a shared project signing identity;
 custody of it does not grant permission to publish Maven coordinates.
 
+## Latest recorded custody and publishing status
+
+The latest custody and rehearsal confirmations remain those reported on
+2026-09-26 below; this cleanup does not assert that new recovery drills ran.
+The [1.6.0 publication record](releases/1.6.0-central-publication.md) documents
+Jim's subsequent successful Central publication on 2026-10-18.
+
+### Central publication follow-up: 2026-09-26 (America/Los_Angeles)
+
+Jim's signed-in Portal account now shows the verified `org.owasp.encoder`
+namespace in the Owasp organization. The exact retained signed 1.4.1 bundle was
+validated and published as deployment `ce91e36f-756c-489f-bbea-3629b728ad28`.
+All 17 POM/JAR files and their 17 signatures downloaded from Central matched
+the retained release byte for byte. See the [publication record](releases/1.4.1-central-publication.md).
+
+This supersedes the earlier namespace-access and pending-publication status
+for Jim and 1.4.1.
+
+Jim also confirmed on 2026-09-26 (America/Los_Angeles) that he and Jeremy both
+completed the independent vault-recovery drills, namespace-access checks, and
+separate validated-and-dropped Central staging rehearsals that day. This is
+maintainer-reported completion; the individual private recovery records and
+rehearsal deployment IDs were not supplied or independently inspected in this
+publication session. Keep those operational records in each custodian's vault.
+
+| Custodian | Independent vault-recovery drill | Namespace access | Separate validated-and-dropped rehearsal |
+| --- | --- | --- | --- |
+| Jim Manico | Completed 2026-09-26, reported by Jim | Verified directly by 1.4.1 publication | Completed 2026-09-26, reported by Jim |
+| Jeremy Long | Completed 2026-09-26, reported by Jim | Confirmed 2026-09-26, reported by Jim | Completed 2026-09-26, reported by Jim |
+
+Together with the publication verification and reconciled consumer notices,
+this records completion of #111 on the stated evidence. Earlier observations
+are retained in the [historical status record](docs/archive/maintenance-2026-09/maintainer-status.md).
+Future recovery drills and release rehearsals follow the procedures below and
+[RELEASING.md](RELEASING.md).
+
 ## Independent recovery copies
 
 Each custodian's vault must contain a complete recovery set:
@@ -127,74 +163,3 @@ coordinate with the OWASP Foundation and Central Support to establish project
 ownership and restore namespace access; that process cannot recover a lost
 private key. If neither independent key copy is recoverable, arrange a new
 project key and publish the new fingerprint before signing any future release.
-
-## Recorded status: 2026-09-25
-
-The encrypted local backup was successfully imported and used to sign and verify
-a challenge in an isolated temporary keyring; that keyring was then removed.
-The local release and recovery directories were checked as owner-only (`0700`).
-These observations do not confirm the individual vault copies:
-
-| Custodian | Import into own vault | Drill from own vault copy | Central access and staging rehearsal |
-| --- | --- | --- | --- |
-| Jim Manico | Unconfirmed | Unconfirmed | Portal showed no namespaces and disabled publishing; validated-and-dropped rehearsal unconfirmed |
-| Jeremy Long | Unconfirmed | Unconfirmed | Current namespace access and validated-and-dropped rehearsal unconfirmed |
-
-Central Support has acknowledged the existing access request. Continue that
-request rather than opening a duplicate. The exact `encoder` 1.4.1 POM still
-returned HTTP 404 from Maven Central at this check. Retain the pending notices
-and the existing signed 1.4.1 bundle until publication is verified; do not rebuild
-or replace those artifacts or move their tag.
-
-### Batch 00 follow-up: 2026-09-25 (America/Los_Angeles)
-
-Jim confirmed initial key setup on this date. This confirms setup only; retrieval
-from his own vault, the isolated recovery drill, and a validated-and-dropped
-Central staging rehearsal remain unconfirmed. No new independent confirmation
-was received from Jeremy.
-
-The signed-in Central Portal account displayed `JIM MANICO`, **No Namespace(s)
-Found**, and a disabled **Publish Component** button. All five exact 1.4.1 POM
-URLs (the four libraries and parent) returned HTTP 404, and core metadata still
-listed 1.4.0. Publication and Jim's staging rehearsal remain blocked on namespace
-access; Jeremy's access remains unconfirmed. Continue the existing Support
-request. No new request or deployment was created.
-
-The retained public GitHub bundle, all artifact signatures, and signed checksum
-manifests were verified; see [batch 00 validation](releases/batch-00-validation.md).
-Verification of public artifacts is separate from private-key recovery and
-publisher access.
-
-Update this dated record only from each custodian's confirmation and actual
-publishing evidence. [#111](https://github.com/OWASP/owasp-java-encoder/issues/111)
-owns the remaining independent vault recovery, namespace access, publication,
-and staging checks. [#95](https://github.com/OWASP/owasp-java-encoder/issues/95)
-owns future release-tooling changes.
-
-### Central publication follow-up: 2026-09-26 (America/Los_Angeles)
-
-Jim's signed-in Portal account now shows the verified `org.owasp.encoder`
-namespace in the Owasp organization. The exact retained signed 1.4.1 bundle was
-validated and published as deployment `ce91e36f-756c-489f-bbea-3629b728ad28`.
-All 17 POM/JAR files and their 17 signatures downloaded from Central matched
-the retained release byte for byte. See the [publication record](releases/1.4.1-central-publication.md).
-
-This supersedes the earlier namespace-access and pending-publication status
-for Jim and 1.4.1.
-
-Jim also confirmed on 2026-09-26 (America/Los_Angeles) that he and Jeremy both
-completed the independent vault-recovery drills, namespace-access checks, and
-separate validated-and-dropped Central staging rehearsals that day. This is
-maintainer-reported completion; the individual private recovery records and
-rehearsal deployment IDs were not supplied or independently inspected in this
-publication session. Keep those operational records in each custodian's vault.
-
-| Custodian | Independent vault-recovery drill | Namespace access | Separate validated-and-dropped rehearsal |
-| --- | --- | --- | --- |
-| Jim Manico | Completed 2026-09-26, reported by Jim | Verified directly by 1.4.1 publication | Completed 2026-09-26, reported by Jim |
-| Jeremy Long | Completed 2026-09-26, reported by Jim | Confirmed 2026-09-26, reported by Jim | Completed 2026-09-26, reported by Jim |
-
-Together with the publication verification and reconciled consumer notices,
-this records completion of #111 on the stated evidence. The earlier dated
-records remain as history. Future recovery drills and release rehearsals still
-follow the procedures above; the 1.5 release gate remains unchanged.
