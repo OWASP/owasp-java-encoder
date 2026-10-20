@@ -1,24 +1,25 @@
 # Reviewed action pins
 
 Resolved release tags through each authoritative repository Git ref (including
-annotated-tag dereferencing) on 2026-10-18 UTC, matching the current workflows.
+annotated-tag dereferencing) on 2026-10-18 UTC; Setup Java and CodeQL were
+updated and rechecked on 2026-10-20 UTC, matching the current workflows.
 These are source pins, not claims that runtime tool downloads are made immutable
 by pinning an action.
 
 | Repository/action | Release | Commit |
 | --- | --- | --- |
 | `actions/checkout` | [v7.0.1](https://github.com/actions/checkout/releases/tag/v7.0.1) | `3d3c42e5aac5ba805825da76410c181273ba90b1` |
-| `actions/setup-java` | [v6.0.1](https://github.com/actions/setup-java/releases/tag/v6.0.1) | `de7274f081f381c8f8158605e0321c36c376e2e6` |
+| `actions/setup-java` | [v6.1.0](https://github.com/actions/setup-java/releases/tag/v6.1.0) | `b843ebf9b913146b38da2eaa7aeddf76074ae1ad` |
 | `actions/upload-artifact` | [v7.0.2](https://github.com/actions/upload-artifact/releases/tag/v7.0.2) | `cf430e030ddbb5b0abf93d22962f4752f3646cd9` |
 | `actions/download-artifact` | [v8.0.2](https://github.com/actions/download-artifact/releases/tag/v8.0.2) | `9000827ccba6bdab643e8b6fd33ac0654aef8333` |
-| `github/codeql-action` | [v4.38.3](https://github.com/github/codeql-action/releases/tag/v4.38.3) | `24c54180a607b1449ed407dd24f251e4e9147c8d` |
+| `github/codeql-action` | [v4.39.0](https://github.com/github/codeql-action/releases/tag/v4.39.0) | `6f2ac81f5cd81fe351a197ba0b00d91d03cd2aee` |
 | `advanced-security/maven-dependency-submission-action` | [v6.0.1](https://github.com/advanced-security/maven-dependency-submission-action/releases/tag/v6.0.1) | `a64327a7329c9939cf675e458452febe1894a70c` |
 
 CodeQL uses the `init` and `analyze` subactions at the same commit. No other
 external actions or reusable workflows are referenced. Upload/download were
 originally reviewed together for PR #175 and advanced with CodeQL in
 [PR #240](https://github.com/OWASP/owasp-java-encoder/pull/240). The current
-release-to-commit mappings were rechecked on 2026-10-18; this inventory refresh
+release-to-commit mappings were rechecked on the dates above; this inventory refresh
 does not claim a new full source audit. The two artifact-action release tags resolve
 directly to the commits above. All actions are JavaScript actions, not composite
 actions with hidden
@@ -26,7 +27,7 @@ actions with hidden
 paths were reviewed, along with the release changes.
 
 CodeQL's release tag is annotated: the Git ref points to tag object
-`cee97f86b972a3ded3c58d04148362b193ddc518`, which must be dereferenced to the
+`48870fdd6b42ee6474ec4207209ff87609271a5e`, which must be dereferenced to the
 commit in the table. Do not copy an annotated tag object's SHA into a commit
 pin. Verify the object's type and follow tag targets until it is a commit
 (equivalently, inspect the peeled `refs/tags/<version>^{}` Git ref).
@@ -36,6 +37,11 @@ pin. Verify the object's type and follow tag targets until it is a commit
   service when absent from the hosted toolcache and verifies the distribution.
   Dependency caching is disabled. JDK version lines are intentionally updated
   within their supported major versions; a commit pin does not pin the JDK bytes.
+  The v6.1.0 source review covered Temurin version parsing, download verification,
+  GPG-agent cleanup, Maven settings generation and dependency updates. Its new
+  credential-origin and plugin-repository inputs are unused here. The changed
+  Central exclusion behavior requires repository inputs that these workflows
+  do not set.
 - Artifact actions use bundled clients and GitHub's artifact service. Both run on
   Node.js 24 and require a runner supporting that runtime (2.327.1+); this project
   uses current GitHub-hosted runners, including in Java 8 jobs. The action runtime
@@ -52,6 +58,11 @@ pin. Verify the object's type and follow tag targets until it is a commit
 - CodeQL runs bundled JavaScript and obtains its corresponding CodeQL tools/query
   bundle. No repository token with content-write permission or custom scanner
   secret is available to the analysis jobs.
+  The v4.39.0 source review covered tool retrieval, checkout validation, caching
+  and status reporting. Its minimum CodeQL bundle is 2.20.7; these workflows use
+  the action's newer default bundle. Init and analyze both use the workspace-root
+  checkout, satisfying the new checkout-path validation. Default Setup's proxy
+  changes do not enable Default Setup or a private registry in this repository.
 - Maven submission v6.0.1 runs the checkout's Maven command with the pinned
   `com.github.ferstl:depgraph-maven-plugin:4.0.3`, then submits with GitHub's bundled
   dependency toolkit. It has no composite action references. Its source logs

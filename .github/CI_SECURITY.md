@@ -27,7 +27,7 @@ original packaged bytes. No privileged job restores PR artifacts or caches.
 
 All Maven invocations use a fresh runner-temporary repository. Shared Maven
 caching is deliberately disabled, including Java 8's necessary `install`, all
-scanner builds, and intentional release commits. Setup Java's pinned v6.0.1
+scanner builds, and intentional release commits. Setup Java's pinned v6.1.0
 does expose cache controls, but this configuration does not rely on any of them.
 See [local quarantine guidance](../RELEASING.md#maven-storage-and-repository-controls).
 
