@@ -125,9 +125,15 @@ The assembler verifies all thirteen signatures against that expected fingerprint
 checks the signed POMs match the source POMs, excludes the optional WAR, generates
 four checksum types and refuses to overwrite an existing bundle. It never builds,
 signs or uploads. Do **not** use `skipPublishing=true` as a bundle-generation
-command: despite upstream documentation, 0.11.0 filters out every artifact before
-bundling. It also requires a `central` server settings entry even in that mode;
-the isolated validation used dummy values and confirmed no upload occurred.
+command: it excludes artifacts from publication. The historical 0.11.0 validation
+filtered out every artifact and required a `central` settings entry even in that
+mode; that test used dummy values and confirmed no upload occurred.
+The current publisher, 0.12.0, adds `skipUpload=true` to build a bundle without
+uploading it. With `ignorePublishedComponents=false`, it needs no Central
+credentials. A separate unsigned POM-only fixture validated that mode under
+JDK 17/Maven 3.10.0 on 2026-10-20; it did not validate production signing or
+Central authentication. Keep using the signature-verifying assembler above for
+production bundles.
 The publisher extension loads only in the signing profile. The current POM uses
 `autoPublish=false`: deployment stages the release and does not publish it.
 Inspect the deployment in Central Portal and resolve validation errors before
@@ -228,7 +234,12 @@ annotations 2.22, HttpClient 5.6.5 and HttpCore/httpcore5-h2 5.4.4. The upstream
 0.11.0 dependency versions matched OSV advisories in the dated
 [September validation](docs/archive/maintenance-2026-09/batch-04-validation.md#release-plugin-dependency-follow-up-187).
 That check used HttpClient 5.6.4; the current 5.6.5 pin arrived later and is not
-covered by that historical advisory result. Local signed bundle validation
+covered by that historical advisory result. The 2026-10-20 publisher update
+compared the published 0.11.0 and 0.12.0 direct dependency declarations, which
+are unchanged, and retained all seven existing overrides. The isolated 0.12.0
+bundle-only fixture resolved those exact overrides and excluded Maven 3.10
+bookkeeping files from its ZIP. This was a linkage/bundling check, not a new
+advisory scan or a signed release rehearsal. Local signed bundle validation
 exercises the overridden plugin. This is not an audit of every plugin dependency
 or a claim that the plugin's live Central HTTP path has been tested. Jim's Portal
 namespace access and exact 1.4.1 publication are now [verified](releases/1.4.1-central-publication.md).
