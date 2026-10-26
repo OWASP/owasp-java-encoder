@@ -30,9 +30,6 @@ updates:
           - jakarta.servlet.jsp:jakarta.servlet.jsp-api
           - jakarta.servlet:jakarta.servlet-api
           - jakarta.el:jakarta.el-api
-          # Exact Boot plugin-realm pins checked by CI policy tests.
-          - tools.jackson.core:jackson-databind
-          - tools.jackson.core:jackson-core
           # The wrapper's Maven version is a separately reviewed toolchain change.
           - org.apache.maven:apache-maven
       maven-security:
@@ -86,16 +83,6 @@ updates:
       # entries below own these coordinates instead.
       - dependency-name: org.apache.tomcat.embed:tomcat-embed-jasper
       - dependency-name: org.apache.tomcat:tomcat-annotations-api
-      # Keep Boot 4.1.1's plugin realm on its own 3.1 line; patches and
-      # security updates remain eligible.
-      - dependency-name: tools.jackson.core:jackson-databind
-        update-types:
-          - version-update:semver-minor
-          - version-update:semver-major
-      - dependency-name: tools.jackson.core:jackson-core
-        update-types:
-          - version-update:semver-minor
-          - version-update:semver-major
   # Each JSP engine fixture gets its own scan, limited to Tomcat. A module scan
   # reads the module and its parent POM but not sibling modules, so it sees one
   # engine line and proposes that line's patch release. Major updates would

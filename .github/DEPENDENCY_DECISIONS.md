@@ -100,6 +100,21 @@ platform brings the same or a newer Jackson, remove the pin, its ignore rules an
 the policy assertion together. Enforcer rules do not inspect plugin realms, so a
 stale exact pin would silently downgrade Boot's own Jackson.
 
+## Boot 4.1.2 retires the fixture overrides — 2026-10-26
+
+Grouped PR [#257](https://github.com/OWASP/owasp-java-encoder/pull/257) moves the
+Jakarta fixture to Spring Boot **4.1.2**. Its `spring-boot-buildpack-platform`
+brings Jackson databind/core **3.1.7**, equal to the plugin-realm pin above, so
+the pin, its Dependabot ignore and group-exclusion rules, and the exact-version
+policy assertion are removed together, as planned. Boot 4.1.2 also manages
+Tomcat **11.0.27**, newer than the fixture's 11.0.26 override; keeping that
+override failed `RequireUpperBoundDeps`, so it is removed too. A policy test now
+fails if either override returns.
+
+PR [#256](https://github.com/OWASP/owasp-java-encoder/pull/256) proposed Jackson
+3.1.8 for the pin. No advisory affects 3.1.7, so it is closed in favor of Boot's
+managed version; a future Boot patch will carry later Jackson releases.
+
 ## Maven 3.10.0 wrapper — 2026-10-11
 
 Accept the Maven **3.10.0** distribution proposed by Dependabot PR
