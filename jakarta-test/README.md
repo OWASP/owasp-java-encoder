@@ -38,11 +38,10 @@ A local Chrome-only diagnostic for the JavaScript suite remains available with
 
 ## Framework and API boundaries
 
-As reviewed on 2026-09-25, this fixture uses supported Spring Boot **4.1.1** and
-its managed dependencies, on JDK **17**, with Tomcat/Jasper **11.0.26**
-(Servlet **6.1**, Pages **4.0**, EL **6.0**). The two deliberate BOM overrides are
-Tomcat 11.0.26, which contains the September fixes absent from Boot's managed
-11.0.24, and Selenium 4.49.0, aligned with the current reviewed browser image.
+As reviewed on 2026-10-26, this fixture uses supported Spring Boot **4.1.2** and
+its managed dependencies, on JDK **17**, with Tomcat/Jasper **11.0.27**
+(Servlet **6.1**, Pages **4.0**, EL **6.0**). The one deliberate BOM override is
+Selenium 4.49.0, aligned with the current reviewed browser image.
 Testcontainers **2.0.5**, JSTL API **3.0.2** and implementation **3.0.1** follow the
 Boot BOM. The standalone Servlet/Pages/EL API JARs are removed; Tomcat supplies
 the coherent implementation/API set. Both JSTL components remain packaged.

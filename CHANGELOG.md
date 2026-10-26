@@ -11,6 +11,11 @@ unchanged. [1.6.0 is available from Central](releases/1.6.0-central-publication.
 - Remove retired Maven Site sources and archive September maintenance records.
 - Refresh build/dependency documentation and clarify the 1.6.0 review record.
   Encoding behavior, public APIs, and published artifacts are unchanged.
+- Update the unpublished Jakarta fixture to Spring Boot 4.1.2 and drop its
+  Tomcat and plugin-realm Jackson overrides, which Boot now matches or
+  exceeds. Refresh Maven build plugins, plexus-archiver, japicmp, and the
+  test/publisher-only Jackson 2.22.4. Published library dependencies are
+  unchanged.
 
 ## 1.6.0 — 2026-10-18 UTC
 

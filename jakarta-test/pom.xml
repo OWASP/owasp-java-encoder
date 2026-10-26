@@ -22,13 +22,8 @@
         <maven.install.skip>true</maven.install.skip>
         <skipPublishing>true</skipPublishing>
         <java.version>17</java.version>
-        <!-- September security fixes, newer than Boot 4.1.1's managed 11.0.24. -->
-        <tomcat.version>11.0.26</tomcat.version>
         <!-- Keep the client aligned with the reviewed, digest-pinned browser image. -->
         <selenium.version>4.49.0</selenium.version>
-        <!-- GHSA-q4xh-88c3-wmh7 / GHSA-wjgm-6hv5-3cvf / GHSA-wv8q-qhhj-9h54 /
-             GHSA-cxp5-3px4-pw24: Boot's separate plugin realm. -->
-        <jackson.build.version>3.1.7</jackson.build.version>
         <!-- Must equal the version in the root pom.xml so this app tests the
              encoder-jakarta-jsp built in the same reactor. CI checks this. -->
         <encoder.version>1.6.1-SNAPSHOT</encoder.version>
@@ -209,8 +204,6 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <dependencies>
-                    <dependency><groupId>tools.jackson.core</groupId><artifactId>jackson-databind</artifactId><version>${jackson.build.version}</version></dependency>
-                    <dependency><groupId>tools.jackson.core</groupId><artifactId>jackson-core</artifactId><version>${jackson.build.version}</version></dependency>
                     <dependency><groupId>org.apache.commons</groupId><artifactId>commons-lang3</artifactId><version>3.21.0</version></dependency>
                     <dependency><groupId>org.codehaus.plexus</groupId><artifactId>plexus-utils</artifactId><version>3.6.2</version></dependency>
                 </dependencies>

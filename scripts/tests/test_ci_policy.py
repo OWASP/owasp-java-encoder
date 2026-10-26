@@ -211,8 +211,6 @@ class DependencySubmissionPolicy(unittest.TestCase):
             'jakarta.el:jakarta.el-api': minor_and_major,
             'org.apache.tomcat.embed:tomcat-embed-jasper': [],
             'org.apache.tomcat:tomcat-annotations-api': [],
-            'tools.jackson.core:jackson-databind': minor_and_major,
-            'tools.jackson.core:jackson-core': minor_and_major,
         }
         self.assertEqual(expected, rules)
         self.assertEqual(
@@ -252,12 +250,9 @@ class DependencySubmissionPolicy(unittest.TestCase):
                     if line.startswith('          - ')]
         self.assertEqual(len(excluded), len(set(excluded)))
 
-        # Pinned Boot plugin-realm Jackson and the wrapper's Maven distribution
-        # need individual review; a mixed group PR cannot pass their checks.
-        for coordinate in ('tools.jackson.core:jackson-databind',
-                           'tools.jackson.core:jackson-core',
-                           'org.apache.maven:apache-maven'):
-            self.assertIn(coordinate, excluded)
+        # The wrapper's Maven distribution needs individual review; a mixed
+        # group PR cannot pass its checks.
+        self.assertIn('org.apache.maven:apache-maven', excluded)
 
         ignore = parse_dependabot_ignore(maven.split('    ignore:\n', 1)[1])
         versioned = {name for name, update_types in ignore.items() if update_types}
@@ -345,25 +340,15 @@ class DependencySubmissionPolicy(unittest.TestCase):
         self.assertLess(workflow.index('Resolve shared library build plugins'),
                         workflow.index(app_command))
 
-    def test_boot_plugin_jackson_fix_stays_in_its_own_realm(self):
+    def test_boot_plugin_realm_uses_boot_managed_jackson(self):
+        # Boot 4.1.2's buildpack platform brings the patched Jackson 3.1 line.
+        # A stale exact pin here would silently downgrade it, and Enforcer
+        # rules do not inspect plugin realms.
         app = ET.parse(ROOT / 'jakarta-test/pom.xml').getroot()
-        self.assertEqual('3.1.7', app.findtext(
-            'p:properties/p:jackson.build.version', namespaces=version.NS))
-        plugins = app.findall('p:build/p:plugins/p:plugin', version.NS)
-        boot = next(plugin for plugin in plugins
-                    if plugin.findtext('p:artifactId', namespaces=version.NS)
-                    == 'spring-boot-maven-plugin')
-        jackson = {
-            dep.findtext('p:artifactId', namespaces=version.NS):
-            dep.findtext('p:version', namespaces=version.NS)
-            for dep in boot.findall('p:dependencies/p:dependency', version.NS)
-            if dep.findtext('p:groupId', namespaces=version.NS) == 'tools.jackson.core'
-        }
-        self.assertEqual({
-            'jackson-core': '${jackson.build.version}',
-            'jackson-databind': '${jackson.build.version}',
-        }, jackson)
-        for dep in app.findall('p:dependencies/p:dependency', version.NS):
+        self.assertIsNone(app.find(
+            'p:properties/p:jackson.build.version', version.NS))
+        self.assertIsNone(app.find('p:properties/p:tomcat.version', version.NS))
+        for dep in app.iter('{%s}dependency' % version.NS['p']):
             self.assertNotEqual('tools.jackson.core', dep.findtext(
                 'p:groupId', namespaces=version.NS))
 
