@@ -273,7 +273,7 @@
                     <artifactId>maven-source-plugin</artifactId>
                     <version>3.4.0</version>
                     <dependencies>
-                        <dependency><groupId>org.codehaus.plexus</groupId><artifactId>plexus-archiver</artifactId><version>4.14.0</version></dependency>
+                        <dependency><groupId>org.codehaus.plexus</groupId><artifactId>plexus-archiver</artifactId><version>4.15.0</version></dependency>
                         <dependency><groupId>org.codehaus.plexus</groupId><artifactId>plexus-utils</artifactId><version>4.0.3</version></dependency>
                     </dependencies>
                 </plugin>
@@ -283,7 +283,7 @@
                     <version>3.12.0</version>
                     <dependencies>
                         <dependency><groupId>commons-beanutils</groupId><artifactId>commons-beanutils</artifactId><version>1.11.0</version></dependency>
-                        <dependency><groupId>org.codehaus.plexus</groupId><artifactId>plexus-archiver</artifactId><version>4.14.0</version></dependency>
+                        <dependency><groupId>org.codehaus.plexus</groupId><artifactId>plexus-archiver</artifactId><version>4.15.0</version></dependency>
                         <dependency><groupId>org.codehaus.plexus</groupId><artifactId>plexus-utils</artifactId><version>4.0.3</version></dependency>
                     </dependencies>
                 </plugin>
@@ -298,12 +298,12 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-failsafe-plugin</artifactId>
-                    <version>3.6.0</version>
+                    <version>3.6.1</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-surefire-plugin</artifactId>
-                    <version>3.6.0</version>
+                    <version>3.6.1</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
@@ -323,7 +323,7 @@
                     <version>6.2.0</version>
                     <dependencies>
                         <dependency><groupId>commons-beanutils</groupId><artifactId>commons-beanutils</artifactId><version>1.11.0</version></dependency>
-                        <dependency><groupId>org.codehaus.plexus</groupId><artifactId>plexus-archiver</artifactId><version>4.14.0</version></dependency>
+                        <dependency><groupId>org.codehaus.plexus</groupId><artifactId>plexus-archiver</artifactId><version>4.15.0</version></dependency>
                     </dependencies>
                 </plugin>
                 <plugin>
@@ -341,7 +341,7 @@
                         <dependency>
                             <groupId>com.github.siom79.japicmp</groupId>
                             <artifactId>japicmp</artifactId>
-                            <version>0.26.3</version>
+                            <version>0.26.5</version>
                         </dependency>
                     </dependencies>
                     <executions>
@@ -414,7 +414,7 @@
                         <version>12.3.1</version>
                     </dependency>
                     <dependency><groupId>org.apache.commons</groupId><artifactId>commons-lang3</artifactId><version>3.21.0</version></dependency>
-                    <dependency><groupId>org.codehaus.plexus</groupId><artifactId>plexus-archiver</artifactId><version>4.14.0</version></dependency>
+                    <dependency><groupId>org.codehaus.plexus</groupId><artifactId>plexus-archiver</artifactId><version>4.15.0</version></dependency>
                     <dependency><groupId>org.codehaus.plexus</groupId><artifactId>plexus-utils</artifactId><version>4.0.3</version></dependency>
                 </dependencies>
                 <configuration>
@@ -654,8 +654,8 @@
                         <!-- Mitigate reviewed upstream publisher dependencies; isolated plugin realm only. -->
                         <dependencies>
                             <dependency><groupId>org.codehaus.plexus</groupId><artifactId>plexus-utils</artifactId><version>3.6.2</version></dependency>
-                            <dependency><groupId>com.fasterxml.jackson.core</groupId><artifactId>jackson-databind</artifactId><version>2.22.3</version></dependency>
-                            <dependency><groupId>com.fasterxml.jackson.core</groupId><artifactId>jackson-core</artifactId><version>2.22.3</version></dependency>
+                            <dependency><groupId>com.fasterxml.jackson.core</groupId><artifactId>jackson-databind</artifactId><version>2.22.4</version></dependency>
+                            <dependency><groupId>com.fasterxml.jackson.core</groupId><artifactId>jackson-core</artifactId><version>2.22.4</version></dependency>
                             <dependency><groupId>com.fasterxml.jackson.core</groupId><artifactId>jackson-annotations</artifactId><version>2.22</version></dependency>
                             <dependency><groupId>org.apache.httpcomponents.client5</groupId><artifactId>httpclient5</artifactId><version>5.6.5</version></dependency>
                             <dependency><groupId>org.apache.httpcomponents.core5</groupId><artifactId>httpcore5</artifactId><version>5.4.4</version></dependency>
