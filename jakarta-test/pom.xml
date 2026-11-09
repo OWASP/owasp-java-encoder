@@ -139,7 +139,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-enforcer-plugin</artifactId>
-                <version>3.6.3</version>
+                <version>3.7.0</version>
                 <executions><execution><id>fixture-build-policy</id><goals><goal>enforce</goal></goals>
                     <configuration><rules>
                         <requireMavenVersion><version>[3.9.16,)</version></requireMavenVersion>
