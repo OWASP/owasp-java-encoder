@@ -2,17 +2,17 @@
 
 Resolved release tags through each authoritative repository Git ref (including
 annotated-tag dereferencing) on 2026-10-18 UTC; Setup Java and CodeQL were
-updated and rechecked on 2026-10-20 UTC, matching the current workflows.
+updated and rechecked on 2026-11-10 UTC, matching the current workflows.
 These are source pins, not claims that runtime tool downloads are made immutable
 by pinning an action.
 
 | Repository/action | Release | Commit |
 | --- | --- | --- |
 | `actions/checkout` | [v7.0.1](https://github.com/actions/checkout/releases/tag/v7.0.1) | `3d3c42e5aac5ba805825da76410c181273ba90b1` |
-| `actions/setup-java` | [v6.1.0](https://github.com/actions/setup-java/releases/tag/v6.1.0) | `b843ebf9b913146b38da2eaa7aeddf76074ae1ad` |
+| `actions/setup-java` | [v6.2.0](https://github.com/actions/setup-java/releases/tag/v6.2.0) | `77dd5b2ce225ea11469928ac317850245a74ae78` |
 | `actions/upload-artifact` | [v7.0.2](https://github.com/actions/upload-artifact/releases/tag/v7.0.2) | `cf430e030ddbb5b0abf93d22962f4752f3646cd9` |
 | `actions/download-artifact` | [v8.0.2](https://github.com/actions/download-artifact/releases/tag/v8.0.2) | `9000827ccba6bdab643e8b6fd33ac0654aef8333` |
-| `github/codeql-action` | [v4.39.0](https://github.com/github/codeql-action/releases/tag/v4.39.0) | `6f2ac81f5cd81fe351a197ba0b00d91d03cd2aee` |
+| `github/codeql-action` | [v4.39.3](https://github.com/github/codeql-action/releases/tag/v4.39.3) | `33d7b85da1a04171e211befe2c739303b9a4c066` |
 | `advanced-security/maven-dependency-submission-action` | [v6.0.1](https://github.com/advanced-security/maven-dependency-submission-action/releases/tag/v6.0.1) | `a64327a7329c9939cf675e458452febe1894a70c` |
 
 CodeQL uses the `init` and `analyze` subactions at the same commit. No other
@@ -27,7 +27,7 @@ actions with hidden
 paths were reviewed, along with the release changes.
 
 CodeQL's release tag is annotated: the Git ref points to tag object
-`48870fdd6b42ee6474ec4207209ff87609271a5e`, which must be dereferenced to the
+`f3bbb05694c2f74569081c28664c0866d64dec21`, which must be dereferenced to the
 commit in the table. Do not copy an annotated tag object's SHA into a commit
 pin. Verify the object's type and follow tag targets until it is a commit
 (equivalently, inspect the peeled `refs/tags/<version>^{}` Git ref).
@@ -41,7 +41,10 @@ pin. Verify the object's type and follow tag targets until it is a commit
   GPG-agent cleanup, Maven settings generation and dependency updates. Its new
   credential-origin and plugin-repository inputs are unused here. The changed
   Central exclusion behavior requires repository inputs that these workflows
-  do not set.
+  do not set. v6.2.0 adds an `mvn-mirrors` input that only writes a
+  `<mirrors>` section to the generated settings when set; these workflows do
+  not set it. Its other changes are Liberica and Corretto version resolution,
+  which this project does not use, and bundled dependency updates (Undici 6.29.1).
 - Artifact actions use bundled clients and GitHub's artifact service. Both run on
   Node.js 24 and require a runner supporting that runtime (2.327.1+); this project
   uses current GitHub-hosted runners, including in Java 8 jobs. The action runtime
@@ -63,6 +66,11 @@ pin. Verify the object's type and follow tag targets until it is a commit
   the action's newer default bundle. Init and analyze both use the workspace-root
   checkout, satisfying the new checkout-path validation. Default Setup's proxy
   changes do not enable Default Setup or a private registry in this repository.
+  v4.39.2 moves the default bundle to CodeQL 2.27.4, warns on bundles 2.22.3 and
+  earlier (not used here), warns about traced analysis on macOS/Xcode 27 (these
+  jobs run on Ubuntu) and removes the undocumented TRAP-cache cleanup variable,
+  which these workflows never set. v4.39.3 fixes diff-informed alert filtering
+  for paths with spaces or non-ASCII characters.
 - Maven submission v6.0.1 runs the checkout's Maven command with the pinned
   `com.github.ferstl:depgraph-maven-plugin:4.0.3`, then submits with GitHub's bundled
   dependency toolkit. It has no composite action references. Its source logs

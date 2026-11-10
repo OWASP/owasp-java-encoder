@@ -122,13 +122,15 @@ public class ContextBoundaryCompositionTest extends TestCase {
                 }
             }
         }
-        // Jsoup 1.23.2 diverges from browsers for mixed-case double-escape
-        // starts. Use lowercase for this negative control; mixed-case raw
-        // tokens require a browser oracle.
-        Document negative = Jsoup.parse("<script>var value=\"<!--<script>"
-            + "\";</script><p id=after>after</p>");
-        assertNull("raw opening token swallows page tail",
-            negative.getElementById("after"));
+        // Browsers match the double-escape start case-insensitively. Jsoup
+        // 1.24.1 does too (1.23.2 did not), so the negative control covers
+        // mixed-case raw tokens as well as lowercase ones.
+        for (String name : new String[]{"script", "SCRIPT", "ScRiPt"}) {
+            Document negative = Jsoup.parse("<script>var value=\"<!--<" + name
+                + ">\";</script><p id=after>after</p>");
+            assertNull("raw opening token " + name + " swallows page tail",
+                negative.getElementById("after"));
+        }
     }
 
     public void testLongerNamesWithReadableInteriorLettersRemainScriptData() {
