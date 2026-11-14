@@ -24,7 +24,7 @@ does not establish that a review ran.
 | 2. Second build | Opus 5.5 (`claude-opus-5-5`, through Claude Code) | Checks the implementation and tests, corrects gaps within scope, and simplifies code without weakening parser protection or changing contracts accidentally. |
 | 3. Independent review | Sol 6.1 (`gpt-6.1-sol`, through Codex) | Reviews Java correctness, streaming behavior, exact output, public API and packaged-consumer compatibility. |
 | 3. Independent review | Daybreak Blue (the Codex model-picker entry; `gpt-daybreak-blue-latest`) | Examines parser-boundary attacks, context confusion and resource exhaustion. Explicitly select Blue access and run the preflight below. Record the requested alias, any returned model identity, and access program separately. |
-| 3. Independent review | Mythos 5.1 (`claude-mythos-5-1`, through Claude Code) | Challenges security assumptions with primary specifications and adversarial parser tests, including trusted/untrusted fragment composition. |
+| 3. Independent review | Mythos 5.2 (`claude-mythos-5-2`, through Claude Code; requires verified access) | Challenges security assumptions with primary specifications and adversarial parser tests, including trusted/untrusted fragment composition. |
 | 3. Independent review | Sonnet 5.5 (`claude-sonnet-5-5`, through Claude Code) | Checks Javadocs, examples and migration notes for accurate context selection, complete surrounding syntax, concision and plain US English. |
 | 4. Resolve and deliver | Astra (`gpt-6-astra`, through Codex) | Resolves findings with evidence, validates the final revision, and reports the verdict, remaining blockers and results to the operator. |
 
@@ -77,8 +77,8 @@ a release merely because a review was requested.
 
 ### CLI recipes
 
-These routes were checked with **Codex CLI 0.163.0** and **Claude Code 2.1.304**
-on **2026-10-20**. Recheck local `--help` when the installed version changes or
+These routes were checked with **Codex CLI 0.169.0** and **Claude Code 2.1.325**
+on **2026-11-14**. Recheck local `--help` when the installed version changes or
 a flag fails; do not silently change models. The commands assume absolute
 `review_dir`, `review_packet`, and `review_role_file` paths. The packet contains
 shared evidence; the role file contains the slot's instructions. Use a fresh
@@ -114,8 +114,11 @@ review_status=$?
 printf '%s\n' "$review_status" > "$review_dir/$review_model.exit"
 ```
 
-For Claude, use exactly `claude-opus-5-5`, `claude-mythos-5-1`, or
-`claude-sonnet-5-5`. This packet-only recipe disables tools and MCP servers;
+For Claude, use exactly `claude-opus-5-5`, `claude-mythos-5-2`, or
+`claude-sonnet-5-5`. Mythos 5.2 is available only to organizations verified
+through Anthropic's programs; an account without that access fails with a
+"may not have access" error. Report the slot as unfilled in that case rather
+than substituting Fable 5.2 or another model. This packet-only recipe disables tools and MCP servers;
 provide source/specification/test evidence in the packet. Select the Claude ID
 and prepare its per-slot input as above before running:
 
@@ -161,7 +164,7 @@ Official references for troubleshooting:
 [Astra](https://developers.openai.com/api/docs/models/gpt-6-astra),
 [Sol 6.1](https://developers.openai.com/api/docs/models/gpt-6.1-sol),
 [Claude models](https://platform.claude.com/docs/en/models/overview),
-[Mythos 5.1](https://platform.claude.com/docs/en/models/mythos-5-1/overview),
+[Mythos 5.2](https://platform.claude.com/docs/en/models/mythos-5-2/overview),
 and [Claude CLI](https://code.claude.com/docs/en/cli-reference).
 
 ### Daybreak Blue preflight
@@ -239,7 +242,8 @@ an unfilled slot as a coverage gap, not a passing review.
 
 On 2026-10-18, Codex 0.163.0 advertised the exact picker entry with Blue access,
 and its explicit probe completed successfully. The catalog and explicit probe
-were verified again on 2026-10-20 with the same CLI version. The earlier #243 review had
+were verified again on 2026-10-20 with the same CLI version, and on 2026-11-14
+with Codex 0.169.0. The earlier #243 review had
 not attempted that probe; its unavailable label did not establish an access
 failure. This dated result does not guarantee future access. Any review added
 after publication must be labeled supplemental, not retroactively counted as a
