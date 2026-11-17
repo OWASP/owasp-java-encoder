@@ -168,6 +168,12 @@ reaches 33.7.2. `kotlin-maven-plugin` appears in the fixture's resolved plugin
 list with Guava 33.5.0 through Boot's plugin management, but the fixture never
 executes it and the dependency submission does not include it.
 
+`./mvnw verify` exercises the new Guava in the Checkstyle and japicmp realms,
+and packaging the fixture exercises it in the fixture's Checkstyle and WAR
+realms. The publisher realm was resolved, not executed, because there is no
+publishing run that skips signing and Central credentials. The next signed
+release rehearsal should confirm it before a release relies on it.
+
 ## Deferred proposals and reconsideration conditions
 
 | Proposal | Disposition and required evidence before reconsideration |
