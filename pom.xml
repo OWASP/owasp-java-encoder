@@ -311,9 +311,9 @@
                     <version>3.2.8</version>
                     <dependencies>
                         <!-- Keep the optional Java signer and plugin utilities on reviewed patched lines. -->
-                        <dependency><groupId>org.bouncycastle</groupId><artifactId>bcpg-jdk18on</artifactId><version>1.86</version></dependency>
-                        <dependency><groupId>org.bouncycastle</groupId><artifactId>bcprov-jdk18on</artifactId><version>1.86</version></dependency>
-                        <dependency><groupId>org.bouncycastle</groupId><artifactId>bcutil-jdk18on</artifactId><version>1.86</version></dependency>
+                        <dependency><groupId>org.bouncycastle</groupId><artifactId>bcpg-jdk18on</artifactId><version>1.87</version></dependency>
+                        <dependency><groupId>org.bouncycastle</groupId><artifactId>bcprov-jdk18on</artifactId><version>1.87</version></dependency>
+                        <dependency><groupId>org.bouncycastle</groupId><artifactId>bcutil-jdk18on</artifactId><version>1.87</version></dependency>
                         <dependency><groupId>org.codehaus.plexus</groupId><artifactId>plexus-utils</artifactId><version>3.6.2</version></dependency>
                     </dependencies>
                 </plugin>
@@ -329,14 +329,14 @@
                 <plugin>
                     <groupId>org.codehaus.mojo</groupId>
                     <artifactId>versions-maven-plugin</artifactId>
-                    <version>2.23.0</version>
+                    <version>2.25.1</version>
                 </plugin>
                 <!-- Run the japicmp engine directly. The Maven report wrapper pulls
                      obsolete site/reporting libraries into the build-only graph. -->
                 <plugin>
                     <groupId>org.codehaus.mojo</groupId>
                     <artifactId>exec-maven-plugin</artifactId>
-                    <version>3.6.4</version>
+                    <version>3.7.0</version>
                     <dependencies>
                         <dependency>
                             <groupId>com.github.siom79.japicmp</groupId>
@@ -419,7 +419,7 @@
                         <!-- Last Java 17-compatible line; 13+ requires Java 21. -->
                         <version>12.3.1</version>
                     </dependency>
-                    <dependency><groupId>org.apache.commons</groupId><artifactId>commons-lang3</artifactId><version>3.21.0</version></dependency>
+                    <dependency><groupId>org.apache.commons</groupId><artifactId>commons-lang3</artifactId><version>3.22.0</version></dependency>
                     <dependency><groupId>org.codehaus.plexus</groupId><artifactId>plexus-archiver</artifactId><version>4.15.0</version></dependency>
                     <dependency><groupId>org.codehaus.plexus</groupId><artifactId>plexus-utils</artifactId><version>4.0.3</version></dependency>
                     <!-- GHSA-xxph-c9ww-hj94: Checkstyle 12.3.1 brings Guava 33.5.0. -->
@@ -449,7 +449,7 @@
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>animal-sniffer-maven-plugin</artifactId>
-                <version>1.28</version>
+                <version>1.29.1</version>
                 <configuration>
                     <signature>
                         <groupId>org.codehaus.mojo.signature</groupId>
@@ -576,7 +576,7 @@
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>build-helper-maven-plugin</artifactId>
-                <version>3.6.2</version>
+                <version>3.8.0</version>
                 <executions>
                     <execution>
                         <id>module-descriptor-sources</id>
@@ -662,9 +662,9 @@
                         <!-- Mitigate reviewed upstream publisher dependencies; isolated plugin realm only. -->
                         <dependencies>
                             <dependency><groupId>org.codehaus.plexus</groupId><artifactId>plexus-utils</artifactId><version>3.6.2</version></dependency>
-                            <dependency><groupId>com.fasterxml.jackson.core</groupId><artifactId>jackson-databind</artifactId><version>2.22.4</version></dependency>
-                            <dependency><groupId>com.fasterxml.jackson.core</groupId><artifactId>jackson-core</artifactId><version>2.22.4</version></dependency>
-                            <dependency><groupId>com.fasterxml.jackson.core</groupId><artifactId>jackson-annotations</artifactId><version>2.22</version></dependency>
+                            <dependency><groupId>com.fasterxml.jackson.core</groupId><artifactId>jackson-databind</artifactId><version>2.23.0</version></dependency>
+                            <dependency><groupId>com.fasterxml.jackson.core</groupId><artifactId>jackson-core</artifactId><version>2.23.0</version></dependency>
+                            <dependency><groupId>com.fasterxml.jackson.core</groupId><artifactId>jackson-annotations</artifactId><version>2.23</version></dependency>
                             <dependency><groupId>org.apache.httpcomponents.client5</groupId><artifactId>httpclient5</artifactId><version>5.6.5</version></dependency>
                             <dependency><groupId>org.apache.httpcomponents.core5</groupId><artifactId>httpcore5</artifactId><version>5.4.4</version></dependency>
                             <dependency><groupId>org.apache.httpcomponents.core5</groupId><artifactId>httpcore5-h2</artifactId><version>5.4.4</version></dependency>
