@@ -2,7 +2,8 @@
 
 Initial review: 2026-09-26. Focused API follow-up: 2026-09-27. Dependabot
 proposal-policy follow-up: 2026-09-28. Jackson and proposal-routing follow-up:
-2026-10-05. Maven 3.10.0 wrapper follow-up: 2026-10-11.
+2026-10-05. Maven 3.10.0 wrapper follow-up: 2026-10-11. Maven 3.10.1 wrapper
+follow-up: 2026-11-16.
 
 PRs [#176](https://github.com/OWASP/owasp-java-encoder/pull/176) and
 [#188](https://github.com/OWASP/owasp-java-encoder/pull/188) mixed ordinary build
@@ -173,6 +174,25 @@ and packaging the fixture exercises it in the fixture's Checkstyle and WAR
 realms. The publisher realm was resolved, not executed, because there is no
 publishing run that skips signing and Central credentials. The next signed
 release rehearsal should confirm it before a release relies on it.
+
+## Maven 3.10.1 wrapper — 2026-11-16
+
+Accept the Maven **3.10.1** distribution proposed by Dependabot PR
+[#267](https://github.com/OWASP/owasp-java-encoder/pull/267). As with #235, that
+PR failed only on the wrapper version assertion and re-committed `mvnw.cmd` with
+CRLF in the index, so a separate change completes the checklist above. The
+wrapper scripts remain Apache Maven Wrapper 3.3.4 and `mvnw.cmd` is unchanged.
+The signing profile now requires exactly 3.10.1. Ordinary builds keep the
+`[3.9.16,)` minimum.
+
+3.10.1 is a bugfix release for 3.10.0 with Resolver 2.0.25 and no listed
+security fixes ([release notes](https://maven.apache.org/docs/3.10.1/release-notes.html)).
+The ZIP's SHA-256 and SHA-512 match, and its signature verifies against Apache
+Maven's `KEYS`. Effective POMs from 3.10.0 and 3.10.1 are identical, and JARs
+and module POMs built by each are byte-identical. The 1.6.0 publication already
+exercised 3.10.0's credential scoping against Central. The reference-JDK
+reproducibility script still needs to run before the next release; see the
+[Maven 3.10.1 validation](../releases/maven-3.10.1-validation.md).
 
 ## Deferred proposals and reconsideration conditions
 

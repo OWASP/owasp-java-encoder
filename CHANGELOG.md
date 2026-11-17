@@ -20,6 +20,9 @@ unchanged. [1.6.0 is available from Central](releases/1.6.0-central-publication.
   plugin realms and the Jakarta fixture's Selenium tests, and raise the
   fixture's OpenTelemetry to 1.67.0, for GHSA-xxph-c9ww-hj94 and
   GHSA-ccrj-gw8r-854m. Published library dependencies are unchanged.
+- Build with Maven 3.10.1, a 3.10.0 bugfix release, through the committed
+  wrapper and require it for signed releases. Ordinary builds still accept
+  Maven 3.9.16 or later ([validation](releases/maven-3.10.1-validation.md)).
 
 ## 1.6.0 — 2026-10-18 UTC
 
