@@ -40,8 +40,11 @@ A local Chrome-only diagnostic for the JavaScript suite remains available with
 
 As reviewed on 2026-10-26, this fixture uses supported Spring Boot **4.1.2** and
 its managed dependencies, on JDK **17**, with Tomcat/Jasper **11.0.27**
-(Servlet **6.1**, Pages **4.0**, EL **6.0**). The one deliberate BOM override is
-Selenium 4.49.0, aligned with the current reviewed browser image.
+(Servlet **6.1**, Pages **4.0**, EL **6.0**). The deliberate BOM override is
+Selenium 4.49.0, aligned with the current reviewed browser image. Its test-only
+Guava (**33.7.2**) and OpenTelemetry (**1.67.0**) are raised to the first
+releases that fix GHSA-xxph-c9ww-hj94 and GHSA-ccrj-gw8r-854m; see the
+[dependency decisions](../.github/DEPENDENCY_DECISIONS.md).
 Testcontainers **2.0.5**, JSTL API **3.0.2** and implementation **3.0.1** follow the
 Boot BOM. The standalone Servlet/Pages/EL API JARs are removed; Tomcat supplies
 the coherent implementation/API set. Both JSTL components remain packaged.

@@ -141,6 +141,39 @@ Credential scoping is the one release-path change this review cannot exercise
 without the project's Central token. The first signed `clean deploy` under 3.10.0
 should confirm that staging still authenticates before the release relies on it.
 
+## Guava and OpenTelemetry build/test pins — 2026-11-16
+
+[GHSA-xxph-c9ww-hj94](https://github.com/advisories/GHSA-xxph-c9ww-hj94)
+affects Guava through 33.7.1 and is fixed in **33.7.2**.
+[GHSA-ccrj-gw8r-854m](https://github.com/advisories/GHSA-ccrj-gw8r-854m)
+affects OpenTelemetry Java through 1.66.0 and is fixed in **1.67.0**. GitHub
+reported both only on build-plugin realms and the unpublished Jakarta fixture's
+test classpath. No published library depends on either.
+
+Guava 33.7.2-jre is pinned directly in each executed plugin realm that brought an
+affected copy: Checkstyle 12.3.1 (33.5.0) in the root and fixture builds, the
+japicmp engine run by `exec-maven-plugin` (33.4.8), `central-publishing-maven-plugin`
+(32.1.0, pinned in plugin management so the release profile's existing publisher
+mitigations still merge with it), and the fixture's WAR plugin through Guice
+(33.4.8). In the fixture, Selenium 4.49.0 brings Guava 33.7.1, so its dependency
+management pins 33.7.2-jre, and the `opentelemetry.version` property raises Boot
+4.1.2's managed OpenTelemetry BOM from 1.62.0 to 1.67.0 for Selenium's tracing.
+
+Selenium stays on 4.49.0 because the client is aligned with the digest-pinned
+browser image. Selenium 4.52.0 already depends on Guava 33.7.2 and OpenTelemetry
+1.67.0, so a later reviewed client-and-image update can drop the fixture's
+dependency-management pin; drop the OpenTelemetry property once Boot manages
+1.67.0 or newer. Remove each plugin-realm Guava pin when that plugin's own graph
+reaches 33.7.2. `kotlin-maven-plugin` appears in the fixture's resolved plugin
+list with Guava 33.5.0 through Boot's plugin management, but the fixture never
+executes it and the dependency submission does not include it.
+
+`./mvnw verify` exercises the new Guava in the Checkstyle and japicmp realms,
+and packaging the fixture exercises it in the fixture's Checkstyle and WAR
+realms. The publisher realm was resolved, not executed, because there is no
+publishing run that skips signing and Central credentials. The next signed
+release rehearsal should confirm it before a release relies on it.
+
 ## Deferred proposals and reconsideration conditions
 
 | Proposal | Disposition and required evidence before reconsideration |
