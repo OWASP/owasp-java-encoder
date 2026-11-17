@@ -111,7 +111,7 @@
                         <!-- Last Java 17-compatible line; 13+ requires Java 21. -->
                         <version>12.3.1</version>
                     </dependency>
-                    <dependency><groupId>org.apache.commons</groupId><artifactId>commons-lang3</artifactId><version>3.21.0</version></dependency>
+                    <dependency><groupId>org.apache.commons</groupId><artifactId>commons-lang3</artifactId><version>3.22.0</version></dependency>
                     <dependency><groupId>org.codehaus.plexus</groupId><artifactId>plexus-archiver</artifactId><version>4.15.0</version></dependency>
                     <dependency><groupId>org.codehaus.plexus</groupId><artifactId>plexus-utils</artifactId><version>4.0.3</version></dependency>
                 </dependencies>
@@ -204,7 +204,7 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <dependencies>
-                    <dependency><groupId>org.apache.commons</groupId><artifactId>commons-lang3</artifactId><version>3.21.0</version></dependency>
+                    <dependency><groupId>org.apache.commons</groupId><artifactId>commons-lang3</artifactId><version>3.22.0</version></dependency>
                     <dependency><groupId>org.codehaus.plexus</groupId><artifactId>plexus-utils</artifactId><version>3.6.2</version></dependency>
                 </dependencies>
                 <configuration>
