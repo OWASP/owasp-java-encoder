@@ -3,7 +3,7 @@
 Initial review: 2026-09-26. Focused API follow-up: 2026-09-27. Dependabot
 proposal-policy follow-up: 2026-09-28. Jackson and proposal-routing follow-up:
 2026-10-05. Maven 3.10.0 wrapper follow-up: 2026-10-11. Maven 3.10.1 wrapper
-follow-up: 2026-11-16.
+follow-up: 2026-11-16. Maven 3.10.2 wrapper follow-up: 2026-11-23.
 
 PRs [#176](https://github.com/OWASP/owasp-java-encoder/pull/176) and
 [#188](https://github.com/OWASP/owasp-java-encoder/pull/188) mixed ordinary build
@@ -236,12 +236,32 @@ exercised 3.10.0's credential scoping against Central. The reference-JDK
 reproducibility script still needs to run before the next release; see the
 [Maven 3.10.1 validation](../releases/maven-3.10.1-validation.md).
 
+## Maven 3.10.2 wrapper — 2026-11-23
+
+Accept the Maven **3.10.2** distribution proposed by Dependabot PR
+[#273](https://github.com/OWASP/owasp-java-encoder/pull/273). Like #235 and
+#267, that PR failed only on the wrapper version assertion and re-committed
+`mvnw.cmd` with CRLF in the index, so a separate change completes the checklist
+above. The wrapper scripts remain Apache Maven Wrapper 3.3.4 and `mvnw.cmd` is
+unchanged. The signing profile now requires exactly 3.10.2. Ordinary builds keep
+the `[3.9.16,)` minimum.
+
+3.10.2 is a bugfix release for 3.10.1 with Resolver 2.0.26 and no listed
+security fixes ([release notes](https://maven.apache.org/docs/3.10.2/release-notes.html)).
+Apart from Maven's own modules and Resolver, the only bundled library that
+changes is Plexus Utils, from 3.6.2 to 3.6.4. The ZIP's SHA-256 and SHA-512
+match, and its signature verifies against Apache Maven's `KEYS`. Effective POMs
+from 3.10.1 and 3.10.2 are identical, and JARs and module POMs built by each are
+byte-identical. The signing profile and the reference-JDK reproducibility script
+have not run under 3.10.2 and need to before the next release; see the
+[Maven 3.10.2 validation](../releases/maven-3.10.2-validation.md).
+
 ## Deferred proposals and reconsideration conditions
 
 | Proposal | Disposition and required evidence before reconsideration |
 | --- | --- |
 | Checkstyle 12.3.1 → 14.1.0 | Keep 12.3.1 for the JDK 17 build. PR #188 fails with Java 21 classfile version 65 on Java 17. Reconsider with a separately reviewed build/release-JDK migration and source-policy validation; this is not a claim that the old engine has upstream support. |
-| Plexus Utils 3.6.2 → 4.1.0 in GPG/Central plugin dependencies | Keep the reviewed 3.6.2 mitigation. The [upstream 4.x migration](https://github.com/codehaus-plexus/plexus-utils) moves XML utilities to a separate artifact; 4.1 also changes DirectoryScanner default exclusions. A newer major is not a drop-in plugin-realm security fix. Reconsider with actual plugin linkage, isolated signing/bundle/rehearsal evidence, transitive-advisory review and repeatable payloads. |
+| Plexus Utils 3.6.2 → 4.1.0 in GPG/Central plugin dependencies | Keep the reviewed 3.6 mitigation, at 3.6.4 since 2026-11-23. The [upstream 4.x migration](https://github.com/codehaus-plexus/plexus-utils) moves XML utilities to a separate artifact; 4.1 also changes DirectoryScanner default exclusions. A newer major is not a drop-in plugin-realm security fix. Reconsider with actual plugin linkage, isolated signing/bundle/rehearsal evidence, transitive-advisory review and repeatable payloads. |
 | javax Servlet 3.0.1 → 4.0.1; EL 2.2.5 → 3.0.0 | Keep the test-only minimum API fixtures. These are not bundled production container implementations. Modern engine coverage is separate; replacing the minimum tests would remove evidence for existing consumers. |
 | Jakarta Pages 3.0.0 → 4.0.0 | Keep the published provided Pages 3 API and existing `[3.0,4)` package ranges. Reconsider only with a reviewed minimum-runtime/API migration, public POM implications and compatibility evidence. |
 | Jasper/annotations 9.0.122 or 10.1.60 → 11.0.26 in the isolated tag fixtures | Keep coherent Tomcat 9 (`javax`) and 10.1 (`jakarta`) engines. PR #188 fails the javax engine with missing `javax.servlet.jsp.tagext.SimpleTagSupport` after the Tomcat 11 switch. The optional Boot/browser WAR already exercises Tomcat 11. Patch updates within each engine line come from the separate `/jsp` and `/jakarta` Dependabot entries described below. Cross-line migration needs a separate coverage decision. |
@@ -318,6 +338,27 @@ request. These entries ignore only major version updates, which would replace
 the engine, so security updates remain eligible there. A policy test requires
 every reactor module that pins these coordinates to have its own entry on its
 expected line.
+
+Plexus Utils has the same problem without that remedy. Eight plugin realms pin
+4.0.3 and six pin the 3.6 line, each on the major line its plugin resolves
+without a pin. Dependabot PR
+[#274](https://github.com/OWASP/owasp-java-encoder/pull/274) proposed 3.6.2 →
+3.6.4, wrote 3.6.4 into all fourteen declarations and passed CI, although that
+moves the 4.0.3 realms back to the 3.x line. A separate change applied 3.6.4 to
+the six 3.6 realms only: Resources, JaCoCo, GPG and the Central publisher in
+the root build, and Resources and the Boot plugin in the Jakarta fixture. 3.6.3
+and 3.6.4 are bugfix releases with no advisory. They stop `FileUtils` deletes
+from following symbolic links, split `translateCommandline` input at tabs and
+line breaks, and fix an `MXParser` crash. Both lines live in the same POMs, so
+per-directory entries cannot separate them. A policy test records each realm's
+major line instead, so a combined proposal that crosses lines fails CI and is
+replaced by hand.
+
+The 4.0.3 realms were not changed. Plexus Utils 4.2.0 carries the same fixes as
+3.6.3, but the semver-major ignore rule, counted from the 3.6 floor, suppresses
+4.x proposals, and 4.1 changed `DirectoryScanner`'s default exclusions (see the
+table above). Moving those realms is a separate review; whether any of them
+reaches the affected `FileUtils` methods has not been checked.
 
 The root directory monitors the complete Maven reactor once; listing each reactor
 module again produced duplicate pull requests. The Tomcat-only `/jsp` and

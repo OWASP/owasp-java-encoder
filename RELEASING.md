@@ -55,7 +55,7 @@ existing Maven version.
 ## Prepare and verify
 
 1. Use a clean checkout, **Eclipse Temurin 17.0.20.1+1** and the committed
-   wrapper (**Maven 3.10.1**). The signing profile enforces vendor, exact runtime
+   wrapper (**Maven 3.10.2**). The signing profile enforces vendor, exact runtime
    and Maven versions, and a non-SNAPSHOT project version. Ordinary builds allow
    JDK 17+; the release path is stricter because javac output changes on newer
    JDKs. Record the full Git commit and operating system/architecture. Build with a fresh Maven local repository so
@@ -229,16 +229,18 @@ claimed without a separate comparison. Signatures contain signing-time data and
 are verified separately from the deterministic unsigned payload. Never rebuild or
 replace the retained 1.4.1 release to retrofit reproducibility.
 
-The publisher's isolated dependencies override Jackson core/databind 2.22.3 and
-annotations 2.22, HttpClient 5.6.5 and HttpCore/httpcore5-h2 5.4.4. The upstream
+The publisher's isolated dependencies override Jackson core/databind and
+annotations, now at 2.23.0 and 2.23, HttpClient 5.6.5 and HttpCore/httpcore5-h2
+5.4.4. The upstream
 0.11.0 dependency versions matched OSV advisories in the dated
 [September validation](docs/archive/maintenance-2026-09/batch-04-validation.md#release-plugin-dependency-follow-up-187).
 That check used HttpClient 5.6.4; the current 5.6.5 pin arrived later and is not
 covered by that historical advisory result. The 2026-10-20 publisher update
 compared the published 0.11.0 and 0.12.0 direct dependency declarations, which
 are unchanged, and retained all seven existing overrides. The isolated 0.12.0
-bundle-only fixture resolved those exact overrides and excluded Maven 3.10
-bookkeeping files from its ZIP. This was a linkage/bundling check, not a new
+bundle-only fixture resolved those overrides as they stood then, with Jackson
+2.22.3 and annotations 2.22, and excluded Maven 3.10 bookkeeping files from its
+ZIP. This was a linkage/bundling check, not a new
 advisory scan or a signed release rehearsal. Local signed bundle validation
 exercises the overridden plugin. This is not an audit of every plugin dependency
 or a claim that the plugin's live Central HTTP path has been tested. Jim's Portal
@@ -250,9 +252,11 @@ install/deploy goals skip.
 
 
 The signing plugin also pins `bcpg-jdk18on`, `bcprov-jdk18on`, and
-`bcutil-jdk18on` to 1.86; both release plugins pin Plexus Utils to the compatible
-3.6.2 line. The full resolved signing/publishing closure was checked after
-these additions, separately from application/runtime dependencies. Validation
-covers both the default GnuPG signer and the optional Bouncy Castle signer with
-a disposable local key; the project release key and preferred GnuPG path remain
-unchanged. See the batch 04 validation record for dated results.
+`bcutil-jdk18on`, now at 1.87; both release plugins pin Plexus Utils on the
+compatible 3.6 line, now at 3.6.4. The full resolved signing/publishing closure
+was checked when these pins were added at 1.86 and 3.6.2, separately from
+application/runtime dependencies. Validation covers both the default GnuPG
+signer and the optional Bouncy Castle signer with a disposable local key; the
+project release key and preferred GnuPG path remain unchanged. See the batch 04
+validation record for dated results. The later releases were resolved in the
+release plugin closure; that record does not cover a signing run with them.
