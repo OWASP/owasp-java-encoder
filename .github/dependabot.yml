@@ -32,9 +32,22 @@ updates:
           - jakarta.el:jakarta.el-api
           # The wrapper's Maven version is a separately reviewed toolchain change.
           - org.apache.maven:apache-maven
+          # The publisher realm's HTTP stack moves together; see httpcomponents.
+          - org.apache.httpcomponents.client5:httpclient5
+          - org.apache.httpcomponents.core5:httpcore5
+          - org.apache.httpcomponents.core5:httpcore5-h2
       maven-security:
         applies-to: security-updates
         patterns: ['*']
+      # The Central publisher pins HttpClient with the HttpCore line it was
+      # built against. One pull request keeps the two HttpCore pins equal and
+      # keeps an HttpClient line change out of the broad group.
+      httpcomponents:
+        applies-to: version-updates
+        patterns:
+          - org.apache.httpcomponents.client5:httpclient5
+          - org.apache.httpcomponents.core5:httpcore5
+          - org.apache.httpcomponents.core5:httpcore5-h2
     # Suppress only the routine SemVer update classes already rejected by the
     # documented compatibility review. GitHub applies update-types only to
     # version updates, so security updates remain eligible. Dependabot combines
@@ -74,6 +87,16 @@ updates:
           - version-update:semver-minor
           - version-update:semver-major
       - dependency-name: jakarta.el:jakarta.el-api
+        update-types:
+          - version-update:semver-minor
+          - version-update:semver-major
+      # The Central publisher's HttpClient 5.6 pin was built against HttpCore
+      # 5.4, and no CI job runs that realm. Move both together by hand.
+      - dependency-name: org.apache.httpcomponents.core5:httpcore5
+        update-types:
+          - version-update:semver-minor
+          - version-update:semver-major
+      - dependency-name: org.apache.httpcomponents.core5:httpcore5-h2
         update-types:
           - version-update:semver-minor
           - version-update:semver-major

@@ -16,6 +16,11 @@ unchanged. [1.6.0 is available from Central](releases/1.6.0-central-publication.
   exceeds. Refresh Maven build plugins, plexus-archiver, japicmp, and the
   test/publisher-only Jackson 2.22.4. Published library dependencies are
   unchanged.
+- Move that fixture to Spring Boot 4.2.0, which manages OpenTelemetry 1.68.0,
+  so the 1.67.0 override in the next entry is gone. Raise that entry's Guava
+  pins to 33.8.0 for GHSA-v5x9-67m3-7m56, and refresh plexus-archiver and the
+  Maven Help and Versions plugins. Published library dependencies are
+  unchanged.
 - Pin Guava 33.7.2 in the Checkstyle, japicmp, WAR and Central publisher
   plugin realms and the Jakarta fixture's Selenium tests, and raise the
   fixture's OpenTelemetry to 1.67.0, for GHSA-xxph-c9ww-hj94 and
