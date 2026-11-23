@@ -260,24 +260,6 @@ Dependabot's [`DependencySet`](https://github.com/dependabot/dependabot-core/blo
 and [`IgnoreCondition`](https://github.com/dependabot/dependabot-core/blob/a6e095f540c6542facc06ba47f66418da50d669c/common/lib/dependabot/config/ignore_condition.rb#L50-L65)
 implementations.
 
-For Plexus Utils the combination can also write a wrong version. Eight plugin
-realms pin 4.0.3 and six pin the 3.6 line, each on the major line its plugin
-resolves without a pin. Dependabot PR
-[#274](https://github.com/OWASP/owasp-java-encoder/pull/274) proposed 3.6.2 →
-3.6.4, wrote 3.6.4 into all fourteen declarations and passed CI, although that
-moves the 4.0.3 realms back to the 3.x line. A separate change applied 3.6.4 to
-the six 3.6 realms only: Resources, JaCoCo, GPG and the Central publisher in
-the root build, and Resources and the Boot plugin in the Jakarta fixture. 3.6.3
-and 3.6.4 are bugfix releases with no advisory. They stop `FileUtils` deletes
-from following symbolic links, split `translateCommandline` input at tabs and
-line breaks, and fix an `MXParser` crash. A policy test now records each
-realm's line, so a combined proposal that crosses lines fails CI instead of
-passing. Both lines live in the same POMs, so per-directory entries cannot
-separate them as they do for Tomcat; replace such a proposal by hand. The
-4.0.3 realms stay where they are: the semver-major ignore rule, counted from
-the 3.6 floor, suppresses 4.x proposals, and 4.1 or later needs the review
-described in the table above.
-
 For the Tomcat JSP engine fixtures, that combination writes a wrong version
 instead of suppressing one. `jsp/` pins Jasper and the annotations API on Tomcat
 9.0 (`javax`) and `jakarta/` pins the same coordinates on 10.1 (`jakarta`). The
@@ -293,6 +275,27 @@ request. These entries ignore only major version updates, which would replace
 the engine, so security updates remain eligible there. A policy test requires
 every reactor module that pins these coordinates to have its own entry on its
 expected line.
+
+Plexus Utils has the same problem without that remedy. Eight plugin realms pin
+4.0.3 and six pin the 3.6 line, each on the major line its plugin resolves
+without a pin. Dependabot PR
+[#274](https://github.com/OWASP/owasp-java-encoder/pull/274) proposed 3.6.2 →
+3.6.4, wrote 3.6.4 into all fourteen declarations and passed CI, although that
+moves the 4.0.3 realms back to the 3.x line. A separate change applied 3.6.4 to
+the six 3.6 realms only: Resources, JaCoCo, GPG and the Central publisher in
+the root build, and Resources and the Boot plugin in the Jakarta fixture. 3.6.3
+and 3.6.4 are bugfix releases with no advisory. They stop `FileUtils` deletes
+from following symbolic links, split `translateCommandline` input at tabs and
+line breaks, and fix an `MXParser` crash. Both lines live in the same POMs, so
+per-directory entries cannot separate them. A policy test records each realm's
+major line instead, so a combined proposal that crosses lines fails CI and is
+replaced by hand.
+
+The 4.0.3 realms were not changed. Plexus Utils 4.2.0 carries the same fixes as
+3.6.3, but the semver-major ignore rule, counted from the 3.6 floor, suppresses
+4.x proposals, and 4.1 changed `DirectoryScanner`'s default exclusions (see the
+table above). Moving those realms is a separate review; whether any of them
+reaches the affected `FileUtils` methods has not been checked.
 
 The root directory monitors the complete Maven reactor once; listing each reactor
 module again produced duplicate pull requests. The Tomcat-only `/jsp` and

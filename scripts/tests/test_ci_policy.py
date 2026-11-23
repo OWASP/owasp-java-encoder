@@ -318,25 +318,26 @@ class DependencySubmissionPolicy(unittest.TestCase):
     def test_plexus_utils_pins_keep_each_plugin_realm_line(self):
         # Dependabot combines every plexus-utils declaration and writes one
         # version into all of them. #274 proposed 3.6.2 -> 3.6.4, moved the
-        # 4.0 realms back to 3.6.4 and still passed CI.
+        # 4.0 realms back to 3.6.4 and still passed CI. Each realm keeps the
+        # major line its plugin resolves without a pin.
         expected = {
             'pom.xml': {
-                'maven-clean-plugin': '4.0.',
-                'maven-resources-plugin': '3.6.',
-                'maven-antrun-plugin': '4.0.',
-                'maven-source-plugin': '4.0.',
-                'maven-javadoc-plugin': '4.0.',
-                'jacoco-maven-plugin': '3.6.',
-                'maven-gpg-plugin': '3.6.',
-                'maven-checkstyle-plugin': '4.0.',
-                'central-publishing-maven-plugin': '3.6.',
+                'maven-clean-plugin': '4.',
+                'maven-resources-plugin': '3.',
+                'maven-antrun-plugin': '4.',
+                'maven-source-plugin': '4.',
+                'maven-javadoc-plugin': '4.',
+                'jacoco-maven-plugin': '3.',
+                'maven-gpg-plugin': '3.',
+                'maven-checkstyle-plugin': '4.',
+                'central-publishing-maven-plugin': '3.',
             },
             'jakarta-test/pom.xml': {
-                'maven-checkstyle-plugin': '4.0.',
-                'maven-clean-plugin': '4.0.',
-                'maven-resources-plugin': '3.6.',
-                'maven-war-plugin': '4.0.',
-                'spring-boot-maven-plugin': '3.6.',
+                'maven-checkstyle-plugin': '4.',
+                'maven-clean-plugin': '4.',
+                'maven-resources-plugin': '3.',
+                'maven-war-plugin': '4.',
+                'spring-boot-maven-plugin': '3.',
             },
         }
         for name, lines in expected.items():
