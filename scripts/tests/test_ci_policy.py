@@ -255,6 +255,8 @@ class DependencySubmissionPolicy(unittest.TestCase):
         # The wrapper's Maven distribution needs individual review; a mixed
         # group PR cannot pass its checks.
         self.assertIn('org.apache.maven:apache-maven', excluded)
+        # An HttpClient line change must not fail the broad group either.
+        self.assertIn('org.apache.httpcomponents.client5:httpclient5', excluded)
 
         ignore = parse_dependabot_ignore(maven.split('    ignore:\n', 1)[1])
         versioned = {name for name, update_types in ignore.items() if update_types}
@@ -342,7 +344,7 @@ class DependencySubmissionPolicy(unittest.TestCase):
         self.assertLess(workflow.index('Resolve shared library build plugins'),
                         workflow.index(app_command))
 
-    def test_boot_plugin_realm_uses_boot_managed_jackson(self):
+    def test_boot_fixture_keeps_no_superseded_overrides(self):
         # Boot 4.1.2's buildpack platform brings the patched Jackson 3.1 line.
         # A stale exact pin here would silently downgrade it, and Enforcer
         # rules do not inspect plugin realms.
@@ -361,8 +363,21 @@ class DependencySubmissionPolicy(unittest.TestCase):
     def test_publisher_realm_keeps_httpcore_on_its_httpclient_line(self):
         # No CI job runs the Central publisher, so a green build says nothing
         # about its HTTP stack. #272 proposed HttpCore 5.5 under HttpClient
-        # 5.6.5, which was built against HttpCore 5.4.
+        # 5.6.5, which was built against HttpCore 5.4. Add a line here only
+        # with the HttpCore line that HttpClient release was built against.
         built_against = {'5.6.': '5.4.'}
+        dependabot = (ROOT / '.github/dependabot.yml').read_text()
+        match = re.search(r'^      httpcomponents:\n((?: {8}.*\n)+)', dependabot,
+                          re.M)
+        self.assertIsNotNone(match)
+        group = match.group(1)
+        self.assertIn('        applies-to: version-updates\n', group)
+        self.assertEqual(
+            ['org.apache.httpcomponents.client5:httpclient5',
+             'org.apache.httpcomponents.core5:httpcore5',
+             'org.apache.httpcomponents.core5:httpcore5-h2'],
+            [line.split('- ', 1)[1].strip() for line in group.splitlines()
+             if line.startswith('          - ')])
         root = ET.parse(ROOT / 'pom.xml').getroot()
         pins = {}
         for plugin in root.iter('{%s}plugin' % version.NS['p']):

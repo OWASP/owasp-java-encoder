@@ -42,9 +42,9 @@ As reviewed on 2026-11-23, this fixture uses supported Spring Boot **4.2.0** and
 its managed dependencies, on JDK **17**, with Tomcat/Jasper **11.0.27**
 (Servlet **6.1**, Pages **4.0**, EL **6.0**). The deliberate BOM override is
 Selenium 4.49.0, aligned with the current reviewed browser image; Boot manages
-4.51.0. Its test-only Guava is pinned to **33.8.0**, past the 33.7.2 that fixes
-GHSA-xxph-c9ww-hj94. OpenTelemetry (**1.68.0**) follows the Boot BOM again,
-past the 1.67.0 that fixes GHSA-ccrj-gw8r-854m; see the
+4.51.0. Its test-only Guava is pinned to **33.8.0**, which fixes
+GHSA-xxph-c9ww-hj94 and GHSA-v5x9-67m3-7m56. OpenTelemetry (**1.68.0**) follows
+the Boot BOM again, past the 1.67.0 that fixes GHSA-ccrj-gw8r-854m; see the
 [dependency decisions](../.github/DEPENDENCY_DECISIONS.md).
 Testcontainers **2.0.5**, JSTL API **3.0.2** and implementation **3.0.1** follow the
 Boot BOM. The standalone Servlet/Pages/EL API JARs are removed; Tomcat supplies

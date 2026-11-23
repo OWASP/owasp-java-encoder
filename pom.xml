@@ -343,7 +343,7 @@
                             <artifactId>japicmp</artifactId>
                             <version>0.27.0</version>
                         </dependency>
-                        <!-- GHSA-xxph-c9ww-hj94: japicmp brings Guava 33.4.8. -->
+                        <!-- GHSA-xxph-c9ww-hj94, GHSA-v5x9-67m3-7m56: japicmp brings Guava 33.4.8. -->
                         <dependency><groupId>com.google.guava</groupId><artifactId>guava</artifactId><version>33.8.0-jre</version></dependency>
                     </dependencies>
                     <executions>
@@ -378,7 +378,7 @@
                     <artifactId>central-publishing-maven-plugin</artifactId>
                     <version>0.12.0</version>
                     <dependencies>
-                        <!-- GHSA-xxph-c9ww-hj94: the publisher brings Guava 32.1.0. -->
+                        <!-- GHSA-xxph-c9ww-hj94, GHSA-v5x9-67m3-7m56: the publisher brings Guava 32.1.0. -->
                         <dependency><groupId>com.google.guava</groupId><artifactId>guava</artifactId><version>33.8.0-jre</version></dependency>
                     </dependencies>
                 </plugin>
@@ -422,7 +422,7 @@
                     <dependency><groupId>org.apache.commons</groupId><artifactId>commons-lang3</artifactId><version>3.22.0</version></dependency>
                     <dependency><groupId>org.codehaus.plexus</groupId><artifactId>plexus-archiver</artifactId><version>4.16.0</version></dependency>
                     <dependency><groupId>org.codehaus.plexus</groupId><artifactId>plexus-utils</artifactId><version>4.0.3</version></dependency>
-                    <!-- GHSA-xxph-c9ww-hj94: Checkstyle 12.3.1 brings Guava 33.5.0. -->
+                    <!-- GHSA-xxph-c9ww-hj94, GHSA-v5x9-67m3-7m56: Checkstyle 12.3.1 brings Guava 33.5.0. -->
                     <dependency><groupId>com.google.guava</groupId><artifactId>guava</artifactId><version>33.8.0-jre</version></dependency>
                 </dependencies>
                 <configuration>
