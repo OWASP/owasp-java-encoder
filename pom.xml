@@ -161,7 +161,7 @@
                     <artifactId>maven-clean-plugin</artifactId>
                     <version>3.5.0</version>
                     <dependencies>
-                        <dependency><groupId>org.codehaus.plexus</groupId><artifactId>plexus-utils</artifactId><version>4.0.3</version></dependency>
+                        <dependency><groupId>org.codehaus.plexus</groupId><artifactId>plexus-utils</artifactId><version>3.6.4</version></dependency>
                     </dependencies>
                 </plugin>
                 <plugin>
@@ -169,7 +169,7 @@
                     <artifactId>maven-resources-plugin</artifactId>
                     <version>3.5.0</version>
                     <dependencies>
-                        <dependency><groupId>org.codehaus.plexus</groupId><artifactId>plexus-utils</artifactId><version>3.6.2</version></dependency>
+                        <dependency><groupId>org.codehaus.plexus</groupId><artifactId>plexus-utils</artifactId><version>3.6.4</version></dependency>
                     </dependencies>
                 </plugin>
                 <plugin>
@@ -226,7 +226,7 @@
                     <artifactId>maven-antrun-plugin</artifactId>
                     <version>3.2.0</version>
                     <dependencies>
-                        <dependency><groupId>org.codehaus.plexus</groupId><artifactId>plexus-utils</artifactId><version>4.0.3</version></dependency>
+                        <dependency><groupId>org.codehaus.plexus</groupId><artifactId>plexus-utils</artifactId><version>3.6.4</version></dependency>
                     </dependencies>
                     <executions>
                         <execution>
@@ -274,7 +274,7 @@
                     <version>3.4.0</version>
                     <dependencies>
                         <dependency><groupId>org.codehaus.plexus</groupId><artifactId>plexus-archiver</artifactId><version>4.15.0</version></dependency>
-                        <dependency><groupId>org.codehaus.plexus</groupId><artifactId>plexus-utils</artifactId><version>4.0.3</version></dependency>
+                        <dependency><groupId>org.codehaus.plexus</groupId><artifactId>plexus-utils</artifactId><version>3.6.4</version></dependency>
                     </dependencies>
                 </plugin>
                 <plugin>
@@ -284,7 +284,7 @@
                     <dependencies>
                         <dependency><groupId>commons-beanutils</groupId><artifactId>commons-beanutils</artifactId><version>1.11.0</version></dependency>
                         <dependency><groupId>org.codehaus.plexus</groupId><artifactId>plexus-archiver</artifactId><version>4.15.0</version></dependency>
-                        <dependency><groupId>org.codehaus.plexus</groupId><artifactId>plexus-utils</artifactId><version>4.0.3</version></dependency>
+                        <dependency><groupId>org.codehaus.plexus</groupId><artifactId>plexus-utils</artifactId><version>3.6.4</version></dependency>
                     </dependencies>
                 </plugin>
                 <plugin>
@@ -292,7 +292,7 @@
                     <artifactId>jacoco-maven-plugin</artifactId>
                     <version>0.8.16</version>
                     <dependencies>
-                        <dependency><groupId>org.codehaus.plexus</groupId><artifactId>plexus-utils</artifactId><version>3.6.2</version></dependency>
+                        <dependency><groupId>org.codehaus.plexus</groupId><artifactId>plexus-utils</artifactId><version>3.6.4</version></dependency>
                     </dependencies>
                 </plugin>
                 <plugin>
@@ -314,7 +314,7 @@
                         <dependency><groupId>org.bouncycastle</groupId><artifactId>bcpg-jdk18on</artifactId><version>1.87</version></dependency>
                         <dependency><groupId>org.bouncycastle</groupId><artifactId>bcprov-jdk18on</artifactId><version>1.87</version></dependency>
                         <dependency><groupId>org.bouncycastle</groupId><artifactId>bcutil-jdk18on</artifactId><version>1.87</version></dependency>
-                        <dependency><groupId>org.codehaus.plexus</groupId><artifactId>plexus-utils</artifactId><version>3.6.2</version></dependency>
+                        <dependency><groupId>org.codehaus.plexus</groupId><artifactId>plexus-utils</artifactId><version>3.6.4</version></dependency>
                     </dependencies>
                 </plugin>
                 <plugin>
@@ -421,7 +421,7 @@
                     </dependency>
                     <dependency><groupId>org.apache.commons</groupId><artifactId>commons-lang3</artifactId><version>3.22.0</version></dependency>
                     <dependency><groupId>org.codehaus.plexus</groupId><artifactId>plexus-archiver</artifactId><version>4.15.0</version></dependency>
-                    <dependency><groupId>org.codehaus.plexus</groupId><artifactId>plexus-utils</artifactId><version>4.0.3</version></dependency>
+                    <dependency><groupId>org.codehaus.plexus</groupId><artifactId>plexus-utils</artifactId><version>3.6.4</version></dependency>
                     <!-- GHSA-xxph-c9ww-hj94: Checkstyle 12.3.1 brings Guava 33.5.0. -->
                     <dependency><groupId>com.google.guava</groupId><artifactId>guava</artifactId><version>33.7.2-jre</version></dependency>
                 </dependencies>
@@ -661,7 +661,7 @@
                         <extensions>true</extensions>
                         <!-- Mitigate reviewed upstream publisher dependencies; isolated plugin realm only. -->
                         <dependencies>
-                            <dependency><groupId>org.codehaus.plexus</groupId><artifactId>plexus-utils</artifactId><version>3.6.2</version></dependency>
+                            <dependency><groupId>org.codehaus.plexus</groupId><artifactId>plexus-utils</artifactId><version>3.6.4</version></dependency>
                             <dependency><groupId>com.fasterxml.jackson.core</groupId><artifactId>jackson-databind</artifactId><version>2.23.0</version></dependency>
                             <dependency><groupId>com.fasterxml.jackson.core</groupId><artifactId>jackson-core</artifactId><version>2.23.0</version></dependency>
                             <dependency><groupId>com.fasterxml.jackson.core</groupId><artifactId>jackson-annotations</artifactId><version>2.23</version></dependency>
