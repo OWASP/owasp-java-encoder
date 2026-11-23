@@ -199,7 +199,7 @@ reproducibility script still needs to run before the next release; see the
 | Proposal | Disposition and required evidence before reconsideration |
 | --- | --- |
 | Checkstyle 12.3.1 → 14.1.0 | Keep 12.3.1 for the JDK 17 build. PR #188 fails with Java 21 classfile version 65 on Java 17. Reconsider with a separately reviewed build/release-JDK migration and source-policy validation; this is not a claim that the old engine has upstream support. |
-| Plexus Utils 3.6.2 → 4.1.0 in GPG/Central plugin dependencies | Keep the reviewed 3.6.2 mitigation. The [upstream 4.x migration](https://github.com/codehaus-plexus/plexus-utils) moves XML utilities to a separate artifact; 4.1 also changes DirectoryScanner default exclusions. A newer major is not a drop-in plugin-realm security fix. Reconsider with actual plugin linkage, isolated signing/bundle/rehearsal evidence, transitive-advisory review and repeatable payloads. |
+| Plexus Utils 3.6.2 → 4.1.0 in GPG/Central plugin dependencies | Keep the reviewed 3.6 mitigation, at 3.6.4 since 2026-11-23. The [upstream 4.x migration](https://github.com/codehaus-plexus/plexus-utils) moves XML utilities to a separate artifact; 4.1 also changes DirectoryScanner default exclusions. A newer major is not a drop-in plugin-realm security fix. Reconsider with actual plugin linkage, isolated signing/bundle/rehearsal evidence, transitive-advisory review and repeatable payloads. |
 | javax Servlet 3.0.1 → 4.0.1; EL 2.2.5 → 3.0.0 | Keep the test-only minimum API fixtures. These are not bundled production container implementations. Modern engine coverage is separate; replacing the minimum tests would remove evidence for existing consumers. |
 | Jakarta Pages 3.0.0 → 4.0.0 | Keep the published provided Pages 3 API and existing `[3.0,4)` package ranges. Reconsider only with a reviewed minimum-runtime/API migration, public POM implications and compatibility evidence. |
 | Jasper/annotations 9.0.122 or 10.1.60 → 11.0.26 in the isolated tag fixtures | Keep coherent Tomcat 9 (`javax`) and 10.1 (`jakarta`) engines. PR #188 fails the javax engine with missing `javax.servlet.jsp.tagext.SimpleTagSupport` after the Tomcat 11 switch. The optional Boot/browser WAR already exercises Tomcat 11. Patch updates within each engine line come from the separate `/jsp` and `/jakarta` Dependabot entries described below. Cross-line migration needs a separate coverage decision. |
@@ -259,6 +259,24 @@ maintenance, and always when an advisory appears. The behavior is pinned in
 Dependabot's [`DependencySet`](https://github.com/dependabot/dependabot-core/blob/a6e095f540c6542facc06ba47f66418da50d669c/common/lib/dependabot/file_parsers/base/dependency_set.rb#L158-L170)
 and [`IgnoreCondition`](https://github.com/dependabot/dependabot-core/blob/a6e095f540c6542facc06ba47f66418da50d669c/common/lib/dependabot/config/ignore_condition.rb#L50-L65)
 implementations.
+
+For Plexus Utils the combination can also write a wrong version. Eight plugin
+realms pin 4.0.3 and six pin the 3.6 line, each on the major line its plugin
+resolves without a pin. Dependabot PR
+[#274](https://github.com/OWASP/owasp-java-encoder/pull/274) proposed 3.6.2 →
+3.6.4, wrote 3.6.4 into all fourteen declarations and passed CI, although that
+moves the 4.0.3 realms back to the 3.x line. A separate change applied 3.6.4 to
+the six 3.6 realms only: Resources, JaCoCo, GPG and the Central publisher in
+the root build, and Resources and the Boot plugin in the Jakarta fixture. 3.6.3
+and 3.6.4 are bugfix releases with no advisory. They stop `FileUtils` deletes
+from following symbolic links, split `translateCommandline` input at tabs and
+line breaks, and fix an `MXParser` crash. A policy test now records each
+realm's line, so a combined proposal that crosses lines fails CI instead of
+passing. Both lines live in the same POMs, so per-directory entries cannot
+separate them as they do for Tomcat; replace such a proposal by hand. The
+4.0.3 realms stay where they are: the semver-major ignore rule, counted from
+the 3.6 floor, suppresses 4.x proposals, and 4.1 or later needs the review
+described in the table above.
 
 For the Tomcat JSP engine fixtures, that combination writes a wrong version
 instead of suppressing one. `jsp/` pins Jasper and the annotations API on Tomcat

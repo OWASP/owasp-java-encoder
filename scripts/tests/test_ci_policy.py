@@ -315,6 +315,49 @@ class DependencySubmissionPolicy(unittest.TestCase):
                     next(iter(versions)).startswith(expected_lines[directory]),
                     versions)
 
+    def test_plexus_utils_pins_keep_each_plugin_realm_line(self):
+        # Dependabot combines every plexus-utils declaration and writes one
+        # version into all of them. #274 proposed 3.6.2 -> 3.6.4, moved the
+        # 4.0 realms back to 3.6.4 and still passed CI.
+        expected = {
+            'pom.xml': {
+                'maven-clean-plugin': '4.0.',
+                'maven-resources-plugin': '3.6.',
+                'maven-antrun-plugin': '4.0.',
+                'maven-source-plugin': '4.0.',
+                'maven-javadoc-plugin': '4.0.',
+                'jacoco-maven-plugin': '3.6.',
+                'maven-gpg-plugin': '3.6.',
+                'maven-checkstyle-plugin': '4.0.',
+                'central-publishing-maven-plugin': '3.6.',
+            },
+            'jakarta-test/pom.xml': {
+                'maven-checkstyle-plugin': '4.0.',
+                'maven-clean-plugin': '4.0.',
+                'maven-resources-plugin': '3.6.',
+                'maven-war-plugin': '4.0.',
+                'spring-boot-maven-plugin': '3.6.',
+            },
+        }
+        for name, lines in expected.items():
+            pom = ET.parse(ROOT / name).getroot()
+            pinned = {}
+            for plugin in pom.iter('{%s}plugin' % version.NS['p']):
+                for dependency in plugin.findall('p:dependencies/p:dependency',
+                                                 version.NS):
+                    if dependency.findtext(
+                            'p:artifactId', namespaces=version.NS) != 'plexus-utils':
+                        continue
+                    artifact = plugin.findtext('p:artifactId', namespaces=version.NS)
+                    self.assertNotIn(artifact, pinned, name)
+                    pinned[artifact] = dependency.findtext(
+                        'p:version', namespaces=version.NS)
+            self.assertEqual(set(lines), set(pinned), name)
+            for artifact, line in lines.items():
+                with self.subTest(pom=name, plugin=artifact):
+                    self.assertTrue(pinned[artifact].startswith(line),
+                                    pinned[artifact])
+
     def test_only_executed_plugins_are_submitted(self):
         workflow = (ROOT / '.github/workflows/dependency-submission.yaml').read_text()
         self.assertIn('-DincludeArtifactIds=', workflow)

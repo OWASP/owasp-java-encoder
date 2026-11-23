@@ -250,9 +250,11 @@ install/deploy goals skip.
 
 
 The signing plugin also pins `bcpg-jdk18on`, `bcprov-jdk18on`, and
-`bcutil-jdk18on` to 1.86; both release plugins pin Plexus Utils to the compatible
-3.6.2 line. The full resolved signing/publishing closure was checked after
-these additions, separately from application/runtime dependencies. Validation
-covers both the default GnuPG signer and the optional Bouncy Castle signer with
-a disposable local key; the project release key and preferred GnuPG path remain
-unchanged. See the batch 04 validation record for dated results.
+`bcutil-jdk18on`, now at 1.87; both release plugins pin Plexus Utils on the
+compatible 3.6 line, now at 3.6.4. The full resolved signing/publishing closure
+was checked when these pins were added at 1.86 and 3.6.2, separately from
+application/runtime dependencies. Validation covers both the default GnuPG
+signer and the optional Bouncy Castle signer with a disposable local key; the
+project release key and preferred GnuPG path remain unchanged. See the batch 04
+validation record for dated results. The later patch releases were resolved in
+the release plugin closure; that record does not cover a signing run with them.
