@@ -50,9 +50,9 @@ pin. Verify the object's type and follow tag targets until it is a commit
   `problem-matcher`, so compiler diagnostics and uncaught exceptions no longer
   become annotations; they stay in the build logs, and failures still fail the
   step. It also rejects `architecture` values that are not a single plain token
-  (unset here), changes Microsoft OpenJDK and JetBrains Runtime version
-  resolution, which this project does not use, and updates fast-xml-parser to
-  5.12.0. Its release tag points directly to the commit above.
+  (unset here), adds Microsoft OpenJDK 25.0.5.0.2 and fixes JetBrains Runtime
+  hotfix version selection, neither of which this project uses, and updates
+  fast-xml-parser to 5.12.0. Its release tag points directly to the commit above.
 - Artifact actions use bundled clients and GitHub's artifact service. Both run on
   Node.js 24 and require a runner supporting that runtime (2.327.1+); this project
   uses current GitHub-hosted runners, including in Java 8 jobs. The action runtime
