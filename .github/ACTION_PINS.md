@@ -2,14 +2,15 @@
 
 Resolved release tags through each authoritative repository Git ref (including
 annotated-tag dereferencing) on 2026-10-18 UTC; Setup Java and CodeQL were
-updated and rechecked on 2026-11-10 UTC, matching the current workflows.
+updated and rechecked on 2026-11-10 UTC, and Setup Java again on 2026-11-23 UTC,
+matching the current workflows.
 These are source pins, not claims that runtime tool downloads are made immutable
 by pinning an action.
 
 | Repository/action | Release | Commit |
 | --- | --- | --- |
 | `actions/checkout` | [v7.0.1](https://github.com/actions/checkout/releases/tag/v7.0.1) | `3d3c42e5aac5ba805825da76410c181273ba90b1` |
-| `actions/setup-java` | [v6.2.0](https://github.com/actions/setup-java/releases/tag/v6.2.0) | `77dd5b2ce225ea11469928ac317850245a74ae78` |
+| `actions/setup-java` | [v6.3.0](https://github.com/actions/setup-java/releases/tag/v6.3.0) | `d1374f8ac74474200d16ef8ecee22c7ae7a51880` |
 | `actions/upload-artifact` | [v7.0.2](https://github.com/actions/upload-artifact/releases/tag/v7.0.2) | `cf430e030ddbb5b0abf93d22962f4752f3646cd9` |
 | `actions/download-artifact` | [v8.0.2](https://github.com/actions/download-artifact/releases/tag/v8.0.2) | `9000827ccba6bdab643e8b6fd33ac0654aef8333` |
 | `github/codeql-action` | [v4.39.3](https://github.com/github/codeql-action/releases/tag/v4.39.3) | `33d7b85da1a04171e211befe2c739303b9a4c066` |
@@ -45,6 +46,13 @@ pin. Verify the object's type and follow tag targets until it is a commit
   `<mirrors>` section to the generated settings when set; these workflows do
   not set it. Its other changes are Liberica and Corretto version resolution,
   which this project does not use, and bundled dependency updates (Undici 6.29.1).
+  v6.3.0 makes the Java problem matcher opt-in. These workflows do not set
+  `problem-matcher`, so compiler diagnostics and uncaught exceptions no longer
+  become annotations; they stay in the build logs, and failures still fail the
+  step. It also rejects `architecture` values that are not a single plain token
+  (unset here), changes Microsoft OpenJDK and JetBrains Runtime version
+  resolution, which this project does not use, and updates fast-xml-parser to
+  5.12.0. Its release tag points directly to the commit above.
 - Artifact actions use bundled clients and GitHub's artifact service. Both run on
   Node.js 24 and require a runner supporting that runtime (2.327.1+); this project
   uses current GitHub-hosted runners, including in Java 8 jobs. The action runtime
