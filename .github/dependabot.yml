@@ -32,6 +32,9 @@ updates:
           - jakarta.el:jakarta.el-api
           # The wrapper's Maven version is a separately reviewed toolchain change.
           - org.apache.maven:apache-maven
+          # The publisher realm keeps HttpCore on its pinned HttpClient's line.
+          - org.apache.httpcomponents.core5:httpcore5
+          - org.apache.httpcomponents.core5:httpcore5-h2
       maven-security:
         applies-to: security-updates
         patterns: ['*']
@@ -74,6 +77,16 @@ updates:
           - version-update:semver-minor
           - version-update:semver-major
       - dependency-name: jakarta.el:jakarta.el-api
+        update-types:
+          - version-update:semver-minor
+          - version-update:semver-major
+      # The Central publisher's HttpClient 5.6 pin was built against HttpCore
+      # 5.4, and no CI job runs that realm. Move both together.
+      - dependency-name: org.apache.httpcomponents.core5:httpcore5
+        update-types:
+          - version-update:semver-minor
+          - version-update:semver-major
+      - dependency-name: org.apache.httpcomponents.core5:httpcore5-h2
         update-types:
           - version-update:semver-minor
           - version-update:semver-major

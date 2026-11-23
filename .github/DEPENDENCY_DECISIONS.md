@@ -175,6 +175,39 @@ realms. The publisher realm was resolved, not executed, because there is no
 publishing run that skips signing and Central credentials. The next signed
 release rehearsal should confirm it before a release relies on it.
 
+## Boot 4.2.0, Guava 33.8.0 and HttpCore — 2026-11-23
+
+Grouped PR [#272](https://github.com/OWASP/owasp-java-encoder/pull/272)
+proposed seven updates and passed CI. A separate change takes six of them and
+corrects one; HttpCore 5.5 is not accepted.
+
+- Spring Boot **4.2.0** for the Jakarta fixture. It manages OpenTelemetry
+  1.68.0, so the fixture's `opentelemetry.version` 1.67.0 override is removed,
+  as planned above. #272 kept the override, which would have lowered Boot's
+  version. A policy test fails if it returns. Boot 4.2.0 still manages Tomcat
+  11.0.27 and now manages Selenium 4.51.0; the fixture stays on 4.49.0 with the
+  digest-pinned browser image, so that override is now below Boot's version.
+- Guava **33.8.0-jre** in every pin from the 2026-11-16 entry. It adds the
+  hash-flooding hardening of
+  [GHSA-v5x9-67m3-7m56](https://github.com/google/guava/security/advisories/GHSA-v5x9-67m3-7m56)
+  (low severity) on top of the 33.7.2 fix. The removal conditions for those
+  pins are unchanged.
+- plexus-archiver **4.16.0**, which upstream describes as binary compatible
+  with 4.15.0, Maven Help Plugin **3.6.0**, which now requires Maven 3.9.0 (this
+  build requires 3.9.16), and Versions Maven Plugin **2.25.2**.
+- HttpCore and httpcore5-h2 stay on **5.4.4**. The publisher realm pins
+  HttpClient 5.6.5, which was built against HttpCore 5.4.4; HttpClient 5.7, the
+  line built on HttpCore 5.5, is still in beta. Boot 4.2.0's own Maven plugin
+  resolves the same 5.6.5 and 5.4.4 pair. No published advisory affects 5.4.4
+  (GHSA-hf6x-8p5f-cgmf and GHSA-v3jc-474w-2wm6 were fixed in 5.4.3). No CI job
+  runs the publisher, so #272's passing checks did not exercise this pairing.
+  The configuration now excludes both coordinates from the broad group
+  and ignores their minor and major version updates; patch and security updates
+  remain eligible. A policy test keeps the HttpCore pins on the line the
+  HttpClient pin was built against. Revisit when HttpClient 5.7 is released:
+  move the client and both HttpCore pins together, confirm the publisher in a
+  release rehearsal, and remove the two rules and update the test with them.
+
 ## Maven 3.10.1 wrapper — 2026-11-16
 
 Accept the Maven **3.10.1** distribution proposed by Dependabot PR
@@ -227,9 +260,9 @@ record; a grouped PR closure is not proof that every proposed upgrade was applie
 
 The [configuration](dependabot.yml) excludes twelve coordinates from the broad
 Maven **version-update group**: the nine baseline-sensitive coordinates above,
-the two Boot plugin-realm Jackson coordinates and the Maven distribution used by
+the two publisher-realm HttpCore coordinates and the Maven distribution used by
 the wrapper. For the eight of those coordinates with a rejected proposal in
-#218–#227 and the two Jackson coordinates from #232, it also ignores only the
+#218–#227 and the two HttpCore coordinates from #272, it also ignores only the
 SemVer minor or major version-update classes covered by the decisions above. The
 Maven wrapper has no ignore rule. The two Tomcat engine coordinates, the other
 rejected proposals in that range, have their own entries described below.

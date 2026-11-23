@@ -209,6 +209,8 @@ class DependencySubmissionPolicy(unittest.TestCase):
             'jakarta.servlet.jsp:jakarta.servlet.jsp-api': minor_and_major,
             'jakarta.servlet:jakarta.servlet-api': minor_and_major,
             'jakarta.el:jakarta.el-api': minor_and_major,
+            'org.apache.httpcomponents.core5:httpcore5': minor_and_major,
+            'org.apache.httpcomponents.core5:httpcore5-h2': minor_and_major,
             'org.apache.tomcat.embed:tomcat-embed-jasper': [],
             'org.apache.tomcat:tomcat-annotations-api': [],
         }
@@ -348,9 +350,39 @@ class DependencySubmissionPolicy(unittest.TestCase):
         self.assertIsNone(app.find(
             'p:properties/p:jackson.build.version', version.NS))
         self.assertIsNone(app.find('p:properties/p:tomcat.version', version.NS))
+        # Boot 4.2.0 manages OpenTelemetry 1.68.0. The 1.67.0 override that
+        # fixed GHSA-ccrj-gw8r-854m under Boot 4.1.2 would now lower it.
+        self.assertIsNone(app.find(
+            'p:properties/p:opentelemetry.version', version.NS))
         for dep in app.iter('{%s}dependency' % version.NS['p']):
             self.assertNotEqual('tools.jackson.core', dep.findtext(
                 'p:groupId', namespaces=version.NS))
+
+    def test_publisher_realm_keeps_httpcore_on_its_httpclient_line(self):
+        # No CI job runs the Central publisher, so a green build says nothing
+        # about its HTTP stack. #272 proposed HttpCore 5.5 under HttpClient
+        # 5.6.5, which was built against HttpCore 5.4.
+        built_against = {'5.6.': '5.4.'}
+        root = ET.parse(ROOT / 'pom.xml').getroot()
+        pins = {}
+        for plugin in root.iter('{%s}plugin' % version.NS['p']):
+            if plugin.findtext('p:artifactId', namespaces=version.NS) \
+                    != 'central-publishing-maven-plugin':
+                continue
+            for dependency in plugin.findall('p:dependencies/p:dependency',
+                                             version.NS):
+                artifact = dependency.findtext('p:artifactId', namespaces=version.NS)
+                if artifact in ('httpclient5', 'httpcore5', 'httpcore5-h2'):
+                    self.assertNotIn(artifact, pins)
+                    pins[artifact] = dependency.findtext(
+                        'p:version', namespaces=version.NS)
+        self.assertEqual({'httpclient5', 'httpcore5', 'httpcore5-h2'}, set(pins))
+        client_line = next((line for line in built_against
+                            if pins['httpclient5'].startswith(line)), None)
+        self.assertIsNotNone(client_line, pins)
+        self.assertEqual(pins['httpcore5'], pins['httpcore5-h2'])
+        self.assertTrue(pins['httpcore5'].startswith(built_against[client_line]),
+                        pins)
 
     def test_consumer_fixture_downloader_uses_submitted_patched_realm(self):
         workflow = (ROOT / '.github/workflows/dependency-submission.yaml').read_text()
