@@ -3,7 +3,7 @@
 Initial review: 2026-09-26. Focused API follow-up: 2026-09-27. Dependabot
 proposal-policy follow-up: 2026-09-28. Jackson and proposal-routing follow-up:
 2026-10-05. Maven 3.10.0 wrapper follow-up: 2026-10-11. Maven 3.10.1 wrapper
-follow-up: 2026-11-16.
+follow-up: 2026-11-16. Maven 3.10.2 wrapper follow-up: 2026-11-23.
 
 PRs [#176](https://github.com/OWASP/owasp-java-encoder/pull/176) and
 [#188](https://github.com/OWASP/owasp-java-encoder/pull/188) mixed ordinary build
@@ -193,6 +193,26 @@ and module POMs built by each are byte-identical. The 1.6.0 publication already
 exercised 3.10.0's credential scoping against Central. The reference-JDK
 reproducibility script still needs to run before the next release; see the
 [Maven 3.10.1 validation](../releases/maven-3.10.1-validation.md).
+
+## Maven 3.10.2 wrapper — 2026-11-23
+
+Accept the Maven **3.10.2** distribution proposed by Dependabot PR
+[#273](https://github.com/OWASP/owasp-java-encoder/pull/273). Like #235 and
+#267, that PR failed only on the wrapper version assertion and re-committed
+`mvnw.cmd` with CRLF in the index, so a separate change completes the checklist
+above. The wrapper scripts remain Apache Maven Wrapper 3.3.4 and `mvnw.cmd` is
+unchanged. The signing profile now requires exactly 3.10.2. Ordinary builds keep
+the `[3.9.16,)` minimum.
+
+3.10.2 is a bugfix release for 3.10.1 with Resolver 2.0.26 and no listed
+security fixes ([release notes](https://maven.apache.org/docs/3.10.2/release-notes.html)).
+Apart from Maven's own modules and Resolver, the only bundled library that
+changes is Plexus Utils, from 3.6.2 to 3.6.4. The ZIP's SHA-256 and SHA-512
+match, and its signature verifies against Apache Maven's `KEYS`. Effective POMs
+from 3.10.1 and 3.10.2 are identical, and JARs and module POMs built by each are
+byte-identical. The signing profile and the reference-JDK reproducibility script
+have not run under 3.10.2 and need to before the next release; see the
+[Maven 3.10.2 validation](../releases/maven-3.10.2-validation.md).
 
 ## Deferred proposals and reconsideration conditions
 
