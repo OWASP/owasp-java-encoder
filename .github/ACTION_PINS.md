@@ -2,7 +2,7 @@
 
 Resolved release tags through each authoritative repository Git ref (including
 annotated-tag dereferencing) on 2026-10-18 UTC; Setup Java and CodeQL were
-updated and rechecked on 2026-11-10 UTC, and Setup Java again on 2026-11-23 UTC,
+updated and rechecked on 2026-11-10 UTC, and both again on 2026-11-23 UTC,
 matching the current workflows.
 These are source pins, not claims that runtime tool downloads are made immutable
 by pinning an action.
@@ -13,7 +13,7 @@ by pinning an action.
 | `actions/setup-java` | [v6.3.0](https://github.com/actions/setup-java/releases/tag/v6.3.0) | `d1374f8ac74474200d16ef8ecee22c7ae7a51880` |
 | `actions/upload-artifact` | [v7.0.2](https://github.com/actions/upload-artifact/releases/tag/v7.0.2) | `cf430e030ddbb5b0abf93d22962f4752f3646cd9` |
 | `actions/download-artifact` | [v8.0.2](https://github.com/actions/download-artifact/releases/tag/v8.0.2) | `9000827ccba6bdab643e8b6fd33ac0654aef8333` |
-| `github/codeql-action` | [v4.39.3](https://github.com/github/codeql-action/releases/tag/v4.39.3) | `33d7b85da1a04171e211befe2c739303b9a4c066` |
+| `github/codeql-action` | [v4.39.4](https://github.com/github/codeql-action/releases/tag/v4.39.4) | `1bd86f2fdb4b86187fa4059f16f31a3202acc9ea` |
 | `advanced-security/maven-dependency-submission-action` | [v6.0.1](https://github.com/advanced-security/maven-dependency-submission-action/releases/tag/v6.0.1) | `a64327a7329c9939cf675e458452febe1894a70c` |
 
 CodeQL uses the `init` and `analyze` subactions at the same commit. No other
@@ -28,7 +28,7 @@ actions with hidden
 paths were reviewed, along with the release changes.
 
 CodeQL's release tag is annotated: the Git ref points to tag object
-`f3bbb05694c2f74569081c28664c0866d64dec21`, which must be dereferenced to the
+`e0462179768953fd6790193e15caaef674ff709e`, which must be dereferenced to the
 commit in the table. Do not copy an annotated tag object's SHA into a commit
 pin. Verify the object's type and follow tag targets until it is a commit
 (equivalently, inspect the peeled `refs/tags/<version>^{}` Git ref).
@@ -78,7 +78,11 @@ pin. Verify the object's type and follow tag targets until it is a commit
   earlier (not used here), warns about traced analysis on macOS/Xcode 27 (these
   jobs run on Ubuntu) and removes the undocumented TRAP-cache cleanup variable,
   which these workflows never set. v4.39.3 fixes diff-informed alert filtering
-  for paths with spaces or non-ASCII characters.
+  for paths with spaces or non-ASCII characters. v4.39.4 moves the default
+  bundle to CodeQL 2.27.5. Its other changes are a duration in the toolcache
+  cleanup log and telemetry, a feature-flag refactor that keeps the same flags,
+  and bundled dependency updates (fast-xml-parser 5.12.1, follow-redirects
+  1.16.3, node-forge 1.4.3).
 - Maven submission v6.0.1 runs the checkout's Maven command with the pinned
   `com.github.ferstl:depgraph-maven-plugin:4.0.3`, then submits with GitHub's bundled
   dependency toolkit. It has no composite action references. Its source logs
